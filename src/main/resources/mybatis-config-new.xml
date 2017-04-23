@@ -14,4 +14,10 @@
         <setting name="mapUnderscoreToCamelCase" value="true"/>
         <setting name="callSettersOnNulls" value="true"/>
     </settings>
+   	<plugins>
+	<!--  mybatis写出sql记录控件(拦截器) -->
+		<plugin interceptor="com.mahjong.server.util.MyBatisSQLInterceptor">
+			<property name="dialect" value="mysql" />
+		</plugin>
+	</plugins>
 </configuration>

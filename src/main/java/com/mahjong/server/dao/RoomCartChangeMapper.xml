@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mahjong.server.dao.RoomCartChangeMapper" >
+  <resultMap id="BaseResultMap" type="com.mahjong.server.entity.RoomCartChange" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="manage_user_id" property="manageUserId" jdbcType="INTEGER" />
+    <result column="manage_name" property="manageName" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="change_num" property="changeNum" jdbcType="INTEGER" />
+    <result column="change_time" property="changeTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, manage_user_id, manage_name, user_id, user_name, change_num, change_time
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.mahjong.server.entity.RoomCartChangeExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from room_cart_change
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from room_cart_change
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByCdt" resultMap="BaseResultMap" parameterType="com.mahjong.server.entity.RoomCartChange" >
+    select 
+    <include refid="Base_Column_List" />
+    from room_cart_change
+    <where >
+      <if test="manageUserId != null" >
+        and manage_user_id = #{manageUserId,jdbcType=INTEGER}
+      </if>
+      <if test="manageName != null" >
+        and manage_name = #{manageName,jdbcType=VARCHAR}
+      </if>
+      <if test="userId != null" >
+        and user_id = #{userId,jdbcType=INTEGER}
+      </if>
+      <if test="userName != null" >
+        and user_name = #{userName,jdbcType=VARCHAR}
+      </if>
+      <if test="changeNum != null" >
+        and change_num = #{changeNum,jdbcType=INTEGER}
+      </if>
+      <if test="changeTime != null" >
+        and change_time = #{changeTime,jdbcType=TIMESTAMP}
+      </if>
+    </where>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from room_cart_change
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.mahjong.server.entity.RoomCartChangeExample" >
+    delete from room_cart_change
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.mahjong.server.entity.RoomCartChange" >
+    insert into room_cart_change (id, manage_user_id, manage_name, 
+      user_id, user_name, change_num, 
+      change_time)
+    values (#{id,jdbcType=INTEGER}, #{manageUserId,jdbcType=INTEGER}, #{manageName,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{changeNum,jdbcType=INTEGER}, 
+      #{changeTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.mahjong.server.entity.RoomCartChange" >
+    insert into room_cart_change
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="manageUserId != null" >
+        manage_user_id,
+      </if>
+      <if test="manageName != null" >
+        manage_name,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="userName != null" >
+        user_name,
+      </if>
+      <if test="changeNum != null" >
+        change_num,
+      </if>
+      <if test="changeTime != null" >
+        change_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="manageUserId != null" >
+        #{manageUserId,jdbcType=INTEGER},
+      </if>
+      <if test="manageName != null" >
+        #{manageName,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="changeNum != null" >
+        #{changeNum,jdbcType=INTEGER},
+      </if>
+      <if test="changeTime != null" >
+        #{changeTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.mahjong.server.entity.RoomCartChangeExample" resultType="java.lang.Integer" >
+    select count(*) from room_cart_change
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update room_cart_change
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.manageUserId != null" >
+        manage_user_id = #{record.manageUserId,jdbcType=INTEGER},
+      </if>
+      <if test="record.manageName != null" >
+        manage_name = #{record.manageName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userId != null" >
+        user_id = #{record.userId,jdbcType=INTEGER},
+      </if>
+      <if test="record.userName != null" >
+        user_name = #{record.userName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.changeNum != null" >
+        change_num = #{record.changeNum,jdbcType=INTEGER},
+      </if>
+      <if test="record.changeTime != null" >
+        change_time = #{record.changeTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update room_cart_change
+    set id = #{record.id,jdbcType=INTEGER},
+      manage_user_id = #{record.manageUserId,jdbcType=INTEGER},
+      manage_name = #{record.manageName,jdbcType=VARCHAR},
+      user_id = #{record.userId,jdbcType=INTEGER},
+      user_name = #{record.userName,jdbcType=VARCHAR},
+      change_num = #{record.changeNum,jdbcType=INTEGER},
+      change_time = #{record.changeTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mahjong.server.entity.RoomCartChange" >
+    update room_cart_change
+    <set >
+      <if test="manageUserId != null" >
+        manage_user_id = #{manageUserId,jdbcType=INTEGER},
+      </if>
+      <if test="manageName != null" >
+        manage_name = #{manageName,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="changeNum != null" >
+        change_num = #{changeNum,jdbcType=INTEGER},
+      </if>
+      <if test="changeTime != null" >
+        change_time = #{changeTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mahjong.server.entity.RoomCartChange" >
+    update room_cart_change
+    set manage_user_id = #{manageUserId,jdbcType=INTEGER},
+      manage_name = #{manageName,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=INTEGER},
+      user_name = #{userName,jdbcType=VARCHAR},
+      change_num = #{changeNum,jdbcType=INTEGER},
+      change_time = #{changeTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

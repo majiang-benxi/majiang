@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mahjong.server.dao.UserActionScoreMapper" >
+  <resultMap id="BaseResultMap" type="com.mahjong.server.entity.UserActionScore" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_room_record_id" property="userRoomRecordId" jdbcType="INTEGER" />
+    <result column="action_type" property="actionType" jdbcType="INTEGER" />
+    <result column="action_score" property="actionScore" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, user_room_record_id, action_type, action_score
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.mahjong.server.entity.UserActionScoreExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from user_action_score
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_action_score
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByCdt" resultMap="BaseResultMap" parameterType="com.mahjong.server.entity.UserActionScore" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_action_score
+    <where >
+      <if test="userRoomRecordId != null" >
+        and user_room_record_id = #{userRoomRecordId,jdbcType=INTEGER}
+      </if>
+      <if test="actionType != null" >
+        and action_type = #{actionType,jdbcType=INTEGER}
+      </if>
+      <if test="actionScore != null" >
+        and action_score = #{actionScore,jdbcType=INTEGER}
+      </if>
+    </where>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user_action_score
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.mahjong.server.entity.UserActionScoreExample" >
+    delete from user_action_score
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.mahjong.server.entity.UserActionScore" >
+    insert into user_action_score (id, user_room_record_id, action_type, 
+      action_score)
+    values (#{id,jdbcType=INTEGER}, #{userRoomRecordId,jdbcType=INTEGER}, #{actionType,jdbcType=INTEGER}, 
+      #{actionScore,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.mahjong.server.entity.UserActionScore" >
+    insert into user_action_score
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userRoomRecordId != null" >
+        user_room_record_id,
+      </if>
+      <if test="actionType != null" >
+        action_type,
+      </if>
+      <if test="actionScore != null" >
+        action_score,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userRoomRecordId != null" >
+        #{userRoomRecordId,jdbcType=INTEGER},
+      </if>
+      <if test="actionType != null" >
+        #{actionType,jdbcType=INTEGER},
+      </if>
+      <if test="actionScore != null" >
+        #{actionScore,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.mahjong.server.entity.UserActionScoreExample" resultType="java.lang.Integer" >
+    select count(*) from user_action_score
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update user_action_score
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.userRoomRecordId != null" >
+        user_room_record_id = #{record.userRoomRecordId,jdbcType=INTEGER},
+      </if>
+      <if test="record.actionType != null" >
+        action_type = #{record.actionType,jdbcType=INTEGER},
+      </if>
+      <if test="record.actionScore != null" >
+        action_score = #{record.actionScore,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update user_action_score
+    set id = #{record.id,jdbcType=INTEGER},
+      user_room_record_id = #{record.userRoomRecordId,jdbcType=INTEGER},
+      action_type = #{record.actionType,jdbcType=INTEGER},
+      action_score = #{record.actionScore,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mahjong.server.entity.UserActionScore" >
+    update user_action_score
+    <set >
+      <if test="userRoomRecordId != null" >
+        user_room_record_id = #{userRoomRecordId,jdbcType=INTEGER},
+      </if>
+      <if test="actionType != null" >
+        action_type = #{actionType,jdbcType=INTEGER},
+      </if>
+      <if test="actionScore != null" >
+        action_score = #{actionScore,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mahjong.server.entity.UserActionScore" >
+    update user_action_score
+    set user_room_record_id = #{userRoomRecordId,jdbcType=INTEGER},
+      action_type = #{actionType,jdbcType=INTEGER},
+      action_score = #{actionScore,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mahjong.server.dao.MessageInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.mahjong.server.entity.MessageInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="mes_type" property="mesType" jdbcType="TINYINT" />
+    <result column="mes_position" property="mesPosition" jdbcType="TINYINT" />
+    <result column="mes_title" property="mesTitle" jdbcType="VARCHAR" />
+    <result column="message_content" property="messageContent" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="interval_time" property="intervalTime" jdbcType="INTEGER" />
+    <result column="state" property="state" jdbcType="TINYINT" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, mes_type, mes_position, mes_title, message_content, create_time, interval_time, 
+    state
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.mahjong.server.entity.MessageInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from message_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from message_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByCdt" resultMap="BaseResultMap" parameterType="com.mahjong.server.entity.MessageInfo" >
+    select 
+    <include refid="Base_Column_List" />
+    from message_info
+    <where >
+      <if test="mesType != null" >
+        and mes_type = #{mesType,jdbcType=TINYINT}
+      </if>
+      <if test="mesPosition != null" >
+        and mes_position = #{mesPosition,jdbcType=TINYINT}
+      </if>
+      <if test="mesTitle != null" >
+        and mes_title = #{mesTitle,jdbcType=VARCHAR}
+      </if>
+      <if test="messageContent != null" >
+        and message_content = #{messageContent,jdbcType=VARCHAR}
+      </if>
+      <if test="createTime != null" >
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="intervalTime != null" >
+        and interval_time = #{intervalTime,jdbcType=INTEGER}
+      </if>
+      <if test="state != null" >
+        and state = #{state,jdbcType=TINYINT}
+      </if>
+    </where>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from message_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.mahjong.server.entity.MessageInfoExample" >
+    delete from message_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.mahjong.server.entity.MessageInfo" >
+    insert into message_info (id, mes_type, mes_position, 
+      mes_title, message_content, create_time, 
+      interval_time, state)
+    values (#{id,jdbcType=INTEGER}, #{mesType,jdbcType=TINYINT}, #{mesPosition,jdbcType=TINYINT}, 
+      #{mesTitle,jdbcType=VARCHAR}, #{messageContent,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{intervalTime,jdbcType=INTEGER}, #{state,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.mahjong.server.entity.MessageInfo" >
+    insert into message_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="mesType != null" >
+        mes_type,
+      </if>
+      <if test="mesPosition != null" >
+        mes_position,
+      </if>
+      <if test="mesTitle != null" >
+        mes_title,
+      </if>
+      <if test="messageContent != null" >
+        message_content,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="intervalTime != null" >
+        interval_time,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="mesType != null" >
+        #{mesType,jdbcType=TINYINT},
+      </if>
+      <if test="mesPosition != null" >
+        #{mesPosition,jdbcType=TINYINT},
+      </if>
+      <if test="mesTitle != null" >
+        #{mesTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="messageContent != null" >
+        #{messageContent,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="intervalTime != null" >
+        #{intervalTime,jdbcType=INTEGER},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.mahjong.server.entity.MessageInfoExample" resultType="java.lang.Integer" >
+    select count(*) from message_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update message_info
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.mesType != null" >
+        mes_type = #{record.mesType,jdbcType=TINYINT},
+      </if>
+      <if test="record.mesPosition != null" >
+        mes_position = #{record.mesPosition,jdbcType=TINYINT},
+      </if>
+      <if test="record.mesTitle != null" >
+        mes_title = #{record.mesTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="record.messageContent != null" >
+        message_content = #{record.messageContent,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null" >
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.intervalTime != null" >
+        interval_time = #{record.intervalTime,jdbcType=INTEGER},
+      </if>
+      <if test="record.state != null" >
+        state = #{record.state,jdbcType=TINYINT},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update message_info
+    set id = #{record.id,jdbcType=INTEGER},
+      mes_type = #{record.mesType,jdbcType=TINYINT},
+      mes_position = #{record.mesPosition,jdbcType=TINYINT},
+      mes_title = #{record.mesTitle,jdbcType=VARCHAR},
+      message_content = #{record.messageContent,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      interval_time = #{record.intervalTime,jdbcType=INTEGER},
+      state = #{record.state,jdbcType=TINYINT}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mahjong.server.entity.MessageInfo" >
+    update message_info
+    <set >
+      <if test="mesType != null" >
+        mes_type = #{mesType,jdbcType=TINYINT},
+      </if>
+      <if test="mesPosition != null" >
+        mes_position = #{mesPosition,jdbcType=TINYINT},
+      </if>
+      <if test="mesTitle != null" >
+        mes_title = #{mesTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="messageContent != null" >
+        message_content = #{messageContent,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="intervalTime != null" >
+        interval_time = #{intervalTime,jdbcType=INTEGER},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mahjong.server.entity.MessageInfo" >
+    update message_info
+    set mes_type = #{mesType,jdbcType=TINYINT},
+      mes_position = #{mesPosition,jdbcType=TINYINT},
+      mes_title = #{mesTitle,jdbcType=VARCHAR},
+      message_content = #{messageContent,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      interval_time = #{intervalTime,jdbcType=INTEGER},
+      state = #{state,jdbcType=TINYINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

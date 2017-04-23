@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mahjong.server.dao.RoomRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.mahjong.server.entity.RoomRecord" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="room_num" property="roomNum" jdbcType="INTEGER" />
+    <result column="room_rule" property="roomRule" jdbcType="VARCHAR" />
+    <result column="creator_id" property="creatorId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="room_state" property="roomState" jdbcType="TINYINT" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, room_num, room_rule, creator_id, create_time, room_state
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.mahjong.server.entity.RoomRecordExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from room_record
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from room_record
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByCdt" resultMap="BaseResultMap" parameterType="com.mahjong.server.entity.RoomRecord" >
+    select 
+    <include refid="Base_Column_List" />
+    from room_record
+    <where >
+      <if test="roomNum != null" >
+        and room_num = #{roomNum,jdbcType=INTEGER}
+      </if>
+      <if test="roomRule != null" >
+        and room_rule = #{roomRule,jdbcType=VARCHAR}
+      </if>
+      <if test="creatorId != null" >
+        and creator_id = #{creatorId,jdbcType=INTEGER}
+      </if>
+      <if test="createTime != null" >
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="roomState != null" >
+        and room_state = #{roomState,jdbcType=TINYINT}
+      </if>
+    </where>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from room_record
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.mahjong.server.entity.RoomRecordExample" >
+    delete from room_record
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.mahjong.server.entity.RoomRecord" >
+    insert into room_record (id, room_num, room_rule, 
+      creator_id, create_time, room_state
+      )
+    values (#{id,jdbcType=INTEGER}, #{roomNum,jdbcType=INTEGER}, #{roomRule,jdbcType=VARCHAR}, 
+      #{creatorId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{roomState,jdbcType=TINYINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.mahjong.server.entity.RoomRecord" >
+    insert into room_record
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="roomNum != null" >
+        room_num,
+      </if>
+      <if test="roomRule != null" >
+        room_rule,
+      </if>
+      <if test="creatorId != null" >
+        creator_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="roomState != null" >
+        room_state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="roomNum != null" >
+        #{roomNum,jdbcType=INTEGER},
+      </if>
+      <if test="roomRule != null" >
+        #{roomRule,jdbcType=VARCHAR},
+      </if>
+      <if test="creatorId != null" >
+        #{creatorId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="roomState != null" >
+        #{roomState,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.mahjong.server.entity.RoomRecordExample" resultType="java.lang.Integer" >
+    select count(*) from room_record
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update room_record
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.roomNum != null" >
+        room_num = #{record.roomNum,jdbcType=INTEGER},
+      </if>
+      <if test="record.roomRule != null" >
+        room_rule = #{record.roomRule,jdbcType=VARCHAR},
+      </if>
+      <if test="record.creatorId != null" >
+        creator_id = #{record.creatorId,jdbcType=INTEGER},
+      </if>
+      <if test="record.createTime != null" >
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.roomState != null" >
+        room_state = #{record.roomState,jdbcType=TINYINT},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update room_record
+    set id = #{record.id,jdbcType=INTEGER},
+      room_num = #{record.roomNum,jdbcType=INTEGER},
+      room_rule = #{record.roomRule,jdbcType=VARCHAR},
+      creator_id = #{record.creatorId,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      room_state = #{record.roomState,jdbcType=TINYINT}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mahjong.server.entity.RoomRecord" >
+    update room_record
+    <set >
+      <if test="roomNum != null" >
+        room_num = #{roomNum,jdbcType=INTEGER},
+      </if>
+      <if test="roomRule != null" >
+        room_rule = #{roomRule,jdbcType=VARCHAR},
+      </if>
+      <if test="creatorId != null" >
+        creator_id = #{creatorId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="roomState != null" >
+        room_state = #{roomState,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mahjong.server.entity.RoomRecord" >
+    update room_record
+    set room_num = #{roomNum,jdbcType=INTEGER},
+      room_rule = #{roomRule,jdbcType=VARCHAR},
+      creator_id = #{creatorId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      room_state = #{roomState,jdbcType=TINYINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

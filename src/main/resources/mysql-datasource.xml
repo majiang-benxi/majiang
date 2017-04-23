@@ -37,7 +37,11 @@
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <!-- 配置扫描Mapper XML的位置 -->
-        <property name="mapperLocations" value="classpath*:xmlMapper/*.xml"/>
+       <property name="mapperLocations">
+			<array>
+				<value>classpath:com/mahjong/server/dao/**/*.xml</value>
+			</array>
+		</property>
         <!-- 配置mybatis配置文件的位置 -->
         <property name="configLocation" value="classpath:mybatis-config-new.xml"/>
     </bean>
@@ -61,7 +65,7 @@
     <!-- 配置扫描Mapper接口的包路径 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
-        <property name="basePackage" value="com.mahjong.server.mapper"/>
+        <property name="basePackage" value="com.mahjong.server.dao"/>
     </bean>
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
@@ -90,7 +94,7 @@
 
     <!-- 配置哪些类的方法需要进行事务管理 -->
     <aop:config proxy-target-class="true">
-        <aop:pointcut id="servicePointcut" expression="execution(* com.mahjong.server.mapper.service..*.*(..))"/>
+        <aop:pointcut id="servicePointcut" expression="execution(* com.mahjong.server.service..*.*(..))"/>
         <aop:advisor pointcut-ref="servicePointcut" advice-ref="txAdvice"/>
     </aop:config>
 
