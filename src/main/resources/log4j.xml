@@ -8,6 +8,8 @@
 		</layout>
 	</appender>
 
+	
+	
 	<appender name="DEBUG" class="org.apache.log4j.RollingFileAppender">
 		<param name="File" value="${catalina.base}/logs/mahjong-debug.log" />
 		<param name="BufferSize" value="2048" />
