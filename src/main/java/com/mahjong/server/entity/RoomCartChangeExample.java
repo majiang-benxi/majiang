@@ -544,6 +544,66 @@ public class RoomCartChangeExample {
             addCriterion("change_time not between", value1, value2, "changeTime");
             return (Criteria) this;
         }
+
+        public Criteria andIsSuccessIsNull() {
+            addCriterion("is_success is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsSuccessIsNotNull() {
+            addCriterion("is_success is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsSuccessEqualTo(Byte value) {
+            addCriterion("is_success =", value, "isSuccess");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsSuccessNotEqualTo(Byte value) {
+            addCriterion("is_success <>", value, "isSuccess");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsSuccessGreaterThan(Byte value) {
+            addCriterion("is_success >", value, "isSuccess");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsSuccessGreaterThanOrEqualTo(Byte value) {
+            addCriterion("is_success >=", value, "isSuccess");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsSuccessLessThan(Byte value) {
+            addCriterion("is_success <", value, "isSuccess");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsSuccessLessThanOrEqualTo(Byte value) {
+            addCriterion("is_success <=", value, "isSuccess");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsSuccessIn(List<Byte> values) {
+            addCriterion("is_success in", values, "isSuccess");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsSuccessNotIn(List<Byte> values) {
+            addCriterion("is_success not in", values, "isSuccess");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsSuccessBetween(Byte value1, Byte value2) {
+            addCriterion("is_success between", value1, value2, "isSuccess");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsSuccessNotBetween(Byte value1, Byte value2) {
+            addCriterion("is_success not between", value1, value2, "isSuccess");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

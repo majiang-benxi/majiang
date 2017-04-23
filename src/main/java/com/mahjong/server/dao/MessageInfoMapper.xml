@@ -284,4 +284,10 @@
       state = #{state,jdbcType=TINYINT}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <update id="deleteMessageInfoById" parameterType="int" >
+    update message_info
+    set 
+      state = 2
+    where id = #{id,jdbcType=INTEGER}
+  </update>
 </mapper>

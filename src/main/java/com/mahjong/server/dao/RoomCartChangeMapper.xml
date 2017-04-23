@@ -9,6 +9,7 @@
     <result column="user_name" property="userName" jdbcType="VARCHAR" />
     <result column="change_num" property="changeNum" jdbcType="INTEGER" />
     <result column="change_time" property="changeTime" jdbcType="TIMESTAMP" />
+    <result column="is_success" property="isSuccess" jdbcType="TINYINT" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -69,7 +70,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, manage_user_id, manage_name, user_id, user_name, change_num, change_time
+    id, manage_user_id, manage_name, user_id, user_name, change_num, change_time, is_success
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.mahjong.server.entity.RoomCartChangeExample" >
     select
@@ -114,6 +115,9 @@
       <if test="changeTime != null" >
         and change_time = #{changeTime,jdbcType=TIMESTAMP}
       </if>
+      <if test="isSuccess != null" >
+        and is_success = #{isSuccess,jdbcType=TINYINT}
+      </if>
     </where>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
@@ -129,10 +133,10 @@
   <insert id="insert" parameterType="com.mahjong.server.entity.RoomCartChange" >
     insert into room_cart_change (id, manage_user_id, manage_name, 
       user_id, user_name, change_num, 
-      change_time)
+      change_time, is_success)
     values (#{id,jdbcType=INTEGER}, #{manageUserId,jdbcType=INTEGER}, #{manageName,jdbcType=VARCHAR}, 
       #{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{changeNum,jdbcType=INTEGER}, 
-      #{changeTime,jdbcType=TIMESTAMP})
+      #{changeTime,jdbcType=TIMESTAMP}, #{isSuccess,jdbcType=TINYINT})
   </insert>
   <insert id="insertSelective" parameterType="com.mahjong.server.entity.RoomCartChange" >
     insert into room_cart_change
@@ -158,6 +162,9 @@
       <if test="changeTime != null" >
         change_time,
       </if>
+      <if test="isSuccess != null" >
+        is_success,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -180,6 +187,9 @@
       </if>
       <if test="changeTime != null" >
         #{changeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isSuccess != null" >
+        #{isSuccess,jdbcType=TINYINT},
       </if>
     </trim>
   </insert>
@@ -213,6 +223,9 @@
       <if test="record.changeTime != null" >
         change_time = #{record.changeTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.isSuccess != null" >
+        is_success = #{record.isSuccess,jdbcType=TINYINT},
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -226,7 +239,8 @@
       user_id = #{record.userId,jdbcType=INTEGER},
       user_name = #{record.userName,jdbcType=VARCHAR},
       change_num = #{record.changeNum,jdbcType=INTEGER},
-      change_time = #{record.changeTime,jdbcType=TIMESTAMP}
+      change_time = #{record.changeTime,jdbcType=TIMESTAMP},
+      is_success = #{record.isSuccess,jdbcType=TINYINT}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -252,6 +266,9 @@
       <if test="changeTime != null" >
         change_time = #{changeTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="isSuccess != null" >
+        is_success = #{isSuccess,jdbcType=TINYINT},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -262,7 +279,8 @@
       user_id = #{userId,jdbcType=INTEGER},
       user_name = #{userName,jdbcType=VARCHAR},
       change_num = #{changeNum,jdbcType=INTEGER},
-      change_time = #{changeTime,jdbcType=TIMESTAMP}
+      change_time = #{changeTime,jdbcType=TIMESTAMP},
+      is_success = #{isSuccess,jdbcType=TINYINT}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

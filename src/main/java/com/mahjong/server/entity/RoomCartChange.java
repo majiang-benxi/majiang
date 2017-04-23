@@ -17,6 +17,8 @@ public class RoomCartChange {
 
     private Date changeTime;
 
+    private Byte isSuccess;
+
     public Integer getId() {
         return id;
     }
@@ -71,5 +73,13 @@ public class RoomCartChange {
 
     public void setChangeTime(Date changeTime) {
         this.changeTime = changeTime;
+    }
+
+    public Byte getIsSuccess() {
+        return isSuccess;
+    }
+
+    public void setIsSuccess(Byte isSuccess) {
+        this.isSuccess = isSuccess;
     }
 }

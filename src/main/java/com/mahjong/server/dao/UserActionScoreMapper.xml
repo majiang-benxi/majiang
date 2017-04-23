@@ -209,4 +209,14 @@
       action_score = #{actionScore,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  
+   <select id="selectUserActionScoreInfoByRecordId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_action_score
+    where user_room_record_id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  
 </mapper>

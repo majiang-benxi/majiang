@@ -247,4 +247,17 @@
       state = #{state,jdbcType=TINYINT}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  
+  <select id="selectManageUserByUname" resultMap="BaseResultMap" parameterType="String" >
+    select 
+    <include refid="Base_Column_List" />
+    from manage_user
+    where uname = #{userName,jdbcType=VARCHAR}
+  </select>
+  
+  
+  
+  
+  
 </mapper>

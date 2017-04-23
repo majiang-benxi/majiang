@@ -31,4 +31,6 @@ public interface RoomRecordMapper {
     int updateByPrimaryKeySelective(RoomRecord record);
 
     int updateByPrimaryKey(RoomRecord record);
+
+	int deleteRoomRecordInfoByID(@Param("recordId")Integer recordId);
 }

@@ -31,4 +31,9 @@ public interface UserRoomRecordMapper {
     int updateByPrimaryKeySelective(UserRoomRecord record);
 
     int updateByPrimaryKey(UserRoomRecord record);
+
+	List<UserRoomRecord> selectUserRoomRecordInfoByUserID(Integer userId);
+
+	List<UserRoomRecord> selectLatestUserRoomRecordInfo(@Param("userId")Integer userId,@Param("topNum") Integer topNum);
+
 }

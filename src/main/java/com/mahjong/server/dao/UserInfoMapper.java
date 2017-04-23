@@ -31,4 +31,12 @@ public interface UserInfoMapper {
     int updateByPrimaryKeySelective(UserInfo record);
 
     int updateByPrimaryKey(UserInfo record);
+
+	UserInfo selectUserInfoByWeiXinMark(@Param("weixinMark")String weiXinMark);
+
+	int deleteUserInfoByWeiXinMark(@Param("weixinMark")String weiXinMark);
+
+	int deleteUserInfoByID(@Param("id")Integer userId);
+
+	int updateUserRoomCard(@Param("userId")Integer userId,@Param("cartNum") Integer cartNum);
 }

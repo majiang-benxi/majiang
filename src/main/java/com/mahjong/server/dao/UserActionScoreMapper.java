@@ -31,4 +31,7 @@ public interface UserActionScoreMapper {
     int updateByPrimaryKeySelective(UserActionScore record);
 
     int updateByPrimaryKey(UserActionScore record);
+
+	List<UserActionScore> selectUserActionScoreInfoByRecordId(@Param("recordId")Integer userId);
+
 }

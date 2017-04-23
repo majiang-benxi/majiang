@@ -247,4 +247,13 @@
       room_state = #{roomState,jdbcType=TINYINT}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+   <update id="deleteRoomRecordInfoByID" parameterType="int" >
+    update user_info
+     set room_state = 0
+   	where id = #{recordId,jdbcType=INTEGER}
+  </update>
+  
+  
+  
 </mapper>

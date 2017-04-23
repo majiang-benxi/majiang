@@ -31,4 +31,6 @@ public interface MessageInfoMapper {
     int updateByPrimaryKeySelective(MessageInfo record);
 
     int updateByPrimaryKey(MessageInfo record);
+
+	int deleteMessageInfoById(Integer id);
 }

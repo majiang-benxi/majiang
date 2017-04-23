@@ -360,4 +360,37 @@
       state = #{state,jdbcType=TINYINT}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  
+  
+  
+  <select id="selectUserInfoByWeiXinMark" resultMap="BaseResultMap" parameterType="string" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_info 
+    where weixin_mark = #{weixinMark,jdbcType=VARCHAR}
+  </select>
+  
+   <update id="deleteUserInfoByWeiXinMark" parameterType="string" >
+    update user_info
+     set state = 0
+   	where weixin_mark = #{weixinMark,jdbcType=VARCHAR}
+  </update>
+  
+   <update id="deleteUserInfoByID" parameterType="int" >
+    update user_info
+     set room_cart_num = #{roomCartNum,jdbcType=INTEGER},
+   	where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateUserRoomCard" parameterType="map" >
+   	update user_info 
+    set	room_cart_num = room_cart_num + #{cartNum}
+    where id = #{userId} AND room_cart_num + #{cartNum} >= 0 
+  </update>
+  
+  
+  
+  
+  
 </mapper>
