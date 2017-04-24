@@ -1,6 +1,8 @@
 package com.mahjong.server.game.object;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Tile {
@@ -54,7 +56,7 @@ public class Tile {
 			set.add((int) onePai);
 		}
 		for (byte onePai : tile.getPai()) {
-			if (!set.contains(onePai)) {
+			if (!set.contains((int) onePai)) {
 				return false;
 			}
 		}
@@ -68,14 +70,39 @@ public class Tile {
 		if (pai == null) {
 			return false;
 		}
-
-		Set<Integer> set = new HashSet<Integer>();
+		List<Integer> list = new ArrayList<Integer>();
 		for (byte onePai : pai) {
-			set.add((int) onePai);
+			list.add((int) onePai);
 		}
 		for (byte onePai : tile.getPai()) {
-			set.remove((int) onePai);
+			list.remove(new Integer((int) onePai));// jdk缺陷，防止自动拆箱装箱
 		}
-		setPai(set.toArray());
+		byte[] result = new byte[list.size()];
+		int i = 0;
+		for (Integer intByte : list) {
+			result[i] = (byte) intByte.intValue();
+			i++;
+		}
+		pai = result;
+		return true;
+	}
+
+	public static void main(String[] args) {
+		Tile allTile = new Tile();
+		allTile.setPai(Tile.getOneBoxMahjong());
+
+		byte[] pai = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09 }; // 万（1-9）
+		Tile tile = new Tile();
+		tile.setPai(pai);
+		System.out.println(allTile.containsAll(tile));
+		for (byte b : allTile.getPai()) {
+			System.out.print(b + " ");
+		}
+		System.out.println(allTile.removeAll(tile));
+		for (byte b : allTile.getPai()) {
+			System.out.print(b + " ");
+
+		}
+
 	}
 }

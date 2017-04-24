@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import com.mahjong.server.exception.IllegalActionException;
 import com.mahjong.server.game.GameContext;
+import com.mahjong.server.game.action.standard.StandardActionType;
 import com.mahjong.server.game.object.PlayerLocation;
 import com.mahjong.server.game.object.Tile;
 
@@ -13,6 +14,15 @@ import com.mahjong.server.game.object.Tile;
  * @author blovemaple <blovemaple2010(at)gmail.com>
  */
 public interface ActionType {
+
+	public String name();
+
+
+	/**
+	 * 返回真正的动作类型对象。<br>
+	 * 默认实现为返回此对象。如果不是这样（例如{@link StandardActionType}）则需要重写此方法。
+	 */
+	public ActionType getRealTypeObject();
 
 	/**
 	 * 判断指定状态下指定位置的玩家可否做此种类型的动作。
@@ -50,5 +60,7 @@ public interface ActionType {
 			Action action) throws IllegalActionException;
 
 	public Class<? extends ActionType> getRealTypeClass();
+
+	boolean matchBy(ActionType testType);
 
 }

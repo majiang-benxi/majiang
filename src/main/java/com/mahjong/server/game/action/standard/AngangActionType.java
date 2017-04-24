@@ -1,12 +1,12 @@
 package com.mahjong.server.game.action.standard;
 
-import static com.mahjong.server.game.object.TileGroupType.*;
-import java.util.Set;
-import java.util.function.Predicate;
+import static com.mahjong.server.game.object.TileGroupType.ANGANG_GROUP;
+
+import java.util.Collection;
 
 import com.mahjong.server.game.GameContext;
+import com.mahjong.server.game.GameContext.PlayerView;
 import com.mahjong.server.game.action.AbstractActionType;
-import com.mahjong.server.game.action.PlayerLocation;
 import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.TileGroup;
@@ -19,13 +19,8 @@ import com.mahjong.server.game.object.TileGroup;
 public class AngangActionType extends AbstractActionType {
 
 	@Override
-	public boolean canPass(GameContext context, PlayerLocation location) {
+	public boolean canPass(GameContext context, com.mahjong.server.game.object.PlayerLocation location) {
 		return true;
-	}
-
-	@Override
-	protected Predicate<Integer> getAliveTileSizePrecondition() {
-		return size -> size % 3 == 2;
 	}
 
 	@Override
@@ -36,15 +31,21 @@ public class AngangActionType extends AbstractActionType {
 	@Override
 	protected boolean isLegalActionWithPreconition(PlayerView context,
 			Tile tiles) {
-		return ANGANG_GROUP.isLegalTiles(tiles);
+		return ANGANG_GROUP.isLegalTile(tiles);
 	}
 
 	@Override
-	protected void doLegalAction(GameContext context, PlayerLocation location,
+	protected void doLegalAction(GameContext context, com.mahjong.server.game.object.PlayerLocation location,
 			Tile tiles) {
 		PlayerInfo playerInfo = context.getPlayerInfoByLocation(location);
 		playerInfo.getAliveTiles().removeAll(tiles);
 		playerInfo.getTileGroups().add(new TileGroup(ANGANG_GROUP, tiles));
+	}
+
+	@Override
+	public Collection<Tile> getLegalActionTiles(PlayerView context) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

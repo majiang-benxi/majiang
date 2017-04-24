@@ -1,8 +1,11 @@
 package com.mahjong.server.game.object;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * 一些标准的TileUnitType。 TODO TileUnitType拆分成单独的类、优化逻辑
@@ -14,58 +17,75 @@ public enum StandardTileUnitType implements TileUnitType {
 
 		@Override
 		protected boolean isLegalTilesWithCorrectSize(Tile tile) {
-			// TODO Auto-generated method stub
-			return false;
+			byte[] pais = tile.getPai();
+			if (pais[0] != pais[1]) {
+				return false;
+			}
+			return true;
 		}
 
-		@Override
-		public List<Tile> getLackedTypesForLessTiles(Tile tile) {
-			// TODO Auto-generated method stub
-			return null;
+		public List<Byte> getJANGPai(Tile tile) {
+			List<Byte> jiangPAI = new ArrayList<Byte>();
+			// tempMap存放牌值的张数<牌值,张数>
+			Map<Byte, Integer> tempMap = new HashMap<Byte, Integer>();
+			for (byte value : tile.getPai()) {
+				if (tempMap.containsKey(value)) {
+					tempMap.put(value, tempMap.get(value) + 1);
+				} else {
+					tempMap.put(value, 1);
+				}
+			}
+			// 将可能成为将牌的牌值存放到jiangPAI中
+			for (Entry<Byte, Integer> e : tempMap.entrySet()) {
+				if (e.getValue() >= 2) {
+					jiangPAI.add(e.getKey());
+				}
+			}
+			return jiangPAI;
 		}
+
 	},
-	KEZI(2){
+	KEZI(2) {
 
 		@Override
 		protected boolean isLegalTilesWithCorrectSize(Tile tile) {
-			// TODO Auto-generated method stub
-			return false;
+			byte[] pais = tile.getPai();
+			if (pais[0] != pais[1]) {
+				return false;
+			}
+			return true;
 		}
 
-		@Override
-		public List<Tile> getLackedTypesForLessTiles(Tile tile) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
 	},
 	SHUNZI(3) {
 
 		@Override
 		protected boolean isLegalTilesWithCorrectSize(Tile tile) {
-			// TODO Auto-generated method stub
-			return false;
+			byte[] pais = tile.getPai();
+			List<Integer> list = new ArrayList<Integer>();
+			for (byte pai : tile.getPai()) {
+				list.add((int) pai);
+			}
+			Collections.sort(list);
+			if ((list.get(0) + 1 == list.get(2)) && (list.get(2) == list.get(3) - 1)) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 
-		@Override
-		public List<Tile> getLackedTypesForLessTiles(Tile tile) {
-			// TODO Auto-generated method stub
-			return null;
-		}
 	},
 	GANGZI(4) {
 
 		@Override
 		protected boolean isLegalTilesWithCorrectSize(Tile tile) {
-			// TODO Auto-generated method stub
+			byte[] pais = tile.getPai();
+			if (pais[0] == pais[1] && pais[0] == pais[2] && pais[0] == pais[3] && pais[0] == pais[4]) {
+				return true;
+			}
 			return false;
 		}
 
-		@Override
-		public List<Tile> getLackedTypesForLessTiles(Tile tile) {
-			// TODO Auto-generated method stub
-			return null;
-		}
 	},
 	HUA_UNIT(1) {
 
@@ -74,16 +94,19 @@ public enum StandardTileUnitType implements TileUnitType {
 			// TODO Auto-generated method stub
 			return false;
 		}
+	},
+	QIANGZI(1) {
 
 		@Override
-		public List<Tile> getLackedTypesForLessTiles(Tile tile) {
-			// TODO Auto-generated method stub
-			return null;
+		protected boolean isLegalTilesWithCorrectSize(Tile tile) {
+			if (tile.getPai()[0] == 0x27) {// 固定7饼
+				return true;
+			} else {
+				return false;
+			}
 		}
+
 	};
-
-	private static final Logger logger = Logger.getLogger(StandardTileUnitType.class.getSimpleName());
-
 	private final int size;
 
 	private StandardTileUnitType(int tileCount) {
@@ -110,20 +133,4 @@ public enum StandardTileUnitType implements TileUnitType {
 	 */
 	protected abstract boolean isLegalTilesWithCorrectSize(Tile tile);
 
-
-	public List<Tile> getLackedTypesForTiles(Tile tile) {
-		if (tile.getPai() == null)
-			throw new IllegalArgumentException("tiles cannot be empty.");
-		else if (tile.getPai().length >=size()){
-			return Collections.emptyList();
-		}
-		else{
-			return (List<Tile>) (isLegalTilesWithCorrectSize(tile) ? getLackedTypesForLessTiles(tile)
-					: Collections.emptyList());
-		}
-	}
-
-	public abstract List<Tile> getLackedTypesForLessTiles(Tile tile);
-
-	
 }

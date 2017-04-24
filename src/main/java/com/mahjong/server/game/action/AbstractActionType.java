@@ -1,8 +1,8 @@
 package com.mahjong.server.game.action;
 
 
+import java.util.List;
 import java.util.Objects;
-import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 import com.mahjong.server.exception.IllegalActionException;
@@ -10,6 +10,7 @@ import com.mahjong.server.game.GameContext;
 import com.mahjong.server.game.GameContext.PlayerView;
 import com.mahjong.server.game.action.standard.CpgActionType;
 import com.mahjong.server.game.action.standard.StandardActionType;
+import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.PlayerLocation;
 import com.mahjong.server.game.object.Tile;
 
@@ -29,8 +30,8 @@ public abstract class AbstractActionType implements ActionType {
 	 * 注意：使用{@link StandardActionType}时，name为枚举值的{@code name(})。
 	 * 
 	 */
-
-	protected String name() {
+	@Override
+	public String name() {
 		return this.getClass().getSimpleName();
 	}
 
@@ -47,7 +48,7 @@ public abstract class AbstractActionType implements ActionType {
 	 * 返回真正的动作类型对象。<br>
 	 * 默认实现为返回此对象。如果不是这样（例如{@link StandardActionType}）则需要重写此方法。
 	 */
-	protected ActionType getRealTypeObject() {
+	public ActionType getRealTypeObject() {
 		return this;
 	}
 
@@ -66,35 +67,37 @@ public abstract class AbstractActionType implements ActionType {
 	 * 默认实现调用相应方法对上一个动作和活牌数量进行限制，进行判断。
 	 */
 	protected boolean meetPrecondition(GameContext.PlayerView context) {
-		// // 验证aliveTiles数量条件
-		// Predicate<Integer> aliveTileSizeCondition =
-		// getAliveTileSizePrecondition();
-		// if (aliveTileSizeCondition != null)
-		// if (!aliveTileSizeCondition
-		// .test(context.getMyInfo().getAliveTiles().getPai().length))
-		// return false;
-		//
-		// // 验证上一个动作条件
-		// BiPredicate<ActionAndLocation, PlayerLocation> lastActionPrecondition
-		// = getLastActionPrecondition();
-		// if (lastActionPrecondition != null) {
-		// ActionAndLocation lastAction = context.getLastActionAndLocation();
-		// if (lastAction != null)
-		// if (!lastActionPrecondition.test(lastAction,
-		// context.getMyLocation()))
-		// return false;
-		// }
-		//
+		// 验证aliveTiles数量条件
+		boolean res = checkAliveTileSizeCondition(context.getMyInfo().getAliveTiles().getPai().length);
+		if (!res) {
+			return false;
+		}
+		// 验证上一个动作的位置条件
+		res = checkLastActionCondition(context.getLastAction(), context.getMyLocation());
+		if (!res) {
+			return false;
+		}
 		return true;
 	}
 
 	/**
-	 * 返回进行此类型动作时对对活牌数量的限制条件。<br>
-	 * 不允许返回null，不限制应该返回恒null的函数。默认返回恒null。<br>
+	 * 验证本次玩家操作跟上次操作之间位置关系是否合法
+	 * 
+	 * @param lastAction
+	 * @param playerLocation
+	 * @return
+	 */
+	protected boolean checkLastActionCondition(Action lastAction, PlayerLocation playerLocation) {
+		return true;
+	}
+
+	/**
+	 * 返回进行此类型动作时对对活牌数量的限制判断。<br>
+	 * 默认返回true不做限制。<br>
 	 * 此方法用于{@link #meetPrecondition}的默认实现。
 	 */
-	protected Predicate<Integer> getAliveTileSizePrecondition() {
-		return null;
+	protected boolean checkAliveTileSizeCondition(int size) {
+		return true;
 	}
 
 	/**
@@ -104,9 +107,36 @@ public abstract class AbstractActionType implements ActionType {
 	 */
 	protected boolean canDoWithPrecondition(GameContext context,
 			PlayerLocation location) {
-		return false;
+		PlayerInfo playerInfo =context.getPlayerView(location).getMyInfo();
+		if (playerInfo == null){
+			return false;
+		}
+		Tile  tile=getActionTilesRange(context.getPlayerView(location), location);
+		if (tile != null && tile.getPai() != null) {
+			List<Tile> tiles = getTileZuHeByActionSize(tile, getActionTilesSize());
+			for (Tile zuHeTile : tiles) {
+				if (isLegalActionTiles(context.getPlayerView(location), zuHeTile)) {
+					return true;
+				}
+			}
+			return false;
+		} else {
+			return false;
+		}
+
 	}
 
+	/**
+	 * 将现有的牌按照指定的size排列组合。
+	 * 
+	 * @param tile
+	 * @param actionTilesSize
+	 * @return
+	 */
+	private List<Tile> getTileZuHeByActionSize(Tile tile, int actionTilesSize) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	/**
 	 * {@inheritDoc}<br>
@@ -159,9 +189,9 @@ public abstract class AbstractActionType implements ActionType {
 	 * 返回合法动作中相关牌的可选范围。<br>
 	 * 默认实现为指定玩家的aliveTiles。
 	 */
-	protected Tile getActionTilesRange(GameContext.PlayerView context,
+	protected Tile getActionTilesRange(GameContext.PlayerView playerView,
 			PlayerLocation location) {
-		return context.getMyInfo().getAliveTiles();
+		return playerView.getMyInfo().getAliveTiles();
 	}
 
 	/**
@@ -173,10 +203,10 @@ public abstract class AbstractActionType implements ActionType {
 	 * 判断动作是否合法。<br>
 	 * 默认实现为：先检查前提条件、相关牌数量、相关牌范围，如果满足再调用{@link #isLegalActionWithPreconition}。
 	 */
-	protected boolean isLegalActionTiles(GameContext.PlayerView context,
+	protected boolean isLegalActionTiles(GameContext.PlayerView playerView,
 			Tile tile) {
-		PlayerLocation location = context.getMyLocation();
-		if (!meetPrecondition(context)) {
+		PlayerLocation location = playerView.getMyLocation();
+		if (!meetPrecondition(playerView)) {
 			return false;
 		}
 
@@ -186,12 +216,12 @@ public abstract class AbstractActionType implements ActionType {
 			return false;
 		}
 
-		Tile legalTilesRange = getActionTilesRange(context, location);
+		Tile legalTilesRange = getActionTilesRange(playerView, location);
 		if (tile != null && legalTilesRange != null && !legalTilesRange.containsAll(tile)) {
 			return false;
 		}
 
-		boolean legal = isLegalActionWithPreconition(context, tile);
+		boolean legal = isLegalActionWithPreconition(playerView, tile);
 		return legal;
 	}
 
@@ -206,6 +236,20 @@ public abstract class AbstractActionType implements ActionType {
 	 */
 	protected abstract void doLegalAction(GameContext context,
 			PlayerLocation location, Tile tile);
+
+	/**
+	 * 先使用{@link #meetPrecondition}检查前提条件，如果满足再调用{@link #canDoWithPrecondition}
+	 * 。
+	 * 
+	 * @see com.github.blovemaple.mj.action.ActionType#canDo(com.github.blovemaple.mj.game.GameContext,
+	 *      com.github.blovemaple.mj.object.PlayerLocation)
+	 */
+	@Override
+	public boolean canDo(GameContext context, PlayerLocation location) {
+		if (!meetPrecondition(context.getPlayerView(location)))
+			return false;
+		return canDoWithPrecondition(context, location);
+	}
 
 	@Override
 	public String toString() {

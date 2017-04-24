@@ -1,18 +1,13 @@
 package com.mahjong.server.game.action.standard;
 
-import static com.github.blovemaple.mj.object.PlayerLocation.Relation.*;
-import static com.github.blovemaple.mj.object.TileGroupType.*;
-
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Set;
 
-import com.github.blovemaple.mj.action.Action;
-import com.github.blovemaple.mj.action.ActionType;
-import com.github.blovemaple.mj.action.IllegalActionException;
-import com.github.blovemaple.mj.game.GameContext;
-import com.github.blovemaple.mj.object.PlayerLocation;
-import com.github.blovemaple.mj.object.Tile;
+import com.mahjong.server.exception.IllegalActionException;
+import com.mahjong.server.game.GameContext;
+import com.mahjong.server.game.action.Action;
+import com.mahjong.server.game.action.ActionType;
+import com.mahjong.server.game.object.PlayerLocation;
+
 
 /**
  * 一些标准的动作类型。<br>
@@ -92,11 +87,6 @@ public enum StandardActionType implements ActionType {
 		return type.canPass(context, location);
 	}
 
-	@Override
-	public Collection<Set<Tile>> getLegalActionTiles(
-			GameContext.PlayerView context) {
-		return type.getLegalActionTiles(context);
-	}
 
 	@Override
 	public void doAction(GameContext context, PlayerLocation location, Action action) throws IllegalActionException {
