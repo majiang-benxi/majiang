@@ -21,6 +21,10 @@ public class AngangActionType extends AbstractActionType {
 		return true;
 	}
 
+	protected boolean checkAliveTileSizeCondition(int size) {
+		return size % 3 == 2;// 活牌数量至少有对将
+	}
+
 	@Override
 	protected int getActionTilesSize() {
 		return ANGANG_GROUP.size();// 暗杠需要打出4张牌

@@ -2,15 +2,15 @@ package com.mahjong.server.game.action.standard;
 
 
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Predicate;
 
 import com.mahjong.server.game.GameContext;
+import com.mahjong.server.game.GameContext.PlayerView;
 import com.mahjong.server.game.action.AbstractActionType;
 import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.PlayerLocation;
-
+import com.mahjong.server.game.object.Tile;
+import com.mahjong.server.game.object.TileGroup;
+import com.mahjong.server.game.object.TileGroupType;
 /**
  * 动作类型“补杠”。
  * 
@@ -23,9 +23,8 @@ public class BugangActionType extends AbstractActionType {
 		return true;
 	}
 
-	@Override
-	protected Predicate<Integer> getAliveTileSizePrecondition() {
-		return size -> size % 3 == 2;
+	protected boolean checkAliveTileSizeCondition(int size) {
+		return size % 3 == 2;// 活牌数量至少有对将
 	}
 
 	@Override
@@ -34,28 +33,28 @@ public class BugangActionType extends AbstractActionType {
 	}
 
 	@Override
-	protected boolean isLegalActionWithPreconition(PlayerView context,
-			Set<Tile> tiles) {
-		return findLegalPengGroup(context.getMyInfo(), tiles).isPresent();
+	protected boolean isLegalActionWithPreconition(PlayerView playerView,
+			Tile tile) {
+		return findLegalPengGroup(playerView.getMyInfo(), tile) != null;
 	}
 
 	@Override
 	protected void doLegalAction(GameContext context, PlayerLocation location,
-			Set<Tile> tiles) {
+			Tile tile) {
 		PlayerInfo playerInfo = context.getPlayerInfoByLocation(location);
 
-		TileGroup group = findLegalPengGroup(playerInfo, tiles).orElse(null);
+		TileGroup group = findLegalPengGroup(playerInfo, tile);
 		if (group == null)
 			// tiles不合法，抛异常，因为调用此方法时应该确保是合法的
 			throw new IllegalArgumentException(
-					"Illegal bugang tiles: " + tiles);
+					"Illegal bugang tiles: " + tile);
 
 		// 在aliveTiles中去掉动作牌
-		playerInfo.getAliveTiles().removeAll(tiles);
+		playerInfo.getAliveTiles().removeAll(tile);
 
 		// 把碰组改为补杠组，并加上动作牌
-		TileGroup newGroup = new TileGroup(BUGANG_GROUP, group.getGotTile(),
-				group.getFromRelation(), mergedSet(group.getTiles(), tiles));
+		TileGroup newGroup = new TileGroup(TileGroupType.BUGANG_GROUP, group.getGotTile(),
+				group.getFromRelation(), Tile.addTile(group.getTile(), tile));
 		List<TileGroup> groups = playerInfo.getTileGroups();
 		int groupIndex = groups.indexOf(group);
 		groups.remove(groupIndex);
@@ -65,21 +64,20 @@ public class BugangActionType extends AbstractActionType {
 	/**
 	 * 返回在玩家的牌中能与动作牌组成补杠的碰组（Optional）。
 	 */
-	private Optional<TileGroup> findLegalPengGroup(PlayerInfo playerInfo,
-			Set<Tile> actionTiles) {
-		return playerInfo.getTileGroups()
-				// 过滤出该玩家的所有碰组
-				.stream().filter(group -> group.getType() == PENG_GROUP)
-				// 过滤出能与动作相关牌组成合法补杠的
-				.filter(group -> {
-					// 取出碰组的牌，并加上动作中的tiles（应该只有一个tile）
-					Set<Tile> gangTiles = mergedSet(group.getTiles(),
-							actionTiles);
-					// 只留下合法的（补）杠
-					return BUGANG_GROUP.isLegalTiles(gangTiles);
-				})
-				// 取任何一个（有的话肯定只有一个）
-				.findAny();
+	private TileGroup findLegalPengGroup(PlayerInfo playerInfo,
+			Tile actionTiles) { // 过滤出能与动作相关牌组成合法补杠的
+		for (TileGroup tileGroup : playerInfo.getTileGroups()) {
+			if (tileGroup.getType() == TileGroupType.PENG_GROUP) {
+				// 取出碰组的牌，并加上动作中的tiles（应该只有一个tile）
+				Tile gangTiles = Tile.addTile(tileGroup.getTile(), actionTiles);
+				boolean res = TileGroupType.BUGANG_GROUP.isLegalTile(gangTiles);
+				if (res) {
+					return tileGroup;
+				}
+			}
+			return null;
+		}
+		return null;
 	}
 
 }

@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.ArrayUtils;
+
 public class Tile {
 	private byte[] pai;// 存储相关的一组牌
 
@@ -42,6 +44,25 @@ public class Tile {
 		byte[] destPai = new byte[] {};
 		System.arraycopy(this.pai, 0, destPai, 0, this.pai.length);
 		return destPai;
+	}
+
+	public static Tile addTile(Tile tile1, Tile tile2) {
+		Tile tile = new Tile();
+		tile.setPai(ArrayUtils.addAll(tile1.getPai(), tile2.getPai()));
+		return tile;
+	}
+
+	// 会改变当前类
+	public Tile addTile(Tile tile) {
+		if (pai == null) {
+			setPai(tile.getPai());
+			return this;
+		}
+		if (tile == null || tile.getPai() == null) {
+			return this;
+		}
+		pai = ArrayUtils.addAll(pai, tile.getPai());
+		return this;
 	}
 
 	public boolean containsAll(Tile tile) {
