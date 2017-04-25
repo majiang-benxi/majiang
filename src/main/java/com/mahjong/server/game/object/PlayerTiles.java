@@ -16,7 +16,7 @@ public class PlayerTiles {
 	/**
 	 * 吃碰杠。
 	 */
-	protected List<TileGroupType> tileGroups = new ArrayList<TileGroupType>();
+	protected List<TileGroup> tileGroups = new ArrayList<TileGroup>();
 
 	public PlayerTiles() {
 		super();
@@ -30,12 +30,13 @@ public class PlayerTiles {
 		this.aliveTiles = aliveTiles;
 	}
 
-	public List<TileGroupType> getTileGroups() {
+	public List<TileGroup> getTileGroups() {
 		return tileGroups;
 	}
 
-	public void setTileGroups(List<TileGroupType> tileGroups) {
+	public void setTileGroups(List<TileGroup> tileGroups) {
 		this.tileGroups = tileGroups;
 	}
+
 
 }

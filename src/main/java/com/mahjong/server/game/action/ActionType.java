@@ -42,7 +42,7 @@ public interface ActionType {
 	 * 返回一个集合，包含指定状态下指定玩家可作出的此类型的所有合法动作的相关牌集合。
 	 */
 	public Collection<Tile> getLegalActionTiles(
-			GameContext.PlayerView context);
+			GameContext.PlayerView playerView);
 
 	/**
 	 * 判断指定动作是否合法。

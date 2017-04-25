@@ -1,8 +1,11 @@
 package com.mahjong.server.game.action;
 
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import com.mahjong.server.exception.IllegalActionException;
@@ -138,6 +141,26 @@ public abstract class AbstractActionType implements ActionType {
 		return null;
 	}
 
+	@Override
+	public Set<Tile> getLegalActionTiles(GameContext.PlayerView playerView) {
+		if (!meetPrecondition(playerView)) {
+			return Collections.emptySet();
+		}
+		Set<Tile> set = new HashSet<Tile>();
+		Tile tiles = getActionTilesRange(playerView,
+				playerView.getMyLocation());
+		if (tiles != null && tiles.getPai() != null) {
+			List<Tile> zuHeTiles = getTileZuHeByActionSize(tiles, getActionTilesSize());
+			for (Tile tile : zuHeTiles) {
+				if (isLegalActionTiles(playerView, tile)) {
+					set.add(tile);
+				}
+			}
+			return set;
+		} else {
+			return Collections.emptySet();
+		}
+	}
 	/**
 	 * {@inheritDoc}<br>
 	 * 默认实现为将action为null的和动作类型不符合的报异常，然后用{@link #isLegalActionTiles}检查是否合法。
@@ -212,7 +235,7 @@ public abstract class AbstractActionType implements ActionType {
 
 		int legalTilesSize = getActionTilesSize();
 		if (legalTilesSize > 0
-				&& (tile == null || tile.getPai().length != legalTilesSize)) {
+				&& (tile == null || tile.getPai().length != legalTilesSize)) {// 动作类型的牌的个数跟执行该动作的牌个数判断，比如吃，碰的时候动作是需要2张牌，杠3张牌。
 			return false;
 		}
 

@@ -1,6 +1,5 @@
 package com.mahjong.server.game.action.standard;
 
-import static com.github.blovemaple.mj.utils.MyUtils.*;
 import static com.mahjong.server.game.action.standard.StandardActionType.*;
 
 import java.util.Collection;
@@ -11,17 +10,11 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.github.blovemaple.mj.action.AbstractActionType;
-import com.github.blovemaple.mj.action.ActionAndLocation;
-import com.github.blovemaple.mj.action.ActionType;
-import com.github.blovemaple.mj.game.GameContext;
-import com.github.blovemaple.mj.game.GameContext.PlayerView;
-import com.github.blovemaple.mj.object.PlayerInfo;
-import com.github.blovemaple.mj.object.PlayerLocation;
-import com.github.blovemaple.mj.object.PlayerLocation.Relation;
-import com.github.blovemaple.mj.object.Tile;
-import com.github.blovemaple.mj.object.TileGroup;
-import com.github.blovemaple.mj.object.TileGroupType;
+import com.mahjong.server.game.GameContext;
+import com.mahjong.server.game.action.AbstractActionType;
+import com.mahjong.server.game.object.PlayerLocation;
+import com.mahjong.server.game.object.PlayerLocation.Relation;
+import com.mahjong.server.game.object.TileGroupType;
 
 /**
  * 吃、碰、直杠动作类型的统一逻辑。<br>

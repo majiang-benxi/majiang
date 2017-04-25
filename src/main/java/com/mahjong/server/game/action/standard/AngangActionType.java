@@ -2,8 +2,6 @@ package com.mahjong.server.game.action.standard;
 
 import static com.mahjong.server.game.object.TileGroupType.ANGANG_GROUP;
 
-import java.util.Collection;
-
 import com.mahjong.server.game.GameContext;
 import com.mahjong.server.game.GameContext.PlayerView;
 import com.mahjong.server.game.action.AbstractActionType;
@@ -25,7 +23,7 @@ public class AngangActionType extends AbstractActionType {
 
 	@Override
 	protected int getActionTilesSize() {
-		return ANGANG_GROUP.size();
+		return ANGANG_GROUP.size();// 暗杠需要打出4张牌
 	}
 
 	@Override
@@ -36,16 +34,9 @@ public class AngangActionType extends AbstractActionType {
 
 	@Override
 	protected void doLegalAction(GameContext context, com.mahjong.server.game.object.PlayerLocation location,
-			Tile tiles) {
+			Tile tile) {
 		PlayerInfo playerInfo = context.getPlayerInfoByLocation(location);
-		playerInfo.getAliveTiles().removeAll(tiles);
-		playerInfo.getTileGroups().add(new TileGroup(ANGANG_GROUP, tiles));
+		playerInfo.getAliveTiles().removeAll(tile);
+		playerInfo.getTileGroups().add(new TileGroup(ANGANG_GROUP, tile));
 	}
-
-	@Override
-	public Collection<Tile> getLegalActionTiles(PlayerView context) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
