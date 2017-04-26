@@ -83,7 +83,27 @@ public class Tile {
 		}
 		return true;
 	}
+	//从开头发一定数量的牌
+	public Tile dealTile(int size){
+		Tile tile=new Tile();
+		tile.pai = new byte[size];
+		System.arraycopy(pai, 0, tile.getPai(), 0, size);
+		byte[] shengYuPai = new byte[pai.length - size];
+		System.arraycopy(pai, size, shengYuPai, 0, pai.length - size);
+		pai = shengYuPai;
+		return tile;
+	}
 
+	// 从开头发一定数量的牌
+	public Tile dealBottomTile(int size) {
+		Tile tile = new Tile();
+		tile.pai = new byte[size];
+		System.arraycopy(pai, pai.length - size, tile.getPai(), 0, size);
+		byte[] shengYuPai = new byte[pai.length - size];
+		System.arraycopy(pai, 0, shengYuPai, 0, pai.length - size);
+		pai = shengYuPai;
+		return tile;
+	}
 	public boolean removeAll(Tile tile) {
 		if (tile == null) {
 			return true;
@@ -111,19 +131,26 @@ public class Tile {
 	public static void main(String[] args) {
 		Tile allTile = new Tile();
 		allTile.setPai(Tile.getOneBoxMahjong());
-
-		byte[] pai = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09 }; // 万（1-9）
-		Tile tile = new Tile();
-		tile.setPai(pai);
-		System.out.println(allTile.containsAll(tile));
+		/**
+		 * byte[] pai = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+		 * 0x08, 0x09 }; // 万（1-9） Tile tile = new Tile(); tile.setPai(pai);
+		 * System.out.println(allTile.containsAll(tile)); for (byte b :
+		 * allTile.getPai()) { System.out.print(b + " "); }
+		 * System.out.println(allTile.removeAll(tile)); for (byte b :
+		 * allTile.getPai()) { System.out.print(b + " "); }
+		 **/
+		/**
+		 * Tile tile = allTile.dealTile(5); for (byte b : allTile.getPai()) {
+		 * System.out.print(b + " "); } System.out.println("******"); for (byte
+		 * b : tile.getPai()) { System.out.print(b + " "); }
+		 **/
+		Tile tile = allTile.dealBottomTile(5);
 		for (byte b : allTile.getPai()) {
 			System.out.print(b + " ");
 		}
-		System.out.println(allTile.removeAll(tile));
-		for (byte b : allTile.getPai()) {
+		System.out.println("******");
+		for (byte b : tile.getPai()) {
 			System.out.print(b + " ");
-
 		}
-
 	}
 }

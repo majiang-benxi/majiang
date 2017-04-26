@@ -1,19 +1,23 @@
 package com.mahjong.server.game.action.standard;
 
-import static com.mahjong.server.game.action.standard.StandardActionType.*;
+import static com.mahjong.server.game.action.standard.StandardActionType.DISCARD;
 
 import java.util.Collection;
 import java.util.Objects;
-import java.util.Set;
-import java.util.function.BiPredicate;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import org.apache.commons.collections.CollectionUtils;
 
 import com.mahjong.server.game.GameContext;
+import com.mahjong.server.game.GameContext.PlayerView;
 import com.mahjong.server.game.action.AbstractActionType;
+import com.mahjong.server.game.action.Action;
+import com.mahjong.server.game.action.ActionType;
+import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.PlayerLocation;
 import com.mahjong.server.game.object.PlayerLocation.Relation;
+import com.mahjong.server.game.object.Tile;
+import com.mahjong.server.game.object.TileGroup;
 import com.mahjong.server.game.object.TileGroupType;
 
 /**
@@ -45,10 +49,15 @@ public class CpgActionType extends AbstractActionType {
 			Collection<Relation> lastActionRelations) {
 		Objects.requireNonNull(groupType);
 		this.groupType = groupType;
-		this.lastActionRelations = lastActionRelations != null
-				? lastActionRelations
-				: Stream.of(Relation.values()).filter(Relation::isOther)
-						.collect(Collectors.toList());
+		if (CollectionUtils.isNotEmpty(lastActionRelations)) {
+			this.lastActionRelations = lastActionRelations;
+		} else {
+			for (Relation relation : Relation.values()) {
+				if (relation.isOther()) {
+					lastActionRelations.add(relation);
+				}
+			}
+		}
 	}
 
 	/**
@@ -66,12 +75,19 @@ public class CpgActionType extends AbstractActionType {
 		return true;
 	}
 
-	@Override
-	protected BiPredicate<ActionAndLocation, PlayerLocation> getLastActionPrecondition() {
-		// 必须是指定关系的人出牌后
-		return (al, location) -> DISCARD.matchBy(al.getActionType())
-				&& lastActionRelations
-						.contains(location.getRelationOf(al.getLocation()));
+	/**
+	 * 验证本次玩家操作跟上次操作之间位置关系是否合法
+	 * 必须是指定关系的人出牌后
+	 * @param lastAction
+	 * @param playerLocation
+	 * @return
+	 */
+	protected boolean checkLastActionCondition(Action lastAction, PlayerLocation playerLocation) {
+		if (DISCARD.matchBy(lastAction.getType()) && lastActionRelations.contains(playerLocation)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
@@ -80,25 +96,24 @@ public class CpgActionType extends AbstractActionType {
 	}
 
 	@Override
-	protected boolean isLegalActionWithPreconition(PlayerView context,
-			Set<Tile> tiles) {
-		Set<Tile> testTiles = mergedSet(tiles,
-				context.getLastAction().getTile());
-		boolean legal = groupType.isLegalTiles(testTiles);
+	protected boolean isLegalActionWithPreconition(PlayerView playerView,
+			Tile tile) {
+		Tile testTiles = Tile.addTile(tile, playerView.getLastAction().getTile());
+		boolean legal = groupType.isLegalTile(testTiles);
 		return legal;
 	}
 
 	@Override
 	protected void doLegalAction(GameContext context, PlayerLocation location,
-			Set<Tile> tiles) {
+			Tile tile) {
 		PlayerInfo playerInfo = context.getPlayerInfoByLocation(location);
 
-		playerInfo.getAliveTiles().removeAll(tiles);
+		playerInfo.getAliveTiles().removeAll(tile);
 
 		Tile gotTile = context.getLastAction().getTile();
 		TileGroup group = new TileGroup(groupType, gotTile,
 				location.getRelationOf(context.getLastActionLocation()),
-				mergedSet(tiles, gotTile));
+				Tile.addTile(tile, gotTile));
 		playerInfo.getTileGroups().add(group);
 	}
 

@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.mahjong.server.game.action.PlayerLocation;
-
 /**
  * 麻将桌。
  * 
@@ -43,6 +41,26 @@ public class MahjongTable {
 		}
 		tileWall.setPai(Tile.getOneBoxMahjong());
 		Collections.shuffle(Arrays.asList(tileWall.getPai()));
+	}
+
+	/**
+	 * 从牌墙的头部摸指定数量的牌并返回。
+	 */
+	public Tile draw(int count) {
+		if (count <= 0 || count > tileWall.getPai().length) {
+			return null;
+		}
+		return tileWall.dealTile(count);
+	}
+
+	/**
+	 * 从牌墙的底部摸指定数量的牌并返回。
+	 */
+	public Tile drawBottom(int count) {
+		if (count <= 0 || count > tileWall.getPai().length) {
+			return null;
+		}
+		return tileWall.dealBottomTile(count);
 	}
 
 	/**
