@@ -3,8 +3,8 @@ package com.mahjong.server.game.action;
 import java.util.Collection;
 
 import com.mahjong.server.exception.IllegalActionException;
-import com.mahjong.server.game.GameContext;
 import com.mahjong.server.game.action.standard.StandardActionType;
+import com.mahjong.server.game.context.GameContext;
 import com.mahjong.server.game.object.PlayerLocation;
 import com.mahjong.server.game.object.Tile;
 

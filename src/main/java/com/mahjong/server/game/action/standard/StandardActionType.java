@@ -1,13 +1,20 @@
 package com.mahjong.server.game.action.standard;
 
+import static com.mahjong.server.game.object.PlayerLocation.Relation.PREVIOUS;
+import static com.mahjong.server.game.object.TileGroupType.CHI_GROUP;
+import static com.mahjong.server.game.object.TileGroupType.PENG_GROUP;
+import static com.mahjong.server.game.object.TileGroupType.ZHIGANG_GROUP;
+
+import java.util.Collection;
 import java.util.Collections;
 
 import com.mahjong.server.exception.IllegalActionException;
-import com.mahjong.server.game.GameContext;
 import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.ActionType;
+import com.mahjong.server.game.context.GameContext;
+import com.mahjong.server.game.context.GameContext.PlayerView;
 import com.mahjong.server.game.object.PlayerLocation;
-
+import com.mahjong.server.game.object.Tile;
 
 /**
  * 一些标准的动作类型。<br>
@@ -49,25 +56,17 @@ public enum StandardActionType implements ActionType {
 	 */
 	DISCARD(new DiscardActionType()),
 	/**
-	 * 打牌的同时听牌
-	 */
-	DISCARD_WITH_TING(new DiscardWithTingActionType()),
-	/**
 	 * 摸牌
 	 */
 	DRAW(new DrawActionType()),
 	/**
 	 * 摸底牌
 	 */
-	DRAW_BOTTOM(new DrawBottomActionType()),
+	DRAW_BOTTOM(new DrawBottomActionType());
 	/**
 	 * 和牌
 	 */
-	WIN(new WinActionType()),
-	/**
-	 * 流局
-	 */
-	LIUJU(new LiujuActionType());
+//	WIN(new WinActionType());
 
 	private final ActionType type;
 
@@ -111,6 +110,12 @@ public enum StandardActionType implements ActionType {
 	@Override
 	public boolean isLegalAction(GameContext context, PlayerLocation location, Action action) {
 		return type.isLegalAction(context, location, action);
+	}
+
+	@Override
+	public Collection<Tile> getLegalActionTiles(PlayerView playerView) {
+		return type.getLegalActionTiles(playerView);
+
 	}
 
 }

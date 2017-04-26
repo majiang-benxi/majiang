@@ -2,9 +2,9 @@ package com.mahjong.server.game.object;
 
 import java.util.Set;
 
-import com.mahjong.server.game.GameContext;
 import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.ActionType;
+import com.mahjong.server.game.context.GameContext;
 
 /**
  * 玩家。

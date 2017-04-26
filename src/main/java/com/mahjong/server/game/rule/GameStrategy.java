@@ -3,12 +3,12 @@ package com.mahjong.server.game.rule;
 import java.util.Map;
 import java.util.Set;
 
-import com.mahjong.server.game.GameContext;
 import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.ActionAndLocation;
 import com.mahjong.server.game.action.ActionType;
-import com.mahjong.server.game.action.PlayerLocation;
+import com.mahjong.server.game.context.GameContext;
 import com.mahjong.server.game.object.MahjongTable;
+import com.mahjong.server.game.object.PlayerLocation;
 import com.mahjong.server.game.object.Tile;
 
 /**
@@ -52,7 +52,8 @@ public interface GameStrategy {
 	 * 
 	 * @return 默认动作
 	 */
-	public ActionAndLocation getDefaultAction(GameContext context, Map<PlayerLocation, Set<ActionType>> choises);
+	public ActionAndLocation getDefaultAction(GameContext context,
+			Map<PlayerLocation, Set<ActionType>> choises);
 
 
 	/**
