@@ -2,9 +2,9 @@ package com.mahjong.server.game.action.standard;
 
 import static com.mahjong.server.game.object.TileGroupType.ANGANG_GROUP;
 
+import com.mahjong.server.game.GameContext;
+import com.mahjong.server.game.GameContext.PlayerView;
 import com.mahjong.server.game.action.AbstractActionType;
-import com.mahjong.server.game.context.GameContext;
-import com.mahjong.server.game.context.GameContext.PlayerView;
 import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.TileGroup;

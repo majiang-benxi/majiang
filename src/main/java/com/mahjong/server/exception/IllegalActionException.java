@@ -1,7 +1,7 @@
 package com.mahjong.server.exception;
 
+import com.mahjong.server.game.GameContext;
 import com.mahjong.server.game.action.Action;
-import com.mahjong.server.game.context.GameContext;
 
 /**
  * 尝试执行非法动作时抛出此异常。

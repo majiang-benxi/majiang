@@ -2,10 +2,10 @@ package com.mahjong.server.game.action.standard;
 
 import static com.mahjong.server.game.action.standard.StandardActionType.DISCARD;
 
+import com.mahjong.server.game.GameContext;
+import com.mahjong.server.game.GameContext.PlayerView;
 import com.mahjong.server.game.action.AbstractActionType;
 import com.mahjong.server.game.action.ActionAndLocation;
-import com.mahjong.server.game.context.GameContext;
-import com.mahjong.server.game.context.GameContext.PlayerView;
 import com.mahjong.server.game.object.PlayerLocation;
 import com.mahjong.server.game.object.PlayerLocation.Relation;
 import com.mahjong.server.game.object.Tile;

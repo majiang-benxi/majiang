@@ -1,7 +1,11 @@
-package com.mahjong.server.game.object;
+package com.mahjong.server.game;
 
 import java.io.Serializable;
 import java.util.Map;
+
+import com.mahjong.server.game.action.PlayerLocation;
+import com.mahjong.server.game.object.PlayerInfo;
+import com.mahjong.server.game.object.Tile;
 
 
 /**

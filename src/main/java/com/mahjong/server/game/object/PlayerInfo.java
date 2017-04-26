@@ -91,7 +91,7 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 		}
 		// deep copy
 
-		c.tileGroups = new ArrayList<TileGroup>(tileGroups);
+		c.tileGroups = new ArrayList<TileGroupType>(tileGroups);
 		return c;
 	}
 
@@ -132,7 +132,7 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 			return discardedTiles;
 		}
 
-		public List<TileGroup> getTileGroupType() {
+		public List<TileGroupType> getTileGroupType() {
 			return tileGroups; // FIXME 会看到暗杠
 		}
 

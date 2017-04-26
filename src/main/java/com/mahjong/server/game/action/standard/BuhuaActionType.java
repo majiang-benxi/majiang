@@ -1,14 +1,15 @@
 package com.mahjong.server.game.action.standard;
 
-import static com.mahjong.server.game.object.TileGroupType.BUHUA_GROUP;
+import java.util.Set;
 
+import com.mahjong.server.game.GameContext;
+import com.mahjong.server.game.GameContext.PlayerView;
 import com.mahjong.server.game.action.AbstractActionType;
-import com.mahjong.server.game.context.GameContext;
-import com.mahjong.server.game.context.GameContext.PlayerView;
 import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.PlayerLocation;
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.TileGroup;
+import static com.mahjong.server.game.action.standard.StandardActionType.*;
 
 /**
  * 动作类型“补花”。
@@ -34,16 +35,16 @@ public class BuhuaActionType extends AbstractActionType {
 
 	@Override
 	protected boolean isLegalActionWithPreconition(PlayerView context,
-			Tile tile) {
-		return BUHUA_GROUP.isLegalTile(tile);
+			Set<Tile> tiles) {
+		return BUHUA_GROUP.isLegalTiles(tiles);
 	}
 
 	@Override
 	protected void doLegalAction(GameContext context, PlayerLocation location,
-			Tile tile) {
+			Set<Tile> tiles) {
 		PlayerInfo playerInfo = context.getPlayerInfoByLocation(location);
-		playerInfo.getAliveTiles().removeAll(tile);
-		playerInfo.getTileGroups().add(new TileGroup(BUHUA_GROUP, tile));
+		playerInfo.getAliveTiles().removeAll(tiles);
+		playerInfo.getTileGroups().add(new TileGroup(BUHUA_GROUP, tiles));
 	}
 
 }

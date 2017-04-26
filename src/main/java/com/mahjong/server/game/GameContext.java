@@ -1,7 +1,5 @@
-package com.mahjong.server.game.context;
+package com.mahjong.server.game;
 
-
-import static com.mahjong.server.game.action.standard.StandardActionType.DRAW;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,12 +9,12 @@ import java.util.logging.Logger;
 
 import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.ActionAndLocation;
-import com.mahjong.server.game.object.GameResult;
 import com.mahjong.server.game.object.MahjongTable;
 import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.PlayerLocation;
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.rule.GameStrategy;
+
 /**
  * 一局游戏进行中的上下文信息。
  * 

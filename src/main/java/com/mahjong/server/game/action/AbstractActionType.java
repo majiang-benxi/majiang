@@ -9,10 +9,10 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import com.mahjong.server.exception.IllegalActionException;
+import com.mahjong.server.game.GameContext;
+import com.mahjong.server.game.GameContext.PlayerView;
 import com.mahjong.server.game.action.standard.CpgActionType;
 import com.mahjong.server.game.action.standard.StandardActionType;
-import com.mahjong.server.game.context.GameContext;
-import com.mahjong.server.game.context.GameContext.PlayerView;
 import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.PlayerLocation;
 import com.mahjong.server.game.object.Tile;
@@ -264,7 +264,7 @@ public abstract class AbstractActionType implements ActionType {
 	 * 先使用{@link #meetPrecondition}检查前提条件，如果满足再调用{@link #canDoWithPrecondition}
 	 * 。
 	 * 
-	 * @see com.github.blovemaple.mj.action.ActionType#canDo(com.mahjong.server.game.context.github.blovemaple.mj.game.GameContext,
+	 * @see com.github.blovemaple.mj.action.ActionType#canDo(com.github.blovemaple.mj.game.GameContext,
 	 *      com.github.blovemaple.mj.object.PlayerLocation)
 	 */
 	@Override

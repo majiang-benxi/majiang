@@ -5,8 +5,8 @@ import static com.mahjong.server.game.action.standard.StandardActionType.BUGANG;
 import static com.mahjong.server.game.action.standard.StandardActionType.BUHUA;
 import static com.mahjong.server.game.action.standard.StandardActionType.ZHIGANG;
 
+import com.mahjong.server.game.GameContext;
 import com.mahjong.server.game.action.ActionAndLocation;
-import com.mahjong.server.game.context.GameContext;
 import com.mahjong.server.game.object.PlayerLocation;
 import com.mahjong.server.game.object.Tile;
 

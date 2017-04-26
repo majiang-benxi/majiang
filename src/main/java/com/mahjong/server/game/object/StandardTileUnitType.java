@@ -95,7 +95,6 @@ public enum StandardTileUnitType implements TileUnitType {
 			return false;
 		}
 	},
-
 	QIANGZI(1) {
 
 		@Override

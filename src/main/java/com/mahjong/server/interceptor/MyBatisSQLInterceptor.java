@@ -1,4 +1,4 @@
-package com.mahjong.server.util;
+package com.mahjong.server.interceptor;
 
 import java.text.DateFormat;
 import java.util.Date;
