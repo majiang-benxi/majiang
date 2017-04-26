@@ -1,15 +1,14 @@
 package com.mahjong.server.game.action.standard;
 
-import static com.mahjong.server.game.action.standard.StandardActionType.*;
+import static com.mahjong.server.game.action.standard.StandardActionType.ANGANG;
+import static com.mahjong.server.game.action.standard.StandardActionType.BUGANG;
+import static com.mahjong.server.game.action.standard.StandardActionType.BUHUA;
+import static com.mahjong.server.game.action.standard.StandardActionType.ZHIGANG;
 
-import java.util.Set;
-import java.util.function.BiPredicate;
-import java.util.stream.Stream;
-
-import com.github.blovemaple.mj.action.ActionAndLocation;
-import com.github.blovemaple.mj.game.GameContext;
-import com.github.blovemaple.mj.object.PlayerLocation;
-import com.github.blovemaple.mj.object.Tile;
+import com.mahjong.server.game.GameContext;
+import com.mahjong.server.game.action.ActionAndLocation;
+import com.mahjong.server.game.object.PlayerLocation;
+import com.mahjong.server.game.object.Tile;
 
 /**
  * 动作类型“摸底牌”。与摸牌动作的区别是，前提条件为自己补花或杠之后，并且是从牌墙底部摸。
@@ -19,17 +18,21 @@ import com.github.blovemaple.mj.object.Tile;
 public class DrawBottomActionType extends DrawActionType {
 
 	@Override
-	protected BiPredicate<ActionAndLocation, PlayerLocation> getLastActionPrecondition() {
+	protected boolean checkLastActionCondition(ActionAndLocation al, PlayerLocation playerLocation) {
 		// 必须是自己补花或杠之后
-		return (al, location) -> al.getLocation() == location
-				&& Stream.of(BUHUA, ANGANG, ZHIGANG, BUGANG).anyMatch(type -> type.matchBy(al.getActionType()));
-	}
+		if (playerLocation == al.getLocation()
+				&& (BUHUA.matchBy(al.getActionType()) || ANGANG.matchBy(al.getActionType())
+						|| ZHIGANG.matchBy(al.getActionType()) || BUGANG.matchBy(al.getActionType()))) {
+			return true;
+		}
+		return false;
+  	}
 
 	@Override
-	protected void doLegalAction(GameContext context, PlayerLocation location, Set<Tile> tiles) {
-		Tile tile = context.getTable().drawBottom(1).get(0);
-		context.getPlayerInfoByLocation(location).getAliveTiles().add(tile);
-		context.getPlayerInfoByLocation(location).setLastDrawedTile(tile);
+	protected void doLegalAction(GameContext context, PlayerLocation location, Tile tile) {
+		Tile drawBottomTile = context.getTable().drawBottom(1);
+		context.getPlayerInfoByLocation(location).getAliveTiles().addTile(drawBottomTile);
+		context.getPlayerInfoByLocation(location).setLastDrawedTile(drawBottomTile);
 	}
 
 }

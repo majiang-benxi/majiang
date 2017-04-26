@@ -1,17 +1,15 @@
 package com.mahjong.server.game.action.standard;
 
-import static com.github.blovemaple.mj.object.TileGroupType.*;
-
 import java.util.Set;
-import java.util.function.Predicate;
 
-import com.github.blovemaple.mj.action.AbstractActionType;
-import com.github.blovemaple.mj.game.GameContext;
-import com.github.blovemaple.mj.game.GameContext.PlayerView;
-import com.github.blovemaple.mj.object.PlayerInfo;
-import com.github.blovemaple.mj.object.PlayerLocation;
-import com.github.blovemaple.mj.object.Tile;
-import com.github.blovemaple.mj.object.TileGroup;
+import com.mahjong.server.game.GameContext;
+import com.mahjong.server.game.GameContext.PlayerView;
+import com.mahjong.server.game.action.AbstractActionType;
+import com.mahjong.server.game.object.PlayerInfo;
+import com.mahjong.server.game.object.PlayerLocation;
+import com.mahjong.server.game.object.Tile;
+import com.mahjong.server.game.object.TileGroup;
+import static com.mahjong.server.game.action.standard.StandardActionType.*;
 
 /**
  * 动作类型“补花”。
@@ -26,8 +24,8 @@ public class BuhuaActionType extends AbstractActionType {
 	}
 
 	@Override
-	protected Predicate<Integer> getAliveTileSizePrecondition() {
-		return size -> size % 3 == 2;
+	protected boolean checkAliveTileSizeCondition(int size) {
+		return size % 3 == 2;
 	}
 
 	@Override

@@ -1,15 +1,13 @@
 package com.mahjong.server.game.action.standard;
 
-import static com.mahjong.server.game.action.standard.StandardActionType.*;
+import static com.mahjong.server.game.action.standard.StandardActionType.DISCARD;
 
-import java.util.Set;
-import java.util.function.BiPredicate;
-
-import com.mahjong.server.game.action.AbstractActionType;
-import com.mahjong.server.game.action.ActionAndLocation;
-import com.mahjong.server.game.action.PlayerLocation;
 import com.mahjong.server.game.GameContext;
 import com.mahjong.server.game.GameContext.PlayerView;
+import com.mahjong.server.game.action.AbstractActionType;
+import com.mahjong.server.game.action.ActionAndLocation;
+import com.mahjong.server.game.object.PlayerLocation;
+import com.mahjong.server.game.object.PlayerLocation.Relation;
 import com.mahjong.server.game.object.Tile;
 
 /**
@@ -25,10 +23,13 @@ public class DrawActionType extends AbstractActionType {
 	}
 
 	@Override
-	protected BiPredicate<ActionAndLocation, PlayerLocation> getLastActionPrecondition() {
+	protected boolean checkLastActionCondition(ActionAndLocation al, PlayerLocation playerLocation) {
 		// 必须是上家打牌后
-		return (al, location) -> DISCARD.matchBy(al.getActionType())
-				&& location.getRelationOf(al.getLocation()) == PREVIOUS;
+		if (DISCARD.matchBy(al.getActionType())
+				&& playerLocation.getRelationOf(al.getLocation()) == Relation.PREVIOUS) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -38,16 +39,16 @@ public class DrawActionType extends AbstractActionType {
 
 	@Override
 	protected boolean isLegalActionWithPreconition(PlayerView context,
-			Set<Tile> tiles) {
+			Tile tiles) {
 		// 牌墙中必须有牌才能摸
 		return context.getTableView().getTileWallSize() > 0;
 	}
 
 	@Override
-	protected void doLegalAction(GameContext context, PlayerLocation location, Set<Tile> tiles) {
-		Tile tile = context.getTable().draw(1).get(0);
-		context.getPlayerInfoByLocation(location).getAliveTiles().add(tile);
-		context.getPlayerInfoByLocation(location).setLastDrawedTile(tile);
+	protected void doLegalAction(GameContext context, PlayerLocation location, Tile tile) {
+		Tile drawTile = context.getTable().draw(1);
+		context.getPlayerInfoByLocation(location).getAliveTiles().addTile(drawTile);
+		context.getPlayerInfoByLocation(location).setLastDrawedTile(drawTile);
 	}
 
 }

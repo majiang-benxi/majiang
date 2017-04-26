@@ -76,7 +76,7 @@ public abstract class AbstractActionType implements ActionType {
 			return false;
 		}
 		// 验证上一个动作的位置条件
-		res = checkLastActionCondition(context.getLastAction(), context.getMyLocation());
+		res = checkLastActionCondition(context.getLastActionAndLocation(), context.getMyLocation());
 		if (!res) {
 			return false;
 		}
@@ -90,7 +90,7 @@ public abstract class AbstractActionType implements ActionType {
 	 * @param playerLocation
 	 * @return
 	 */
-	protected boolean checkLastActionCondition(Action lastAction, PlayerLocation playerLocation) {
+	protected boolean checkLastActionCondition(ActionAndLocation lastAction, PlayerLocation playerLocation) {
 		return true;
 	}
 
