@@ -3,11 +3,13 @@ package com.mahjong.server.vo;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.mahjong.server.game.object.PlayerInfo;
+
 public class Room {
 
 	private int id;
 
-	private List<Player> players = new LinkedList<Player>();// 玩家
+	private List<PlayerInfo> players = new LinkedList<PlayerInfo>();// 玩家
 
 	private String name;// 房间名
 
@@ -35,11 +37,11 @@ public class Room {
 		this.id = id;
 	}
 
-	public List<Player> getPlayers() {
+	public List<PlayerInfo> getPlayers() {
 		return players;
 	}
 
-	public void setPlayers(List<Player> players) {
+	public void setPlayers(List<PlayerInfo> players) {
 		this.players = players;
 	}
 
