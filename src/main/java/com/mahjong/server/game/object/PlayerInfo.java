@@ -29,7 +29,8 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	 * 其他玩家能看到的本玩家的视图
 	 */
 	private PlayerView otherPlayerView;
-
+	private int score;// 分数
+	// TODO add用户信息
 
 	public Player getPlayer() {
 		return player;

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mahjong.server.mapper.UserMapper;
+import com.mahjong.server.netty.model.AuthReqModel;
 import com.mahjong.server.service.UserService;
 import com.mahjong.server.vo.User;
 
@@ -29,6 +30,18 @@ public class UserServiceImpl implements UserService {
 	public List<User> getAllUser() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean isUserRegister(String weixinId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void addUser(AuthReqModel authModel) {
+		// TODO Auto-generated method stub
+
 	}
 
 }
