@@ -11,6 +11,11 @@ import static com.mahjong.server.game.object.StandardTileUnitType.SHUNZI;
  */
 public enum TileGroupType {
 	/**
+	 * 一张牌
+	 */
+	ONE_GROUP(null),
+
+	/**
 	 * 吃
 	 */
 	CHI_GROUP(SHUNZI),
@@ -23,7 +28,7 @@ public enum TileGroupType {
 	 */
 	ZHIGANG_GROUP(GANGZI),
 	/**
-	 * 补杠
+	 * 补杠【TODO 跟直杠玩法一样。删掉一个】
 	 */
 	BUGANG_GROUP(GANGZI),
 	/**
@@ -31,9 +36,17 @@ public enum TileGroupType {
 	 */
 	ANGANG_GROUP(GANGZI),
 	/**
+	 * 削
+	 */
+	XIAO(GANGZI),
+
+	/**
 	 * 补花
 	 */
 	BUHUA_GROUP(HUA_UNIT);
+	/**
+	 * 胡牌
+	 */
 
 	private final TileUnitType unitType;
 

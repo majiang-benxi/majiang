@@ -53,11 +53,11 @@ public enum EventEnum {
 	/**
 	 * 一次出牌请求
 	 */
-	DROP_ONE_CARD_REQ(15),
+	DISCARD_ONE_CARD_REQ(15),
 	/**
 	 * 一次出牌请求响应
 	 */
-	DROP_ONE_CARD_RESP(16);
+	DISCARD_ONE_CARD_RESP(16);
 
     private Integer value;
 

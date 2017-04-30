@@ -1,3 +1,4 @@
+
 package com.mahjong.server.game.object;
 
 import com.mahjong.server.entity.UserInfo;

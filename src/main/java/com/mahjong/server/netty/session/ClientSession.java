@@ -1,4 +1,4 @@
-package com.mahjong.server.netty.tools;
+package com.mahjong.server.netty.session;
 
 import java.util.HashMap;
 import java.util.Map;

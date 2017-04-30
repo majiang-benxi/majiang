@@ -17,6 +17,10 @@ public class PlayerTiles {
 	 * 吃碰杠。
 	 */
 	protected List<TileGroup> tileGroups = new ArrayList<TileGroup>();
+	/**
+	 * 可以打出的牌的组合
+	 */
+	protected List<TileGroup> canPassTileGroups = new ArrayList<TileGroup>();
 
 	public PlayerTiles() {
 		super();
@@ -38,5 +42,12 @@ public class PlayerTiles {
 		this.tileGroups = tileGroups;
 	}
 
+	public List<TileGroup> getCanPassTileGroups() {
+		return canPassTileGroups;
+	}
+
+	public void setCanPassTileGroups(List<TileGroup> canPassTileGroups) {
+		this.canPassTileGroups = canPassTileGroups;
+	}
 
 }
