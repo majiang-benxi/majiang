@@ -129,9 +129,9 @@ public class MahjongTable {
 		/**
 		 * 返回指定位置的玩家名称。
 		 */
-		public Player getPlayerName(PlayerLocation location) {
+		public String getPlayerName(PlayerLocation location) {
 			Player player = getPlayerByLocation(location);
-			return player != null ? player : null;
+			return player != null ? player.getName() : null;
 		}
 
 		/**

@@ -1,4 +1,3 @@
-
 package com.mahjong.server.interceptor;
 
 import java.text.DateFormat;
@@ -55,7 +54,7 @@ public class MyBatisSQLInterceptor implements Interceptor {
 		if (time > 1) {
 			String sql = getSql(configuration, boundSql, sqlId);
 			logger.info("执行SQL：" + sql + "，执行时间：" + time + "MS");
-			logger.info("执行SQL返回数据：" +JSON.toJSONString(returnValue));
+			logger.info("执行SQL返回数据：" + JSON.toJSONString(returnValue));
 		}
 		return returnValue;
 	}
@@ -76,7 +75,7 @@ public class MyBatisSQLInterceptor implements Interceptor {
 		} else if (obj instanceof Date) {
 			DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.CHINA);
 			Date tempVal = new Date();
-			if(obj!=null){
+			if (obj != null) {
 				tempVal = (Date) obj;
 			}
 			value = "'" + formatter.format(tempVal) + "'";
