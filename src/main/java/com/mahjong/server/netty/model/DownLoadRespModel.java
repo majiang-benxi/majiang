@@ -1,5 +1,8 @@
 package com.mahjong.server.netty.model;
 
+/**
+ * 跟新响应
+ */
 public class DownLoadRespModel {
 	private String url;
 

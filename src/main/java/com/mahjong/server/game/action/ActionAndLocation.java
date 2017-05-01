@@ -2,7 +2,7 @@ package com.mahjong.server.game.action;
 
 import java.util.Objects;
 
-import com.mahjong.server.game.object.PlayerLocation;
+import com.mahjong.server.game.enums.PlayerLocation;
 
 /**
  * 动作和玩家位置的组合。

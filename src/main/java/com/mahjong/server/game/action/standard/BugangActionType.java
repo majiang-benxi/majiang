@@ -5,16 +5,18 @@ import java.util.List;
 
 import com.mahjong.server.game.action.AbstractActionType;
 import com.mahjong.server.game.context.GameContext;
-import com.mahjong.server.game.context.GameContext.PlayerView;
+import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.object.PlayerInfo;
-import com.mahjong.server.game.object.PlayerLocation;
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.TileGroup;
 import com.mahjong.server.game.object.TileGroupType;
 /**
  * 动作类型“补杠”。
+<<<<<<< HEAD
+=======
  * 
  * @author warter
+>>>>>>> refs/remotes/origin/master
  */
 public class BugangActionType extends AbstractActionType {
 
@@ -33,15 +35,15 @@ public class BugangActionType extends AbstractActionType {
 	}
 
 	@Override
-	protected boolean isLegalActionWithPreconition(PlayerView playerView,
+	protected boolean isLegalActionWithPreconition(GameContext context,PlayerLocation location,
 			Tile tile) {
-		return findLegalPengGroup(playerView.getMyInfo(), tile) != null;
+		return findLegalPengGroup( context.getTable().getPlayerByLocation(location), tile) != null;
 	}
 
 	@Override
 	protected void doLegalAction(GameContext context, PlayerLocation location,
 			Tile tile) {
-		PlayerInfo playerInfo = context.getPlayerInfoByLocation(location);
+		PlayerInfo playerInfo = context.getTable().getPlayerByLocation(location);
 
 		TileGroup group = findLegalPengGroup(playerInfo, tile);
 		if (group == null)

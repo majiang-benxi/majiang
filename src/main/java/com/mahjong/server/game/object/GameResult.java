@@ -3,6 +3,8 @@ package com.mahjong.server.game.object;
 import java.io.Serializable;
 import java.util.Map;
 
+import com.mahjong.server.game.enums.PlayerLocation;
+
 
 /**
  * 一局游戏的结果。winnerLocation为null表示流局。

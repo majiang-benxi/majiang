@@ -6,18 +6,9 @@ import com.mahjong.server.game.object.Tile;
  * 
  * @author wumiao 出牌
  */
-public class DiscardReqModel {
-	private String weixinId;
+public class DiscardReqModel  extends RequestBaseMode{
 	private Tile tile;
 	private int tileGroupType;// 打牌的类型。单张，吃碰杠
-
-	public String getWeixinId() {
-		return weixinId;
-	}
-
-	public void setWeixinId(String weixinId) {
-		this.weixinId = weixinId;
-	}
 
 	public Tile getTile() {
 		return tile;

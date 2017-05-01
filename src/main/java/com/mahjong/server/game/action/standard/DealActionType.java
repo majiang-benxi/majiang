@@ -6,17 +6,20 @@ import com.mahjong.server.exception.IllegalActionException;
 import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.ActionType;
 import com.mahjong.server.game.context.GameContext;
+import com.mahjong.server.game.enums.PlayerLocation;
+import com.mahjong.server.game.enums.PlayerLocation.Relation;
 import com.mahjong.server.game.object.MahjongTable;
 import com.mahjong.server.game.object.PlayerInfo;
-import com.mahjong.server.game.object.PlayerLocation;
-import com.mahjong.server.game.object.PlayerLocation.Relation;
 import com.mahjong.server.game.object.Tile;
 
 /**
  * 动作类型“发牌”。<br>
  * 发牌动作不由玩家执行，只实现doAction方法。
+<<<<<<< HEAD
+=======
  * 
  * @author warter
+>>>>>>> refs/remotes/origin/master
  */
 public class DealActionType implements ActionType {
 
@@ -32,8 +35,7 @@ public class DealActionType implements ActionType {
 	}
 
 	@Override
-	public Collection<Tile> getLegalActionTiles(
-			GameContext.PlayerView playerView) {
+	public Collection<Tile> getLegalActionTiles(GameContext context,PlayerLocation location) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -50,11 +52,11 @@ public class DealActionType implements ActionType {
 			int drawCount = i < 3 ? 4 : 1;
 			for (Relation relation : Relation.values()) {
 				PlayerLocation playerLocation = zhuang.getLocationOf(relation);
-				PlayerInfo playerInfo = context.getPlayerInfoByLocation(playerLocation);
+				PlayerInfo playerInfo = context.getTable().getPlayerByLocation(playerLocation);
 				playerInfo.getAliveTiles().addTile(table.draw(drawCount));
 			}
 		}
-		context.getPlayerInfoByLocation(zhuang).getAliveTiles()
+		context.getTable().getPlayerByLocation(location).getAliveTiles()
 				.addTile(table.draw(1));
 	}
 

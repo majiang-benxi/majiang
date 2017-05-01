@@ -2,7 +2,15 @@ package com.mahjong.server.netty.handler;
 
 import org.springframework.stereotype.Component;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
+import com.mahjong.server.game.context.HouseContext;
+import com.mahjong.server.game.context.RoomContext;
+import com.mahjong.server.game.enums.EventEnum;
+import com.mahjong.server.netty.model.DiscardReqModel;
+import com.mahjong.server.netty.model.DiscardRespModel;
 import com.mahjong.server.netty.model.ProtocolModel;
+import com.mahjong.server.netty.session.ClientSession;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -11,9 +19,30 @@ import io.netty.channel.SimpleChannelInboundHandler;
 public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 
 	@Override
-	protected void channelRead0(ChannelHandlerContext paramChannelHandlerContext, ProtocolModel paramI)
+	protected void channelRead0(ChannelHandlerContext ctx, ProtocolModel protocolModel)
 			throws Exception {
-		// TODO Auto-generated method stub
+		if (protocolModel.getCommandId() == EventEnum.DISCARD_ONE_CARD_REQ.getValue()) {
+			if (protocolModel.getBody() == null) {
+				ctx.close();
+			} else {
+				DiscardReqModel discardReqModel = JSON.parseObject(new String(protocolModel.getBody(), "UTF-8"),
+						new TypeReference<DiscardReqModel>() {
+						});
 
+				String weixinId = discardReqModel.getWeiXinId();
+				ctx = ClientSession.sessionMap.get(weixinId);
+				
+				//TODO 战绩
+				
+				RoomContext playingRoom = HouseContext.weixinIdToRoom.get(weixinId);
+				DiscardRespModel authRespModel = new DiscardRespModel();
+				// 回写ACK
+				protocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
+				protocolModel.setBody(JSON.toJSONString(authRespModel).getBytes("UTF-8"));
+				ctx.writeAndFlush(protocolModel);
+			}
+		} else {
+			ctx.fireChannelRead(protocolModel);
+		}
 	}
 }

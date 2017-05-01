@@ -1,17 +1,13 @@
 package com.mahjong.server.netty.model;
 
-public class MsgModel {
-	private String weixinId;
-	private String msgtype;
+/**
+ * 消息
+ */
+public class SendMsgRespModel {
+	
+	private String mesgFrom;
+	private String msgtype;//1：文字，2：语音
 	private String msg;
-
-	public String getWeixinId() {
-		return weixinId;
-	}
-
-	public void setWeixinId(String weixinId) {
-		this.weixinId = weixinId;
-	}
 
 	public String getMsgtype() {
 		return msgtype;
@@ -27,6 +23,14 @@ public class MsgModel {
 
 	public void setMsg(String msg) {
 		this.msg = msg;
+	}
+
+	public String getMesgFrom() {
+		return mesgFrom;
+	}
+
+	public void setMesgFrom(String mesgFrom) {
+		this.mesgFrom = mesgFrom;
 	}
 
 }

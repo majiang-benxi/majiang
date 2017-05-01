@@ -12,10 +12,9 @@ import com.mahjong.server.game.action.AbstractActionType;
 import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.ActionType;
 import com.mahjong.server.game.context.GameContext;
-import com.mahjong.server.game.context.GameContext.PlayerView;
+import com.mahjong.server.game.enums.PlayerLocation;
+import com.mahjong.server.game.enums.PlayerLocation.Relation;
 import com.mahjong.server.game.object.PlayerInfo;
-import com.mahjong.server.game.object.PlayerLocation;
-import com.mahjong.server.game.object.PlayerLocation.Relation;
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.TileGroup;
 import com.mahjong.server.game.object.TileGroupType;
@@ -26,8 +25,11 @@ import com.mahjong.server.game.object.TileGroupType;
  * <li>都可以放弃；
  * <li>前提条件都是别的玩家出牌后；
  * <li>都是从特定关系的玩家的出牌中得牌，并组成一种group。
+<<<<<<< HEAD
+=======
  * 
  * @author warter
+>>>>>>> refs/remotes/origin/master
  */
 public class CpgActionType extends AbstractActionType {
 	@SuppressWarnings("unused")
@@ -96,9 +98,9 @@ public class CpgActionType extends AbstractActionType {
 	}
 
 	@Override
-	protected boolean isLegalActionWithPreconition(PlayerView playerView,
+	protected boolean isLegalActionWithPreconition(GameContext context,PlayerLocation location,
 			Tile tile) {
-		Tile testTiles = Tile.addTile(tile, playerView.getLastAction().getTile());
+		Tile testTiles = Tile.addTile(tile, context.getTable().getPlayerByLocation(location).getLastDrawedTile());
 		boolean legal = groupType.isLegalTile(testTiles);
 		return legal;
 	}
@@ -106,7 +108,7 @@ public class CpgActionType extends AbstractActionType {
 	@Override
 	protected void doLegalAction(GameContext context, PlayerLocation location,
 			Tile tile) {
-		PlayerInfo playerInfo = context.getPlayerInfoByLocation(location);
+		PlayerInfo playerInfo = context.getTable().getPlayerByLocation(location);
 
 		playerInfo.getAliveTiles().removeAll(tile);
 

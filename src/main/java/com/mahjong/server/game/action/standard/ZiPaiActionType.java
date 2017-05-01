@@ -4,9 +4,8 @@ import static com.mahjong.server.game.object.TileGroupType.ZIPAI_GROUP;
 
 import com.mahjong.server.game.action.AbstractActionType;
 import com.mahjong.server.game.context.GameContext;
-import com.mahjong.server.game.context.GameContext.PlayerView;
+import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.object.PlayerInfo;
-import com.mahjong.server.game.object.PlayerLocation;
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.TileGroup;
 /**
@@ -32,7 +31,7 @@ public class ZiPaiActionType extends AbstractActionType {
 	}
 
 	@Override
-	protected boolean isLegalActionWithPreconition(PlayerView context,
+	protected boolean isLegalActionWithPreconition(GameContext context,PlayerLocation location,
 			Tile tile) {
 		return ZIPAI_GROUP.isLegalTile(tile);
 	}
@@ -40,7 +39,7 @@ public class ZiPaiActionType extends AbstractActionType {
 	@Override
 	protected void doLegalAction(GameContext context, PlayerLocation location,
 			Tile tile) {
-		PlayerInfo playerInfo = context.getPlayerInfoByLocation(location);
+		PlayerInfo playerInfo = context.getTable().getPlayerByLocation(location);
 		playerInfo.getAliveTiles().removeAll(tile);
 		playerInfo.getTileGroups().add(new TileGroup(ZIPAI_GROUP, tile));
 	}

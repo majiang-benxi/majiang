@@ -14,7 +14,7 @@ public class IllegalActionException extends Exception {
 	@SuppressWarnings("unused")
 	private Action action;
 
-	public IllegalActionException(GameContext context, com.mahjong.server.game.object.PlayerLocation location,
+	public IllegalActionException(GameContext context, com.mahjong.server.game.enums.PlayerLocation location,
 			Action action) {
 		super(location + action.toString() + " context: " + context);
 		this.action = action;

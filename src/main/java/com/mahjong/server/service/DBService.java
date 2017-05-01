@@ -6,6 +6,7 @@ import com.mahjong.server.entity.ManageUser;
 import com.mahjong.server.entity.MessageInfo;
 import com.mahjong.server.entity.RoomCartChange;
 import com.mahjong.server.entity.RoomRecord;
+import com.mahjong.server.entity.UpdateInfo;
 import com.mahjong.server.entity.UserActionScore;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.entity.UserRoomRecord;
@@ -18,7 +19,7 @@ public interface DBService {
 	 * @param userId  用户ID
 	 * @return 记录ID
 	 */
-	public Integer insertUserInfoByID(UserInfo userInfo);
+	public Integer insertUserInfo(UserInfo userInfo);
 	
 	/**
 	 * 根据ID查用户
@@ -258,12 +259,27 @@ public interface DBService {
 	 */
 	boolean insertRoomCart(Integer userId, String userName, Integer cartNum, ManageUser manageUser);
 	
-	
-	
-	
-	
-	
 
+	/**
+	 * 查询更新下载信息
+	 *  @param deviceType 设备类型
+	 * @return 更新下载信息
+	 */
+	UpdateInfo selectUpdateInfoByDeviceType(Integer deviceType,float version );
+
+	/**
+	 * 保存更新下载信息
+	 * @param updateInfo 更新下载信息
+	 * @return 主键ID
+	 */
+	Integer inserUpdateInfo(UpdateInfo updateInfo);
+	
+	/**
+	 * 更新更新下载信息
+	 * @param updateInfo 更新下载信息
+	 * @return 更新是否成功
+	 */
+	boolean updateUpdateInfoById(UpdateInfo updateInfo);
 	
 
 }

@@ -1,13 +1,10 @@
 package com.mahjong.server.game.object;
 
-import com.mahjong.server.game.context.GameContext;
-
 public class WinInfo extends PlayerInfo {
 	private Tile winTile;
 	private boolean ziMo;
 	private boolean firstTileCheck;// 发完牌之后的第一次检测
 	private Tile huiTile;
-	private GameContext.PlayerView contextView;
 
 
 	// 检查WinType和FanType的时候填入的结果，用于：
@@ -32,14 +29,6 @@ public class WinInfo extends PlayerInfo {
 		this.winTile = winTile;
 	}
 
-
-	public void setContextView(GameContext.PlayerView contextView) {
-		this.contextView = contextView;
-	}
-
-	public GameContext.PlayerView getContextView() {
-		return contextView;
-	}
 
 	public boolean isFirstTileCheck() {
 		return firstTileCheck;

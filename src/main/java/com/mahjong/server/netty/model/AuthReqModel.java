@@ -1,13 +1,7 @@
 package com.mahjong.server.netty.model;
 
-import java.io.UnsupportedEncodingException;
+public class AuthReqModel extends RequestBaseMode{
 
-import com.alibaba.fastjson.JSON;
-
-public class AuthReqModel {
-
-	private String weiXinId;
-    
 	private String nickName;
 
 	private String loginIp;
@@ -15,15 +9,6 @@ public class AuthReqModel {
 	private String headImgUrl;
 
 	private int sex;
-
-
-	public String getWeiXinId() {
-		return weiXinId;
-	}
-
-	public void setWeiXinId(String weiXinId) {
-		this.weiXinId = weiXinId;
-	}
 
 	public String getNickName() {
 		return nickName;
@@ -57,19 +42,4 @@ public class AuthReqModel {
 		this.headImgUrl = headImgUrl;
 	}
 
-	public static void main(String[] args) throws UnsupportedEncodingException {
-		AuthReqModel authReqModel = new AuthReqModel();
-		authReqModel.setHeadImgUrl("http://www.baidu.com");
-		authReqModel.setLoginIp("11.12.22.11");
-		authReqModel.setNickName("shuige");
-		authReqModel.setWeiXinId("13342dfdfsdcdfsd");
-		System.out.println(JSON.toJSONString(authReqModel));
-		ProtocolModel protocolModel = new ProtocolModel();
-		protocolModel.setCommandId(1);
-		protocolModel.setDeviceType(1);
-		protocolModel.setVersion(2.1f);
-		protocolModel.setBody(JSON.toJSONString(authReqModel).getBytes("UTF-8"));
-		System.out.println(JSON.toJSONString(protocolModel));
-
-	}
 }

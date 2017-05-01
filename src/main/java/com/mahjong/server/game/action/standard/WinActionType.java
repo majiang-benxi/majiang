@@ -7,8 +7,7 @@ import static com.mahjong.server.game.action.standard.StandardActionType.DRAW;
 import com.mahjong.server.game.action.AbstractActionType;
 import com.mahjong.server.game.action.ActionAndLocation;
 import com.mahjong.server.game.context.GameContext;
-import com.mahjong.server.game.context.GameContext.PlayerView;
-import com.mahjong.server.game.object.PlayerLocation;
+import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.object.Tile;
 public class WinActionType extends AbstractActionType {
 
@@ -40,7 +39,7 @@ public class WinActionType extends AbstractActionType {
 	}
 
 	@Override
-	protected boolean isLegalActionWithPreconition(PlayerView context, Tile tiles) {
+	protected boolean isLegalActionWithPreconition(GameContext context,PlayerLocation location, Tile tiles) {
 		// TODO Auto-generated method stub
 		return false;
 	}

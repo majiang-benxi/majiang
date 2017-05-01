@@ -1,6 +1,6 @@
 package com.mahjong.server.game.action.standard;
 
-import static com.mahjong.server.game.object.PlayerLocation.Relation.PREVIOUS;
+import static com.mahjong.server.game.enums.PlayerLocation.Relation.PREVIOUS;
 import static com.mahjong.server.game.object.TileGroupType.CHI_GROUP;
 import static com.mahjong.server.game.object.TileGroupType.PENG_GROUP;
 
@@ -11,15 +11,17 @@ import com.mahjong.server.exception.IllegalActionException;
 import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.ActionType;
 import com.mahjong.server.game.context.GameContext;
-import com.mahjong.server.game.context.GameContext.PlayerView;
-import com.mahjong.server.game.object.PlayerLocation;
+import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.object.Tile;
 
 /**
  * 一些标准的动作类型。<br>
  * 枚举的每种动作类型包含对应Type类的单例，并委托调用其对应的方法。
+<<<<<<< HEAD
+=======
  * 
  * @author warter
+>>>>>>> refs/remotes/origin/master
  */
 public enum StandardActionType implements ActionType {
 	/**
@@ -108,8 +110,8 @@ public enum StandardActionType implements ActionType {
 	}
 
 	@Override
-	public Collection<Tile> getLegalActionTiles(PlayerView playerView) {
-		return type.getLegalActionTiles(playerView);
+	public Collection<Tile> getLegalActionTiles(GameContext context,PlayerLocation location) {
+		return type.getLegalActionTiles( context, location);
 
 	}
 
