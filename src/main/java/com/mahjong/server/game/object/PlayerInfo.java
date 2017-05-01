@@ -3,6 +3,7 @@ package com.mahjong.server.game.object;
 import java.util.ArrayList;
 
 import com.mahjong.server.entity.UserInfo;
+import com.mahjong.server.game.enums.PlayerLocation;
 
 /**
  * 麻将桌上一个玩家的信息，包括玩家对象、牌，以及其他信息。
@@ -12,6 +13,8 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	 * 玩家。
 	 */
 	private UserInfo userInfo;
+	
+	private PlayerLocation userLocation;
 
 	/**
 	 * 最后摸的牌。
@@ -94,6 +97,14 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 
 	public void setCurScore(int curScore) {
 		this.curScore = curScore;
+	}
+
+	public int getUserLocation() {
+		return userLocation.getCode();
+	}
+
+	public void setUserLocation(int userLocation) {
+		this.userLocation = PlayerLocation.fromCode(userLocation);
 	}
 	
 }

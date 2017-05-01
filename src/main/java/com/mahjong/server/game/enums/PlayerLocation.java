@@ -7,8 +7,29 @@ package com.mahjong.server.game.enums;
  */
 public enum PlayerLocation {
 	// 顺序勿动。计算位置依赖此枚举的顺序！
-	EAST, NORTH, WEST, SOUTH;
+	EAST(1), NORTH(2), WEST(3), SOUTH(4);
+	
+	private int code ;
+	
+	PlayerLocation(int code){
+		this.code = code;
+	}
 
+	public  int getCode(){
+		return code;
+	}
+	
+
+	public static PlayerLocation fromCode(int infocode) {
+		for (PlayerLocation responseCode : PlayerLocation.values()) {
+			if (responseCode.getCode() == infocode) {
+				return responseCode;
+			}
+		}
+		return null;
+	}
+	
+	
 	/**
 	 * 位置关系。
 	 * 

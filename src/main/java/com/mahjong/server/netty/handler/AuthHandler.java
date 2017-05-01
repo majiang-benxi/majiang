@@ -44,8 +44,8 @@ public class AuthHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 				UserInfo userInfo = null;
 				if (ClientSession.sessionMap.get(weixinId) == null) {
 					userInfo = dbService.selectUserInfoByWeiXinMark(weixinId);
+					Date now = new Date();
 					if (userInfo==null) {
-						Date now = new Date();
 						userInfo = new UserInfo();
 						userInfo.setCreateTime(now);
 						userInfo.setHeadImgurl(authModel.getHeadImgUrl());
@@ -57,6 +57,16 @@ public class AuthHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 						userInfo.setState((byte) 1);
 						userInfo.setWeixinMark(weixinId);
 						dbService.insertUserInfo(userInfo);
+					}else{
+						UserInfo updateUserInfo = new UserInfo();
+						updateUserInfo.setHeadImgurl(authModel.getHeadImgUrl());
+						updateUserInfo.setLastLoginIp(socketAddr.getAddress().getHostAddress());
+						updateUserInfo.setLastLoginTime(now);
+						updateUserInfo.setNickName(authModel.getNickName());
+						updateUserInfo.setSex((byte) authModel.getSex());
+						updateUserInfo.setWeixinMark(weixinId);
+						updateUserInfo.setId(userInfo.getId());
+						dbService.updateUserInfoById(updateUserInfo);
 					}
 					ClientSession.sessionMap.put(weixinId, ctx);
 				}

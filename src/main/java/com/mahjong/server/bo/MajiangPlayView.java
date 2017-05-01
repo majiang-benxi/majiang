@@ -13,6 +13,7 @@ public class MajiangPlayView {
 	private int fangKaStrategy;
 	private int roomId;
 	private List<PlayerInfo> players;
+	private int curUserLocation;
 
 	public String getRuleStrategy() {
 		return ruleStrategy;
@@ -44,6 +45,14 @@ public class MajiangPlayView {
 
 	public void setPlayers(List<PlayerInfo> players) {
 		this.players = players;
+	}
+
+	public int getCurUserLocation() {
+		return curUserLocation;
+	}
+
+	public void setCurUserLocation(int curUserLocation) {
+		this.curUserLocation = curUserLocation;
 	}
 
 }

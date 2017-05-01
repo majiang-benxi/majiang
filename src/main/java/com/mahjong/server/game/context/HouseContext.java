@@ -41,6 +41,7 @@ public class HouseContext {
 	    PlayerInfo creatorPlayer = new PlayerInfo();
 	    creatorPlayer.setUserInfo(creator);
 	    creatorPlayer.setCurScore(1000);
+	    creatorPlayer.setUserLocation(PlayerLocation.EAST.getCode());
 	    table.setPlayer(PlayerLocation.EAST, creatorPlayer);
 	   
 	    GameStrategy gameStrategy = new GameStrategy();

@@ -2,20 +2,21 @@ package com.mahjong.server.netty.model;
 
 import java.util.List;
 
-import com.mahjong.server.entity.UserActionScore;
+import com.mahjong.server.vo.UserLatestPlayRecord;
 
 /**
  * 历史战绩
  */
 public class HistoryRecordRespModel {
-	private List<UserActionScore> userActionScores;
+	private List<UserLatestPlayRecord> userLatestPlayRecord;
 
-	public List<UserActionScore> getUserActionScores() {
-		return userActionScores;
+	public List<UserLatestPlayRecord> getUserLatestPlayRecord() {
+		return userLatestPlayRecord;
 	}
 
-	public void setUserActionScores(List<UserActionScore> userActionScores) {
-		this.userActionScores = userActionScores;
+	public void setUserLatestPlayRecord(List<UserLatestPlayRecord> userLatestPlayRecord) {
+		this.userLatestPlayRecord = userLatestPlayRecord;
 	}
+
 
 }

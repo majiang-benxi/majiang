@@ -99,10 +99,13 @@ public class GameContext {
 
 		if (this.table.getPlayerByLocation(PlayerLocation.NORTH) == null) {
 			getTable().setPlayer(PlayerLocation.NORTH, nowPlayer);
+			nowPlayer.setUserLocation(PlayerLocation.NORTH.getCode());
 		} else if (this.table.getPlayerByLocation(PlayerLocation.WEST) == null) {
 			getTable().setPlayer(PlayerLocation.WEST, nowPlayer);
+			nowPlayer.setUserLocation(PlayerLocation.WEST.getCode());
 		} else if (this.table.getPlayerByLocation(PlayerLocation.SOUTH) == null) {
 			getTable().setPlayer(PlayerLocation.SOUTH, nowPlayer);
+			nowPlayer.setUserLocation(PlayerLocation.SOUTH.getCode());
 		} else {
 			return false;
 		}

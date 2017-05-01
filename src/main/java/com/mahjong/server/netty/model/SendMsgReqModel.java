@@ -3,19 +3,10 @@ package com.mahjong.server.netty.model;
 /**
  * 发消息
  */
-public class SendMsgReqModel {
+public class SendMsgReqModel  extends RequestBaseMode{
 	
-	private String weixinId;
-	private String msgtype;//1：文字，2：语音
+	private String msgtype;
 	private String msg;
-
-	public String getWeixinId() {
-		return weixinId;
-	}
-
-	public void setWeixinId(String weixinId) {
-		this.weixinId = weixinId;
-	}
 
 	public String getMsgtype() {
 		return msgtype;

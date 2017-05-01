@@ -1,19 +1,10 @@
 package com.mahjong.server.netty.model;
 
-public class CreateRoomReqModel {
+public class CreateRoomReqModel  extends RequestBaseMode{
 	
-	private String weixinId;
 	private String ruleStrategy;
 	private int fangKaStrategy;
 	
-	public String getWeixinId() {
-		return weixinId;
-	}
-
-	public void setWeixinId(String weixinId) {
-		this.weixinId = weixinId;
-	}
-
 	public String getRuleStrategy() {
 		return ruleStrategy;
 	}

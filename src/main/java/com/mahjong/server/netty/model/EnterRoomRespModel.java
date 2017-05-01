@@ -12,7 +12,7 @@ public class EnterRoomRespModel extends RoomRespModel {
 	private int roomState;
 	
 
-	public EnterRoomRespModel(boolean result,String mesg,RoomContext roomContex) {
+	public EnterRoomRespModel(String weixinId,boolean result,String mesg,RoomContext roomContex) {
 		super();
 		
 		if(result){
@@ -23,6 +23,11 @@ public class EnterRoomRespModel extends RoomRespModel {
 			this.setRoomId(roomContex.getRoomNum());
 			this.setRuleStrategy(gameContext.getGameStrategy().getRuleInfo().getMysqlRule());
 			List<PlayerInfo> players = new ArrayList<PlayerInfo>();
+			for(PlayerInfo play : players){
+				if(weixinId.equals(play.getUserInfo().getWeixinMark())){
+					this.setCurUserLocation(play.getUserLocation());
+				}
+			}
 			players.addAll(gameContext.getTable().getPlayerInfos().values());
 			this.setPlayers(players);
 			this.roomState = roomContex.getRoomStatus().getCode();

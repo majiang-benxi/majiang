@@ -11,7 +11,7 @@ import com.mahjong.server.game.object.PlayerInfo;
 public class CreateRoomRespModel extends RoomRespModel {
 	
 
-	public CreateRoomRespModel(boolean result,RoomContext roomContex) {
+	public CreateRoomRespModel(String weixinId ,boolean result,RoomContext roomContex) {
 		super();
 		
 		if(result){
@@ -22,6 +22,11 @@ public class CreateRoomRespModel extends RoomRespModel {
 			this.setRoomId(roomContex.getRoomNum());
 			this.setRuleStrategy(gameContext.getGameStrategy().getRuleInfo().getMysqlRule());
 			List<PlayerInfo> players = new ArrayList<PlayerInfo>();
+			for(PlayerInfo play : players){
+				if(weixinId.equals(play.getUserInfo().getWeixinMark())){
+					this.setCurUserLocation(play.getUserLocation());
+				}
+			}
 			players.addAll(gameContext.getTable().getPlayerInfos().values());
 			this.setPlayers(players);
 		}else{

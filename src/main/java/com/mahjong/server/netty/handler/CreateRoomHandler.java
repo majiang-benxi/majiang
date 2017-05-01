@@ -36,7 +36,7 @@ public class CreateRoomHandler extends SimpleChannelInboundHandler<ProtocolModel
 						new TypeReference<CreateRoomReqModel>() {
 						});
 				
-				String weixinId = createRoomReqModel.getWeixinId();
+				String weixinId = createRoomReqModel.getWeiXinId();
 				UserInfo userInfo = dbService.selectUserInfoByWeiXinMark(weixinId);
 				ctx = ClientSession.sessionMap.get(weixinId);
 				
@@ -48,10 +48,11 @@ public class CreateRoomHandler extends SimpleChannelInboundHandler<ProtocolModel
 					HouseContext.weixinIdToRoom.put(weixinId, roomContex);
 				}
 				
-				CreateRoomRespModel createRoomRespModel = new CreateRoomRespModel(true,roomContex);
+				CreateRoomRespModel createRoomRespModel = new CreateRoomRespModel(weixinId, true,roomContex);
 				protocolModel.setCommandId(EventEnum.CREATE_ROOM_RESP.getValue());
 				protocolModel.setBody(JSON.toJSONString(createRoomRespModel).getBytes("UTF-8"));
 				ctx.writeAndFlush(protocolModel);
+				
 			}
 		} else {
 			ctx.fireChannelRead(protocolModel);

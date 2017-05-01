@@ -1,9 +1,7 @@
 package com.mahjong.server.netty.model;
 
-public class AuthReqModel {
+public class AuthReqModel extends RequestBaseMode{
 
-	private String weiXinId;
-    
 	private String nickName;
 
 	private String loginIp;
@@ -11,15 +9,6 @@ public class AuthReqModel {
 	private String headImgUrl;
 
 	private int sex;
-
-
-	public String getWeiXinId() {
-		return weiXinId;
-	}
-
-	public void setWeiXinId(String weiXinId) {
-		this.weiXinId = weiXinId;
-	}
 
 	public String getNickName() {
 		return nickName;
