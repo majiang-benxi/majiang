@@ -1,13 +1,12 @@
 package com.mahjong.server.game.object;
 import static com.mahjong.server.game.object.StandardTileUnitType.GANGZI;
-import static com.mahjong.server.game.object.StandardTileUnitType.HUA_UNIT;
 import static com.mahjong.server.game.object.StandardTileUnitType.KEZI;
 import static com.mahjong.server.game.object.StandardTileUnitType.SHUNZI;
+import static com.mahjong.server.game.object.StandardTileUnitType.ZI_PAI;;
 
 /**
  * 牌组类型。
  * 
- * @author blovemaple <blovemaple2010(at)gmail.com>
  */
 public enum TileGroupType {
 	/**
@@ -24,11 +23,7 @@ public enum TileGroupType {
 	 */
 	PENG_GROUP(KEZI),
 	/**
-	 * 直杠
-	 */
-	ZHIGANG_GROUP(GANGZI),
-	/**
-	 * 补杠【TODO 跟直杠玩法一样。删掉一个】
+	 * 补杠
 	 */
 	BUGANG_GROUP(GANGZI),
 	/**
@@ -43,7 +38,7 @@ public enum TileGroupType {
 	/**
 	 * 补花
 	 */
-	BUHUA_GROUP(HUA_UNIT);
+	ZIPAI_GROUP(ZI_PAI);
 	/**
 	 * 胡牌
 	 */

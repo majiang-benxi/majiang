@@ -7,6 +7,7 @@ import com.mahjong.server.game.enums.PlayerLocation;
 
 /**
  * 麻将桌上一个玩家的信息，包括玩家对象、牌，以及其他信息。
+ * @author warter
  */
 public class PlayerInfo extends PlayerTiles implements Cloneable {
 	/**

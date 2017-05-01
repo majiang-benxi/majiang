@@ -8,6 +8,11 @@ import com.mahjong.server.game.object.Tile;
 
 /**
  * 动作类型“打牌”。
+<<<<<<< HEAD
+=======
+ * 
+ * @author warter
+>>>>>>> refs/remotes/origin/master
  */
 public class DiscardActionType extends AbstractActionType {
 

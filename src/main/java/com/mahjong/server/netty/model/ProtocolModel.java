@@ -7,20 +7,20 @@ public class ProtocolModel {
 	public static final short CUR_VERSION = 1;
 
 	// 协议版本
-	private short version;
+	private float version;
 	// 操作类型
 	private int commandId;
 	// 设备类型
-	private String deviceType;
+	private int deviceType;
 	// 协议包体
 	private byte[] body;
 
 
-	public short getVersion() {
+	public float getVersion() {
 		return version;
 	}
 
-	public void setVersion(short version) {
+	public void setVersion(float version) {
 		this.version = version;
 	}
 
@@ -40,11 +40,11 @@ public class ProtocolModel {
 		this.body = body;
 	}
 
-	public String getDeviceType() {
+	public int getDeviceType() {
 		return deviceType;
 	}
 
-	public void setDeviceType(String deviceType) {
+	public void setDeviceType(int deviceType) {
 		this.deviceType = deviceType;
 	}
 

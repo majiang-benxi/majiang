@@ -35,7 +35,7 @@ public class UpdateHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 				});
 				
 				float version = downModel.getAppVersion();
-				UpdateInfo updateInfo = dbService.selectUpdateInfoByDeviceType(Integer.parseInt(protocolModel.getDeviceType()),version);
+				UpdateInfo updateInfo = dbService.selectUpdateInfoByDeviceType(protocolModel.getDeviceType(),version);
 				
 				if(updateInfo!=null){
 					DownLoadRespModel downLoadRespModel = new DownLoadRespModel();

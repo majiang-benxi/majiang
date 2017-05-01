@@ -14,6 +14,7 @@ import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.rule.GameStrategy;
 /**
  * 一局游戏进行中的上下文信息。
+ * @author warter
  */
 public class GameContext {
 	
@@ -113,11 +114,8 @@ public class GameContext {
 		if(this.table.getPlayerInfos().size()==4){
 			//TODO init 
 		}
-		
 		return true;
-
 	}
-	
 
 
 }

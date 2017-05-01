@@ -3,7 +3,6 @@ package com.mahjong.server.game.action.standard;
 import static com.mahjong.server.game.enums.PlayerLocation.Relation.PREVIOUS;
 import static com.mahjong.server.game.object.TileGroupType.CHI_GROUP;
 import static com.mahjong.server.game.object.TileGroupType.PENG_GROUP;
-import static com.mahjong.server.game.object.TileGroupType.ZHIGANG_GROUP;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -18,6 +17,11 @@ import com.mahjong.server.game.object.Tile;
 /**
  * 一些标准的动作类型。<br>
  * 枚举的每种动作类型包含对应Type类的单例，并委托调用其对应的方法。
+<<<<<<< HEAD
+=======
+ * 
+ * @author warter
+>>>>>>> refs/remotes/origin/master
  */
 public enum StandardActionType implements ActionType {
 	/**
@@ -33,10 +37,6 @@ public enum StandardActionType implements ActionType {
 	 */
 	PENG(new CpgActionType(PENG_GROUP)),
 	/**
-	 * 直杠
-	 */
-	ZHIGANG(new CpgActionType(ZHIGANG_GROUP)),
-	/**
 	 * 补杠
 	 */
 	BUGANG(new BugangActionType()),
@@ -45,9 +45,9 @@ public enum StandardActionType implements ActionType {
 	 */
 	ANGANG(new AngangActionType()),
 	/**
-	 * 补花
+	 * 字牌
 	 */
-	BUHUA(new BuhuaActionType()),
+	ZIPAI(new ZiPaiActionType()),
 	/**
 	 * 打牌
 	 */

@@ -7,7 +7,7 @@ import com.mahjong.server.game.object.Tile;
 /**
  * 动作。
  * 
- * @author blovemaple <blovemaple2010(at)gmail.com>
+ * @author warter
  */
 public class Action {
 	/**

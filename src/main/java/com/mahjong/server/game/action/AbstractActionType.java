@@ -18,6 +18,7 @@ import com.mahjong.server.game.object.Tile;
 
 /**
  * 各种ActionType的共同逻辑。
+ * @author warter
  */
 public abstract class AbstractActionType implements ActionType {
 	@SuppressWarnings("unused")

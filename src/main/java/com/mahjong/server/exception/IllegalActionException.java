@@ -6,7 +6,7 @@ import com.mahjong.server.game.context.GameContext;
 /**
  * 尝试执行非法动作时抛出此异常。
  * 
- * @author blovemaple <blovemaple2010(at)gmail.com>
+ * @author warter
  */
 public class IllegalActionException extends Exception {
 	private static final long serialVersionUID = 1L;

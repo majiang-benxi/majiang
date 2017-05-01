@@ -9,7 +9,7 @@ import com.mahjong.server.game.enums.PlayerLocation;
 /**
  * 一局游戏的结果。winnerLocation为null表示流局。
  * 
- * @author blovemaple <blovemaple2010(at)gmail.com>
+ * @author warter
  */
 public class GameResult implements Serializable {
 	private static final long serialVersionUID = 5927092445320750860L;

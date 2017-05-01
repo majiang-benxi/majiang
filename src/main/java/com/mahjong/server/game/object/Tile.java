@@ -1,8 +1,11 @@
 package com.mahjong.server.game.object;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -10,6 +13,13 @@ import org.apache.commons.lang.ArrayUtils;
 public class Tile {
 	private byte[] pai;// 存储相关的一组牌
 
+	public Tile() {
+
+	}
+
+	public Tile(byte[] pai) {
+		this.pai = pai;
+	}
 	public static byte[] getOneBoxMahjong() {
 		byte[] allPai = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, // 万（1-9）
 				0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, // 万
@@ -31,6 +41,14 @@ public class Tile {
 		return allPai;
 	}
 
+	public static Set<Byte> getNotUsedJiangPai() {
+		byte[] notUsedJiangPai = new byte[] { 0x02, 0x05, 0x08, 0x12, 0x15, 0x18, 0x22, 0x25, 0x28 };
+		Set<Byte> set = new HashSet<Byte>();
+		for (Byte notUsedJiang : notUsedJiangPai) {
+			set.add(notUsedJiang);
+		}
+		return set;
+	}
 	public byte[] getPai() {
 		return pai;
 	}
@@ -40,10 +58,12 @@ public class Tile {
 	}
 
 	@Override
-	protected Object clone() throws CloneNotSupportedException {
+	public Tile clone() {
 		byte[] destPai = new byte[] {};
 		System.arraycopy(this.pai, 0, destPai, 0, this.pai.length);
-		return destPai;
+		Tile tile = new Tile();
+		tile.setPai(destPai);
+		return tile;
 	}
 
 	public static Tile addTile(Tile tile1, Tile tile2) {
@@ -128,6 +148,46 @@ public class Tile {
 		return true;
 	}
 
+	public static List<Byte> getJANGPai(Tile tile) {
+		List<Byte> jiangPAI = new ArrayList<Byte>();
+		// tempMap存放牌值的张数<牌值,张数>
+		Map<Byte, Integer> tempMap = new HashMap<Byte, Integer>();
+		for (byte value : tile.getPai()) {
+			if (tempMap.containsKey(value)) {
+				tempMap.put(value, tempMap.get(value) + 1);
+			} else {
+				tempMap.put(value, 1);
+			}
+		}
+		// 将可能成为将牌的牌值存放到jiangPAI中
+		for (Entry<Byte, Integer> e : tempMap.entrySet()) {
+			if (e.getValue() >= 2 && !getNotUsedJiangPai().contains(e.getKey())) {
+				jiangPAI.add(e.getKey());
+			}
+		}
+		return jiangPAI;
+	}
+
+	public static List<Byte> getHuiPai(byte fanHui) {
+		List<Byte> result = new ArrayList<Byte>();
+		if (fanHui == 0x09) {
+			result.add((byte) 0x09);
+			result.add((byte) 0x01);
+			return result;
+		} else if (fanHui == 0x19) {
+			result.add((byte) 0x19);
+			result.add((byte) 0x11);
+			return result;
+		} else if (fanHui == 0x29) {
+			result.add((byte) 0x29);
+			result.add((byte) 0x21);
+			return result;
+		} else {
+			result.add(fanHui);
+			result.add((byte) (fanHui + 1));
+			return result;
+		}
+	}
 	public static void main(String[] args) {
 		Tile allTile = new Tile();
 		allTile.setPai(Tile.getOneBoxMahjong());
@@ -150,6 +210,12 @@ public class Tile {
 		}
 		System.out.println("******");
 		for (byte b : tile.getPai()) {
+			System.out.print(b + " ");
+		}
+		System.out.println("******");
+
+		byte huipai = 0x19;
+		for (byte b : Tile.getHuiPai(huipai)) {
 			System.out.print(b + " ");
 		}
 	}
