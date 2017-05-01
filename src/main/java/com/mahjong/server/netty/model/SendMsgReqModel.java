@@ -1,8 +1,12 @@
 package com.mahjong.server.netty.model;
 
-public class MsgModel {
+/**
+ * 发消息
+ */
+public class SendMsgReqModel {
+	
 	private String weixinId;
-	private String msgtype;
+	private String msgtype;//1：文字，2：语音
 	private String msg;
 
 	public String getWeixinId() {
@@ -28,5 +32,6 @@ public class MsgModel {
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
+
 
 }

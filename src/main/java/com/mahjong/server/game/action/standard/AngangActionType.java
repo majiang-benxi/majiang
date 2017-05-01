@@ -4,20 +4,18 @@ import static com.mahjong.server.game.object.TileGroupType.ANGANG_GROUP;
 
 import com.mahjong.server.game.action.AbstractActionType;
 import com.mahjong.server.game.context.GameContext;
-import com.mahjong.server.game.context.GameContext.PlayerView;
+import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.TileGroup;
 
 /**
  * 动作类型“暗杠”。
- * 
- * @author blovemaple <blovemaple2010(at)gmail.com>
  */
 public class AngangActionType extends AbstractActionType {
 
 	@Override
-	public boolean canPass(GameContext context, com.mahjong.server.game.object.PlayerLocation location) {
+	public boolean canPass(GameContext context, com.mahjong.server.game.enums.PlayerLocation location) {
 		return true;
 	}
 
@@ -31,15 +29,14 @@ public class AngangActionType extends AbstractActionType {
 	}
 
 	@Override
-	protected boolean isLegalActionWithPreconition(PlayerView context,
-			Tile tiles) {
+	protected boolean isLegalActionWithPreconition(GameContext context,PlayerLocation location,Tile tiles) {
 		return ANGANG_GROUP.isLegalTile(tiles);
 	}
 
 	@Override
-	protected void doLegalAction(GameContext context, com.mahjong.server.game.object.PlayerLocation location,
+	protected void doLegalAction(GameContext context, com.mahjong.server.game.enums.PlayerLocation location,
 			Tile tile) {
-		PlayerInfo playerInfo = context.getPlayerInfoByLocation(location);
+		PlayerInfo playerInfo = context.getTable().getPlayerByLocation(location);
 		playerInfo.getAliveTiles().removeAll(tile);
 		playerInfo.getTileGroups().add(new TileGroup(ANGANG_GROUP, tile));
 	}

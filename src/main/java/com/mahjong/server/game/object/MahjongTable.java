@@ -4,9 +4,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
+
+import com.mahjong.server.game.enums.PlayerLocation;
 
 /**
  * 麻将桌。
@@ -22,8 +22,7 @@ public class MahjongTable {
 	 * 所有玩家信息。
 	 */
 	private Map<PlayerLocation, PlayerInfo> playerInfos;
-	private final Map<PlayerLocation, PlayerView> playerViews = new HashMap<PlayerLocation, PlayerView>();
-
+	
 	public void init() {
 		tileWall = new Tile();
 		playerInfos = new EnumMap<PlayerLocation, PlayerInfo>(PlayerLocation.class);
@@ -80,80 +79,18 @@ public class MahjongTable {
 		this.playerInfos = playerInfos;
 	}
 
-	public Player getPlayerByLocation(PlayerLocation location) {
+	public PlayerInfo getPlayerByLocation(PlayerLocation location) {
 		PlayerInfo info = playerInfos.get(location);
-		return info == null ? null : info.getPlayer();
+		return info == null ? null : info;
 	}
 
-	public void setPlayer(PlayerLocation location, Player player) {
+	public void setPlayer(PlayerLocation location, PlayerInfo player) {
 		PlayerInfo playerInfo = playerInfos.get(location);
 		if (playerInfo == null) {
 			playerInfo = new PlayerInfo();
 			playerInfos.put(location, playerInfo);
 		}
-		playerInfo.setPlayer(player);
 	}
 
-
-	/**
-	 * 获取指定位置的玩家视图。
-	 */
-	public PlayerView getPlayerView(PlayerLocation location) {
-		PlayerView view = playerViews.get(location);
-		if (view == null) { // 不需要加锁，因为多创建了也没事
-			view = new PlayerView(location);
-			playerViews.put(location, view);
-		}
-		return view;
-	}
-
-	/**
-	 * 一个位置的玩家的视图
-	 * 
-	 */
-	public class PlayerView {
-
-		private final PlayerLocation myLocation;
-
-		private PlayerView(PlayerLocation myLocation) {
-			this.myLocation = myLocation;
-		}
-
-		/**
-		 * 返回此视图的玩家位置。
-		 */
-		public PlayerLocation getMyLocation() {
-			return myLocation;
-		}
-
-		/**
-		 * 返回指定位置的玩家名称。
-		 */
-		public String getPlayerName(PlayerLocation location) {
-			Player player = getPlayerByLocation(location);
-			return player != null ? player.getName() : null;
-		}
-
-		/**
-		 * 返回牌墙中的剩余牌数。
-		 */
-		public int getTileWallSize() {
-			return MahjongTable.this.getTileWallSize();
-		}
-
-
-
-		/**
-		 * 返回所有玩家已经打出的牌。
-		 */
-		public Map<PlayerLocation, PlayerInfo.PlayerView> getPlayerInfoView() {
-			Map<PlayerLocation, PlayerInfo.PlayerView>result=new HashMap<PlayerLocation, PlayerInfo.PlayerView>();
-			for (Entry<PlayerLocation, PlayerInfo> entry : playerInfos.entrySet()) {
-				result.put(entry.getKey(), entry.getValue().getOtherPlayerView());
-			}
-			return result;
-		}
-
-	}
 
 }

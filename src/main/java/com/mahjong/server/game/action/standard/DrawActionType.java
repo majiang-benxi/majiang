@@ -5,15 +5,12 @@ import static com.mahjong.server.game.action.standard.StandardActionType.DISCARD
 import com.mahjong.server.game.action.AbstractActionType;
 import com.mahjong.server.game.action.ActionAndLocation;
 import com.mahjong.server.game.context.GameContext;
-import com.mahjong.server.game.context.GameContext.PlayerView;
-import com.mahjong.server.game.object.PlayerLocation;
-import com.mahjong.server.game.object.PlayerLocation.Relation;
+import com.mahjong.server.game.enums.PlayerLocation;
+import com.mahjong.server.game.enums.PlayerLocation.Relation;
 import com.mahjong.server.game.object.Tile;
 
 /**
  * 动作类型“摸牌”。
- * 
- * @author blovemaple <blovemaple2010(at)gmail.com>
  */
 public class DrawActionType extends AbstractActionType {
 
@@ -38,17 +35,17 @@ public class DrawActionType extends AbstractActionType {
 	}
 
 	@Override
-	protected boolean isLegalActionWithPreconition(PlayerView context,
+	protected boolean isLegalActionWithPreconition(GameContext context,PlayerLocation location,
 			Tile tiles) {
 		// 牌墙中必须有牌才能摸
-		return context.getTableView().getTileWallSize() > 0;
+		return context.getTable().getTileWallSize() > 0;
 	}
 
 	@Override
 	protected void doLegalAction(GameContext context, PlayerLocation location, Tile tile) {
 		Tile drawTile = context.getTable().draw(1);
-		context.getPlayerInfoByLocation(location).getAliveTiles().addTile(drawTile);
-		context.getPlayerInfoByLocation(location).setLastDrawedTile(drawTile);
+		context.getTable().getPlayerByLocation(location).getAliveTiles().addTile(drawTile);
+		context.getTable().getPlayerByLocation(location).setLastDrawedTile(drawTile);
 	}
 
 }

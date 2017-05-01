@@ -2,6 +2,9 @@ package com.mahjong.server.netty.model;
 
 import java.util.List;
 
+/**
+ * 解散房间最终消息
+ */
 public class KillRoomRespModel {
 	private boolean result;
 	private String msg;

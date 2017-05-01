@@ -12,15 +12,12 @@ import com.mahjong.server.exception.IllegalActionException;
 import com.mahjong.server.game.action.standard.CpgActionType;
 import com.mahjong.server.game.action.standard.StandardActionType;
 import com.mahjong.server.game.context.GameContext;
-import com.mahjong.server.game.context.GameContext.PlayerView;
+import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.object.PlayerInfo;
-import com.mahjong.server.game.object.PlayerLocation;
 import com.mahjong.server.game.object.Tile;
 
 /**
  * 各种ActionType的共同逻辑。
- * 
- * @author blovemaple <blovemaple2010(at)gmail.com>
  */
 public abstract class AbstractActionType implements ActionType {
 	@SuppressWarnings("unused")
@@ -69,14 +66,14 @@ public abstract class AbstractActionType implements ActionType {
 	 * 判断当前状态下指定玩家是否符合做出此类型动作的前提条件（比如“碰”的前提条件是别人刚出牌）。<br>
 	 * 默认实现调用相应方法对上一个动作和活牌数量进行限制，进行判断。
 	 */
-	protected boolean meetPrecondition(GameContext.PlayerView context) {
+	protected boolean meetPrecondition(GameContext context,PlayerLocation location) {
 		// 验证aliveTiles数量条件
-		boolean res = checkAliveTileSizeCondition(context.getMyInfo().getAliveTiles().getPai().length);
+		boolean res = checkAliveTileSizeCondition(context.getTable().getPlayerByLocation(location).getAliveTiles().getPai().length);
 		if (!res) {
 			return false;
 		}
 		// 验证上一个动作的位置条件
-		res = checkLastActionCondition(context.getLastActionAndLocation(), context.getMyLocation());
+		res = checkLastActionCondition(context.getLastActionAndLocation(), location);
 		if (!res) {
 			return false;
 		}
@@ -108,17 +105,16 @@ public abstract class AbstractActionType implements ActionType {
 	 * <br>
 	 * 默认实现为：判断{@link #legalActionTilesStream}返回的流不为空。
 	 */
-	protected boolean canDoWithPrecondition(GameContext context,
-			PlayerLocation location) {
-		PlayerInfo playerInfo =context.getPlayerView(location).getMyInfo();
+	protected boolean canDoWithPrecondition(GameContext context,PlayerLocation location) {
+		PlayerInfo playerInfo =context.getTable().getPlayerByLocation(location);
 		if (playerInfo == null){
 			return false;
 		}
-		Tile  tile=getActionTilesRange(context.getPlayerView(location), location);
+		Tile  tile= getActionTilesRange(playerInfo);
 		if (tile != null && tile.getPai() != null) {
 			List<Tile> tiles = getTileZuHeByActionSize(tile, getActionTilesSize());
 			for (Tile zuHeTile : tiles) {
-				if (isLegalActionTiles(context.getPlayerView(location), zuHeTile)) {
+				if (isLegalActionTiles( context, location, zuHeTile)) {
 					return true;
 				}
 			}
@@ -142,17 +138,16 @@ public abstract class AbstractActionType implements ActionType {
 	}
 
 	@Override
-	public Set<Tile> getLegalActionTiles(GameContext.PlayerView playerView) {
-		if (!meetPrecondition(playerView)) {
+	public Set<Tile> getLegalActionTiles(GameContext context,PlayerLocation location) {
+		if (!meetPrecondition( context, location)) {
 			return Collections.emptySet();
 		}
 		Set<Tile> set = new HashSet<Tile>();
-		Tile tiles = getActionTilesRange(playerView,
-				playerView.getMyLocation());
+		Tile tiles = getActionTilesRange(context.getTable().getPlayerByLocation(location));
 		if (tiles != null && tiles.getPai() != null) {
 			List<Tile> zuHeTiles = getTileZuHeByActionSize(tiles, getActionTilesSize());
 			for (Tile tile : zuHeTiles) {
-				if (isLegalActionTiles(playerView, tile)) {
+				if (isLegalActionTiles(context, location, tile)) {
 					set.add(tile);
 				}
 			}
@@ -176,7 +171,7 @@ public abstract class AbstractActionType implements ActionType {
 			throw new IllegalArgumentException(
 					action.getType().getRealTypeClass().getSimpleName()
 							+ " is not " + getRealTypeClass());
-		if (!isLegalActionTiles(context.getPlayerView(location),
+		if (!isLegalActionTiles(context, location,
 				action.getTile()))
 			return false;
 		return true;
@@ -212,9 +207,8 @@ public abstract class AbstractActionType implements ActionType {
 	 * 返回合法动作中相关牌的可选范围。<br>
 	 * 默认实现为指定玩家的aliveTiles。
 	 */
-	protected Tile getActionTilesRange(GameContext.PlayerView playerView,
-			PlayerLocation location) {
-		return playerView.getMyInfo().getAliveTiles();
+	protected Tile getActionTilesRange(PlayerInfo playerInfo ) {
+		return playerInfo.getAliveTiles();
 	}
 
 	/**
@@ -226,10 +220,9 @@ public abstract class AbstractActionType implements ActionType {
 	 * 判断动作是否合法。<br>
 	 * 默认实现为：先检查前提条件、相关牌数量、相关牌范围，如果满足再调用{@link #isLegalActionWithPreconition}。
 	 */
-	protected boolean isLegalActionTiles(GameContext.PlayerView playerView,
+	protected boolean isLegalActionTiles(GameContext context,PlayerLocation location,
 			Tile tile) {
-		PlayerLocation location = playerView.getMyLocation();
-		if (!meetPrecondition(playerView)) {
+		if (!meetPrecondition( context, location)) {
 			return false;
 		}
 
@@ -239,19 +232,19 @@ public abstract class AbstractActionType implements ActionType {
 			return false;
 		}
 
-		Tile legalTilesRange = getActionTilesRange(playerView, location);
+		Tile legalTilesRange = getActionTilesRange(context.getTable().getPlayerByLocation(location));
 		if (tile != null && legalTilesRange != null && !legalTilesRange.containsAll(tile)) {
 			return false;
 		}
 
-		boolean legal = isLegalActionWithPreconition(playerView, tile);
+		boolean legal = isLegalActionWithPreconition( context, location, tile);
 		return legal;
 	}
 
 	/**
 	 * 判断动作是否合法。调用此方法之前已经判断确保符合前提条件、相关牌数量、相关牌范围。
 	 */
-	protected abstract boolean isLegalActionWithPreconition(PlayerView context,
+	protected abstract boolean isLegalActionWithPreconition(GameContext context,PlayerLocation location,
 			Tile tiles);
 
 	/**
@@ -265,11 +258,11 @@ public abstract class AbstractActionType implements ActionType {
 	 * 。
 	 * 
 	 * @see com.github.blovemaple.mj.action.ActionType#canDo(com.mahjong.server.game.context.github.blovemaple.mj.game.GameContext,
-	 *      com.github.blovemaple.mj.object.PlayerLocation)
+	 *      com.mahjong.server.game.enums.github.blovemaple.mj.object.PlayerLocation)
 	 */
 	@Override
 	public boolean canDo(GameContext context, PlayerLocation location) {
-		if (!meetPrecondition(context.getPlayerView(location)))
+		if (!meetPrecondition( context,  location))
 			return false;
 		return canDoWithPrecondition(context, location);
 	}

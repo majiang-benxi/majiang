@@ -1,4 +1,4 @@
-package com.mahjong.server.game.object;
+package com.mahjong.server.game.enums;
 
 public enum RoomStatus {
 

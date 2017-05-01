@@ -4,7 +4,10 @@ import java.util.List;
 
 import com.mahjong.server.entity.UserActionScore;
 
-public class HistoryScordRecordRespModel {
+/**
+ * 历史战绩
+ */
+public class HistoryRecordRespModel {
 	private List<UserActionScore> userActionScores;
 
 	public List<UserActionScore> getUserActionScores() {

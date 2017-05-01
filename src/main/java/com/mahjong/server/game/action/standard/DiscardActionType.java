@@ -2,15 +2,12 @@ package com.mahjong.server.game.action.standard;
 
 import com.mahjong.server.game.action.AbstractActionType;
 import com.mahjong.server.game.context.GameContext;
-import com.mahjong.server.game.context.GameContext.PlayerView;
+import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.object.PlayerInfo;
-import com.mahjong.server.game.object.PlayerLocation;
 import com.mahjong.server.game.object.Tile;
 
 /**
  * 动作类型“打牌”。
- * 
- * @author blovemaple <blovemaple2010(at)gmail.com>
  */
 public class DiscardActionType extends AbstractActionType {
 
@@ -45,13 +42,13 @@ public class DiscardActionType extends AbstractActionType {
 
 	@Override
 	protected void doLegalAction(GameContext context, PlayerLocation location, Tile tile) {
-		PlayerInfo playerInfo = context.getPlayerInfoByLocation(location);
+		PlayerInfo playerInfo = context.getTable().getPlayerByLocation(location);
 		playerInfo.getAliveTiles().removeAll(tile);
 		playerInfo.getDiscardedTiles().addTile(tile);
 	}
 
 	@Override
-	protected boolean isLegalActionWithPreconition(PlayerView context, Tile tiles) {
+	protected boolean isLegalActionWithPreconition(GameContext context,PlayerLocation location, Tile tiles) {
 		return true;
 	}
 

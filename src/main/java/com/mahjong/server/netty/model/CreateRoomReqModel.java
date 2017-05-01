@@ -1,9 +1,11 @@
 package com.mahjong.server.netty.model;
 
 public class CreateRoomReqModel {
+	
 	private String weixinId;
 	private String ruleStrategy;
 	private int fangKaStrategy;
+	
 	public String getWeixinId() {
 		return weixinId;
 	}

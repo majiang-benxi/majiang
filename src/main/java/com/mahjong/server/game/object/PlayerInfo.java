@@ -1,18 +1,18 @@
 package com.mahjong.server.game.object;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import com.mahjong.server.entity.UserInfo;
 
 /**
  * 麻将桌上一个玩家的信息，包括玩家对象、牌，以及其他信息。
- * 
- * @author blovemaple <blovemaple2010(at)gmail.com>
  */
 public class PlayerInfo extends PlayerTiles implements Cloneable {
 	/**
 	 * 玩家。
 	 */
-	private Player player = null;
+	private UserInfo userInfo;
+
 	/**
 	 * 最后摸的牌。
 	 */
@@ -25,19 +25,15 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	 * 是否听和。
 	 */
 	private boolean isTing = false;
-	/**
-	 * 其他玩家能看到的本玩家的视图
-	 */
-	private PlayerView otherPlayerView;
-	private int score;// 分数
-	// TODO add用户信息
+	
+	private int curScore;// 分数
 
-	public Player getPlayer() {
-		return player;
+	public UserInfo getUserInfo() {
+		return userInfo;
 	}
 
-	public void setPlayer(Player player) {
-		this.player = player;
+	public void setUserInfo(UserInfo userInfo) {
+		this.userInfo = userInfo;
 	}
 
 	public Tile getLastDrawedTile() {
@@ -55,10 +51,6 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 
 	public void setDiscardedTiles(Tile discardedTiles) {
 		this.discardedTiles = discardedTiles;
-	}
-
-	public void setOtherPlayerView(PlayerView otherPlayerView) {
-		this.otherPlayerView = otherPlayerView;
 	}
 
 	public boolean isTing() {
@@ -96,51 +88,12 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 		return c;
 	}
 
-
-	/**
-	 * 获取其他玩家的视图。
-	 */
-	public PlayerView getOtherPlayerView() {
-		if (otherPlayerView == null) { // 不需要加锁，因为多创建了也没事
-			otherPlayerView = new PlayerView();
-		}
-		return otherPlayerView;
+	public int getCurScore() {
+		return curScore;
 	}
 
-	/**
-	 * 一个位置的玩家的视图。需要限制一些权限。
-	 * 
-	 * @author blovemaple <blovemaple2010(at)gmail.com>
-	 */
-	public class PlayerView {
-
-		/**
-		 * 返回玩家名称。
-		 */
-		public String getPlayerName() {
-			Player player = getPlayer();
-			return player != null ? getPlayer().getName() : null;
-		}
-
-		/**
-		 * 返回手中的牌数。
-		 */
-		public int getAliveTileSize() {
-			return getAliveTiles().getPai().length;
-		}
-
-		public Tile getDiscardedTiles() {
-			return discardedTiles;
-		}
-
-		public List<TileGroup> getTileGroupType() {
-			return tileGroups; // FIXME 会看到暗杠
-		}
-
-		public boolean isTing() {
-			return isTing;
-		}
-
+	public void setCurScore(int curScore) {
+		this.curScore = curScore;
 	}
-
+	
 }

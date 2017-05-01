@@ -2,18 +2,14 @@ package com.mahjong.server.service.impl;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mahjong.server.mapper.UserMapper;
 import com.mahjong.server.netty.model.AuthReqModel;
 import com.mahjong.server.service.UserService;
 import com.mahjong.server.vo.User;
 
 @Service
 public class UserServiceImpl implements UserService {
-	@Autowired
-	private UserMapper userMapper;
 	@Override
 	public void save(User user) {
 		// TODO Auto-generated method stub
@@ -41,7 +37,13 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void addUser(AuthReqModel authModel) {
 		// TODO Auto-generated method stub
+		
+	}
 
+	@Override
+	public int getFangKaNum(String weixinId) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

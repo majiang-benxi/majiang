@@ -5,8 +5,6 @@ import java.util.List;
 
 /**
  * 一个玩家的牌。
- * 
- * @author blovemaple <blovemaple2010(at)gmail.com>
  */
 public class PlayerTiles {
 	/**

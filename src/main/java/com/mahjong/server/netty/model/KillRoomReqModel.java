@@ -1,5 +1,8 @@
 package com.mahjong.server.netty.model;
 
+/**
+ * 解散房间请求
+ */
 public class KillRoomReqModel {
 	private String weixinId;
 	private boolean aggree;

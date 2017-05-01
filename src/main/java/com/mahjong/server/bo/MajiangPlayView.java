@@ -1,10 +1,14 @@
-package com.mahjong.server.netty.model;
+package com.mahjong.server.bo;
 
 import java.util.List;
 
 import com.mahjong.server.game.object.PlayerInfo;
 
+/**
+ * 麻将信息视图显示信息
+ */
 public class MajiangPlayView {
+	
 	private String ruleStrategy;
 	private int fangKaStrategy;
 	private int roomId;

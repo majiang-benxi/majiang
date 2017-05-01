@@ -12,6 +12,7 @@ import com.mahjong.server.dao.ManageUserMapper;
 import com.mahjong.server.dao.MessageInfoMapper;
 import com.mahjong.server.dao.RoomCartChangeMapper;
 import com.mahjong.server.dao.RoomRecordMapper;
+import com.mahjong.server.dao.UpdateInfoMapper;
 import com.mahjong.server.dao.UserActionScoreMapper;
 import com.mahjong.server.dao.UserInfoMapper;
 import com.mahjong.server.dao.UserRoomRecordMapper;
@@ -19,6 +20,7 @@ import com.mahjong.server.entity.ManageUser;
 import com.mahjong.server.entity.MessageInfo;
 import com.mahjong.server.entity.RoomCartChange;
 import com.mahjong.server.entity.RoomRecord;
+import com.mahjong.server.entity.UpdateInfo;
 import com.mahjong.server.entity.UserActionScore;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.entity.UserRoomRecord;
@@ -42,11 +44,13 @@ public class DBServiceImpl implements DBService {
 	UserInfoMapper userInfoMapper;
 	@Autowired
 	UserRoomRecordMapper userRoomRecordMapper;
+	@Autowired
+	UpdateInfoMapper updateInfoMapper;
 	
 	/********用户**********/
 	
 	@Override
-	public Integer insertUserInfoByID(UserInfo userInfo) {
+	public Integer insertUserInfo(UserInfo userInfo) {
 		return userInfoMapper.insert(userInfo);
 	}
 	@Override
@@ -271,6 +275,22 @@ public class DBServiceImpl implements DBService {
 		roomCartChangeMapper.insert(roomCartChange);
 		
 		return rest>0;
+	}
+	@Override
+	public UpdateInfo selectUpdateInfoByDeviceType(Integer deviceType,float version ) {
+		List<UpdateInfo> updateInfos =  updateInfoMapper.selectUpdateInfoByDeviceType(deviceType,version);
+		if(CollectionUtils.isNotEmpty(updateInfos)){
+			return updateInfos.get(0);
+		}
+		return null;
+	}
+	@Override
+	public Integer inserUpdateInfo(UpdateInfo updateInfo) {
+		return updateInfoMapper.insertSelective(updateInfo);
+	}
+	@Override
+	public boolean updateUpdateInfoById(UpdateInfo updateInfo) {
+		return updateInfoMapper.updateByPrimaryKey(updateInfo)>0;
 	}
 	
 	

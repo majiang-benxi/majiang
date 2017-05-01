@@ -3,7 +3,7 @@ package com.mahjong.server.game.object;
 import java.io.Serializable;
 import java.util.Arrays;
 
-import com.mahjong.server.game.object.PlayerLocation.Relation;
+import com.mahjong.server.game.enums.PlayerLocation.Relation;
 
 /**
  * 牌组，即玩家的牌中除活牌外的若干个组，通常是吃、碰、杠等动作形成。

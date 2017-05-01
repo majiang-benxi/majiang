@@ -1,6 +1,7 @@
 package com.mahjong.server.netty.model;
 
-public class RecordReqModel {
+
+public class HistoryRecordReqModel {
 	private String weixinId;
 
 	public String getWeixinId() {

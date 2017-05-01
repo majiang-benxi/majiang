@@ -26,7 +26,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
  *
  */
 @Component
-public class AuthHandler extends SimpleChannelInboundHandler<ProtocolModel> {
+public class HeartBeatHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 	@Autowired
 	private DBService dbService;
 	@Override

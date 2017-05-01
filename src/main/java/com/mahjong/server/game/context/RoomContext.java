@@ -1,6 +1,7 @@
 package com.mahjong.server.game.context;
 
-import com.mahjong.server.game.object.RoomStatus;
+import com.mahjong.server.entity.UserInfo;
+import com.mahjong.server.game.enums.RoomStatus;
 
 public class RoomContext {
 
@@ -41,6 +42,10 @@ public class RoomContext {
 
 	public void setGameContext(GameContext gameContext) {
 		this.gameContext = gameContext;
+	}
+
+	public boolean joinRoom(UserInfo userInfo) {
+		return this.gameContext.joinRoom( userInfo);
 	}
 
 }

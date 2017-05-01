@@ -1,6 +1,10 @@
-package com.mahjong.server.netty.model;
+package com.mahjong.server.bo;
 
+/**
+ * 麻将信息返回加上消息体
+ */
 public class RoomRespModel extends MajiangPlayView {
+	
 	private boolean result;
 	private String msg;
 
