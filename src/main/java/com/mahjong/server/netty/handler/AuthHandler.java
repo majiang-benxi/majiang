@@ -5,9 +5,9 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.mahjong.server.netty.enums.EventEnum;
 import com.mahjong.server.netty.model.AuthReqModel;
 import com.mahjong.server.netty.model.AuthRespModel;
-import com.mahjong.server.netty.model.EventEnum;
 import com.mahjong.server.netty.model.ProtocolModel;
 import com.mahjong.server.netty.session.ClientSession;
 import com.mahjong.server.netty.session.UserRoomSession;

@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * 麻将桌上一个玩家的信息，包括玩家对象、牌，以及其他信息。
  * 
- * @author blovemaple <blovemaple2010(at)gmail.com>
+ * @author warter
  */
 public class PlayerInfo extends PlayerTiles implements Cloneable {
 	/**
@@ -110,7 +110,7 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	/**
 	 * 一个位置的玩家的视图。需要限制一些权限。
 	 * 
-	 * @author blovemaple <blovemaple2010(at)gmail.com>
+	 * @author warter
 	 */
 	public class PlayerView {
 

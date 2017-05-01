@@ -14,7 +14,7 @@ import com.mahjong.server.game.object.Tile;
 /**
  * 游戏策略。即一种游戏规则的定义。
  * 
- * @author blovemaple <blovemaple2010(at)gmail.com>
+ * @author warter
  */
 public interface GameStrategy {
 

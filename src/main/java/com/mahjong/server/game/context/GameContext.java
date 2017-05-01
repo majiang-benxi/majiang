@@ -20,7 +20,7 @@ import com.mahjong.server.game.rule.GameStrategy;
 /**
  * 一局游戏进行中的上下文信息。
  * 
- * @author blovemaple <blovemaple2010(at)gmail.com>
+ * @author warter
  */
 public class GameContext {
 	@SuppressWarnings("unused")
@@ -125,7 +125,7 @@ public class GameContext {
 	/**
 	 * 一个位置的玩家的视图。需要限制一些权限。
 	 * 
-	 * @author blovemaple <blovemaple2010(at)gmail.com>
+	 * @author warter
 	 */
 	public class PlayerView {
 

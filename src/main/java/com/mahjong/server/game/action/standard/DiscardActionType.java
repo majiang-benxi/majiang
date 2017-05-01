@@ -10,7 +10,7 @@ import com.mahjong.server.game.object.Tile;
 /**
  * 动作类型“打牌”。
  * 
- * @author blovemaple <blovemaple2010(at)gmail.com>
+ * @author warter
  */
 public class DiscardActionType extends AbstractActionType {
 

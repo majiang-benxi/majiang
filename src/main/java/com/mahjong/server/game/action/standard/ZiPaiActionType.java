@@ -1,6 +1,6 @@
 package com.mahjong.server.game.action.standard;
 
-import static com.mahjong.server.game.object.TileGroupType.BUHUA_GROUP;
+import static com.mahjong.server.game.object.TileGroupType.ZIPAI_GROUP;
 
 import com.mahjong.server.game.action.AbstractActionType;
 import com.mahjong.server.game.context.GameContext;
@@ -9,13 +9,12 @@ import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.PlayerLocation;
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.TileGroup;
-
 /**
- * 动作类型“补花”。
+ * 动作类型“字牌”。
  * 
- * @author blovemaple <blovemaple2010(at)gmail.com>
+ * @author warter
  */
-public class BuhuaActionType extends AbstractActionType {
+public class ZiPaiActionType extends AbstractActionType {
 
 	@Override
 	public boolean canPass(GameContext context, PlayerLocation location) {
@@ -29,13 +28,13 @@ public class BuhuaActionType extends AbstractActionType {
 
 	@Override
 	protected int getActionTilesSize() {
-		return BUHUA_GROUP.size();
+		return ZIPAI_GROUP.size();
 	}
 
 	@Override
 	protected boolean isLegalActionWithPreconition(PlayerView context,
 			Tile tile) {
-		return BUHUA_GROUP.isLegalTile(tile);
+		return ZIPAI_GROUP.isLegalTile(tile);
 	}
 
 	@Override
@@ -43,7 +42,7 @@ public class BuhuaActionType extends AbstractActionType {
 			Tile tile) {
 		PlayerInfo playerInfo = context.getPlayerInfoByLocation(location);
 		playerInfo.getAliveTiles().removeAll(tile);
-		playerInfo.getTileGroups().add(new TileGroup(BUHUA_GROUP, tile));
+		playerInfo.getTileGroups().add(new TileGroup(ZIPAI_GROUP, tile));
 	}
 
 }

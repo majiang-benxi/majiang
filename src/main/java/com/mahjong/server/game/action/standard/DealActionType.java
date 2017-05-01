@@ -16,7 +16,7 @@ import com.mahjong.server.game.object.Tile;
  * 动作类型“发牌”。<br>
  * 发牌动作不由玩家执行，只实现doAction方法。
  * 
- * @author blovemaple <blovemaple2010(at)gmail.com>
+ * @author warter
  */
 public class DealActionType implements ActionType {
 

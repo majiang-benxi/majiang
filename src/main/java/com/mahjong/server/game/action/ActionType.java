@@ -11,7 +11,7 @@ import com.mahjong.server.game.object.Tile;
 /**
  * 做出动作的类型。
  * 
- * @author blovemaple <blovemaple2010(at)gmail.com>
+ * @author warter
  */
 public interface ActionType {
 

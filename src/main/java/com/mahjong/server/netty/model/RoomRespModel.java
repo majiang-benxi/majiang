@@ -1,5 +1,7 @@
 package com.mahjong.server.netty.model;
 
+import com.mahjong.server.vo.MajiangPlayView;
+
 public class RoomRespModel extends MajiangPlayView {
 	private boolean result;
 	private String msg;

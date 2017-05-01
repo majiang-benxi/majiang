@@ -1,4 +1,4 @@
-package com.mahjong.server.netty.model;
+package com.mahjong.server.vo;
 
 import java.util.List;
 

@@ -14,7 +14,7 @@ import com.mahjong.server.game.object.TileGroupType;
 /**
  * 动作类型“补杠”。
  * 
- * @author blovemaple <blovemaple2010(at)gmail.com>
+ * @author warter
  */
 public class BugangActionType extends AbstractActionType {
 

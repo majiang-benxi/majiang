@@ -27,7 +27,7 @@ import com.mahjong.server.game.object.TileGroupType;
  * <li>前提条件都是别的玩家出牌后；
  * <li>都是从特定关系的玩家的出牌中得牌，并组成一种group。
  * 
- * @author blovemaple <blovemaple2010(at)gmail.com>
+ * @author warter
  */
 public class CpgActionType extends AbstractActionType {
 	@SuppressWarnings("unused")

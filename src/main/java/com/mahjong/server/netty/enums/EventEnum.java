@@ -1,4 +1,4 @@
-package com.mahjong.server.netty.model;
+package com.mahjong.server.netty.enums;
 
 /**
  * 操作类型枚举
