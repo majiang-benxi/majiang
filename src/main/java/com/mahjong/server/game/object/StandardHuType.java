@@ -40,7 +40,7 @@ public enum StandardHuType implements HuType {
 		public boolean canHU(WinInfo winInfo, Byte jiang, List<TileUnitInfo> tileUnitInfos) {
 			// tempMap存放牌值的张数<牌值,张数>
 			Map<Byte, Integer> tempMap = new HashMap<Byte, Integer>();
-			for (byte value : winInfo.getWinTile().getPai()) {
+			for (byte value : winInfo.getAliveTile().getPai()) {
 				if (tempMap.containsKey(value)) {
 					tempMap.put(value, tempMap.get(value) + 1);
 				} else {
@@ -49,7 +49,7 @@ public enum StandardHuType implements HuType {
 			}
 			// 将可能成为将牌的牌值存放到jiangPAI中
 			for (Entry<Byte, Integer> e : tempMap.entrySet()) {
-				if (e.getValue() == 4) {
+				if (e.getValue() == 4 || e.getValue() == 3 && e.getKey() == winInfo.getFanhui()) {
 					return true;
 				}
 			}
