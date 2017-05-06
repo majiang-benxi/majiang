@@ -36,5 +36,7 @@ public interface WinType {
 
 	public List<TileUnitType> getWinTileUnitType();
 
+	public boolean isPiaoHU();
+
 
 }

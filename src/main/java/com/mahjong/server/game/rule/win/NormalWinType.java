@@ -25,6 +25,7 @@ import com.mahjong.server.game.rule.RuleInfo;
 
 public class NormalWinType implements WinType {
 	protected HuType huType;// 本局胡牌类型
+	protected boolean mayBePiaoHU = true;;
 	protected List<TileUnitInfo> tileUnitInfos;// 选取当前玩法分数最高的作为返回值
 
 	/**
@@ -33,6 +34,7 @@ public class NormalWinType implements WinType {
 
 	@Override
 	public boolean canWin(WinInfo winInfo, RuleInfo ruleInfo) {
+
 		// 第一把还没打牌就赢了
 		if (xiaoHuCheck(winInfo, ruleInfo)) {
 			huType = XIAO_HU;
@@ -47,7 +49,7 @@ public class NormalWinType implements WinType {
 			return false;
 		}
 		// 将牌check
-		List<Byte> jiangPai = Tile.getJANGPai(winInfo.getWinTile());
+		List<Byte> jiangPai = Tile.getJANGPai(winInfo.getAliveTile());
 		int huiNum = winInfo.getHuiTile().getPai().length;
 		// 没有将牌【只有有会牌就算有将牌】直接胡不了
 
@@ -56,26 +58,26 @@ public class NormalWinType implements WinType {
 		}
 		// 以下用来检测癞子的情况下，是否可以胡，如果一个花色用完所有的癞子的情况下都不能构成一句话就胡不了，先排除掉
 		CardPatternCheckResultVO wanCardPatternCheckResult = new CardPatternCheckResultVO(
-				Tile.getSortedHuaSePaiFromPai(winInfo.getWinTile(), HuaSe.WAN), tileUnitInfos, huiNum);
+				Tile.getSortedHuaSePaiFromPai(winInfo.getAliveTile(), HuaSe.WAN), tileUnitInfos, huiNum);
 		// 赢牌组合check
 		boolean wanRes = HunTilePlayTools.hu_check(wanCardPatternCheckResult, huiNum);
 		if (wanRes == false) {
 			return false;
 		}
 		CardPatternCheckResultVO tiaoCardPatternCheckResult = new CardPatternCheckResultVO(
-				Tile.getSortedHuaSePaiFromPai(winInfo.getWinTile(), HuaSe.TIAO), tileUnitInfos, huiNum);
+				Tile.getSortedHuaSePaiFromPai(winInfo.getAliveTile(), HuaSe.TIAO), tileUnitInfos, huiNum);
 		boolean tiaoRes = HunTilePlayTools.hu_check(tiaoCardPatternCheckResult, huiNum);
 		if (tiaoRes == false) {
 			return false;
 		}
 		CardPatternCheckResultVO bingCardPatternCheckResult = new CardPatternCheckResultVO(
-				Tile.getSortedHuaSePaiFromPai(winInfo.getWinTile(), HuaSe.BING), tileUnitInfos, huiNum);
+				Tile.getSortedHuaSePaiFromPai(winInfo.getAliveTile(), HuaSe.BING), tileUnitInfos, huiNum);
 		boolean bingRes = HunTilePlayTools.hu_check(bingCardPatternCheckResult, huiNum);
 		if (bingRes == false) {
 			return false;
 		}
 		CardPatternCheckResultVO ziCardPatternCheckResult = new CardPatternCheckResultVO(
-				Tile.getSortedHuaSePaiFromPai(winInfo.getWinTile(), HuaSe.ZI), tileUnitInfos, huiNum);
+				Tile.getSortedHuaSePaiFromPai(winInfo.getAliveTile(), HuaSe.ZI), tileUnitInfos, huiNum);
 		boolean ziRes = HunTilePlayTools.hu_check(ziCardPatternCheckResult, huiNum);
 		if (ziRes == false) {
 			return false;
@@ -162,6 +164,9 @@ public class NormalWinType implements WinType {
 			}
 
 		}
+		if (!has19) {
+			mayBePiaoHU = false;
+		}
 		return has19;
 	}
 
@@ -178,7 +183,11 @@ public class NormalWinType implements WinType {
 				hasBing = true;
 			}
 		}
-		return hasWan && hasBing && hasTiao;
+		boolean res = hasWan && hasBing && hasTiao;
+		if (!res) {
+			mayBePiaoHU = false;
+		}
+		return res;
 	}
 
 	@Override
@@ -190,5 +199,16 @@ public class NormalWinType implements WinType {
 		return huType;
 	}
 
+	@Override
+	public boolean isPiaoHU() {
+		return mayBePiaoHU;
 
+	}
+
+	// public static void main(String[] args) {
+	// WinInfo winInfo=new WinInfo();
+	// byte fanhui=0x11;
+	// winInfo.setHuiTile(Tile.getHuiPai(fanhui));
+	// byte[]winTilePai=
+	// }
 }
