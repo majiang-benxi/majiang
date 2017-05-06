@@ -203,33 +203,29 @@ public class Tile {
 		Tile result = new Tile(pais);
 		return result;
 	}
-	public static List<Byte> getHuiPai(byte fanHui) {
-		List<Byte> result = new ArrayList<Byte>();
+
+	public static Tile getHuiPai(byte fanHui) {
+		byte[] result = new byte[2];
 		if (fanHui == 0x09) {
-			result.add((byte) 0x09);
-			result.add((byte) 0x01);
-			return result;
+			result[0] = (byte) 0x09;
+			result[1] = (byte) 0x01;
 		} else if (fanHui == 0x19) {
-			result.add((byte) 0x19);
-			result.add((byte) 0x11);
-			return result;
+			result[0] = (byte) 0x19;
+			result[1] = (byte) 0x11;
 		} else if (fanHui == 0x29) {
-			result.add((byte) 0x29);
-			result.add((byte) 0x21);
-			return result;
+			result[0] = (byte) 0x29;
+			result[1] = (byte) 0x21;
 		} else if (fanHui == 0x52) {
-			result.add((byte) 0x49);
-			result.add((byte) 0x52);
-			return result;
+			result[0] = (byte) 0x49;
+			result[1] = (byte) 0x52;
 		} else if (fanHui == 0x55) {
-			result.add((byte) 0x53);
-			result.add((byte) 0x55);
-			return result;
+			result[0] = (byte) 0x53;
+			result[1] = (byte) 0x55;
 		} else {
-			result.add(fanHui);
-			result.add((byte) (fanHui + 1));
-			return result;
+			result[0] = fanHui;
+			result[1] = (byte) (fanHui + 1);
 		}
+		return new Tile(result);
 	}
 	public static void main(String[] args) {
 		Tile allTile = new Tile();
@@ -256,10 +252,5 @@ public class Tile {
 			System.out.print(b + " ");
 		}
 		System.out.println("******");
-
-		byte huipai = 0x19;
-		for (byte b : Tile.getHuiPai(huipai)) {
-			System.out.print(b + " ");
-		}
 	}
 }

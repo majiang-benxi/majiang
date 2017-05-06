@@ -27,9 +27,13 @@ public class NormalWinType implements WinType {
 	protected HuType huType;// 本局胡牌类型
 	protected List<TileUnitInfo> tileUnitInfos;// 选取当前玩法分数最高的作为返回值
 
+	/**
+	 * 三门齐（饼条万）有碰（111）有顺子（123）有19（带1和9的万饼条，风牌和字牌也为19）中发白做将免19免碰。
+	 */
+
 	@Override
 	public boolean canWin(WinInfo winInfo, RuleInfo ruleInfo) {
-		// 三门齐（饼条万）有碰（111）有顺子（123）有19（带1和9的万饼条，风牌和字牌也为19）中发白做将免19免碰。
+		// 第一把还没打牌就赢了
 		if (xiaoHuCheck(winInfo, ruleInfo)) {
 			huType = XIAO_HU;
 			return true;
@@ -50,6 +54,7 @@ public class NormalWinType implements WinType {
 		if (CollectionUtils.isEmpty(jiangPai) && huiNum == 0) {
 			return false;
 		}
+		// 以下用来检测癞子的情况下，是否可以胡，如果一个花色用完所有的癞子的情况下都不能构成一句话就胡不了，先排除掉
 		CardPatternCheckResultVO wanCardPatternCheckResult = new CardPatternCheckResultVO(
 				Tile.getSortedHuaSePaiFromPai(winInfo.getWinTile(), HuaSe.WAN), tileUnitInfos, huiNum);
 		// 赢牌组合check
@@ -75,26 +80,26 @@ public class NormalWinType implements WinType {
 		if (ziRes == false) {
 			return false;
 		}
-   boolean isHu=false;
-		int totalHunAll = 0;
-   // 将在万中  
-   //如果需要的混小于等于当前的则计算将在将在万中需要的混的个数
-		if (wanCardPatternCheckResult.duiZiNum == 1) {
-			totalHunAll = tiaoCardPatternCheckResult.huiUsedNum + bingCardPatternCheckResult.huiUsedNum
-					+ ziCardPatternCheckResult.huiUsedNum;
-			if (totalHunAll <= huiNum) {
+		// 检测到这里表明至少用了癞子后每个花色都可以凑成对应的一句或者多句话。
+		int totalDuizi = wanCardPatternCheckResult.duiZiNum + tiaoCardPatternCheckResult.duiZiNum
+				+ bingCardPatternCheckResult.duiZiNum + ziCardPatternCheckResult.duiZiNum;
+		int	totalHunAll = tiaoCardPatternCheckResult.huiUsedNum + bingCardPatternCheckResult.huiUsedNum
+					+ ziCardPatternCheckResult.huiUsedNum+wanCardPatternCheckResult.huiUsedNum;
+		if (totalDuizi == 0) {// 没有将的情况
+			if (totalHunAll + 2 == huiNum) {// 还有两个会牌的话，可以胡牌
 				return true;
+			}else{
+			return false;
+			}
+		}else{
+			if ((totalDuizi - 1) + totalHunAll == huiNum) {// 把会牌跟多余的将牌凑成一句话。
+				return true;
+			} else {
+				return false;
 			}
 		}
-   
-  Map<Byte, List<TileUnitInfo>> tileUnitTypeMap = parseTile2TileUnitTypes(jiangPai, winInfo);
-		if (tileUnitTypeMap.isEmpty()) {
-			return false;
-		} else {
-			chooseBestWinType(winInfo, tileUnitTypeMap);
-			return true;
-		}
 	}
+
 
 	private void chooseBestWinType(final WinInfo winInfo, Map<Byte, List<TileUnitInfo>> tileUnitTypeMap) {
 		for ( Entry<Byte, List<TileUnitInfo>> entry : tileUnitTypeMap.entrySet()) {
@@ -184,5 +189,6 @@ public class NormalWinType implements WinType {
 	public HuType getHuType() {
 		return huType;
 	}
+
 
 }
