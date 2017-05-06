@@ -16,6 +16,8 @@ public class TileGroup implements Serializable {
 	private Tile tile;
 	private Relation fromRelation;
 	private Tile gotTile;
+	
+	private Integer tileGroupTypeScore;
 
 	/**
 	 * 新建一个实例。
@@ -142,6 +144,14 @@ public class TileGroup implements Serializable {
 	public String toString() {
 		return "[" + type + " " + gotTile + " from " + fromRelation
 				+ " to compose " + tile + "]";
+	}
+
+	public Integer getTileGroupTypeScore() {
+		return tileGroupTypeScore;
+	}
+
+	public void setTileGroupTypeScore(Integer tileGroupTypeScore) {
+		this.tileGroupTypeScore = tileGroupTypeScore;
 	}
 
 }
