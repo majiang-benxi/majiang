@@ -1,6 +1,7 @@
 package com.mahjong.server.game.object;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -20,6 +21,17 @@ public class Tile {
 	public Tile(byte[] pai) {
 		this.pai = pai;
 	}
+
+	public enum HuaSe {
+		WAN(1), TIAO(2), BING(3), ZI(4);
+		public int type;
+
+		HuaSe(int type) {
+			this.type = type;
+		}
+	}
+
+	public static byte HUIPAI = 0x00;
 	public static byte[] getOneBoxMahjong() {
 		byte[] allPai = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, // 万（1-9）
 				0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, // 万
@@ -168,25 +180,52 @@ public class Tile {
 		return jiangPAI;
 	}
 
-	public static List<Byte> getHuiPai(byte fanHui) {
-		List<Byte> result = new ArrayList<Byte>();
-		if (fanHui == 0x09) {
-			result.add((byte) 0x09);
-			result.add((byte) 0x01);
-			return result;
-		} else if (fanHui == 0x19) {
-			result.add((byte) 0x19);
-			result.add((byte) 0x11);
-			return result;
-		} else if (fanHui == 0x29) {
-			result.add((byte) 0x29);
-			result.add((byte) 0x21);
-			return result;
-		} else {
-			result.add(fanHui);
-			result.add((byte) (fanHui + 1));
-			return result;
+	public static Tile getSortedHuaSePaiFromPai(Tile tile, HuaSe huaSe) {
+		List<Byte>list=new ArrayList<Byte>();
+		for (Byte pai : tile.getPai()) {
+			int paiNum=(int)pai;
+			if (huaSe == HuaSe.WAN && paiNum > 0 && pai < 10) {
+				list.add(pai);
+			} else if (huaSe == HuaSe.WAN && paiNum > 16 && pai < 26) {
+				list.add(pai);
+			} else if (huaSe == HuaSe.TIAO && paiNum > 32 && pai < 42) {
+				list.add(pai);
+			} else if (huaSe == HuaSe.ZI && paiNum > 48 && pai < 56) {
+				list.add(pai);
+			}
 		}
+		Collections.sort(list);
+		byte[]pais=new byte[list.size()];
+		for (int i = 0; i < list.size(); i++) {
+			pais[i]=list.get(i);	
+		}
+
+		Tile result = new Tile(pais);
+		return result;
+	}
+
+	public static Tile getHuiPai(byte fanHui) {
+		byte[] result = new byte[2];
+		if (fanHui == 0x09) {
+			result[0] = (byte) 0x09;
+			result[1] = (byte) 0x01;
+		} else if (fanHui == 0x19) {
+			result[0] = (byte) 0x19;
+			result[1] = (byte) 0x11;
+		} else if (fanHui == 0x29) {
+			result[0] = (byte) 0x29;
+			result[1] = (byte) 0x21;
+		} else if (fanHui == 0x52) {
+			result[0] = (byte) 0x49;
+			result[1] = (byte) 0x52;
+		} else if (fanHui == 0x55) {
+			result[0] = (byte) 0x53;
+			result[1] = (byte) 0x55;
+		} else {
+			result[0] = fanHui;
+			result[1] = (byte) (fanHui + 1);
+		}
+		return new Tile(result);
 	}
 	public static void main(String[] args) {
 		Tile allTile = new Tile();
@@ -213,10 +252,5 @@ public class Tile {
 			System.out.print(b + " ");
 		}
 		System.out.println("******");
-
-		byte huipai = 0x19;
-		for (byte b : Tile.getHuiPai(huipai)) {
-			System.out.print(b + " ");
-		}
 	}
 }
