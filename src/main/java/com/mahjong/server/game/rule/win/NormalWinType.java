@@ -1,16 +1,13 @@
 package com.mahjong.server.game.rule.win;
 
 import static com.mahjong.server.game.object.StandardHuType.XIAO_HU;
-import static com.mahjong.server.game.object.StandardTileUnitType.JIANG;
 import static com.mahjong.server.game.object.StandardTileUnitType.KEZI;
 import static com.mahjong.server.game.object.StandardTileUnitType.SHUNZI;
 import static com.mahjong.server.game.rule.PlayRule.XIAO;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -20,6 +17,7 @@ import org.apache.commons.collections.CollectionUtils;
 import com.mahjong.server.game.object.HuType;
 import com.mahjong.server.game.object.StandardHuType;
 import com.mahjong.server.game.object.Tile;
+import com.mahjong.server.game.object.Tile.HuaSe;
 import com.mahjong.server.game.object.TileUnitInfo;
 import com.mahjong.server.game.object.TileUnitType;
 import com.mahjong.server.game.object.WinInfo;
@@ -36,22 +34,60 @@ public class NormalWinType implements WinType {
 			huType = XIAO_HU;
 			return true;
 		}
-		// 19check
+		// 19check，7对不检查，需要重载
 		if (!check1or9(winInfo.getWinTile())) {
 			return false;
 		}
-		// 花色check
+		// 花色check。清一色检查规则特殊，需要重载
 		if (!huaSeCheck(winInfo.getWinTile())) {
 			return false;
 		}
 		// 将牌check
 		List<Byte> jiangPai = Tile.getJANGPai(winInfo.getWinTile());
+		int huiNum = winInfo.getHuiTile().getPai().length;
 		// 没有将牌【只有有会牌就算有将牌】直接胡不了
-		if (CollectionUtils.isEmpty(jiangPai) && winInfo.getHuiTile().getPai().length == 0) {
+
+		if (CollectionUtils.isEmpty(jiangPai) && huiNum == 0) {
 			return false;
 		}
+		CardPatternCheckResultVO wanCardPatternCheckResult = new CardPatternCheckResultVO(
+				Tile.getSortedHuaSePaiFromPai(winInfo.getWinTile(), HuaSe.WAN), tileUnitInfos, huiNum);
 		// 赢牌组合check
-		Map<Byte, List<TileUnitInfo>> tileUnitTypeMap = parseTile2TileUnitTypes(jiangPai, winInfo);
+		boolean wanRes = HunTilePlayTools.hu_check(wanCardPatternCheckResult, huiNum);
+		if (wanRes == false) {
+			return false;
+		}
+		CardPatternCheckResultVO tiaoCardPatternCheckResult = new CardPatternCheckResultVO(
+				Tile.getSortedHuaSePaiFromPai(winInfo.getWinTile(), HuaSe.TIAO), tileUnitInfos, huiNum);
+		boolean tiaoRes = HunTilePlayTools.hu_check(tiaoCardPatternCheckResult, huiNum);
+		if (tiaoRes == false) {
+			return false;
+		}
+		CardPatternCheckResultVO bingCardPatternCheckResult = new CardPatternCheckResultVO(
+				Tile.getSortedHuaSePaiFromPai(winInfo.getWinTile(), HuaSe.BING), tileUnitInfos, huiNum);
+		boolean bingRes = HunTilePlayTools.hu_check(bingCardPatternCheckResult, huiNum);
+		if (bingRes == false) {
+			return false;
+		}
+		CardPatternCheckResultVO ziCardPatternCheckResult = new CardPatternCheckResultVO(
+				Tile.getSortedHuaSePaiFromPai(winInfo.getWinTile(), HuaSe.ZI), tileUnitInfos, huiNum);
+		boolean ziRes = HunTilePlayTools.hu_check(ziCardPatternCheckResult, huiNum);
+		if (ziRes == false) {
+			return false;
+		}
+   boolean isHu=false;
+		int totalHunAll = 0;
+   // 将在万中  
+   //如果需要的混小于等于当前的则计算将在将在万中需要的混的个数
+		if (wanCardPatternCheckResult.duiZiNum == 1) {
+			totalHunAll = tiaoCardPatternCheckResult.huiUsedNum + bingCardPatternCheckResult.huiUsedNum
+					+ ziCardPatternCheckResult.huiUsedNum;
+			if (totalHunAll <= huiNum) {
+				return true;
+			}
+		}
+   
+  Map<Byte, List<TileUnitInfo>> tileUnitTypeMap = parseTile2TileUnitTypes(jiangPai, winInfo);
 		if (tileUnitTypeMap.isEmpty()) {
 			return false;
 		} else {
@@ -95,68 +131,6 @@ public class NormalWinType implements WinType {
 		return false;
 	}
 
-	// 按照将牌遍历出所有的赢牌的组合。
-	protected Map<Byte, List<TileUnitInfo>> parseTile2TileUnitTypes(List<Byte> jiangPai, WinInfo winInfo) {
-		Map<Byte, List<TileUnitInfo>> result = new HashMap<Byte, List<TileUnitInfo>>();
-		for (Byte jiang : jiangPai) {
-			int linkCount = 0;
-			byte[] temp = winInfo.getWinTile().clone().getPai();
-			List<TileUnitInfo> tileUnitInfos = new ArrayList<TileUnitInfo>();
-			int jiangSizeTemp = 0;
-			// 1、去除将牌
-			for (int i = 0; i < temp.length; i++) {
-				if (temp[i] == jiang) {
-					temp[i] = 0x00;// 将牌置0
-					jiangSizeTemp++;
-					if (jiangSizeTemp == 2) // 将牌为2张
-						tileUnitInfos.add(new TileUnitInfo(JIANG, new Tile(new byte[] { jiang, jiang })));
-					break;
-				}
-			}
-			Arrays.sort(temp);
-			// 2、分离3同
-			for (int i = 0; i < temp.length; i++) {// 3同
-				if (i > 0 && i < temp.length - 1 && temp[i] > 0) {
-					if (temp[i] == temp[i - 1] && temp[i] == temp[i + 1]) {
-						tileUnitInfos.add(
-								new TileUnitInfo(KEZI, new Tile(new byte[] { temp[i - 1], temp[i], temp[i + 1] })));
-						temp[i - 1] = 0x00;
-						temp[i] = 0x00;
-						temp[i + 1] = 0x00;
-						linkCount++;
-					}
-				}
-			}
-			Arrays.sort(temp);
-			// 3、分离3连
-			for (int i = 0; i < temp.length; i++) {// 3连
-				if (i > 0 && i < temp.length - 1 && temp[i] > 0) {
-					if (temp[i + 1] < 0X31 && temp[i - 1] != 0 && temp[i + 1] != 0 && temp[i] == temp[i - 1] + 1
-							&& temp[i] == temp[i + 1] - 1) {
-						tileUnitInfos.add(
-								new TileUnitInfo(SHUNZI, new Tile(new byte[] { temp[i - 1], temp[i], temp[i + 1] })));
-						temp[i - 1] = 0x00;
-						temp[i] = 0x00;
-						temp[i + 1] = 0x00;
-						linkCount++;
-					}
-				}
-			}
-			if (linkCount == 4) {
-				boolean isHu = checkHUForCandidate(jiang, tileUnitInfos);
-				if (!isHu) {
-					tileUnitInfos.clear();
-				} else {
-					result.put(jiang, tileUnitInfos);
-				}
-			} else {
-				tileUnitInfos.clear();
-			}
-		}
-		return result;
-
-	}
-
 	// 判断包含了将且有四句话的牌的组合是否可以赢牌，默认必须要顺子和碰
 	protected boolean checkHUForCandidate(Byte jiang, List<TileUnitInfo> tileUnitInfos) {
 		boolean hasPeng=false,hasShunZi=false;
@@ -173,7 +147,7 @@ public class NormalWinType implements WinType {
 		return hasPeng && hasShunZi;
 	}
 
-	private boolean check1or9(Tile winTile) {
+	protected boolean check1or9(Tile winTile) {
 		boolean has19 = false;
 		for (byte pai : winTile.getPai()) {
 			int paiNum = (int) pai;
