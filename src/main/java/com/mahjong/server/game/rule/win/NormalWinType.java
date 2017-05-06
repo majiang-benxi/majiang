@@ -9,8 +9,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.commons.collections.CollectionUtils;
 
@@ -103,8 +101,7 @@ public class NormalWinType implements WinType {
 	}
 
 
-	private void chooseBestWinType(final WinInfo winInfo, Map<Byte, List<TileUnitInfo>> tileUnitTypeMap) {
-		for ( Entry<Byte, List<TileUnitInfo>> entry : tileUnitTypeMap.entrySet()) {
+	public static HuType chooseBestWinType(final WinInfo winInfo, RuleInfo ruleInfo) {
 			HuType[] allHuTypes = StandardHuType.values();
 			// 按照可能的分数从大到小排序
 			Collections.sort(Arrays.asList(allHuTypes), new Comparator<HuType>() {
@@ -118,20 +115,19 @@ public class NormalWinType implements WinType {
 				}
 			});
 			for (HuType huType : allHuTypes) {
-				boolean canHu = huType.canHU(winInfo, entry.getKey(), entry.getValue());
+			boolean canHu = huType.canHU(winInfo, ruleInfo);
 				if (canHu) {
-					this.huType=huType;
-					this.tileUnitInfos = entry.getValue();
-					break;
+				return huType;
 				}
 			}
+			return null;
 		}
-	}
+
 
 	// 默认没有特殊检查，特殊检查是指类似连三门齐顺子19都不需要满足的赢牌方法
 	private boolean xiaoHuCheck(WinInfo winInfo, RuleInfo ruleInfo) {
 		if (winInfo.isFirstTileCheck() && ruleInfo.getPlayRules().contains(XIAO)) {
-			if (XIAO_HU.canHU(winInfo, null, null)) {
+			if (XIAO_HU.canHU(winInfo, ruleInfo)) {
 				return true;
 			}
 		}

@@ -1,18 +1,14 @@
 package com.mahjong.server.game.object;
 
-import java.util.List;
+import com.mahjong.server.game.rule.RuleInfo;
 
 public interface HuType {
 	/**
 	 * 
 	 * @param winTile判断胡牌的时候所有的牌
-	 * @param jiang
-	 *            当前的将牌
-	 * @param tileUnitInfos
-	 *            当前将牌为前提下拆分的TileUnitInfo组合信息。比如顺子，杠及对应牌的组合
 	 * @return
 	 */
-	public boolean canHU(WinInfo winInfo, Byte jiang, List<TileUnitInfo> tileUnitInfos);
+	public boolean canHU(WinInfo winInfo, RuleInfo ruleInfo);
 
 	/**
 	 * 庄家得分

@@ -1,16 +1,17 @@
 package com.mahjong.server.game.object;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import com.mahjong.server.game.rule.RuleInfo;
 
 public enum StandardHuType implements HuType {
 
 	QING_Yi_SE_NORMAL {
 
 	@Override
-		public boolean canHU(WinInfo winInfo, Byte jiang, List<TileUnitInfo> tileUnitInfos) {
+		public boolean canHU(WinInfo winInfo, RuleInfo ruleInfo) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -37,7 +38,7 @@ public enum StandardHuType implements HuType {
 	XIAO_HU {
 
 		@Override
-		public boolean canHU(WinInfo winInfo, Byte jiang, List<TileUnitInfo> tileUnitInfos) {
+		public boolean canHU(WinInfo winInfo, RuleInfo ruleInfo) {
 			// tempMap存放牌值的张数<牌值,张数>
 			Map<Byte, Integer> tempMap = new HashMap<Byte, Integer>();
 			for (byte value : winInfo.getAliveTile().getPai()) {
