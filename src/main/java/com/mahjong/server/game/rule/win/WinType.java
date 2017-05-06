@@ -28,6 +28,7 @@ public interface WinType {
 	 * @return
 	 */
 	public HuType getHuType();
+
 	/**
 	 * 返回会影响计分的TileUnitType
 	 * 

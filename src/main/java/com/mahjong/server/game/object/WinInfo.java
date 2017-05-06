@@ -15,7 +15,7 @@ public class WinInfo extends PlayerInfo {
 	// (1)检查FanType时利用WinType的parse结果
 	// (2)检查前先看是否已经有结果，避免重复检查
 
-	public static WinInfo fromPlayerTiles(PlayerTiles playerTiles, Tile winTile,byte fanhui, Boolean ziMo) {
+	public static WinInfo fromPlayerTiles(PlayerTiles playerTiles, byte fanhui, Boolean ziMo) {
 		WinInfo winInfo = new WinInfo();
 		winInfo.setFanhui(fanhui);
 		winInfo.setDropTileGroups(playerTiles.getTileGroups());
@@ -87,5 +87,4 @@ public class WinInfo extends PlayerInfo {
 	public void setWinTile(Tile winTile) {
 		this.winTile = winTile;
 	}
-
 }
