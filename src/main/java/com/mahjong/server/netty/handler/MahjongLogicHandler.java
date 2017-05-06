@@ -7,6 +7,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.mahjong.server.game.context.HouseContext;
 import com.mahjong.server.game.context.RoomContext;
 import com.mahjong.server.game.enums.EventEnum;
+import com.mahjong.server.game.object.TileGroupType;
 import com.mahjong.server.netty.model.DiscardReqModel;
 import com.mahjong.server.netty.model.DiscardRespModel;
 import com.mahjong.server.netty.model.ProtocolModel;
@@ -29,17 +30,22 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 						new TypeReference<DiscardReqModel>() {
 						});
 
-				String weixinId = discardReqModel.getWeiXinId();
-				ctx = ClientSession.sessionMap.get(weixinId);
-				
-				//TODO 战绩
-				
-				RoomContext playingRoom = HouseContext.weixinIdToRoom.get(weixinId);
-				DiscardRespModel authRespModel = new DiscardRespModel();
-				// 回写ACK
-				protocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
-				protocolModel.setBody(JSON.toJSONString(authRespModel).getBytes("UTF-8"));
-				ctx.writeAndFlush(protocolModel);
+				if(discardReqModel.getTileGroupType()!=TileGroupType.HU_GROUP.getCode()){
+					
+					
+					String weixinId = discardReqModel.getWeiXinId();
+					ctx = ClientSession.sessionMap.get(weixinId);
+					
+					//TODO 战绩
+					
+					RoomContext playingRoom = HouseContext.weixinIdToRoom.get(weixinId);
+					DiscardRespModel authRespModel = new DiscardRespModel();
+					// 回写ACK
+					protocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
+					protocolModel.setBody(JSON.toJSONString(authRespModel).getBytes("UTF-8"));
+					ctx.writeAndFlush(protocolModel);
+					
+				}
 			}
 		} else {
 			ctx.fireChannelRead(protocolModel);

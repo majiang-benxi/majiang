@@ -26,9 +26,9 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	 */
 	private Tile discardedTiles = null;
 	/**
-	 * 是否听和。
+	 * 是否胡牌。
 	 */
-	private boolean isTing = false;
+	private boolean isHu = false;
 	
 	private int curScore;// 分数
 
@@ -58,11 +58,11 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	}
 
 	public boolean isTing() {
-		return isTing;
+		return isHu;
 	}
 
-	public void setTing(boolean isTing) {
-		this.isTing = isTing;
+	public void setTing(boolean isHu) {
+		this.isHu = isHu;
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 		lastDrawedTile = null;
 		discardedTiles.setPai(null);
 		tileGroups.clear();
-		isTing = false;
+		isHu = false;
 	}
 
 	public PlayerInfo clone() {
