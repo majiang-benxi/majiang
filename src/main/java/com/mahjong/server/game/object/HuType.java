@@ -1,6 +1,7 @@
 package com.mahjong.server.game.object;
 
 import com.mahjong.server.game.rule.RuleInfo;
+import com.mahjong.server.game.rule.win.WinType;
 
 public interface HuType {
 	/**
@@ -10,25 +11,27 @@ public interface HuType {
 	 */
 	public boolean canHU(WinInfo winInfo, RuleInfo ruleInfo);
 
+	public WinType getBaseWinType();
+
 	/**
 	 * 庄家得分
 	 * 
 	 * @return
 	 */
-	public int getZhuangScore(boolean zimo);
+	public int getZhuangScore(WinInfo winInfo, RuleInfo ruleInfo);
 
 	/**
 	 * 闲家得分
 	 * 
 	 * @return
 	 */
-	public int getXianScore();
+	public int getXianScore(WinInfo winInfo, RuleInfo ruleInfo);
 
 	/**
 	 * 点炮的得分
 	 * 
 	 * @return
 	 */
-	public int getDianPaoScore();
+	public int getDianPaoScore(WinInfo winInfo, RuleInfo ruleInfo);
 
 }

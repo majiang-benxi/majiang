@@ -17,13 +17,13 @@ import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.object.GameResult;
 import com.mahjong.server.game.object.HuType;
 import com.mahjong.server.game.object.PlayerInfo;
-import com.mahjong.server.game.object.StandardHuType;
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.WinInfo;
 import com.mahjong.server.game.rule.RuleInfo;
+import com.mahjong.server.game.rule.win.StandardHuType;
 
+//TODO  胡牌的时候再去判断是否可以穷胡和飘(直接调用对应封装的方法即可)，以及对应分数的统计
 public class WinActionType extends AbstractActionType {
-	private boolean ziMo = false;
 
 	@Override
 	public boolean canPass(GameContext context, PlayerLocation location) {
@@ -40,9 +40,6 @@ public class WinActionType extends AbstractActionType {
 		// 必须是发牌、自己摸牌，或别人打牌后
 		if (DEAL.matchBy(al.getActionType()) || (al.getLocation() == playerLocation ? DRAW.matchBy(al.getActionType())
 				: DISCARD.matchBy(al.getActionType()))) {
-			if (DRAW.matchBy(al.getActionType())) {
-				ziMo = true;
-			}
 			return true;
 		} else {
 			return false;
@@ -74,12 +71,13 @@ public class WinActionType extends AbstractActionType {
 			if (!ziMo) {
 				result.setPaoerLocation(context.getLastActionLocation());
 			}
-			context.setGameResult(result);
+			context.setGameResult(result);// TODO 赢牌之后的分数，和牌【穷胡，飘胡】判断和写入
 		}
 
 
 	}
 
+	// TODO 把玩家能赢牌的类型写入到context中
 	@Override
 	protected boolean isLegalActionWithPreconition(GameContext context, PlayerLocation playerLocation, Tile tiles) {
 		Action lastAction = context.getLastAction();
@@ -105,13 +103,14 @@ public class WinActionType extends AbstractActionType {
 		}
 	}
 
-	private HuType chooseBestWinType(final WinInfo winInfo, RuleInfo ruleInfo) {
+	// TODO 此处顺序需要在做处理
+	private HuType chooseBestWinType(final WinInfo winInfo, final RuleInfo ruleInfo) {
 		HuType[] allHuTypes = StandardHuType.values();
 		// 按照可能的分数从大到小排序
 		Collections.sort(Arrays.asList(allHuTypes), new Comparator<HuType>() {
 			@Override
 			public int compare(HuType o1, HuType o2) {
-				if (o1.getZhuangScore(winInfo.isZiMo()) < o1.getZhuangScore(winInfo.isZiMo())) {
+				if (o1.getZhuangScore(winInfo, ruleInfo) < o1.getZhuangScore(winInfo, ruleInfo)) {
 					return 1;
 				} else {
 					return -1;

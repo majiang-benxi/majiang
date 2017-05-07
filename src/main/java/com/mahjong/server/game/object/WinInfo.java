@@ -12,38 +12,35 @@ public class WinInfo extends PlayerInfo {
 	private Tile huiTile;// 存储所有的会牌
 	private byte fanhui;// 翻出来的这个会牌
 	private boolean isZhuang;
-	// 检查WinType和FanType的时候填入的结果，用于：
-	// (1)检查FanType时利用WinType的parse结果
-	// (2)检查前先看是否已经有结果，避免重复检查
 
-	public static WinInfo fromPlayerTiles(PlayerTiles playerTiles, byte fanhui, Boolean ziMo, boolean isZhuang) {
+	/**
+	 * 
+	 * @param playerTiles
+	 * @param fanhui
+	 * @param ziMo
+	 * @param isZhuang
+	 * @return 构建完毕之后不要更改这个里面的任何字段的信息
+	 */
+	public static final WinInfo fromPlayerTiles(PlayerTiles playerTiles, byte fanhui, Boolean ziMo, boolean isZhuang) {
 		WinInfo winInfo = new WinInfo();
-		winInfo.setFanhui(fanhui);
-		winInfo.setDropTileGroups(playerTiles.getTileGroups());
+		winInfo.fanhui = fanhui;
+		winInfo.dropTileGroups = playerTiles.getTileGroups();
 		Tile allWinTile = playerTiles.getAliveTiles().clone();
 		for (TileGroup tileGroup : playerTiles.getTileGroups()) {
 			allWinTile = Tile.addTile(allWinTile, tileGroup.getTile());
 		}
-		winInfo.setWinTile(allWinTile);
-		winInfo.setZhuang(isZhuang);
-		winInfo.setHuiTile(Tile.getHuiPai(fanhui));
+		winInfo.winTile = allWinTile;
+		winInfo.isZhuang = isZhuang;
+		winInfo.huiTile = Tile.getHuiPai(fanhui);
 		playerTiles.getAliveTiles().removeAll(winInfo.getHuiTile());// 把会牌移走
-		winInfo.setAliveTiles(playerTiles.getAliveTiles());
-		winInfo.setTileGroups(playerTiles.getTileGroups());
-		winInfo.setZiMo(ziMo);
+		winInfo.aliveTile = playerTiles.getAliveTiles();
+		winInfo.tileGroups = playerTiles.getTileGroups();
+		winInfo.ziMo = ziMo;
 		return winInfo;
 	}
 
 	public boolean isFirstTileCheck() {
 		return firstTileCheck;
-	}
-
-	public void setFirstTileCheck(boolean firstTileCheck) {
-		this.firstTileCheck = firstTileCheck;
-	}
-
-	public void setZiMo(boolean ziMo) {
-		this.ziMo = ziMo;
 	}
 
 	public boolean isZiMo() {
@@ -54,64 +51,50 @@ public class WinInfo extends PlayerInfo {
 		return huiTile;
 	}
 
-	public void setHuiTile(Tile huiTile) {
-		this.huiTile = huiTile;
-	}
-
 	public Tile getAliveTile() {
 		return aliveTile;
 	}
 
-	public void setAliveTile(Tile aliveTile) {
-		this.aliveTile = aliveTile;
-	}
 
 	public List<TileGroup> getDropTileGroups() {
 		return dropTileGroups;
-	}
-
-	public void setDropTileGroups(List<TileGroup> dropTileGroups) {
-		this.dropTileGroups = dropTileGroups;
 	}
 
 	public byte getFanhui() {
 		return fanhui;
 	}
 
-	public void setFanhui(byte fanhui) {
-		this.fanhui = fanhui;
-	}
-
 	public Tile getWinTile() {
 		return winTile;
-	}
-
-	public void setWinTile(Tile winTile) {
-		this.winTile = winTile;
 	}
 
 	public boolean isZhuang() {
 		return isZhuang;
 	}
 
-	public void setZhuang(boolean isZhuang) {
-		this.isZhuang = isZhuang;
-	}
 
 	public int getSpecialPaiScore() {
-		int totalScore = 1;// basescore
+		int totalScore = 0;
+		int baseScore = 1;// basescore
 		if(isZhuang){
-			totalScore=2;
+			baseScore = 2;
 		}
 		Set<Byte>set=Tile.tile2Set(huiTile);
+		boolean qiongHu = true;
 		for (byte pai : winTile.getPai()) {
 			if(set.contains(pai)){//每个会牌加一分
 				totalScore += 1;
+				qiongHu = false;
 			}
 			if (pai == Tile.QIANG) {// 每个枪牌加一分
 				totalScore += 1;
+				qiongHu = false;
 			}
 		}
+		if (qiongHu) {
+			baseScore *= 4;
+		}
+		totalScore += baseScore;
 		return totalScore;
 	}
 	
