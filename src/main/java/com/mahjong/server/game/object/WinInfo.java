@@ -1,6 +1,7 @@
 package com.mahjong.server.game.object;
 
 import java.util.List;
+import java.util.Set;
 
 public class WinInfo extends PlayerInfo {
 	private Tile winTile;// 用来存储玩家所有的牌，包括活牌和打过的牌，以及手上的会牌
@@ -10,12 +11,12 @@ public class WinInfo extends PlayerInfo {
 	private boolean firstTileCheck;// 发完牌之后的第一次检测
 	private Tile huiTile;// 存储所有的会牌
 	private byte fanhui;// 翻出来的这个会牌
-
+	private boolean isZhuang;
 	// 检查WinType和FanType的时候填入的结果，用于：
 	// (1)检查FanType时利用WinType的parse结果
 	// (2)检查前先看是否已经有结果，避免重复检查
 
-	public static WinInfo fromPlayerTiles(PlayerTiles playerTiles, byte fanhui, Boolean ziMo) {
+	public static WinInfo fromPlayerTiles(PlayerTiles playerTiles, byte fanhui, Boolean ziMo, boolean isZhuang) {
 		WinInfo winInfo = new WinInfo();
 		winInfo.setFanhui(fanhui);
 		winInfo.setDropTileGroups(playerTiles.getTileGroups());
@@ -24,6 +25,7 @@ public class WinInfo extends PlayerInfo {
 			allWinTile = Tile.addTile(allWinTile, tileGroup.getTile());
 		}
 		winInfo.setWinTile(allWinTile);
+		winInfo.setZhuang(isZhuang);
 		winInfo.setHuiTile(Tile.getHuiPai(fanhui));
 		playerTiles.getAliveTiles().removeAll(winInfo.getHuiTile());// 把会牌移走
 		winInfo.setAliveTiles(playerTiles.getAliveTiles());
@@ -87,4 +89,30 @@ public class WinInfo extends PlayerInfo {
 	public void setWinTile(Tile winTile) {
 		this.winTile = winTile;
 	}
+
+	public boolean isZhuang() {
+		return isZhuang;
+	}
+
+	public void setZhuang(boolean isZhuang) {
+		this.isZhuang = isZhuang;
+	}
+
+	public int getSpecialPaiScore() {
+		int totalScore = 1;// basescore
+		if(isZhuang){
+			totalScore=2;
+		}
+		Set<Byte>set=Tile.tile2Set(huiTile);
+		for (byte pai : winTile.getPai()) {
+			if(set.contains(pai)){//每个会牌加一分
+				totalScore += 1;
+			}
+			if (pai == Tile.QIANG) {// 每个枪牌加一分
+				totalScore += 1;
+			}
+		}
+		return totalScore;
+	}
+	
 }

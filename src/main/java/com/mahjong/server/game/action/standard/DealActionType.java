@@ -58,6 +58,7 @@ public class DealActionType implements ActionType {
 		}
 		context.getTable().getPlayerByLocation(location).getAliveTiles()
 				.addTile(table.draw(1));
+		context.getTable().setFanhui(table.drawBottom(1).getPai()[0]);// 系统翻出一张会牌
 	}
 
 	@Override

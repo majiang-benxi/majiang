@@ -9,6 +9,7 @@ import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.ActionAndLocation;
 import com.mahjong.server.game.enums.PlayerLocation;
+import com.mahjong.server.game.object.GameResult;
 import com.mahjong.server.game.object.MahjongTable;
 import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.rule.GameStrategy;
@@ -28,7 +29,8 @@ public class GameContext {
 	
 	/*记录用户每一步出牌信息*/
 	private List<ActionAndLocation> localDoneActions = new ArrayList<ActionAndLocation>();
-	
+	private GameResult gameResult;
+
 	public GameContext(MahjongTable table, GameStrategy gameStrategy) {
 		this.table = table;
 		this.gameStrategy = gameStrategy;
@@ -115,6 +117,30 @@ public class GameContext {
 			//TODO init 
 		}
 		return true;
+	}
+
+	public List<ActionAndLocation> getLocalDoneActions() {
+		return localDoneActions;
+	}
+
+	public void setLocalDoneActions(List<ActionAndLocation> localDoneActions) {
+		this.localDoneActions = localDoneActions;
+	}
+
+	public GameResult getGameResult() {
+		return gameResult;
+	}
+
+	public void setGameResult(GameResult gameResult) {
+		this.gameResult = gameResult;
+	}
+
+	public void setTable(MahjongTable table) {
+		this.table = table;
+	}
+
+	public void setGameStrategy(GameStrategy gameStrategy) {
+		this.gameStrategy = gameStrategy;
 	}
 
 

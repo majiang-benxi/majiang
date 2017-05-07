@@ -250,9 +250,11 @@ public abstract class AbstractActionType implements ActionType {
 
 	/**
 	 * 执行动作。调用此方法之前已经确保符合动作类型，并使用{@link #isLegalActionTiles}判断过动作的合法性。
+	 * 
+	 * @throws IllegalActionException
 	 */
 	protected abstract void doLegalAction(GameContext context,
-			PlayerLocation location, Tile tile);
+			PlayerLocation location, Tile tile) throws IllegalActionException;
 
 	/**
 	 * 先使用{@link #meetPrecondition}检查前提条件，如果满足再调用{@link #canDoWithPrecondition}

@@ -59,11 +59,11 @@ public enum StandardActionType implements ActionType {
 	/**
 	 * 摸底牌
 	 */
-	DRAW_BOTTOM(new DrawBottomActionType());
+	DRAW_BOTTOM(new DrawBottomActionType()),
 	/**
 	 * 和牌
 	 */
-//	WIN(new WinActionType());
+	WIN(new WinActionType());
 
 	private final ActionType type;
 

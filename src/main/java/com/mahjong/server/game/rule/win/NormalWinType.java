@@ -5,15 +5,11 @@ import static com.mahjong.server.game.object.StandardTileUnitType.KEZI;
 import static com.mahjong.server.game.object.StandardTileUnitType.SHUNZI;
 import static com.mahjong.server.game.rule.PlayRule.XIAO;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 
 import com.mahjong.server.game.object.HuType;
-import com.mahjong.server.game.object.StandardHuType;
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.Tile.HuaSe;
 import com.mahjong.server.game.object.TileUnitInfo;
@@ -101,27 +97,7 @@ public class NormalWinType implements WinType {
 	}
 
 
-	public static HuType chooseBestWinType(final WinInfo winInfo, RuleInfo ruleInfo) {
-			HuType[] allHuTypes = StandardHuType.values();
-			// 按照可能的分数从大到小排序
-			Collections.sort(Arrays.asList(allHuTypes), new Comparator<HuType>() {
-				@Override
-				public int compare(HuType o1, HuType o2) {
-					if (o1.getZhuangScore(winInfo.isZiMo()) < o1.getZhuangScore(winInfo.isZiMo())) {
-						return 1;
-					} else {
-						return -1;
-					}
-				}
-			});
-			for (HuType huType : allHuTypes) {
-			boolean canHu = huType.canHU(winInfo, ruleInfo);
-				if (canHu) {
-				return huType;
-				}
-			}
-			return null;
-		}
+
 
 
 	// 默认没有特殊检查，特殊检查是指类似连三门齐顺子19都不需要满足的赢牌方法
