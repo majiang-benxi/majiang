@@ -46,15 +46,15 @@
 			<properties>
 				<environment>daily</environment>
 			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 		</profile>
 		<profile>
 			<id>online</id>
 			<properties>
 				<environment>online</environment>
 			</properties>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
 		</profile>
 	</profiles>
 

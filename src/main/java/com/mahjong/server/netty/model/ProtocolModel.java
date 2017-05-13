@@ -15,6 +15,16 @@ public class ProtocolModel {
 	// 协议包体
 	private String body;// 前端不支持byte，此处先用string
 
+	public ProtocolModel() {
+
+	}
+
+	public ProtocolModel(float version, int commandId, int deviceType, String body) {
+		this.version = version;
+		this.commandId = commandId;
+		this.deviceType = deviceType;
+		this.body = body;
+	}
 
 	public float getVersion() {
 		return version;

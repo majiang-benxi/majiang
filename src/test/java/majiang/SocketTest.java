@@ -3,10 +3,14 @@ package majiang;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 
+import com.alibaba.fastjson.JSON;
+import com.mahjong.server.game.enums.EventEnum;
+import com.mahjong.server.netty.model.AuthReqModel;
+import com.mahjong.server.netty.model.ProtocolModel;
+
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
@@ -15,7 +19,6 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.CharsetUtil;
 
 public class SocketTest {
 	public static void main(String[] args) throws Exception {
@@ -54,7 +57,9 @@ public class SocketTest {
 		@Override
 		public void channelActive(ChannelHandlerContext ctx) throws Exception {
 			System.out.println("client channelActive..");
-			ctx.writeAndFlush(Unpooled.copiedBuffer("Netty rocks!", CharsetUtil.UTF_8)); // 必须有flush
+			AuthReqModel model=new AuthReqModel("wumiao", "http://www.baidu.com", 0, "dfdsfdfd32e323232");
+		ctx.writeAndFlush(
+				JSON.toJSONString(new ProtocolModel(1.0f, EventEnum.AUTH_REQ.getValue(), 1, JSON.toJSONString(model))));
 		}
 
 		@Override

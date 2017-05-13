@@ -51,13 +51,13 @@ public enum EventEnum {
 	/** 一次发消息响应 */
 	SEND_MESG_RESP(19);
 	
-    private Integer value;
+	private int value;
 
-    public Integer getValue() {
+	public int getValue() {
         return value;
     }
 
-    EventEnum(Integer value) {
+	EventEnum(int value) {
         this.value = value;
     }
 }

@@ -5,6 +5,9 @@ public class AuthRespModel {
 	private int fangKaSize;
 	private Integer playingRoomId;// 登录掉线的情况下，此值不为空，其他情况为空。
 
+	public AuthRespModel() {
+
+	}
 	public AuthRespModel(boolean auth, int fangKaSize, Integer playingRoomId) {
 		this.auth = auth;
 		this.fangKaSize = fangKaSize;
