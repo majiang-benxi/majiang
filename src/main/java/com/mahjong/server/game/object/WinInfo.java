@@ -1,7 +1,6 @@
 package com.mahjong.server.game.object;
 
 import java.util.List;
-import java.util.Set;
 
 public class WinInfo extends PlayerInfo {
 	private Tile winTile;// 用来存储玩家所有的牌，包括活牌和打过的牌，以及手上的会牌
@@ -72,30 +71,4 @@ public class WinInfo extends PlayerInfo {
 		return isZhuang;
 	}
 
-
-	public int getSpecialPaiScore() {
-		int totalScore = 0;
-		int baseScore = 1;// basescore
-		if(isZhuang){
-			baseScore = 2;
-		}
-		Set<Byte>set=Tile.tile2Set(huiTile);
-		boolean qiongHu = true;
-		for (byte pai : winTile.getPai()) {
-			if(set.contains(pai)){//每个会牌加一分
-				totalScore += 1;
-				qiongHu = false;
-			}
-			if (pai == Tile.QIANG) {// 每个枪牌加一分
-				totalScore += 1;
-				qiongHu = false;
-			}
-		}
-		if (qiongHu) {
-			baseScore *= 4;
-		}
-		totalScore += baseScore;
-		return totalScore;
-	}
-	
 }

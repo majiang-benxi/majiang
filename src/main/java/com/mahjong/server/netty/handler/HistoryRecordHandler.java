@@ -34,7 +34,7 @@ public class HistoryRecordHandler extends SimpleChannelInboundHandler<ProtocolMo
 			if (protocolModel.getBody() == null) {
 				ctx.close();
 			} else {
-				HistoryRecordReqModel historyRecordReqModel = JSON.parseObject(new String(protocolModel.getBody(), "UTF-8"),
+				HistoryRecordReqModel historyRecordReqModel = JSON.parseObject(protocolModel.getBody(),
 						new TypeReference<HistoryRecordReqModel>() {
 						});
 				
@@ -49,7 +49,7 @@ public class HistoryRecordHandler extends SimpleChannelInboundHandler<ProtocolMo
 				historyRecordRespModel.setUserLatestPlayRecord(userLatestRecord);
 				
 				protocolModel.setCommandId(EventEnum.HISTORY_RECORD_REQ.getValue());
-				protocolModel.setBody(JSON.toJSONString(historyRecordRespModel).getBytes("UTF-8"));
+				protocolModel.setBody(JSON.toJSONString(historyRecordRespModel));
 				ctx.writeAndFlush(protocolModel);
 			}
 		} else {

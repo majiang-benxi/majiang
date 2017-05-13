@@ -42,7 +42,7 @@ public enum TileGroupType {
 	/**
 	 * 胡牌
 	 */
-	HU_GROUP(ZI_PAI,7);
+	HU_GROUP(null, 7);
 	
 	private int code;
 	

@@ -35,7 +35,7 @@ public class AuthHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 			if (protocolModel.getBody() == null) {
 				ctx.close();
 			} else {
-				AuthReqModel authModel = JSON.parseObject(new String(protocolModel.getBody(), "UTF-8"),
+				AuthReqModel authModel = JSON.parseObject(protocolModel.getBody(),
 						new TypeReference<AuthReqModel>() {
 						});
 				InetSocketAddress socketAddr = (InetSocketAddress) ctx.channel().remoteAddress();
@@ -75,7 +75,7 @@ public class AuthHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 				AuthRespModel authRespModel = new AuthRespModel(true, fangKaSize, playingRoom.getRoomNum());
 				// 回写ACK
 				protocolModel.setCommandId(EventEnum.AUTH_RESP.getValue());
-				protocolModel.setBody(JSON.toJSONString(authRespModel).getBytes("UTF-8"));
+				protocolModel.setBody(JSON.toJSONString(authRespModel));
 				ctx.writeAndFlush(protocolModel);
 			}
 		} else {

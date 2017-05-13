@@ -111,7 +111,7 @@ public enum StandardHuType implements HuType {
 
 		@Override
 		public int getZhuangScore(WinInfo winInfo, RuleInfo ruleInfo) {
-			winInfo.getSpecialPaiScore();
+
 			return 0;
 		}
 

@@ -36,7 +36,7 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 			if (protocolModel.getBody() == null) {
 				ctx.close();
 			} else {
-				EnterRoomReqModel enterRoomReqModel = JSON.parseObject(new String(protocolModel.getBody(), "UTF-8"),
+				EnterRoomReqModel enterRoomReqModel = JSON.parseObject(protocolModel.getBody(),
 						new TypeReference<EnterRoomReqModel>() {
 						});
 				
@@ -63,7 +63,7 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 					
 				}
 				protocolModel.setCommandId(EventEnum.ROOM_ENTER_RESP.getValue());
-				protocolModel.setBody(JSON.toJSONString(enterRoomRespModel).getBytes("UTF-8"));
+				protocolModel.setBody(JSON.toJSONString(enterRoomRespModel));
 				ctx.writeAndFlush(protocolModel);
 				
 				// 通知其他三家
@@ -77,7 +77,7 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 					ProtocolModel newProtocolModel = new ProtocolModel();
 					newProtocolModel.setCommandId(EventEnum.NEW_ENTER_RESP.getValue());
 					EnterRoomRespModel newEnterRoomRespModel = new EnterRoomRespModel(playerIn.getUserInfo().getWeixinMark(), true, "新人加入", roomContex);
-					newProtocolModel.setBody(JSON.toJSONString(newEnterRoomRespModel).getBytes("UTF-8"));
+					newProtocolModel.setBody(JSON.toJSONString(newEnterRoomRespModel));
 					
 					ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinId);
 					userCtx.writeAndFlush(newProtocolModel);

@@ -23,7 +23,7 @@ public class HeartBeatHandler extends SimpleChannelInboundHandler<ProtocolModel>
 	public void channelRead0(ChannelHandlerContext ctx, ProtocolModel protocolModel) throws Exception {
 		
 		if (protocolModel.getBody() != null) {
-			RequestBaseMode requestBaseMode = JSON.parseObject(new String(protocolModel.getBody(), "UTF-8"),
+			RequestBaseMode requestBaseMode = JSON.parseObject(protocolModel.getBody(),
 					new TypeReference<RequestBaseMode>() {
 					});
 			String weixinId = requestBaseMode.getWeiXinId();

@@ -26,7 +26,7 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 			if (protocolModel.getBody() == null) {
 				ctx.close();
 			} else {
-				DiscardReqModel discardReqModel = JSON.parseObject(new String(protocolModel.getBody(), "UTF-8"),
+				DiscardReqModel discardReqModel = JSON.parseObject(protocolModel.getBody(),
 						new TypeReference<DiscardReqModel>() {
 						});
 
@@ -42,7 +42,7 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 					DiscardRespModel authRespModel = new DiscardRespModel();
 					// 回写ACK
 					protocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
-					protocolModel.setBody(JSON.toJSONString(authRespModel).getBytes("UTF-8"));
+					protocolModel.setBody(JSON.toJSONString(authRespModel));
 					ctx.writeAndFlush(protocolModel);
 					
 				}

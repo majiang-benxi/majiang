@@ -30,7 +30,7 @@ public class UpdateHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 				ctx.close();
 			} else {
 				
-				DownLoadReqModel downModel = JSON.parseObject(new String(protocolModel.getBody(), "UTF-8"),
+				DownLoadReqModel downModel = JSON.parseObject(protocolModel.getBody(),
 						new TypeReference<DownLoadReqModel>() {
 				});
 				
@@ -40,7 +40,7 @@ public class UpdateHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 				if(updateInfo!=null){
 					DownLoadRespModel downLoadRespModel = new DownLoadRespModel();
 					downLoadRespModel.setUrl(updateInfo.getDownUrl());
-					protocolModel.setBody(JSON.toJSONString(downLoadRespModel).getBytes("UTF-8"));
+					protocolModel.setBody(JSON.toJSONString(downLoadRespModel));
 				}
 				protocolModel.setCommandId(EventEnum.UPDATE_RESP.getValue());
 				ctx.writeAndFlush(protocolModel);

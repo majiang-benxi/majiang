@@ -39,7 +39,7 @@ public class KillRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> 
 			if (protocolModel.getBody() == null) {
 				ctx.close();
 			} else {
-				KillRoomReqModel killRoomReqModel = JSON.parseObject(new String(protocolModel.getBody(), "UTF-8"),
+				KillRoomReqModel killRoomReqModel = JSON.parseObject(protocolModel.getBody(),
 						new TypeReference<KillRoomReqModel>() {
 						});
 				
@@ -65,7 +65,7 @@ public class KillRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> 
 						KillRoomNoticeRespModel killRoomNoticeRespModel = new KillRoomNoticeRespModel();
 						killRoomNoticeRespModel.setNickName(userInfo.getNickName());
 						
-						newProtocolModel.setBody(JSON.toJSONString(killRoomNoticeRespModel).getBytes("UTF-8"));
+						newProtocolModel.setBody(JSON.toJSONString(killRoomNoticeRespModel));
 						
 						ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinId);
 						userCtx.writeAndFlush(newProtocolModel);
@@ -110,7 +110,7 @@ public class KillRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> 
 					}
 					
 					protocolModel.setCommandId(EventEnum.KILL_ROOM_RESP.getValue());
-					protocolModel.setBody(JSON.toJSONString(killRoomRespModel).getBytes("UTF-8"));
+					protocolModel.setBody(JSON.toJSONString(killRoomRespModel));
 					ctx.writeAndFlush(protocolModel);
 					
 				}

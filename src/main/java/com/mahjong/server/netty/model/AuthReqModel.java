@@ -4,8 +4,6 @@ public class AuthReqModel extends RequestBaseMode{
 
 	private String nickName;
 
-	private String loginIp;
-
 	private String headImgUrl;
 
 	private int sex;
@@ -18,13 +16,6 @@ public class AuthReqModel extends RequestBaseMode{
 		this.nickName = nickName;
 	}
 
-	public String getLoginIp() {
-		return loginIp;
-	}
-
-	public void setLoginIp(String loginIp) {
-		this.loginIp = loginIp;
-	}
 
 	public int getSex() {
 		return sex;

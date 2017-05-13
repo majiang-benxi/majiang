@@ -36,7 +36,7 @@ public class SendMessageHandler extends SimpleChannelInboundHandler<ProtocolMode
 			if (protocolModel.getBody() == null) {
 				ctx.close();
 			} else {
-				SendMsgReqModel sendMsgReqModel = JSON.parseObject(new String(protocolModel.getBody(), "UTF-8"),
+				SendMsgReqModel sendMsgReqModel = JSON.parseObject(protocolModel.getBody(),
 						new TypeReference<SendMsgReqModel>() {
 						});
 				
@@ -62,7 +62,7 @@ public class SendMessageHandler extends SimpleChannelInboundHandler<ProtocolMode
 					
 					ProtocolModel newProtocolModel = new ProtocolModel();
 					newProtocolModel.setCommandId(EventEnum.SEND_MESG_RESP.getValue());
-					newProtocolModel.setBody(JSON.toJSONString(sendMsgRespModel).getBytes("UTF-8"));
+					newProtocolModel.setBody(JSON.toJSONString(sendMsgRespModel));
 					
 					ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinId);
 					userCtx.writeAndFlush(newProtocolModel);
