@@ -6,7 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mahjong.server.exception.IllegalActionException;
 import com.mahjong.server.game.action.standard.CpgActionType;
@@ -22,8 +24,7 @@ import com.mahjong.server.game.object.Tile;
  */
 public abstract class AbstractActionType implements ActionType {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger
-			.getLogger(AbstractActionType.class.getSimpleName());
+	private static final Logger logger = LoggerFactory.getLogger(AbstractActionType.class);
 
 	/**
 	 * 名称，用作唯一标识。<br>
