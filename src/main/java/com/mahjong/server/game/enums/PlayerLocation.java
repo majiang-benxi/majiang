@@ -20,7 +20,7 @@ public enum PlayerLocation {
 	}
 	
 
-	public static PlayerLocation fromCode(int infocode) {
+	public static PlayerLocation fromCode(Integer infocode) {
 		for (PlayerLocation responseCode : PlayerLocation.values()) {
 			if (responseCode.getCode() == infocode) {
 				return responseCode;

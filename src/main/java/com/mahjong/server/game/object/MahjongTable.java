@@ -86,11 +86,7 @@ public class MahjongTable {
 	}
 
 	public void setPlayer(PlayerLocation location, PlayerInfo player) {
-		PlayerInfo playerInfo = playerInfos.get(location);
-		if (playerInfo == null) {
-			playerInfo = new PlayerInfo();
-			playerInfos.put(location, playerInfo);
-		}
+		playerInfos.put(location, player);
 	}
 
 	public Tile getTileWall() {

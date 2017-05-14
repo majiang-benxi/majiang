@@ -46,7 +46,7 @@ public class KillRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> 
 				String weixinId = killRoomReqModel.getWeiXinId();
 				Boolean isAggree = killRoomReqModel.isAggree();
 				UserInfo userInfo = dbService.selectUserInfoByWeiXinMark(weixinId);
-				
+				if (userInfo != null) {
 				RoomContext roomContex = HouseContext.weixinIdToRoom.get(weixinId);
 				
 				if(roomContex.getAgreeKillRoomNum().intValue()==0){
@@ -113,8 +113,12 @@ public class KillRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> 
 					protocolModel.setBody(JSON.toJSONString(killRoomRespModel));
 					ctx.writeAndFlush(protocolModel);
 					
+				}else{
+						KillRoomRespModel killRoomRespModel = new KillRoomRespModel();
+						killRoomRespModel.setResult(false);
+						killRoomRespModel.setMsg("当前用户不存在，没有权限解散！");
 				}
-				
+				}
 			}
 		} else {
 			ctx.fireChannelRead(protocolModel);

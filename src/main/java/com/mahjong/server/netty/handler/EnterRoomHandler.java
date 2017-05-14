@@ -30,6 +30,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 	@Autowired
 	private DBService dbService;
+
 	@Override
 	public void channelRead0(ChannelHandlerContext ctx, ProtocolModel protocolModel) throws Exception {
 		if (protocolModel.getCommandId() == EventEnum.ROOM_ENTER_REQ.getValue()) {
@@ -39,51 +40,56 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 				EnterRoomReqModel enterRoomReqModel = JSON.parseObject(protocolModel.getBody(),
 						new TypeReference<EnterRoomReqModel>() {
 						});
-				
+
 				String weixinId = enterRoomReqModel.getWeiXinId();
 				Integer roomId = enterRoomReqModel.getRoomId();
-				
-				UserInfo userInfo = dbService.selectUserInfoByWeiXinMark(weixinId);
-				
 				EnterRoomRespModel enterRoomRespModel = null;
-				RoomContext roomContex = null;
-				if((roomContex = HouseContext.weixinIdToRoom.get(weixinId))==null){
-					
-					if((roomContex = HouseContext.rommList.get(roomId))!=null){
-						boolean flag = roomContex.joinRoom(userInfo);
-						if(flag){
-							HouseContext.weixinIdToRoom.put(weixinId, roomContex);
-							enterRoomRespModel = new EnterRoomRespModel(weixinId,false,"恭喜您，加入房间成功！",roomContex);
-						}else{
-							enterRoomRespModel = new EnterRoomRespModel(weixinId,false,"加入房间失败，房间已满！",null);
+				UserInfo userInfo = dbService.selectUserInfoByWeiXinMark(weixinId);
+				boolean flag = false;
+				if (userInfo == null) {
+					enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "您未注册，无法加入房间，请见注册！", null);
+				} else {
+					RoomContext roomContex = null;
+					if ((roomContex = HouseContext.weixinIdToRoom.get(weixinId)) == null) {
+
+						if ((roomContex = HouseContext.rommList.get(roomId)) != null) {
+							flag = roomContex.joinRoom(userInfo);
+							if (flag) {
+								HouseContext.weixinIdToRoom.put(weixinId, roomContex);
+								enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "恭喜您，加入房间成功！", roomContex);
+								// 通知其他三家
+								for (Entry<PlayerLocation, PlayerInfo> ent : roomContex.getGameContext().getTable()
+										.getPlayerInfos().entrySet()) {
+
+									PlayerInfo playerIn = ent.getValue();
+									if (playerIn.getUserInfo().getWeixinMark().equals(weixinId)) {
+										continue;
+									}
+
+									ProtocolModel newProtocolModel = new ProtocolModel();
+									newProtocolModel.setCommandId(EventEnum.NEW_ENTER_RESP.getValue());
+									EnterRoomRespModel newEnterRoomRespModel = new EnterRoomRespModel(
+											playerIn.getUserInfo().getWeixinMark(), true, "新人加入", roomContex);
+									newProtocolModel.setBody(JSON.toJSONString(newEnterRoomRespModel));
+
+									ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinId);
+									userCtx.writeAndFlush(newProtocolModel);
+
+								}
+							} else {
+								enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "加入房间失败，房间已满！", null);
+							}
+						} else {
+							enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "加入房间失败，房间不存在！", null);
 						}
-					}else{
-						enterRoomRespModel = new EnterRoomRespModel(weixinId,false,"加入房间失败，房间不存在！",null);
+
+					} else {
+						enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "加入房间失败，您还没有登录！", null);
 					}
-					
 				}
 				protocolModel.setCommandId(EventEnum.ROOM_ENTER_RESP.getValue());
 				protocolModel.setBody(JSON.toJSONString(enterRoomRespModel));
 				ctx.writeAndFlush(protocolModel);
-				
-				// 通知其他三家
-				for(Entry<PlayerLocation, PlayerInfo>  ent : roomContex.getGameContext().getTable().getPlayerInfos().entrySet()){
-					
-					PlayerInfo playerIn = ent.getValue();
-					if(playerIn.getUserInfo().getWeixinMark().equals(weixinId)){
-						continue;
-					}
-					
-					ProtocolModel newProtocolModel = new ProtocolModel();
-					newProtocolModel.setCommandId(EventEnum.NEW_ENTER_RESP.getValue());
-					EnterRoomRespModel newEnterRoomRespModel = new EnterRoomRespModel(playerIn.getUserInfo().getWeixinMark(), true, "新人加入", roomContex);
-					newProtocolModel.setBody(JSON.toJSONString(newEnterRoomRespModel));
-					
-					ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinId);
-					userCtx.writeAndFlush(newProtocolModel);
-					
-				}
-				
 			}
 		} else {
 			ctx.fireChannelRead(protocolModel);
@@ -94,5 +100,5 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
 		ctx.fireExceptionCaught(cause);
 	}
-	
+
 }

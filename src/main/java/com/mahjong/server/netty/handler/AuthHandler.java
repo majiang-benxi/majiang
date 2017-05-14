@@ -66,15 +66,18 @@ public class AuthHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 						updateUserInfo.setSex((byte) authModel.getSex());
 						updateUserInfo.setWeixinMark(weixinId);
 						updateUserInfo.setId(userInfo.getId());
+						userInfo.setState((byte) 1);
 						dbService.updateUserInfoById(updateUserInfo);
 					}
 					ClientSession.sessionMap.put(weixinId, ctx);
 				}
-				userInfo = dbService.selectUserInfoByWeiXinMark(weixinId);
+				if (userInfo == null) {
+					userInfo = dbService.selectUserInfoByWeiXinMark(weixinId);
+				}
 				int fangKaSize = userInfo.getRoomCartNum();
 				RoomContext playingRoom = HouseContext.weixinIdToRoom.get(weixinId);
 				AuthRespModel authRespModel = new AuthRespModel(true, fangKaSize,
-						playingRoom == null ? -1 : playingRoom.getRoomNum());
+						playingRoom == null ? null : playingRoom.getRoomNum());
 				// 回写ACK
 				protocolModel.setCommandId(EventEnum.AUTH_RESP.getValue());
 				protocolModel.setBody(JSON.toJSONString(authRespModel));

@@ -21,13 +21,16 @@ public class WebSocketProtocolCodec extends MessageToMessageCodec<TextWebSocketF
 	@Override
 	protected void encode(ChannelHandlerContext channelHandlerContext, ProtocolModel protocolModel, List<Object> out)
 			throws Exception {
-		out.add(new TextWebSocketFrame(JSON.toJSONString(protocolModel)));
+		String msg = JSON.toJSONString(protocolModel);
+		System.out.println("encode=" + msg);
+		out.add(new TextWebSocketFrame(msg));
 	}
 
 	@Override
 	protected void decode(ChannelHandlerContext channelHandlerContext, TextWebSocketFrame textWebSocketFrame,
 			List<Object> in) throws Exception {
 		String text = textWebSocketFrame.text();
+		System.out.println("decode=" + text);
 		ProtocolModel protocolMsg = JSON.parseObject(text, new TypeReference<ProtocolModel>() {
 		});
 		if (protocolMsg != null) {

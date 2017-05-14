@@ -15,15 +15,15 @@ public class UserInfo {
 
     private Date createTime;
 
-    private Integer roomCartNum;
+	private int roomCartNum;
 
-    private Integer scoreNum;
+	private int scoreNum;
 
     private String lastLoginIp;
 
     private Date lastLoginTime;
 
-    private Integer currRoom;
+	private Integer currRoom;// 保留包装类型，如果当前没有加入房间为空
 
     private Byte state;
 
@@ -75,19 +75,19 @@ public class UserInfo {
         this.createTime = createTime;
     }
 
-    public Integer getRoomCartNum() {
+	public int getRoomCartNum() {
         return roomCartNum;
     }
 
-    public void setRoomCartNum(Integer roomCartNum) {
+	public void setRoomCartNum(int roomCartNum) {
         this.roomCartNum = roomCartNum;
     }
 
-    public Integer getScoreNum() {
+	public int getScoreNum() {
         return scoreNum;
     }
 
-    public void setScoreNum(Integer scoreNum) {
+	public void setScoreNum(int scoreNum) {
         this.scoreNum = scoreNum;
     }
 

@@ -2,14 +2,15 @@ package com.mahjong.server.netty.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import com.mahjong.server.bo.RoomRespModel;
 import com.mahjong.server.game.context.GameContext;
 import com.mahjong.server.game.context.RoomContext;
+import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.object.PlayerInfo;
 
 public class CreateRoomRespModel extends RoomRespModel {
-	
 
 	public CreateRoomRespModel(String weixinId ,boolean result,RoomContext roomContex) {
 		super();
@@ -22,9 +23,10 @@ public class CreateRoomRespModel extends RoomRespModel {
 			this.setRoomId(roomContex.getRoomNum());
 			this.setRuleStrategy(gameContext.getGameStrategy().getRuleInfo().getMysqlRule());
 			List<PlayerInfo> players = new ArrayList<PlayerInfo>();
-			for(PlayerInfo play : players){
-				if(weixinId.equals(play.getUserInfo().getWeixinMark())){
-					this.setCurUserLocation(play.getUserLocation());
+			for (Entry<PlayerLocation, PlayerInfo> entry : gameContext.getTable().getPlayerInfos().entrySet()) {
+				if (weixinId.equals(entry.getValue().getUserInfo().getWeixinMark())) {
+					this.setCurUserLocation(entry.getValue().getUserLocation());
+					break;
 				}
 			}
 			players.addAll(gameContext.getTable().getPlayerInfos().values());
@@ -36,5 +38,4 @@ public class CreateRoomRespModel extends RoomRespModel {
 		
 		
 	}
-	
 }

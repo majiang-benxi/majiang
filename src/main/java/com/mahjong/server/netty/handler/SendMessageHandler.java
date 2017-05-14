@@ -45,7 +45,7 @@ public class SendMessageHandler extends SimpleChannelInboundHandler<ProtocolMode
 				String msg = sendMsgReqModel.getMsg();
 				
 				UserInfo userInfo = dbService.selectUserInfoByWeiXinMark(weixinId);
-				
+				if (userInfo != null) {
 				RoomContext roomContex = HouseContext.weixinIdToRoom.get(weixinId);					
 					
 				// 通知其他三家
@@ -68,7 +68,9 @@ public class SendMessageHandler extends SimpleChannelInboundHandler<ProtocolMode
 					userCtx.writeAndFlush(newProtocolModel);
 					
 				}
-				
+				} else {
+					System.out.println("user not exist ,ignore");
+			}
 			}
 		} else {
 			ctx.fireChannelRead(protocolModel);

@@ -100,13 +100,13 @@ public class GameContext {
 		nowPlayer.setUserInfo(userInfo);
 		nowPlayer.setCurScore(1000);
 
-		if (this.table.getPlayerByLocation(PlayerLocation.NORTH) == null) {
+		if (this.table.getPlayerByLocation(PlayerLocation.NORTH).getUserInfo() == null) {
 			getTable().setPlayer(PlayerLocation.NORTH, nowPlayer);
 			nowPlayer.setUserLocation(PlayerLocation.NORTH.getCode());
-		} else if (this.table.getPlayerByLocation(PlayerLocation.WEST) == null) {
+		} else if (this.table.getPlayerByLocation(PlayerLocation.WEST).getUserInfo() == null) {
 			getTable().setPlayer(PlayerLocation.WEST, nowPlayer);
 			nowPlayer.setUserLocation(PlayerLocation.WEST.getCode());
-		} else if (this.table.getPlayerByLocation(PlayerLocation.SOUTH) == null) {
+		} else if (this.table.getPlayerByLocation(PlayerLocation.SOUTH).getUserInfo() == null) {
 			getTable().setPlayer(PlayerLocation.SOUTH, nowPlayer);
 			nowPlayer.setUserLocation(PlayerLocation.SOUTH.getCode());
 		} else {
