@@ -10,7 +10,7 @@ public class WinInfo extends PlayerInfo {
 	private boolean firstTileCheck;// 发完牌之后的第一次检测
 	private Tile huiTile;// 存储所有的会牌
 	private byte fanhui;// 翻出来的这个会牌
-	private boolean isZhuang;
+	private HuType huType;
 
 	/**
 	 * 
@@ -20,7 +20,7 @@ public class WinInfo extends PlayerInfo {
 	 * @param isZhuang
 	 * @return 构建完毕之后不要更改这个里面的任何字段的信息
 	 */
-	public static final WinInfo fromPlayerTiles(PlayerTiles playerTiles, byte fanhui, Boolean ziMo, boolean isZhuang) {
+	public static final WinInfo fromPlayerTiles(PlayerTiles playerTiles, byte fanhui, Boolean ziMo) {
 		WinInfo winInfo = new WinInfo();
 		winInfo.fanhui = fanhui;
 		winInfo.dropTileGroups = playerTiles.getTileGroups();
@@ -29,7 +29,6 @@ public class WinInfo extends PlayerInfo {
 			allWinTile = Tile.addTile(allWinTile, tileGroup.getTile());
 		}
 		winInfo.winTile = allWinTile;
-		winInfo.isZhuang = isZhuang;
 		winInfo.huiTile = Tile.getHuiPai(fanhui);
 		playerTiles.getAliveTiles().removeAll(winInfo.getHuiTile());// 把会牌移走
 		winInfo.aliveTile = playerTiles.getAliveTiles();
@@ -67,8 +66,12 @@ public class WinInfo extends PlayerInfo {
 		return winTile;
 	}
 
-	public boolean isZhuang() {
-		return isZhuang;
+	public HuType getHuType() {
+		return huType;
+	}
+
+	public void setHuType(HuType huType) {
+		this.huType = huType;
 	}
 
 }

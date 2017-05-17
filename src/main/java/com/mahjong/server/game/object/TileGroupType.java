@@ -2,7 +2,8 @@ package com.mahjong.server.game.object;
 import static com.mahjong.server.game.object.StandardTileUnitType.GANGZI;
 import static com.mahjong.server.game.object.StandardTileUnitType.KEZI;
 import static com.mahjong.server.game.object.StandardTileUnitType.SHUNZI;
-import static com.mahjong.server.game.object.StandardTileUnitType.ZI_PAI;;
+import static com.mahjong.server.game.object.StandardTileUnitType.ZI_DNXB_PAI;
+import static com.mahjong.server.game.object.StandardTileUnitType.ZI_ZFB_PAI;
 
 /**
  * 牌组类型。
@@ -36,13 +37,17 @@ public enum TileGroupType {
 	XIAO(GANGZI,5),
 
 	/**
-	 * 补花
+	 * 旋风杠(中发白)
 	 */
-	ZIPAI_GROUP(ZI_PAI,6),
+	XUAN_FENG_GANG_ZFB_GROUP(ZI_ZFB_PAI, 6),
+	/**
+	 * 旋风杠(中发白)
+	 */
+	XUAN_FENG_GANG_DNXB_GROUP(ZI_DNXB_PAI, 7),
 	/**
 	 * 胡牌
 	 */
-	HU_GROUP(null, 7);
+	HU_GROUP(null, 8);
 	
 	private int code;
 	

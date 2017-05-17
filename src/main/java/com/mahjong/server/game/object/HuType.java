@@ -19,24 +19,11 @@ public interface HuType {
 	public WinType getBaseWinType();
 
 	/**
-	 * 庄家得分
+	 * 该玩法的计分番数。
 	 * 
 	 * @return
 	 */
-	public int getZhuangScore(WinInfo winInfo, RuleInfo ruleInfo);
+	public int getScoreFan();
 
-	/**
-	 * 闲家得分
-	 * 
-	 * @return
-	 */
-	public int getXianScore(WinInfo winInfo, RuleInfo ruleInfo);
-
-	/**
-	 * 点炮的得分
-	 * 
-	 * @return
-	 */
-	public int getDianPaoScore(WinInfo winInfo, RuleInfo ruleInfo);
 
 }

@@ -15,21 +15,8 @@ public enum StandardHuType implements HuType {
 		}
 
 		@Override
-		public int getZhuangScore(WinInfo winInfo, RuleInfo ruleInfo) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public int getXianScore(WinInfo winInfo, RuleInfo ruleInfo) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public int getDianPaoScore(WinInfo winInfo, RuleInfo ruleInfo) {
-			// TODO Auto-generated method stub
-			return 0;
+		public int getScoreFan() {
+			return 1;
 		}
 
 		@Override
@@ -47,26 +34,12 @@ public enum StandardHuType implements HuType {
 		}
 
 		@Override
-		public int getZhuangScore(WinInfo winInfo, RuleInfo ruleInfo) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public int getXianScore(WinInfo winInfo, RuleInfo ruleInfo) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public int getDianPaoScore(WinInfo winInfo, RuleInfo ruleInfo) {
-			// TODO Auto-generated method stub
-			return 0;
+		public int getScoreFan() {
+			return 1;
 		}
 
 		@Override
 		public WinType getBaseWinType() {
-			// TODO Auto-generated method stub
 			return new ZhaQiangHuWinType();
 		}
 
@@ -79,21 +52,8 @@ public enum StandardHuType implements HuType {
 		}
 
 		@Override
-		public int getZhuangScore(WinInfo winInfo, RuleInfo ruleInfo) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public int getXianScore(WinInfo winInfo, RuleInfo ruleInfo) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public int getDianPaoScore(WinInfo winInfo, RuleInfo ruleInfo) {
-			// TODO Auto-generated method stub
-			return 0;
+		public int getScoreFan() {
+			return 4;
 		}
 
 		@Override
@@ -110,21 +70,8 @@ public enum StandardHuType implements HuType {
 		}
 
 		@Override
-		public int getZhuangScore(WinInfo winInfo, RuleInfo ruleInfo) {
-
-			return 0;
-		}
-
-		@Override
-		public int getXianScore(WinInfo winInfo, RuleInfo ruleInfo) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public int getDianPaoScore(WinInfo winInfo, RuleInfo ruleInfo) {
-			// TODO Auto-generated method stub
-			return 0;
+		public int getScoreFan() {
+			return 4;
 		}
 
 		@Override
@@ -141,21 +88,8 @@ public enum StandardHuType implements HuType {
 		}
 
 		@Override
-		public int getZhuangScore(WinInfo winInfo, RuleInfo ruleInfo) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public int getXianScore(WinInfo winInfo, RuleInfo ruleInfo) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public int getDianPaoScore(WinInfo winInfo, RuleInfo ruleInfo) {
-			// TODO Auto-generated method stub
-			return 0;
+		public int getScoreFan() {
+			return 8;
 		}
 
 		@Override
@@ -177,23 +111,9 @@ public enum StandardHuType implements HuType {
 		}
 
 		@Override
-		public int getZhuangScore(WinInfo winInfo, RuleInfo ruleInfo) {
-			// TODO Auto-generated method stub
-			return 0;
+		public int getScoreFan() {
+			return 1;
 		}
-
-		@Override
-		public int getXianScore(WinInfo winInfo, RuleInfo ruleInfo) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public int getDianPaoScore(WinInfo winInfo, RuleInfo ruleInfo) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
 	}
 
 	;

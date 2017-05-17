@@ -56,21 +56,24 @@ public class WinActionType extends AbstractActionType {
 		if (!ziMo) {
 			playerInfo.getAliveTiles().addTile(lastTile);// 非自摸情况，把别人的牌加进来判断，自摸的时候牌已经在自摸的动作中添加了
 		}
-		boolean isZhuang = false;
-		if (context.getZhuangLocation() == playerLocation) {
-			isZhuang = false;
-		}
-		WinInfo winInfo = WinInfo.fromPlayerTiles(playerInfo, context.getTable().getFanhui(), ziMo, isZhuang);
+		WinInfo winInfo = WinInfo.fromPlayerTiles(playerInfo, context.getTable().getFanhui(), ziMo);
 		HuType huType = chooseBestWinType(winInfo, context.getGameStrategy().getRuleInfo());
 		if (huType == null) {
 			throw new IllegalActionException(context, playerLocation, new Action(this));
 		} else {
-			GameResult result = new GameResult(context.getTable().getPlayerInfos(), context.getZhuangLocation());
+			winInfo.setHuType(huType);
+			GameResult result = new GameResult(context.getTable().getPlayerInfos(), context.getZhuangLocation(),
+					context.getGameStrategy().getRuleInfo());
 			result.setWinnerLocation(playerLocation);
 			result.setWinTile(winInfo.getWinTile());
+			result.setWinInfo(winInfo);
+			if (!ziMo) {
+				result.setPaoerLocation(context.getLastActionAndLocation().getLocation());
+			}
 			if (!ziMo) {
 				result.setPaoerLocation(context.getLastActionLocation());
 			}
+			result.caclulateScore();// 计算分数
 			context.setGameResult(result);// TODO 赢牌之后的分数，和牌【穷胡，飘胡】判断和写入
 		}
 
@@ -87,11 +90,7 @@ public class WinActionType extends AbstractActionType {
 		if (!ziMo) {
 			playerInfo.getAliveTiles().addTile(lastTile);// 非自摸情况，把别人的牌加进来判断，自摸的时候牌已经在自摸的动作中添加了
 		}
-		boolean isZhuang = false;
-		if (context.getZhuangLocation() == playerLocation) {
-			isZhuang = false;
-		}
-		WinInfo winInfo = WinInfo.fromPlayerTiles(playerInfo, context.getTable().getFanhui(), ziMo, isZhuang);
+		WinInfo winInfo = WinInfo.fromPlayerTiles(playerInfo, context.getTable().getFanhui(), ziMo);
 		HuType huType = chooseBestWinType(winInfo, context.getGameStrategy().getRuleInfo());
 		if (!ziMo) {
 			playerInfo.getAliveTiles().removeAll(lastTile);// 把之前加入判断的牌给去掉。
@@ -110,7 +109,7 @@ public class WinActionType extends AbstractActionType {
 		Collections.sort(Arrays.asList(allHuTypes), new Comparator<HuType>() {
 			@Override
 			public int compare(HuType o1, HuType o2) {
-				if (o1.getZhuangScore(winInfo, ruleInfo) < o1.getZhuangScore(winInfo, ruleInfo)) {
+				if (o1.getScoreFan() < o1.getScoreFan()) {
 					return 1;
 				} else {
 					return -1;
