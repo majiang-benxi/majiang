@@ -39,10 +39,10 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 					//TODO 战绩
 					
 					RoomContext playingRoom = HouseContext.weixinIdToRoom.get(weixinId);
-					DiscardRespModel authRespModel = new DiscardRespModel();
+					DiscardRespModel discardRespModel = new DiscardRespModel();
 					// 回写ACK
 					protocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
-					protocolModel.setBody(JSON.toJSONString(authRespModel));
+					protocolModel.setBody(JSON.toJSONString(discardRespModel));
 					ctx.writeAndFlush(protocolModel);
 					
 				}

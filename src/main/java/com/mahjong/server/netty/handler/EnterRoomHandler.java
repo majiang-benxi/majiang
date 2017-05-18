@@ -74,7 +74,7 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 
 									ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinId);
 									userCtx.writeAndFlush(newProtocolModel);
-
+									dealTile2AllPlayersCheck(roomContex);
 								}
 							} else {
 								enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "加入房间失败，房间已满！", null);
@@ -94,6 +94,11 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 		} else {
 			ctx.fireChannelRead(protocolModel);
 		}
+	}
+
+	private void dealTile2AllPlayersCheck(RoomContext roomContex) {
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
