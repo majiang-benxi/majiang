@@ -1,31 +1,25 @@
 package com.mahjong.server.game.rule.win;
 
-import static com.mahjong.server.game.object.StandardHuType.XIAO_HU;
 import static com.mahjong.server.game.object.StandardTileUnitType.KEZI;
 import static com.mahjong.server.game.object.StandardTileUnitType.SHUNZI;
-import static com.mahjong.server.game.rule.PlayRule.XIAO;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import com.mahjong.server.game.object.HuType;
-import com.mahjong.server.game.object.StandardHuType;
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.Tile.HuaSe;
+import com.mahjong.server.game.object.TileGroup;
+import com.mahjong.server.game.object.TileGroupType;
 import com.mahjong.server.game.object.TileUnitInfo;
-import com.mahjong.server.game.object.TileUnitType;
 import com.mahjong.server.game.object.WinInfo;
 import com.mahjong.server.game.rule.RuleInfo;
 
 public class NormalWinType implements WinType {
-	protected HuType huType;// 本局胡牌类型
-	protected boolean mayBePiaoHU = true;;
 	protected List<TileUnitInfo> tileUnitInfos;// 选取当前玩法分数最高的作为返回值
 
 	/**
@@ -34,12 +28,6 @@ public class NormalWinType implements WinType {
 
 	@Override
 	public boolean canWin(WinInfo winInfo, RuleInfo ruleInfo) {
-
-		// 第一把还没打牌就赢了
-		if (xiaoHuCheck(winInfo, ruleInfo)) {
-			huType = XIAO_HU;
-			return true;
-		}
 		// 19check，7对不检查，需要重载
 		if (!check1or9(winInfo.getWinTile())) {
 			return false;
@@ -103,38 +91,7 @@ public class NormalWinType implements WinType {
 	}
 
 
-	public static HuType chooseBestWinType(final WinInfo winInfo, RuleInfo ruleInfo) {
-			HuType[] allHuTypes = StandardHuType.values();
-			// 按照可能的分数从大到小排序
-			Collections.sort(Arrays.asList(allHuTypes), new Comparator<HuType>() {
-				@Override
-				public int compare(HuType o1, HuType o2) {
-					if (o1.getZhuangScore(winInfo.isZiMo()) < o1.getZhuangScore(winInfo.isZiMo())) {
-						return 1;
-					} else {
-						return -1;
-					}
-				}
-			});
-			for (HuType huType : allHuTypes) {
-			boolean canHu = huType.canHU(winInfo, ruleInfo);
-				if (canHu) {
-				return huType;
-				}
-			}
-			return null;
-		}
 
-
-	// 默认没有特殊检查，特殊检查是指类似连三门齐顺子19都不需要满足的赢牌方法
-	private boolean xiaoHuCheck(WinInfo winInfo, RuleInfo ruleInfo) {
-		if (winInfo.isFirstTileCheck() && ruleInfo.getPlayRules().contains(XIAO)) {
-			if (XIAO_HU.canHU(winInfo, ruleInfo)) {
-				return true;
-			}
-		}
-		return false;
-	}
 
 	// 判断包含了将且有四句话的牌的组合是否可以赢牌，默认必须要顺子和碰
 	protected boolean checkHUForCandidate(Byte jiang, List<TileUnitInfo> tileUnitInfos) {
@@ -162,9 +119,6 @@ public class NormalWinType implements WinType {
 			}
 
 		}
-		if (!has19) {
-			mayBePiaoHU = false;
-		}
 		return has19;
 	}
 
@@ -181,32 +135,61 @@ public class NormalWinType implements WinType {
 				hasBing = true;
 			}
 		}
-		boolean res = hasWan && hasBing && hasTiao;
-		if (!res) {
-			mayBePiaoHU = false;
+		return hasWan && hasBing && hasTiao;
+	}
+
+	@Override
+	public boolean isPiaoHU(WinInfo winInfo) {
+		if (!new NormalWinType().check1or9(winInfo.getWinTile())){
+			return false;
 		}
-		return res;
+		int alivePengNum = 0, dropPengNum = 0;
+		;
+		// tempMap存放牌值的张数<牌值,张数>
+		Map<Byte, Integer> tempMap = new HashMap<Byte, Integer>();
+ 		for (byte value : winInfo.getAliveTile().getPai()) {
+			if (tempMap.containsKey(value)) {
+				tempMap.put(value, tempMap.get(value) + 1);
+			} else {
+				tempMap.put(value, 1);
+			}
+		}
+		// 将可能成为将牌的牌值存放到jiangPAI中
+		for (Entry<Byte, Integer> e : tempMap.entrySet()) {
+			if (e.getValue() == 3) {
+				alivePengNum++;
+			}
+		}
+		for (TileGroup tileGroup : winInfo.getDropTileGroups()) {
+			if (tileGroup.getType() == TileGroupType.PENG_GROUP) {
+				dropPengNum++;
+			}
+		}
+		// 手中的牌和已经碰过的牌已有的碰子个数
+		if (alivePengNum + dropPengNum == 7) {
+			return true;
+		} else {
+			int aloneAliveTileSize = winInfo.getAliveTile().getPai().length - alivePengNum * 3;
+			int huiNum = winInfo.getHuiTile().getPai().length;
+			if (huiNum > 0 && aloneAliveTileSize * 2 == huiNum) {
+				return true;
+			} else {
+				return false;
+			}
+		}
 	}
 
-	@Override
-	public List<TileUnitType> getWinTileUnitType() {
-		return null;
+	public boolean maybeQiongHu(WinInfo winInfo) {
+		Set<Byte> set = Tile.tile2Set(winInfo.getHuiTile());
+		boolean qiongHu = true;
+		for (byte pai : winInfo.getWinTile().getPai()) {
+			if (set.contains(pai)) {// 会牌
+				qiongHu = false;
+			}
+			if (pai == Tile.QIANG) {// 枪牌
+				qiongHu = false;
+			}
+		}
+		return qiongHu;
 	}
-
-	public HuType getHuType() {
-		return huType;
-	}
-
-	@Override
-	public boolean isPiaoHU() {
-		return mayBePiaoHU;
-
-	}
-
-	// public static void main(String[] args) {
-	// WinInfo winInfo=new WinInfo();
-	// byte fanhui=0x11;
-	// winInfo.setHuiTile(Tile.getHuiPai(fanhui));
-	// byte[]winTilePai=
-	// }
 }

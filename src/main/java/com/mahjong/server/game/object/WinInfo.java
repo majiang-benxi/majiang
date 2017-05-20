@@ -10,38 +10,35 @@ public class WinInfo extends PlayerInfo {
 	private boolean firstTileCheck;// 发完牌之后的第一次检测
 	private Tile huiTile;// 存储所有的会牌
 	private byte fanhui;// 翻出来的这个会牌
+	private HuType huType;
 
-	// 检查WinType和FanType的时候填入的结果，用于：
-	// (1)检查FanType时利用WinType的parse结果
-	// (2)检查前先看是否已经有结果，避免重复检查
-
-	public static WinInfo fromPlayerTiles(PlayerTiles playerTiles, byte fanhui, Boolean ziMo) {
+	/**
+	 * 
+	 * @param playerTiles
+	 * @param fanhui
+	 * @param ziMo
+	 * @param isZhuang
+	 * @return 构建完毕之后不要更改这个里面的任何字段的信息
+	 */
+	public static final WinInfo fromPlayerTiles(PlayerTiles playerTiles, byte fanhui, Boolean ziMo) {
 		WinInfo winInfo = new WinInfo();
-		winInfo.setFanhui(fanhui);
-		winInfo.setDropTileGroups(playerTiles.getTileGroups());
+		winInfo.fanhui = fanhui;
+		winInfo.dropTileGroups = playerTiles.getTileGroups();
 		Tile allWinTile = playerTiles.getAliveTiles().clone();
 		for (TileGroup tileGroup : playerTiles.getTileGroups()) {
 			allWinTile = Tile.addTile(allWinTile, tileGroup.getTile());
 		}
-		winInfo.setWinTile(allWinTile);
-		winInfo.setHuiTile(Tile.getHuiPai(fanhui));
+		winInfo.winTile = allWinTile;
+		winInfo.huiTile = Tile.getHuiPai(fanhui);
 		playerTiles.getAliveTiles().removeAll(winInfo.getHuiTile());// 把会牌移走
-		winInfo.setAliveTiles(playerTiles.getAliveTiles());
-		winInfo.setTileGroups(playerTiles.getTileGroups());
-		winInfo.setZiMo(ziMo);
+		winInfo.aliveTile = playerTiles.getAliveTiles();
+		winInfo.tileGroups = playerTiles.getTileGroups();
+		winInfo.ziMo = ziMo;
 		return winInfo;
 	}
 
 	public boolean isFirstTileCheck() {
 		return firstTileCheck;
-	}
-
-	public void setFirstTileCheck(boolean firstTileCheck) {
-		this.firstTileCheck = firstTileCheck;
-	}
-
-	public void setZiMo(boolean ziMo) {
-		this.ziMo = ziMo;
 	}
 
 	public boolean isZiMo() {
@@ -52,39 +49,29 @@ public class WinInfo extends PlayerInfo {
 		return huiTile;
 	}
 
-	public void setHuiTile(Tile huiTile) {
-		this.huiTile = huiTile;
-	}
-
 	public Tile getAliveTile() {
 		return aliveTile;
 	}
 
-	public void setAliveTile(Tile aliveTile) {
-		this.aliveTile = aliveTile;
-	}
 
 	public List<TileGroup> getDropTileGroups() {
 		return dropTileGroups;
-	}
-
-	public void setDropTileGroups(List<TileGroup> dropTileGroups) {
-		this.dropTileGroups = dropTileGroups;
 	}
 
 	public byte getFanhui() {
 		return fanhui;
 	}
 
-	public void setFanhui(byte fanhui) {
-		this.fanhui = fanhui;
-	}
-
 	public Tile getWinTile() {
 		return winTile;
 	}
 
-	public void setWinTile(Tile winTile) {
-		this.winTile = winTile;
+	public HuType getHuType() {
+		return huType;
 	}
+
+	public void setHuType(HuType huType) {
+		this.huType = huType;
+	}
+
 }
