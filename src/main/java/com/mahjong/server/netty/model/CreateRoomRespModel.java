@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import com.mahjong.server.bo.RoomRespModel;
 import com.mahjong.server.game.context.GameContext;
 import com.mahjong.server.game.context.RoomContext;
 import com.mahjong.server.game.enums.PlayerLocation;

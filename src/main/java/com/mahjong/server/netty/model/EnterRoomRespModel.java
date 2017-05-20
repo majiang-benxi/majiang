@@ -3,7 +3,8 @@ package com.mahjong.server.netty.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mahjong.server.bo.RoomRespModel;
+import org.apache.commons.lang.StringUtils;
+
 import com.mahjong.server.game.context.GameContext;
 import com.mahjong.server.game.context.RoomContext;
 import com.mahjong.server.game.object.PlayerInfo;
@@ -26,7 +27,7 @@ public class EnterRoomRespModel extends RoomRespModel {
 			this.setRuleStrategy(gameContext.getGameStrategy().getRuleInfo().getMysqlRule());
 			List<PlayerInfo> players = new ArrayList<PlayerInfo>();
 			for(PlayerInfo play : players){
-				if(weixinId.equals(play.getUserInfo().getWeixinMark())){
+				if (StringUtils.isNotBlank(weixinId) && weixinId.equals(play.getUserInfo().getWeixinMark())) {
 					this.setCurUserLocation(play.getUserLocation());
 				}
 			}

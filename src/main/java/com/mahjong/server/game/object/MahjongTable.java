@@ -1,7 +1,6 @@
 package com.mahjong.server.game.object;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
@@ -35,7 +34,7 @@ public class MahjongTable {
 	/**
 	 * 初始化，准备开始一局。即清空玩家的牌、洗牌
 	 */
-	public void readyForGame(Collection<Tile> allTiles) {
+	public void readyForGame() {
 		for (PlayerInfo playerInfo : playerInfos.values()) {
 			playerInfo.clear();
 		}

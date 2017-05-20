@@ -45,7 +45,8 @@ public class DealActionType implements ActionType {
 	}
 
 	@Override
-	public void doAction(GameContext context, PlayerLocation location, Action action) throws IllegalActionException {
+	public void doAction(GameContext context, PlayerLocation zhuangLocation, Action action)
+			throws IllegalActionException {
 		MahjongTable table = context.getTable();
 		PlayerLocation zhuang = context.getZhuangLocation();
 		for (int i = 0; i < 4; i++) {
@@ -56,7 +57,7 @@ public class DealActionType implements ActionType {
 				playerInfo.getAliveTiles().addTile(table.draw(drawCount));
 			}
 		}
-		context.getTable().getPlayerByLocation(location).getAliveTiles()
+		context.getTable().getPlayerByLocation(zhuangLocation).getAliveTiles()
 				.addTile(table.draw(1));
 		context.getTable().setFanhui(table.drawBottom(1).getPai()[0]);// 系统翻出一张会牌
 	}
