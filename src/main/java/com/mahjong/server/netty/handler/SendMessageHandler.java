@@ -19,6 +19,7 @@ import com.mahjong.server.netty.model.SendMsgRespModel;
 import com.mahjong.server.netty.session.ClientSession;
 import com.mahjong.server.service.DBService;
 
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -26,6 +27,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
  * 发送消息
  *
  */
+@Sharable
 @Component
 public class SendMessageHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 	@Autowired

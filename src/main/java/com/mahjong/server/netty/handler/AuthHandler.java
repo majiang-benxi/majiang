@@ -18,6 +18,7 @@ import com.mahjong.server.netty.model.ProtocolModel;
 import com.mahjong.server.netty.session.ClientSession;
 import com.mahjong.server.service.DBService;
 
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -25,6 +26,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
  * 登陆认证
  *
  */
+@Sharable
 @Component
 public class AuthHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 	@Autowired

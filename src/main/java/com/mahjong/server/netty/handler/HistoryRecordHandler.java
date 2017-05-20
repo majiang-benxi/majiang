@@ -16,6 +16,7 @@ import com.mahjong.server.netty.session.ClientSession;
 import com.mahjong.server.service.DBService;
 import com.mahjong.server.vo.UserLatestPlayRecord;
 
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -23,6 +24,8 @@ import io.netty.channel.SimpleChannelInboundHandler;
  * 登陆认证
  *
  */
+@Sharable
+
 @Component
 public class HistoryRecordHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 	@Autowired

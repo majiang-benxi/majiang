@@ -13,9 +13,11 @@ import com.mahjong.server.netty.model.DiscardRespModel;
 import com.mahjong.server.netty.model.ProtocolModel;
 import com.mahjong.server.netty.session.ClientSession;
 
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
+@Sharable
 @Component
 public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 
