@@ -39,14 +39,14 @@ public class KillRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> 
 			if (protocolModel.getBody() == null) {
 				ctx.close();
 			} else {
-				KillRoomReqModel killRoomReqModel = JSON.parseObject(new String(protocolModel.getBody(), "UTF-8"),
+				KillRoomReqModel killRoomReqModel = JSON.parseObject(protocolModel.getBody(),
 						new TypeReference<KillRoomReqModel>() {
 						});
 				
 				String weixinId = killRoomReqModel.getWeiXinId();
 				Boolean isAggree = killRoomReqModel.isAggree();
 				UserInfo userInfo = dbService.selectUserInfoByWeiXinMark(weixinId);
-				
+				if (userInfo != null) {
 				RoomContext roomContex = HouseContext.weixinIdToRoom.get(weixinId);
 				
 				if(roomContex.getAgreeKillRoomNum().intValue()==0){
@@ -65,7 +65,7 @@ public class KillRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> 
 						KillRoomNoticeRespModel killRoomNoticeRespModel = new KillRoomNoticeRespModel();
 						killRoomNoticeRespModel.setNickName(userInfo.getNickName());
 						
-						newProtocolModel.setBody(JSON.toJSONString(killRoomNoticeRespModel).getBytes("UTF-8"));
+						newProtocolModel.setBody(JSON.toJSONString(killRoomNoticeRespModel));
 						
 						ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinId);
 						userCtx.writeAndFlush(newProtocolModel);
@@ -110,11 +110,15 @@ public class KillRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> 
 					}
 					
 					protocolModel.setCommandId(EventEnum.KILL_ROOM_RESP.getValue());
-					protocolModel.setBody(JSON.toJSONString(killRoomRespModel).getBytes("UTF-8"));
+					protocolModel.setBody(JSON.toJSONString(killRoomRespModel));
 					ctx.writeAndFlush(protocolModel);
 					
+				}else{
+						KillRoomRespModel killRoomRespModel = new KillRoomRespModel();
+						killRoomRespModel.setResult(false);
+						killRoomRespModel.setMsg("当前用户不存在，没有权限解散！");
 				}
-				
+				}
 			}
 		} else {
 			ctx.fireChannelRead(protocolModel);

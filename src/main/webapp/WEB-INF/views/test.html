@@ -1,0 +1,46 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<script >
+var socket;
+function connect() {
+	alert('connect');
+	if (!window.WebSocket) {
+  		window.WebSocket = window.MozWebSocket;
+	}
+
+	if (window.WebSocket) {
+  		socket = new WebSocket("ws://127.0.0.1:8888/mj");
+  		socket.onmessage = function(event) {
+  			alert("响应内容:"+event.data);
+   		};
+  
+	  	socket.onopen = function(event) {
+  			alert("Web Socket opened");
+	  	};
+	  
+	  	socket.onclose = function(event) {
+  			alert("Web Socket closed");
+	  	};
+		
+		socket.onerror = function(event){	
+  			alert("Web Socket error"+event);
+		};  
+ 	} else {
+ 		alert("Your browser does not support Web Socket.");
+	}
+}
+ function send(){
+		var ta = document.getElementById('sendMsg');
+		alert("向服务器发送请求内容为:"+ta.value);
+		socket.send(ta.value);
+ }
+</script>
+</head>
+
+<body>
+<input type="button" onclick="connect()" value="点击连接"/> <br/><br/>
+<label for="sendMsg">发送消息给服务器</label><input id="sendMsg" type="text" value="输入要发送的内容"/>
+<input type="button" onclick="send()" value="点击发送"/> <br/><br/>
+</body>
+</html>

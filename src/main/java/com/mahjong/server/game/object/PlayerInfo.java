@@ -57,11 +57,11 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 		this.discardedTiles = discardedTiles;
 	}
 
-	public boolean isTing() {
+	public boolean isHu() {
 		return isHu;
 	}
 
-	public void setTing(boolean isHu) {
+	public void setHu(boolean isHu) {
 		this.isHu = isHu;
 	}
 
@@ -100,8 +100,8 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 		this.curScore = curScore;
 	}
 
-	public int getUserLocation() {
-		return userLocation.getCode();
+	public Integer getUserLocation() {
+		return userLocation != null ? userLocation.getCode() : null;
 	}
 
 	public void setUserLocation(int userLocation) {

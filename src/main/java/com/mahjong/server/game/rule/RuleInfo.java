@@ -47,7 +47,7 @@ public class RuleInfo {
 		return sb.toString();
 	}
 
-	public Set<PlayRule> parseRuleFromBitString(String bitRule) {
+	public static Set<PlayRule> parseRuleFromBitString(String bitRule) {
 		Set<PlayRule> set = new HashSet<PlayRule>();
 		if (StringUtils.isEmpty(bitRule)) {
 			return set;

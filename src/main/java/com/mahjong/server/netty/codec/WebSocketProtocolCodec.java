@@ -2,7 +2,6 @@ package com.mahjong.server.netty.codec;
 
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
@@ -22,19 +21,20 @@ public class WebSocketProtocolCodec extends MessageToMessageCodec<TextWebSocketF
 	@Override
 	protected void encode(ChannelHandlerContext channelHandlerContext, ProtocolModel protocolModel, List<Object> out)
 			throws Exception {
-		out.add(new TextWebSocketFrame(JSON.toJSONString(protocolModel)));
+		String msg = JSON.toJSONString(protocolModel);
+		System.out.println("encode=" + msg);
+		out.add(new TextWebSocketFrame(msg));
 	}
 
 	@Override
 	protected void decode(ChannelHandlerContext channelHandlerContext, TextWebSocketFrame textWebSocketFrame,
 			List<Object> in) throws Exception {
 		String text = textWebSocketFrame.text();
-		List<ProtocolModel> result = JSON.parseObject(text, new TypeReference<List<ProtocolModel>>() {
+		System.out.println("decode=" + text);
+		ProtocolModel protocolMsg = JSON.parseObject(text, new TypeReference<ProtocolModel>() {
 		});
-		if (CollectionUtils.isNotEmpty(result)) {
-			for (ProtocolModel protocolModel : result) {
-				in.add(protocolModel);
-			}
+		if (protocolMsg != null) {
+			in.add(protocolMsg);
 		}
 		
 	}

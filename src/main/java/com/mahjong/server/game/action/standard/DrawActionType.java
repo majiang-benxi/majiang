@@ -42,8 +42,8 @@ public class DrawActionType extends AbstractActionType {
 	@Override
 	protected boolean isLegalActionWithPreconition(GameContext context,PlayerLocation location,
 			Tile tiles) {
-		// 牌墙中必须有牌才能摸
-		return context.getTable().getTileWallSize() > 0;
+		// 牌墙中必须有超过14张牌才能摸，否则就算黄庄
+		return context.getTable().getTileWallSize() > 14;
 	}
 
 	@Override

@@ -23,6 +23,11 @@ public class DrawBottomActionType extends DrawActionType {
 		}
 		return false;
   	}
+	@Override
+	protected boolean isLegalActionWithPreconition(GameContext context, PlayerLocation location, Tile tiles) {
+		// 牌墙中必须有超过14张牌才能摸，否则就算黄庄
+		return context.getTable().getTileWallSize() > 14;
+	}
 
 	@Override
 	protected void doLegalAction(GameContext context, PlayerLocation location, Tile tile) {

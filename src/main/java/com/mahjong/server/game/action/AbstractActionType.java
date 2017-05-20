@@ -6,7 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mahjong.server.exception.IllegalActionException;
 import com.mahjong.server.game.action.standard.CpgActionType;
@@ -22,8 +24,7 @@ import com.mahjong.server.game.object.Tile;
  */
 public abstract class AbstractActionType implements ActionType {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger
-			.getLogger(AbstractActionType.class.getSimpleName());
+	private static final Logger logger = LoggerFactory.getLogger(AbstractActionType.class);
 
 	/**
 	 * 名称，用作唯一标识。<br>
@@ -250,9 +251,11 @@ public abstract class AbstractActionType implements ActionType {
 
 	/**
 	 * 执行动作。调用此方法之前已经确保符合动作类型，并使用{@link #isLegalActionTiles}判断过动作的合法性。
+	 * 
+	 * @throws IllegalActionException
 	 */
 	protected abstract void doLegalAction(GameContext context,
-			PlayerLocation location, Tile tile);
+			PlayerLocation location, Tile tile) throws IllegalActionException;
 
 	/**
 	 * 先使用{@link #meetPrecondition}检查前提条件，如果满足再调用{@link #canDoWithPrecondition}

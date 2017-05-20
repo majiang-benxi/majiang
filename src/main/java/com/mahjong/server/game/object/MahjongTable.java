@@ -22,6 +22,7 @@ public class MahjongTable {
 	 * 所有玩家信息。
 	 */
 	private Map<PlayerLocation, PlayerInfo> playerInfos;
+	private byte fanhui;
 	
 	public void init() {
 		tileWall = new Tile();
@@ -85,12 +86,23 @@ public class MahjongTable {
 	}
 
 	public void setPlayer(PlayerLocation location, PlayerInfo player) {
-		PlayerInfo playerInfo = playerInfos.get(location);
-		if (playerInfo == null) {
-			playerInfo = new PlayerInfo();
-			playerInfos.put(location, playerInfo);
-		}
+		playerInfos.put(location, player);
 	}
 
+	public Tile getTileWall() {
+		return tileWall;
+	}
+
+	public void setTileWall(Tile tileWall) {
+		this.tileWall = tileWall;
+	}
+
+	public byte getFanhui() {
+		return fanhui;
+	}
+
+	public void setFanhui(byte fanhui) {
+		this.fanhui = fanhui;
+	}
 
 }

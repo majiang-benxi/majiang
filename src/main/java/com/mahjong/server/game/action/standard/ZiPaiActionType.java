@@ -1,8 +1,12 @@
 package com.mahjong.server.game.action.standard;
 
-import static com.mahjong.server.game.object.TileGroupType.ZIPAI_GROUP;
+import static com.mahjong.server.game.action.standard.StandardActionType.DEAL;
+import static com.mahjong.server.game.object.TileGroupType.XUAN_FENG_GANG_DNXB_GROUP;
+import static com.mahjong.server.game.object.TileGroupType.XUAN_FENG_GANG_ZFB_GROUP;
 
+import com.mahjong.server.exception.IllegalActionException;
 import com.mahjong.server.game.action.AbstractActionType;
+import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.context.GameContext;
 import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.object.PlayerInfo;
@@ -26,14 +30,34 @@ public class ZiPaiActionType extends AbstractActionType {
 	}
 
 	@Override
+	public void doAction(GameContext context, PlayerLocation location, Action action) throws IllegalActionException {
+		// TODO Auto-generated method stub
+		super.doAction(context, location, action);
+	}
+
+	@Override
 	protected int getActionTilesSize() {
-		return ZIPAI_GROUP.size();
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public boolean canDo(GameContext context, PlayerLocation location) {
+		if (context.getLastAction().equals(DEAL)) {
+			PlayerInfo playerInfo = context.getTable().getPlayerByLocation(location);
+			Tile aliveTile = playerInfo.getAliveTiles();
+			if (aliveTile.containsAll(new Tile(new byte[] { 0x31, 0x32, 0x33, 0x34 }))
+					|| aliveTile.containsAll(new Tile(new byte[] { 0x35, 0x36, 0x37 }))) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
 	protected boolean isLegalActionWithPreconition(GameContext context,PlayerLocation location,
 			Tile tile) {
-		return ZIPAI_GROUP.isLegalTile(tile);
+		return XUAN_FENG_GANG_ZFB_GROUP.isLegalTile(tile) || XUAN_FENG_GANG_DNXB_GROUP.isLegalTile(tile);
 	}
 
 	@Override
@@ -41,7 +65,12 @@ public class ZiPaiActionType extends AbstractActionType {
 			Tile tile) {
 		PlayerInfo playerInfo = context.getTable().getPlayerByLocation(location);
 		playerInfo.getAliveTiles().removeAll(tile);
-		playerInfo.getTileGroups().add(new TileGroup(ZIPAI_GROUP, tile));
+		if (tile.getPai().length == 3) {
+			playerInfo.getTileGroups().add(new TileGroup(XUAN_FENG_GANG_ZFB_GROUP, tile));
+		} else {
+			playerInfo.getTileGroups().add(new TileGroup(XUAN_FENG_GANG_DNXB_GROUP, tile));
+
+		}
 	}
 
 }

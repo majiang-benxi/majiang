@@ -29,11 +29,13 @@ public class HouseContext {
 		RoomContext roomContext = new RoomContext();
 		
 		Integer roomNum = getRoomNum();
-		roomContext = rommList.putIfAbsent(roomNum, roomContext);
-		while(roomContext.getGameContext() != null){
-			 roomContext = rommList.putIfAbsent(roomNum, roomContext);
+		int i = 0;
+		while (rommList.get(roomNum) != null) {
+			roomNum = getRoomNum();
+			i++;
+			System.out.println("创建房间号码本次循环次数=" + i);
 		}
-	   
+		rommList.put(roomNum, roomContext);
 	    roomContext.setRoomNum(roomNum);
 	   
 	    MahjongTable table = new MahjongTable();
@@ -46,7 +48,7 @@ public class HouseContext {
 	   
 	    GameStrategy gameStrategy = new GameStrategy();
 	    RuleInfo ruleInfo = new RuleInfo();
-	    ruleInfo.parseRuleFromBitString(ruleStr);
+		ruleInfo.setPlayRules(RuleInfo.parseRuleFromBitString(ruleStr));
 	    ruleInfo.setFangKa(FangKa.fromCode(fangKaJuShu));
 	    gameStrategy.setRuleInfo(ruleInfo);
 	   

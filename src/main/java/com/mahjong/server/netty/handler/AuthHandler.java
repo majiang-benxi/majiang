@@ -35,7 +35,7 @@ public class AuthHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 			if (protocolModel.getBody() == null) {
 				ctx.close();
 			} else {
-				AuthReqModel authModel = JSON.parseObject(new String(protocolModel.getBody(), "UTF-8"),
+				AuthReqModel authModel = JSON.parseObject(protocolModel.getBody(),
 						new TypeReference<AuthReqModel>() {
 						});
 				InetSocketAddress socketAddr = (InetSocketAddress) ctx.channel().remoteAddress();
@@ -66,16 +66,21 @@ public class AuthHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 						updateUserInfo.setSex((byte) authModel.getSex());
 						updateUserInfo.setWeixinMark(weixinId);
 						updateUserInfo.setId(userInfo.getId());
+						userInfo.setState((byte) 1);
 						dbService.updateUserInfoById(updateUserInfo);
 					}
 					ClientSession.sessionMap.put(weixinId, ctx);
 				}
+				if (userInfo == null) {
+					userInfo = dbService.selectUserInfoByWeiXinMark(weixinId);
+				}
 				int fangKaSize = userInfo.getRoomCartNum();
 				RoomContext playingRoom = HouseContext.weixinIdToRoom.get(weixinId);
-				AuthRespModel authRespModel = new AuthRespModel(true, fangKaSize, playingRoom.getRoomNum());
+				AuthRespModel authRespModel = new AuthRespModel(true, fangKaSize,
+						playingRoom == null ? null : playingRoom.getRoomNum());
 				// 回写ACK
 				protocolModel.setCommandId(EventEnum.AUTH_RESP.getValue());
-				protocolModel.setBody(JSON.toJSONString(authRespModel).getBytes("UTF-8"));
+				protocolModel.setBody(JSON.toJSONString(authRespModel));
 				ctx.writeAndFlush(protocolModel);
 			}
 		} else {

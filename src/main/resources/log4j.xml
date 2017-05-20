@@ -77,8 +77,6 @@
 			<param name="LevelMax" value="ERROR" />
 		</filter>
 	</appender>
-	<appender name="JmonitorAppender" class="com.alibaba.alimonitor.jmonitor.plugin.log4j.JMonitorLog4jAppender">
-	</appender>
 	<logger name="org.springframework" additivity="false">
 		<level value ="INFO"/>
 		<appender-ref ref="INFO" />
@@ -90,20 +88,13 @@
 		<appender-ref ref="INFO" />
 		<appender-ref ref="WARN" />
 		<appender-ref ref="ERROR" />
-	</logger>
-	<logger name="com.alipay.zsearch.sdk" additivity="false">
-		<level value ="INFO"/>
-		<appender-ref ref="INFO" />
-		<appender-ref ref="WARN" />
-		<appender-ref ref="ERROR" />
-	</logger>		
+	</logger>	
 	<root>
 		<priority value="INFO" />
 		<appender-ref ref="DEBUG" />
 		<appender-ref ref="INFO" />
 		<appender-ref ref="WARN" />
 		<appender-ref ref="ERROR" />
-		<appender-ref ref="JmonitorAppender" />
 	</root>
 
 </log4j:configuration>

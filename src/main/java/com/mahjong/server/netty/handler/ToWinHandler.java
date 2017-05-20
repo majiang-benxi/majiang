@@ -43,7 +43,7 @@ public class ToWinHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 			if (protocolModel.getBody() == null) {
 				ctx.close();
 			} else {
-				DiscardReqModel discardReqModel = JSON.parseObject(new String(protocolModel.getBody(), "UTF-8"),
+				DiscardReqModel discardReqModel = JSON.parseObject(protocolModel.getBody(),
 						new TypeReference<DiscardReqModel>() {
 						});
 				
@@ -101,7 +101,7 @@ public class ToWinHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 						ChannelHandlerContext eachctx = ClientSession.sessionMap.get(eachWeiXinId);
 						// 回写ACK
 						protocolModel.setCommandId(EventEnum.THIS_RECORD_SCORE_RESP.getValue());
-						protocolModel.setBody(JSON.toJSONString(currentRecordRespModel).getBytes("UTF-8"));
+						protocolModel.setBody(JSON.toJSONString(currentRecordRespModel));
 						eachctx.writeAndFlush(protocolModel);
 						
 					}

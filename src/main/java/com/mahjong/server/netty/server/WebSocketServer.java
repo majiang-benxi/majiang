@@ -3,6 +3,7 @@ package com.mahjong.server.netty.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.mahjong.server.constant.Constants;
 import com.mahjong.server.netty.channel.WebSocketChannelInitializer;
@@ -15,6 +16,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
+@Component
 public class WebSocketServer {
 
 	private Logger logger = LoggerFactory.getLogger(WebSocketChannelInitializer.class);

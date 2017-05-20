@@ -11,7 +11,9 @@ import com.mahjong.server.game.object.PlayerInfo;
 public class EnterRoomRespModel extends RoomRespModel {
 	private int roomState;
 	
+	public EnterRoomRespModel() {
 
+	}
 	public EnterRoomRespModel(String weixinId,boolean result,String mesg,RoomContext roomContex) {
 		super();
 		

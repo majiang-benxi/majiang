@@ -13,8 +13,18 @@ public class ProtocolModel {
 	// 设备类型
 	private int deviceType;
 	// 协议包体
-	private byte[] body;
+	private String body;// 前端不支持byte，此处先用string
 
+	public ProtocolModel() {
+
+	}
+
+	public ProtocolModel(float version, int commandId, int deviceType, String body) {
+		this.version = version;
+		this.commandId = commandId;
+		this.deviceType = deviceType;
+		this.body = body;
+	}
 
 	public float getVersion() {
 		return version;
@@ -32,11 +42,11 @@ public class ProtocolModel {
 		this.commandId = commandId;
 	}
 
-	public byte[] getBody() {
+	public String getBody() {
 		return body;
 	}
 
-	public void setBody(byte[] body) {
+	public void setBody(String body) {
 		this.body = body;
 	}
 

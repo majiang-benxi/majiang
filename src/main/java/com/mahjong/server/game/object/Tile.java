@@ -32,6 +32,7 @@ public class Tile {
 	}
 
 	public static byte HUIPAI = 0x00;
+	public static byte QIANG = 0x27;
 	public static byte[] getOneBoxMahjong() {
 		byte[] allPai = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, // 万（1-9）
 				0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, // 万
@@ -58,6 +59,14 @@ public class Tile {
 		Set<Byte> set = new HashSet<Byte>();
 		for (Byte notUsedJiang : notUsedJiangPai) {
 			set.add(notUsedJiang);
+		}
+		return set;
+	}
+
+	public static Set<Byte>tile2Set(Tile tile){
+		Set<Byte> set = new HashSet<Byte>();
+		for (Byte pai : tile.getPai()) {
+			set.add(pai);
 		}
 		return set;
 	}

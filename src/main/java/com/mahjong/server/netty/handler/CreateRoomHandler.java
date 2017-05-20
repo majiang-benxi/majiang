@@ -32,7 +32,7 @@ public class CreateRoomHandler extends SimpleChannelInboundHandler<ProtocolModel
 			if (protocolModel.getBody() == null) {
 				ctx.close();
 			} else {
-				CreateRoomReqModel createRoomReqModel = JSON.parseObject(new String(protocolModel.getBody(), "UTF-8"),
+				CreateRoomReqModel createRoomReqModel = JSON.parseObject(protocolModel.getBody(),
 						new TypeReference<CreateRoomReqModel>() {
 						});
 				
@@ -50,7 +50,7 @@ public class CreateRoomHandler extends SimpleChannelInboundHandler<ProtocolModel
 				
 				CreateRoomRespModel createRoomRespModel = new CreateRoomRespModel(weixinId, true,roomContex);
 				protocolModel.setCommandId(EventEnum.CREATE_ROOM_RESP.getValue());
-				protocolModel.setBody(JSON.toJSONString(createRoomRespModel).getBytes("UTF-8"));
+				protocolModel.setBody(JSON.toJSONString(createRoomRespModel));
 				ctx.writeAndFlush(protocolModel);
 				
 			}
