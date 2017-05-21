@@ -10,6 +10,7 @@ import com.mahjong.server.netty.model.ProtocolModel;
 import com.mahjong.server.netty.model.RequestBaseMode;
 import com.mahjong.server.netty.session.ClientSession;
 
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -17,6 +18,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
  * 登陆认证
  *
  */
+@Sharable
 @Component
 public class HeartBeatHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 	@Override

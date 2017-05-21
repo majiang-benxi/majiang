@@ -1,6 +1,6 @@
 package com.mahjong.server.netty.handler;
 
-import java.util.Map.Entry;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -8,17 +8,20 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.mahjong.server.entity.UserInfo;
+import com.mahjong.server.exception.IllegalActionException;
+import com.mahjong.server.game.action.standard.DealActionType;
 import com.mahjong.server.game.context.HouseContext;
 import com.mahjong.server.game.context.RoomContext;
 import com.mahjong.server.game.enums.EventEnum;
 import com.mahjong.server.game.enums.PlayerLocation;
+import com.mahjong.server.game.enums.RoomStatus;
 import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.netty.model.EnterRoomReqModel;
 import com.mahjong.server.netty.model.EnterRoomRespModel;
 import com.mahjong.server.netty.model.ProtocolModel;
-import com.mahjong.server.netty.session.ClientSession;
 import com.mahjong.server.service.DBService;
 
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -26,6 +29,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
  * 登陆认证
  *
  */
+@Sharable
 @Component
 public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 	@Autowired
@@ -58,24 +62,24 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 								HouseContext.weixinIdToRoom.put(weixinId, roomContex);
 								enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "恭喜您，加入房间成功！", roomContex);
 								// 通知其他三家
-								for (Entry<PlayerLocation, PlayerInfo> ent : roomContex.getGameContext().getTable()
-										.getPlayerInfos().entrySet()) {
-
-									PlayerInfo playerIn = ent.getValue();
-									if (playerIn.getUserInfo().getWeixinMark().equals(weixinId)) {
-										continue;
-									}
-
-									ProtocolModel newProtocolModel = new ProtocolModel();
-									newProtocolModel.setCommandId(EventEnum.NEW_ENTER_RESP.getValue());
-									EnterRoomRespModel newEnterRoomRespModel = new EnterRoomRespModel(
-											playerIn.getUserInfo().getWeixinMark(), true, "新人加入", roomContex);
-									newProtocolModel.setBody(JSON.toJSONString(newEnterRoomRespModel));
-
-									ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinId);
-									userCtx.writeAndFlush(newProtocolModel);
-									dealTile2AllPlayersCheck(roomContex);
+								ProtocolModel enterRoomProtocolModel = new ProtocolModel();
+								enterRoomProtocolModel.setCommandId(EventEnum.NEW_ENTER_RESP.getValue());
+								roomContex.setRoomStatus(RoomStatus.WAIT_USERS);
+								EnterRoomRespModel newEnterRoomRespModel = new EnterRoomRespModel(weixinId, true,
+										"新人加入", roomContex);
+								enterRoomProtocolModel.setBody(JSON.toJSONString(newEnterRoomRespModel));
+								HandlerHelper.noticeMsg2Players(roomContex, weixinId, enterRoomProtocolModel);
+								boolean hashDealTile = dealTile2AllPlayersCheck(roomContex);
+								if (hashDealTile) {// 通知所有玩家已经发牌
+									ProtocolModel dealTileProtocolModel = new ProtocolModel();
+									dealTileProtocolModel.setCommandId(EventEnum.DEAL_TILE_RESP.getValue());
+									roomContex.setRoomStatus(RoomStatus.PLAYING);
+									EnterRoomRespModel dealTileRoomRespModel = new EnterRoomRespModel(null, true,
+											"发牌", roomContex);
+									dealTileProtocolModel.setBody(JSON.toJSONString(dealTileRoomRespModel));
+									HandlerHelper.noticeMsg2Players(roomContex, null, dealTileProtocolModel);
 								}
+
 							} else {
 								enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "加入房间失败，房间已满！", null);
 							}
@@ -96,9 +100,26 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 		}
 	}
 
-	private void dealTile2AllPlayersCheck(RoomContext roomContex) {
-		// TODO Auto-generated method stub
-
+	private boolean dealTile2AllPlayersCheck(RoomContext roomContex) {
+		Map<PlayerLocation, PlayerInfo> playerInfos = roomContex.getGameContext().getTable().getPlayerInfos();
+		boolean fourUserNumReady = true;
+		for (PlayerInfo playerInfo : playerInfos.values()) {
+			if (playerInfo.getUserInfo() == null) {
+				fourUserNumReady = false;
+				return false;
+			}
+		}
+		if (fourUserNumReady) {
+			roomContex.getGameContext().getTable().readyForGame();
+			DealActionType dealActionType = new DealActionType();
+			try {
+				dealActionType.doAction(roomContex.getGameContext(), PlayerLocation.EAST, null);
+			} catch (IllegalActionException e) {
+				e.printStackTrace();
+			}
+			return true;
+		}
+		return false;
 	}
 
 	@Override

@@ -27,9 +27,11 @@ import com.mahjong.server.netty.session.ClientSession;
 import com.mahjong.server.service.DBService;
 import com.mahjong.server.vo.ScoreRecordVO;
 
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
+@Sharable
 @Component
 public class ToWinHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 	

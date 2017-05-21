@@ -15,6 +15,7 @@ import com.mahjong.server.netty.handler.SendMessageHandler;
 import com.mahjong.server.netty.handler.ToWinHandler;
 import com.mahjong.server.netty.handler.UpdateHandler;
 
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -23,6 +24,7 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 
+@Sharable
 @Component
 public class WebSocketChannelInitializer extends ChannelInitializer<NioSocketChannel> {
 
