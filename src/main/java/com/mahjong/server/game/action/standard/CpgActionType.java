@@ -1,5 +1,6 @@
 package com.mahjong.server.game.action.standard;
 
+import static com.mahjong.server.game.action.standard.StandardActionType.CHI;
 import static com.mahjong.server.game.action.standard.StandardActionType.DISCARD;
 
 import java.util.Collection;
@@ -10,6 +11,7 @@ import org.apache.commons.collections.CollectionUtils;
 
 import com.mahjong.server.game.action.AbstractActionType;
 import com.mahjong.server.game.action.Action;
+import com.mahjong.server.game.action.ActionAndLocation;
 import com.mahjong.server.game.action.ActionType;
 import com.mahjong.server.game.context.GameContext;
 import com.mahjong.server.game.enums.PlayerLocation;
@@ -18,18 +20,14 @@ import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.TileGroup;
 import com.mahjong.server.game.object.TileGroupType;
-
 /**
  * 吃、碰、直杠动作类型的统一逻辑。<br>
  * 这类动作的共同点是：
  * <li>都可以放弃；
  * <li>前提条件都是别的玩家出牌后；
  * <li>都是从特定关系的玩家的出牌中得牌，并组成一种group。
-<<<<<<< HEAD
-=======
  * 
  * @author warter
->>>>>>> refs/remotes/origin/master
  */
 public class CpgActionType extends AbstractActionType {
 	@SuppressWarnings("unused")
@@ -117,6 +115,8 @@ public class CpgActionType extends AbstractActionType {
 				location.getRelationOf(context.getLastActionLocation()),
 				Tile.addTile(tile, gotTile));
 		playerInfo.getTileGroups().add(group);
+		context.getLocalDoneActions().add(new ActionAndLocation(new Action(CHI, tile), location));// 存吃和碰这里没啥区别
+
 	}
 
 	/**

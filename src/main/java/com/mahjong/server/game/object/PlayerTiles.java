@@ -7,7 +7,7 @@ import java.util.List;
  * 一个玩家的牌。
  * @author warter
  */
-public class PlayerTiles {
+public class PlayerTiles  {
 	/**
 	 * 手中的牌。
 	 */
@@ -48,5 +48,4 @@ public class PlayerTiles {
 	public void setCanPassTileGroups(List<TileGroup> canPassTileGroups) {
 		this.canPassTileGroups = canPassTileGroups;
 	}
-
 }

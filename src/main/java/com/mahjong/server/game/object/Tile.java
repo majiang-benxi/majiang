@@ -11,6 +11,8 @@ import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
 
+import com.google.common.primitives.Bytes;
+
 public class Tile {
 	private byte[] pai;// 存储相关的一组牌
 
@@ -93,6 +95,9 @@ public class Tile {
 		return tile;
 	}
 
+	public void sort() {
+		Collections.sort(Bytes.asList(this.getPai()));
+	}
 	// 会改变当前类
 	public Tile addTile(Tile tile) {
 		if (pai == null) {

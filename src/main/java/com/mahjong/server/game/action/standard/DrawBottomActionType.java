@@ -1,7 +1,9 @@
 package com.mahjong.server.game.action.standard;
 
 import static com.mahjong.server.game.action.standard.StandardActionType.ANGANG;
+import static com.mahjong.server.game.action.standard.StandardActionType.DRAW_BOTTOM;
 
+import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.ActionAndLocation;
 import com.mahjong.server.game.context.GameContext;
 import com.mahjong.server.game.enums.PlayerLocation;
@@ -34,6 +36,8 @@ public class DrawBottomActionType extends DrawActionType {
 		Tile drawBottomTile = context.getTable().drawBottom(1);
 		context.getTable().getPlayerByLocation(location).getAliveTiles().addTile(drawBottomTile);
 		context.getTable().getPlayerByLocation(location).setLastDrawedTile(drawBottomTile);
+		context.getLocalDoneActions().add(new ActionAndLocation(new Action(DRAW_BOTTOM, tile), location));
+
 	}
 
 }

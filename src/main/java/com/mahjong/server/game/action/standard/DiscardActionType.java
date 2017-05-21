@@ -1,6 +1,10 @@
 package com.mahjong.server.game.action.standard;
 
+import static com.mahjong.server.game.action.standard.StandardActionType.DISCARD;
+
 import com.mahjong.server.game.action.AbstractActionType;
+import com.mahjong.server.game.action.Action;
+import com.mahjong.server.game.action.ActionAndLocation;
 import com.mahjong.server.game.context.GameContext;
 import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.object.PlayerInfo;
@@ -50,6 +54,8 @@ public class DiscardActionType extends AbstractActionType {
 		PlayerInfo playerInfo = context.getTable().getPlayerByLocation(location);
 		playerInfo.getAliveTiles().removeAll(tile);
 		playerInfo.getDiscardedTiles().addTile(tile);
+		context.getLocalDoneActions().add(new ActionAndLocation(new Action(DISCARD, tile), location));
+
 	}
 
 	@Override
