@@ -51,7 +51,9 @@ public enum EventEnum {
 	/** 一次发消息响应 */
 	SEND_MESG_RESP(19),
 	/** 就绪之后的发牌响应 */
-	DEAL_TILE_RESP(20);
+	DEAL_TILE_RESP(20),
+	/** 赢牌响应**/
+	WIN_TILE_RESP(21);
 	private int value;
 
 	public int getValue() {

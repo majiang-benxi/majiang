@@ -1,12 +1,14 @@
 package com.mahjong.server.game.action.standard;
 
 import static com.mahjong.server.game.action.standard.StandardActionType.DEAL;
+import static com.mahjong.server.game.action.standard.StandardActionType.ZIPAI;
 import static com.mahjong.server.game.object.TileGroupType.XUAN_FENG_GANG_DNXB_GROUP;
 import static com.mahjong.server.game.object.TileGroupType.XUAN_FENG_GANG_ZFB_GROUP;
 
 import com.mahjong.server.exception.IllegalActionException;
 import com.mahjong.server.game.action.AbstractActionType;
 import com.mahjong.server.game.action.Action;
+import com.mahjong.server.game.action.ActionAndLocation;
 import com.mahjong.server.game.context.GameContext;
 import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.object.PlayerInfo;
@@ -69,8 +71,9 @@ public class ZiPaiActionType extends AbstractActionType {
 			playerInfo.getTileGroups().add(new TileGroup(XUAN_FENG_GANG_ZFB_GROUP, tile));
 		} else {
 			playerInfo.getTileGroups().add(new TileGroup(XUAN_FENG_GANG_DNXB_GROUP, tile));
-
 		}
+		context.getLocalDoneActions().add(new ActionAndLocation(new Action(ZIPAI, tile), location));
+
 	}
 
 }

@@ -1,8 +1,10 @@
 package com.mahjong.server.game.action.standard;
 
 import static com.mahjong.server.game.action.standard.StandardActionType.DISCARD;
+import static com.mahjong.server.game.action.standard.StandardActionType.DRAW;
 
 import com.mahjong.server.game.action.AbstractActionType;
+import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.ActionAndLocation;
 import com.mahjong.server.game.context.GameContext;
 import com.mahjong.server.game.enums.PlayerLocation;
@@ -11,12 +13,9 @@ import com.mahjong.server.game.object.Tile;
 
 /**
  * 动作类型“摸牌”。
-<<<<<<< HEAD
-=======
- * 
+  * 
  * @author warter
->>>>>>> refs/remotes/origin/master
- */
+  */
 public class DrawActionType extends AbstractActionType {
 
 	@Override
@@ -51,6 +50,7 @@ public class DrawActionType extends AbstractActionType {
 		Tile drawTile = context.getTable().draw(1);
 		context.getTable().getPlayerByLocation(location).getAliveTiles().addTile(drawTile);
 		context.getTable().getPlayerByLocation(location).setLastDrawedTile(drawTile);
+		context.getLocalDoneActions().add(new ActionAndLocation(new Action(DRAW, tile), location));
 	}
 
 }

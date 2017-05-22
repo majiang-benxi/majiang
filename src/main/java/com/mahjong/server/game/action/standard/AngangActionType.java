@@ -1,14 +1,16 @@
 package com.mahjong.server.game.action.standard;
 
+import static com.mahjong.server.game.action.standard.StandardActionType.ANGANG;
 import static com.mahjong.server.game.object.TileGroupType.ANGANG_GROUP;
 
 import com.mahjong.server.game.action.AbstractActionType;
+import com.mahjong.server.game.action.Action;
+import com.mahjong.server.game.action.ActionAndLocation;
 import com.mahjong.server.game.context.GameContext;
 import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.TileGroup;
-
 /**
  * 动作类型“暗杠”。
 <<<<<<< HEAD
@@ -44,5 +46,6 @@ public class AngangActionType extends AbstractActionType {
 		PlayerInfo playerInfo = context.getTable().getPlayerByLocation(location);
 		playerInfo.getAliveTiles().removeAll(tile);
 		playerInfo.getTileGroups().add(new TileGroup(ANGANG_GROUP, tile));
+		context.getLocalDoneActions().add(new ActionAndLocation(new Action(ANGANG, tile), location));
 	}
 }

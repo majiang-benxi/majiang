@@ -10,6 +10,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.exception.IllegalActionException;
 import com.mahjong.server.game.action.standard.DealActionType;
+import com.mahjong.server.game.action.standard.WinActionType;
 import com.mahjong.server.game.context.HouseContext;
 import com.mahjong.server.game.context.RoomContext;
 import com.mahjong.server.game.enums.EventEnum;
@@ -78,6 +79,20 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 											"发牌", roomContex);
 									dealTileProtocolModel.setBody(JSON.toJSONString(dealTileRoomRespModel));
 									HandlerHelper.noticeMsg2Players(roomContex, null, dealTileProtocolModel);
+									WinActionType winActionType = new WinActionType();
+									boolean winFirst = winActionType.isLegalAction(roomContex.getGameContext(),
+											roomContex.getGameContext().getZhuangLocation(), null);
+									if (winFirst) {
+										winActionType.doAction(roomContex.getGameContext(),
+												roomContex.getGameContext().getZhuangLocation(), null);
+										ProtocolModel winProtocolModel = new ProtocolModel();
+										winProtocolModel.setCommandId(EventEnum.WIN_TILE_RESP.getValue());
+										roomContex.setRoomStatus(RoomStatus.PLAYING);
+										EnterRoomRespModel winTileRoomRespModel = new EnterRoomRespModel(null, true,
+												"庄家天胡", roomContex);
+										winProtocolModel.setBody(JSON.toJSONString(winTileRoomRespModel));
+										HandlerHelper.noticeMsg2Players(roomContex, null, winProtocolModel);
+									}
 								}
 
 							} else {

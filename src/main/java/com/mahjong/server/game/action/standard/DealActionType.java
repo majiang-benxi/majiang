@@ -1,9 +1,12 @@
 package com.mahjong.server.game.action.standard;
 
+import static com.mahjong.server.game.action.standard.StandardActionType.DEAL;
+
 import java.util.Collection;
 
 import com.mahjong.server.exception.IllegalActionException;
 import com.mahjong.server.game.action.Action;
+import com.mahjong.server.game.action.ActionAndLocation;
 import com.mahjong.server.game.action.ActionType;
 import com.mahjong.server.game.context.GameContext;
 import com.mahjong.server.game.enums.PlayerLocation;
@@ -15,11 +18,8 @@ import com.mahjong.server.game.object.Tile;
 /**
  * 动作类型“发牌”。<br>
  * 发牌动作不由玩家执行，只实现doAction方法。
-<<<<<<< HEAD
-=======
  * 
  * @author warter
->>>>>>> refs/remotes/origin/master
  */
 public class DealActionType implements ActionType {
 
@@ -57,9 +57,11 @@ public class DealActionType implements ActionType {
 				playerInfo.getAliveTiles().addTile(table.draw(drawCount));
 			}
 		}
+		Tile zhuangFirstTile=table.draw(1);
 		context.getTable().getPlayerByLocation(zhuangLocation).getAliveTiles()
-				.addTile(table.draw(1));
+				.addTile(zhuangFirstTile).sort();
 		context.getTable().setFanhui(table.drawBottom(1).getPai()[0]);// 系统翻出一张会牌
+		context.getLocalDoneActions().add(new ActionAndLocation(new Action(DEAL, zhuangFirstTile), zhuangLocation));
 	}
 
 	@Override

@@ -17,11 +17,8 @@ import com.mahjong.server.game.object.Tile;
 /**
  * 一些标准的动作类型。<br>
  * 枚举的每种动作类型包含对应Type类的单例，并委托调用其对应的方法。
-<<<<<<< HEAD
-=======
  * 
  * @author warter
->>>>>>> refs/remotes/origin/master
  */
 public enum StandardActionType implements ActionType {
 	/**

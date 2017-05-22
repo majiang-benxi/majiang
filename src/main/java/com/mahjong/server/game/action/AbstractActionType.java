@@ -1,6 +1,7 @@
 package com.mahjong.server.game.action;
 
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -135,8 +136,16 @@ public abstract class AbstractActionType implements ActionType {
 	 * @return
 	 */
 	private List<Tile> getTileZuHeByActionSize(Tile tile, int actionTilesSize) {
-		// TODO Auto-generated method stub
-		return null;
+		tile.sort();// 按照顺序取才有意义
+		List<Tile> result = new ArrayList<Tile>();
+		for (int i = 0; i < tile.getPai().length; i++) {
+			if (i + actionTilesSize <= tile.getPai().length) {
+				byte dest[] = new byte[actionTilesSize];
+				System.arraycopy(tile.getPai(), i, dest, 0, actionTilesSize);
+				result.add(new Tile(dest));
+			}
+		}
+		return result;
 	}
 
 	@Override
