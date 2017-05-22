@@ -18,6 +18,10 @@ public class Action {
 	 * 与动作相关的牌。
 	 */
 	private Tile tile;
+	/**
+	 * 此动作发生的时间
+	 */
+	private long time;
 
 	/**
 	 * 新建一个实例，没有相关的牌。
@@ -33,6 +37,7 @@ public class Action {
 		Objects.requireNonNull(type);
 		this.type = type;
 		this.tile = tile;
+		this.time = System.currentTimeMillis();
 	}
 
 	public ActionType getType() {
@@ -83,9 +88,17 @@ public class Action {
 		return true;
 	}
 
+	public long getTime() {
+		return time;
+	}
+
+	public void setTime(long time) {
+		this.time = time;
+	}
+
 	@Override
 	public String toString() {
-		return "[" + type + ", " + tile + "]";
+		return "[" + type + ", " + tile + "," + time + "]";
 	}
 
 }

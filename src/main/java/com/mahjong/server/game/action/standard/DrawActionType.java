@@ -50,7 +50,7 @@ public class DrawActionType extends AbstractActionType {
 		Tile drawTile = context.getTable().draw(1);
 		context.getTable().getPlayerByLocation(location).getAliveTiles().addTile(drawTile);
 		context.getTable().getPlayerByLocation(location).setLastDrawedTile(drawTile);
-		context.getLocalDoneActions().add(new ActionAndLocation(new Action(DRAW, tile), location));
+		context.getLocalDoneActions().add(new ActionAndLocation(new Action(DRAW, drawTile), location));
 	}
 
 }

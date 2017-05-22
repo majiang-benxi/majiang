@@ -49,6 +49,7 @@ public enum TileGroupType {
 	 */
 	HU_GROUP(null, 8);
 	
+
 	private int code;
 	
 	
