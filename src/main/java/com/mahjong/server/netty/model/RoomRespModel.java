@@ -1,11 +1,47 @@
 package com.mahjong.server.netty.model;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
+
+import com.mahjong.server.game.context.GameContext;
+import com.mahjong.server.game.context.RoomContext;
+import com.mahjong.server.game.enums.PlayerLocation;
+import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.vo.MajiangPlayView;
 
 public class RoomRespModel extends MajiangPlayView {
 	private boolean result;
 	private String msg;
 
+	public RoomRespModel() {
+
+	}
+	public RoomRespModel(RoomContext roomContex) {
+		GameContext gameContext = roomContex.getGameContext();
+		this.setFangKaStrategy(gameContext.getGameStrategy().getRuleInfo().getFangKa().getCode());
+		this.setRoomId(roomContex.getRoomNum());
+		this.setRuleStrategy(gameContext.getGameStrategy().getRuleInfo().getMysqlRule());
+		List<PlayerInfo> players = new ArrayList<PlayerInfo>();
+		players.addAll(gameContext.getTable().getPlayerInfos().values());
+		this.setPlayers(players);
+	}
+
+	public RoomRespModel(String weixinId, RoomContext roomContex) {
+		GameContext gameContext = roomContex.getGameContext();
+		this.setFangKaStrategy(gameContext.getGameStrategy().getRuleInfo().getFangKa().getCode());
+		this.setRoomId(roomContex.getRoomNum());
+		this.setRuleStrategy(gameContext.getGameStrategy().getRuleInfo().getMysqlRule());
+		List<PlayerInfo> players = new ArrayList<PlayerInfo>();
+		for (Entry<PlayerLocation, PlayerInfo> entry : gameContext.getTable().getPlayerInfos().entrySet()) {
+			if (weixinId.equals(entry.getValue().getUserInfo().getWeixinMark())) {
+				this.setCurUserLocation(entry.getValue().getUserLocation());
+				break;
+			}
+		}
+		players.addAll(gameContext.getTable().getPlayerInfos().values());
+		this.setPlayers(players);
+	}
 	public boolean isResult() {
 		return result;
 	}

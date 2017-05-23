@@ -57,7 +57,11 @@ public enum EventEnum {
 	/**
 	 * 发牌响应
 	 */
-	DRAW_TILE_RESP(22);
+	DRAW_TILE_RESP(22),
+	/**
+	 * 询问玩家是否吃碰杠胡
+	 */
+	ASK_CHOICE_RESP(23);
 	private int value;
 
 	public int getValue() {

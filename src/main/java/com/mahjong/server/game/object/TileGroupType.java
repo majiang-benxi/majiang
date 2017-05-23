@@ -47,8 +47,11 @@ public enum TileGroupType {
 	/**
 	 * 胡牌
 	 */
-	HU_GROUP(null, 8);
-	
+	HU_GROUP(null, 8),
+	/**
+	 * 过
+	 */
+	PASS_GROUP(null,9);
 
 	private int code;
 	
