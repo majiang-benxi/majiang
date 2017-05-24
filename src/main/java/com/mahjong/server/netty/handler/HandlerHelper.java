@@ -20,6 +20,7 @@ import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.ActionAndLocation;
 import com.mahjong.server.game.action.standard.CpgActionType;
 import com.mahjong.server.game.action.standard.DrawActionType;
+import com.mahjong.server.game.action.standard.DrawBottomActionType;
 import com.mahjong.server.game.action.standard.WinActionType;
 import com.mahjong.server.game.context.RoomContext;
 import com.mahjong.server.game.enums.EventEnum;
@@ -134,6 +135,10 @@ public class HandlerHelper {
 		}
 		CpgActionType cpgActionType = new CpgActionType(tileGroupType);
 		cpgActionType.doAction(roomContext.getGameContext(), discardPlayLocation, action);
+		if (tileGroupType == TileGroupType.BUGANG_GROUP) {
+			DrawBottomActionType drawBottomActionType = new DrawBottomActionType();
+			drawBottomActionType.doAction(roomContext.getGameContext(), discardPlayLocation, new Action(BUGANG));
+		}
 		ProtocolModel cpgProtocolModel = new ProtocolModel();
 		DiscardRespModel discardRespModel = new DiscardRespModel(roomContext);
 		cpgProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());

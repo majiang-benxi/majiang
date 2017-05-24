@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.mahjong.server.exception.IllegalActionException;
 import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.ActionAndLocation;
 import com.mahjong.server.game.action.standard.DiscardActionType;
@@ -57,6 +58,7 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 						break;
 					}
 				}
+				try {
 				if(discardReqModel.getTileGroupType()==TileGroupType.ONE_GROUP.getCode()){
 					// 剩余玩家吃碰杠胡检测,如果其他玩家可以吃碰杠胡的时候，按照优先级逐个通知处理
 					DiscardActionType discardActionType = new DiscardActionType();
@@ -93,6 +95,7 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 					winProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
 					winProtocolModel.setBody(JSON.toJSONString(discardRespModel));
 					HandlerHelper.noticeMsg2Players(roomContext, null, winProtocolModel);
+					// TODO 战绩
 				}else if(discardReqModel.getTileGroupType()==TileGroupType.PASS_GROUP.getCode())	{
 					List<ActionAndLocation>needPassOrDoActions=	roomContext.getGameContext().getNeedPassOrDoAction();
 					needPassOrDoActions.remove(0);//移除询问
@@ -107,16 +110,14 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 								lastActionAndLocation.getLocation().getLocationOf(Relation.NEXT));
 					}
 			}
-				
-					//TODO 战绩
-					
-					DiscardRespModel discardRespModel = new DiscardRespModel();
-					// 回写ACK
-					protocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
-					protocolModel.setBody(JSON.toJSONString(discardRespModel));
-					ctx.writeAndFlush(protocolModel);
-
+				} catch (IllegalActionException e) {
+					ProtocolModel illegalProtocolModel = new ProtocolModel();
+					illegalProtocolModel.setCommandId(EventEnum.ILLEGAL_ACTION_RESP.getValue());
+					illegalProtocolModel.setBody(null);
+					ctx.writeAndFlush(illegalProtocolModel);
+				}
 			}
+
 		} else {
 			ctx.fireChannelRead(protocolModel);
 		}
