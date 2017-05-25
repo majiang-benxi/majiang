@@ -22,6 +22,7 @@ import com.mahjong.server.game.action.standard.CpgActionType;
 import com.mahjong.server.game.action.standard.DrawActionType;
 import com.mahjong.server.game.action.standard.DrawBottomActionType;
 import com.mahjong.server.game.action.standard.WinActionType;
+import com.mahjong.server.game.action.standard.ZiPaiActionType;
 import com.mahjong.server.game.context.RoomContext;
 import com.mahjong.server.game.enums.EventEnum;
 import com.mahjong.server.game.enums.PlayerLocation;
@@ -144,6 +145,26 @@ public class HandlerHelper {
 		cpgProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
 		cpgProtocolModel.setBody(JSON.toJSONString(discardRespModel));
 		HandlerHelper.noticeMsg2Players(roomContext, null, cpgProtocolModel);
+
+	}
+
+	public static void xfgProcess2Players(RoomContext roomContext, TileGroupType xuanFengGangGroup, Action action,
+			PlayerLocation discardPlayLocation) throws IllegalActionException {
+		List<ActionAndLocation> needPassOrDoActions = roomContext.getGameContext().getNeedPassOrDoAction();
+		if (!needPassOrDoActions.isEmpty()) {
+			needPassOrDoActions.clear();
+		}
+		ZiPaiActionType ziPaiActionType = new ZiPaiActionType();
+		ziPaiActionType.doAction(roomContext.getGameContext(), discardPlayLocation, action);
+		if (xuanFengGangGroup == TileGroupType.XUAN_FENG_GANG_ZFB_GROUP) {
+			DrawBottomActionType drawBottomActionType = new DrawBottomActionType();
+			drawBottomActionType.doAction(roomContext.getGameContext(), discardPlayLocation, new Action(BUGANG));
+		}
+		ProtocolModel xfgProtocolModel = new ProtocolModel();
+		DiscardRespModel discardRespModel = new DiscardRespModel(roomContext);
+		xfgProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
+		xfgProtocolModel.setBody(JSON.toJSONString(discardRespModel));
+		HandlerHelper.noticeMsg2Players(roomContext, null, xfgProtocolModel);
 
 	}
 
