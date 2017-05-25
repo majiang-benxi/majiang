@@ -29,7 +29,7 @@ public class WinInfo extends PlayerInfo {
 			allWinTile = Tile.addTile(allWinTile, tileGroup.getTile());
 		}
 		winInfo.winTile = allWinTile;
-		winInfo.huiTile = Tile.getHuiPai(fanhui);
+		winInfo.huiTile = Tile.getOwnHuiPai(allWinTile, fanhui);
 		playerTiles.getAliveTiles().removeAll(winInfo.getHuiTile());// 把会牌移走
 		winInfo.aliveTile = playerTiles.getAliveTiles();
 		winInfo.tileGroups = playerTiles.getTileGroups();

@@ -82,7 +82,7 @@ public class Tile {
 
 	@Override
 	public Tile clone() {
-		byte[] destPai = new byte[] {};
+		byte[] destPai = new byte[this.pai.length];
 		System.arraycopy(this.pai, 0, destPai, 0, this.pai.length);
 		Tile tile = new Tile();
 		tile.setPai(destPai);
@@ -200,9 +200,9 @@ public class Tile {
 			int paiNum=(int)pai;
 			if (huaSe == HuaSe.WAN && paiNum > 0 && pai < 10) {
 				list.add(pai);
-			} else if (huaSe == HuaSe.WAN && paiNum > 16 && pai < 26) {
+			} else if (huaSe == HuaSe.TIAO && paiNum > 16 && pai < 26) {
 				list.add(pai);
-			} else if (huaSe == HuaSe.TIAO && paiNum > 32 && pai < 42) {
+			} else if (huaSe == HuaSe.BING && paiNum > 32 && pai < 42) {
 				list.add(pai);
 			} else if (huaSe == HuaSe.ZI && paiNum > 48 && pai < 56) {
 				list.add(pai);
@@ -218,6 +218,22 @@ public class Tile {
 		return result;
 	}
 
+	public static Tile getOwnHuiPai(Tile tile, byte fanHui) {
+		List<Integer> huipais = new ArrayList<Integer>();
+		Set<Byte> set = Tile.tile2Set(Tile.getHuiPai(fanHui));
+		for (Byte pai : tile.getPai()) {
+			if (set.contains(pai)) {
+				huipais.add((int) pai);
+			}
+		}
+		byte[] result = new byte[huipais.size()];
+		int i = 0;
+		for (Integer intByte : huipais) {
+			result[i] = (byte) intByte.intValue();
+			i++;
+		}
+		return new Tile(result);
+	}
 	public static Tile getHuiPai(byte fanHui) {
 		byte[] result = new byte[2];
 		if (fanHui == 0x09) {
@@ -265,6 +281,6 @@ public class Tile {
 		for (byte b : tile.getPai()) {
 			System.out.print(b + " ");
 		}
-		System.out.println("******");
+
 	}
 }

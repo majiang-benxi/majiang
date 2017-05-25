@@ -3,6 +3,7 @@ package com.mahjong.server.game.rule.win;
 import static com.mahjong.server.game.object.StandardTileUnitType.KEZI;
 import static com.mahjong.server.game.object.StandardTileUnitType.SHUNZI;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,16 +12,18 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 
+import com.mahjong.server.game.object.PlayerTiles;
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.Tile.HuaSe;
 import com.mahjong.server.game.object.TileGroup;
 import com.mahjong.server.game.object.TileGroupType;
 import com.mahjong.server.game.object.TileUnitInfo;
 import com.mahjong.server.game.object.WinInfo;
+import com.mahjong.server.game.rule.FangKa;
 import com.mahjong.server.game.rule.RuleInfo;
 
 public class NormalWinType implements WinType {
-	protected List<TileUnitInfo> tileUnitInfos;// 选取当前玩法分数最高的作为返回值
+	protected List<TileUnitInfo> tileUnitInfos = new ArrayList<TileUnitInfo>();// 选取当前玩法分数最高的作为返回值
 
 	/**
 	 * 三门齐（饼条万）有碰（111）有顺子（123）有19（带1和9的万饼条，风牌和字牌也为19）中发白做将免19免碰。
@@ -191,5 +194,18 @@ public class NormalWinType implements WinType {
 			}
 		}
 		return qiongHu;
+	}
+
+	public static void main(String[] args) {
+		byte[] pais = new byte[] { 0x01, 0x02, 0x03, 0x12, 0x12, 0x12, 0x21, 0x22, 0x23, 0x29, 0x29 };
+		Tile tile=new Tile(pais);
+		NormalWinType winType=new NormalWinType();
+		PlayerTiles playerTiles=new PlayerTiles();
+		playerTiles.setAliveTiles(tile);
+		WinInfo winInfo= WinInfo.fromPlayerTiles(playerTiles,(byte)0x14,false);
+		RuleInfo ruleInfo = new RuleInfo();
+		ruleInfo.setPlayRules(RuleInfo.parseRuleFromBitString("01111"));
+		ruleInfo.setFangKa(FangKa.ONE_SIXTEEN);
+		winType.canWin(winInfo, ruleInfo);
 	}
 }

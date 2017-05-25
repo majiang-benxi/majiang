@@ -13,11 +13,8 @@ import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.TileGroup;
 /**
  * 动作类型“暗杠”。
-<<<<<<< HEAD
-=======
  * 
  * @author warter
->>>>>>> refs/remotes/origin/master
  */
 public class AngangActionType extends AbstractActionType {
 
