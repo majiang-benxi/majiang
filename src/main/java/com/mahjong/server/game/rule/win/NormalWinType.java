@@ -49,26 +49,26 @@ public class NormalWinType implements WinType {
 		}
 		// 以下用来检测癞子的情况下，是否可以胡，如果一个花色用完所有的癞子的情况下都不能构成一句话就胡不了，先排除掉
 		CardPatternCheckResultVO wanCardPatternCheckResult = new CardPatternCheckResultVO(
-				Tile.getSortedHuaSePaiFromPai(winInfo.getAliveTile(), HuaSe.WAN), tileUnitInfos, huiNum);
+				Tile.getSortedHuaSePaiFromPai(winInfo.getAliveTile(), HuaSe.WAN), tileUnitInfos, 0);
 		// 赢牌组合check
 		boolean wanRes = HunTilePlayTools.hu_check(wanCardPatternCheckResult, huiNum);
 		if (wanRes == false) {
 			return false;
 		}
 		CardPatternCheckResultVO tiaoCardPatternCheckResult = new CardPatternCheckResultVO(
-				Tile.getSortedHuaSePaiFromPai(winInfo.getAliveTile(), HuaSe.TIAO), tileUnitInfos, huiNum);
+				Tile.getSortedHuaSePaiFromPai(winInfo.getAliveTile(), HuaSe.TIAO), tileUnitInfos, 0);
 		boolean tiaoRes = HunTilePlayTools.hu_check(tiaoCardPatternCheckResult, huiNum);
 		if (tiaoRes == false) {
 			return false;
 		}
 		CardPatternCheckResultVO bingCardPatternCheckResult = new CardPatternCheckResultVO(
-				Tile.getSortedHuaSePaiFromPai(winInfo.getAliveTile(), HuaSe.BING), tileUnitInfos, huiNum);
+				Tile.getSortedHuaSePaiFromPai(winInfo.getAliveTile(), HuaSe.BING), tileUnitInfos, 0);
 		boolean bingRes = HunTilePlayTools.hu_check(bingCardPatternCheckResult, huiNum);
 		if (bingRes == false) {
 			return false;
 		}
 		CardPatternCheckResultVO ziCardPatternCheckResult = new CardPatternCheckResultVO(
-				Tile.getSortedHuaSePaiFromPai(winInfo.getAliveTile(), HuaSe.ZI), tileUnitInfos, huiNum);
+				Tile.getSortedHuaSePaiFromPai(winInfo.getAliveTile(), HuaSe.ZI), tileUnitInfos, 0);
 		boolean ziRes = HunTilePlayTools.hu_check(ziCardPatternCheckResult, huiNum);
 		if (ziRes == false) {
 			return false;
@@ -197,15 +197,22 @@ public class NormalWinType implements WinType {
 	}
 
 	public static void main(String[] args) {
-		byte[] pais = new byte[] { 0x01, 0x02, 0x03, 0x12, 0x12, 0x12, 0x21, 0x22, 0x23, 0x29, 0x29 };
+		byte[] pais = new byte[] { 0x01, 0x02, 0x03, 0x12, 0x12, 0x12, 0x21, 0x22, 0x23, 0x29, 0x29 };// 没有会牌
+		pais = new byte[] { 0x01, 0x02, 0x14, 0x12, 0x12, 0x12, 0x21, 0x22, 0x23, 0x29, 0x29 };// 1张会牌
+		pais = new byte[] { 0x01, 0x15, 0x14, 0x12, 0x12, 0x12, 0x21, 0x22, 0x23, 0x29, 0x29 };// 2张会牌
+		pais = new byte[] { 0x14, 0x15, 0x14, 0x12, 0x12, 0x12, 0x21, 0x22, 0x23, 0x29, 0x29 };// 3张会牌,缺花色
+		pais = new byte[] { 0x14, 0x15, 0x14, 0x12, 0x12, 0x12, 0x21, 0x01, 0x23, 0x29, 0x29 };// 3张会牌
+		pais = new byte[] { 0x21, 0x22, 0x23, 0x22, 0x23, 0x14, 0x21, 0x22, 0x23, 0x29, 0x29 };// 清一色
+
 		Tile tile=new Tile(pais);
-		NormalWinType winType=new NormalWinType();
 		PlayerTiles playerTiles=new PlayerTiles();
 		playerTiles.setAliveTiles(tile);
 		WinInfo winInfo= WinInfo.fromPlayerTiles(playerTiles,(byte)0x14,false);
 		RuleInfo ruleInfo = new RuleInfo();
 		ruleInfo.setPlayRules(RuleInfo.parseRuleFromBitString("01111"));
 		ruleInfo.setFangKa(FangKa.ONE_SIXTEEN);
-		winType.canWin(winInfo, ruleInfo);
+		NormalWinType winType = new NormalWinType();
+		System.out.println(winType.canWin(winInfo, ruleInfo));
+
 	}
 }

@@ -57,11 +57,22 @@ public class HunTilePlayTools {
 				} else {
 					if (hasHunNum == 0) {
 						return false;
+					} else {
+						if (Math.abs(b1 - b2) <= 2) {
+							ck.tileUnitInfos
+									.add((new TileUnitInfo(SHUNZI, new Tile(new byte[] { b1, b2, Tile.HUIPAI }))));
+							ck.uncheckedTile.removeAll(new Tile(new byte[] { b1, b2 }));// 第一张作为对子
+							ck.huiUsedNum++;
+						} else {
+							ck.tileUnitInfos.add((new TileUnitInfo(JIANG, new Tile(new byte[] { b1, Tile.HUIPAI }))));
+							ck.uncheckedTile.removeAll(new Tile(new byte[] { b1 }));// 第一张作为对子
+							ck.duiZiNum++;
+							ck.huiUsedNum++;
+						}
+
+						return hu_check(ck, hasHunNum - 1);// 继续递归
 					}
-					ck.tileUnitInfos.add((new TileUnitInfo(JIANG, new Tile(new byte[] { b1, Tile.HUIPAI }))));
-					ck.uncheckedTile.removeAll(new Tile(new byte[] { b1 }));// 第一张作为对子
-					ck.duiZiNum++;
-					return hu_check(ck, hasHunNum - 1);// 继续递归
+
 				}
 			} else {
 				if (hasHunNum == 0) {
@@ -128,6 +139,7 @@ public class HunTilePlayTools {
 							ck.tileUnitInfos.add(
 									new TileUnitInfo(KEZI,tile ));
 							ck.uncheckedTile.removeAll(tile);
+							ck.huiUsedNum++;
 							temp[i] = 0x00;
 							temp[i + 1] = 0x00;
 							return hu_check(ck, hasHunNum - 1);
