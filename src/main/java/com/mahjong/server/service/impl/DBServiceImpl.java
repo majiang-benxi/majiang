@@ -17,6 +17,7 @@ import com.mahjong.server.dao.UserActionScoreMapper;
 import com.mahjong.server.dao.UserInfoMapper;
 import com.mahjong.server.dao.UserRoomRecordMapper;
 import com.mahjong.server.entity.ManageUser;
+import com.mahjong.server.entity.ManageUserExample;
 import com.mahjong.server.entity.MessageInfo;
 import com.mahjong.server.entity.RoomCartChange;
 import com.mahjong.server.entity.RoomRecord;
@@ -224,6 +225,11 @@ public class DBServiceImpl implements DBService {
 	}
 	
 	@Override
+	public ManageUser selectManageUserByID(Integer uid){
+		return manageUserMapper.selectByPrimaryKey(uid);
+	}
+	
+	@Override
 	public boolean updateManageUserByID(ManageUser manageUser){
 		return manageUserMapper.updateByPrimaryKey(manageUser)>0;
 	}
@@ -241,10 +247,7 @@ public class DBServiceImpl implements DBService {
 		
 	@Override
 	public boolean deleteManageUserByID(Integer manageUserID){
-		ManageUser manageUser = new ManageUser();
-		manageUser.setId(manageUserID);
-		manageUser.setState((byte) 0);
-		return manageUserMapper.updateByPrimaryKey(manageUser)>0;
+		return manageUserMapper.updateUserSate(manageUserID,0)>0;
 	}
 	
 	/************************充值记录**********************/
@@ -291,6 +294,16 @@ public class DBServiceImpl implements DBService {
 	@Override
 	public boolean updateUpdateInfoById(UpdateInfo updateInfo) {
 		return updateInfoMapper.updateByPrimaryKey(updateInfo)>0;
+	}
+	
+	@Override
+	public List<ManageUser> selectAllManageUser() {
+		ManageUserExample manageUserExample = new ManageUserExample();
+		return manageUserMapper.selectByExample(manageUserExample);	
+	}
+	@Override
+	public void updateAdminUserSate(Integer uid, Integer tostate) {
+		manageUserMapper.updateUserSate(uid, tostate);
 	}
 	
 	

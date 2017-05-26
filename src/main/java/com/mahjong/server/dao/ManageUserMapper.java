@@ -31,6 +31,8 @@ public interface ManageUserMapper {
     int updateByPrimaryKeySelective(ManageUser record);
 
     int updateByPrimaryKey(ManageUser record);
+    
+    int updateUserSate(@Param("id")Integer id, @Param("state") Integer state);
 
 	ManageUser selectManageUserByUname(@Param("userName")String userName);
 }

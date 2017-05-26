@@ -220,6 +220,13 @@ public interface DBService {
 	 * @return 管理员用户
 	 */
 	ManageUser selectManageUserByUname(String userName);
+	
+	/**
+	 * 根据用户名查管理员用户
+	 * @param userName 用户名
+	 * @return 管理员用户
+	 */
+	List<ManageUser> selectAllManageUser();
 
 	/**
 	 * 更新管理员用户
@@ -280,6 +287,21 @@ public interface DBService {
 	 * @return 更新是否成功
 	 */
 	boolean updateUpdateInfoById(UpdateInfo updateInfo);
+
+	
+	/**
+	 *  更新管理员信息
+	 * @param uid 用户ID
+	 * @param tostate 状态
+	 */
+	public void updateAdminUserSate(Integer uid, Integer tostate);
+
+	/**
+	 * 查询管理员信息
+	 * @param uid 用户ID
+	 * @return 管理员信息
+	 */
+	ManageUser selectManageUserByID(Integer uid);
 	
 
 }

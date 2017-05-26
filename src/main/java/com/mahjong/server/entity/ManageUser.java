@@ -11,7 +11,15 @@ public class ManageUser {
 
     private String nickName;
 
+    private String mobile;
+
     private Date createTime;
+    
+    private String createTimeStr;
+
+    private Byte userLevel;
+
+    private Integer cardHold;
 
     private Byte state;
 
@@ -47,12 +55,36 @@ public class ManageUser {
         this.nickName = nickName == null ? null : nickName.trim();
     }
 
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile == null ? null : mobile.trim();
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public Byte getUserLevel() {
+        return userLevel;
+    }
+
+    public void setUserLevel(Byte userLevel) {
+        this.userLevel = userLevel;
+    }
+
+    public Integer getCardHold() {
+        return cardHold;
+    }
+
+    public void setCardHold(Integer cardHold) {
+        this.cardHold = cardHold;
     }
 
     public Byte getState() {
@@ -62,4 +94,13 @@ public class ManageUser {
     public void setState(Byte state) {
         this.state = state;
     }
+
+	public String getCreateTimeStr() {
+		return createTimeStr;
+	}
+
+	public void setCreateTimeStr(String createTimeStr) {
+		this.createTimeStr = createTimeStr;
+	}
+    
 }

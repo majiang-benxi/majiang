@@ -375,6 +375,76 @@ public class ManageUserExample {
             return (Criteria) this;
         }
 
+        public Criteria andMobileIsNull() {
+            addCriterion("mobile is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMobileIsNotNull() {
+            addCriterion("mobile is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMobileEqualTo(String value) {
+            addCriterion("mobile =", value, "mobile");
+            return (Criteria) this;
+        }
+
+        public Criteria andMobileNotEqualTo(String value) {
+            addCriterion("mobile <>", value, "mobile");
+            return (Criteria) this;
+        }
+
+        public Criteria andMobileGreaterThan(String value) {
+            addCriterion("mobile >", value, "mobile");
+            return (Criteria) this;
+        }
+
+        public Criteria andMobileGreaterThanOrEqualTo(String value) {
+            addCriterion("mobile >=", value, "mobile");
+            return (Criteria) this;
+        }
+
+        public Criteria andMobileLessThan(String value) {
+            addCriterion("mobile <", value, "mobile");
+            return (Criteria) this;
+        }
+
+        public Criteria andMobileLessThanOrEqualTo(String value) {
+            addCriterion("mobile <=", value, "mobile");
+            return (Criteria) this;
+        }
+
+        public Criteria andMobileLike(String value) {
+            addCriterion("mobile like", value, "mobile");
+            return (Criteria) this;
+        }
+
+        public Criteria andMobileNotLike(String value) {
+            addCriterion("mobile not like", value, "mobile");
+            return (Criteria) this;
+        }
+
+        public Criteria andMobileIn(List<String> values) {
+            addCriterion("mobile in", values, "mobile");
+            return (Criteria) this;
+        }
+
+        public Criteria andMobileNotIn(List<String> values) {
+            addCriterion("mobile not in", values, "mobile");
+            return (Criteria) this;
+        }
+
+        public Criteria andMobileBetween(String value1, String value2) {
+            addCriterion("mobile between", value1, value2, "mobile");
+            return (Criteria) this;
+        }
+
+        public Criteria andMobileNotBetween(String value1, String value2) {
+            addCriterion("mobile not between", value1, value2, "mobile");
+            return (Criteria) this;
+        }
+
         public Criteria andCreateTimeIsNull() {
             addCriterion("create_time is null");
             return (Criteria) this;
@@ -432,6 +502,126 @@ public class ManageUserExample {
 
         public Criteria andCreateTimeNotBetween(Date value1, Date value2) {
             addCriterion("create_time not between", value1, value2, "createTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserLevelIsNull() {
+            addCriterion("user_level is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserLevelIsNotNull() {
+            addCriterion("user_level is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserLevelEqualTo(Byte value) {
+            addCriterion("user_level =", value, "userLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserLevelNotEqualTo(Byte value) {
+            addCriterion("user_level <>", value, "userLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserLevelGreaterThan(Byte value) {
+            addCriterion("user_level >", value, "userLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserLevelGreaterThanOrEqualTo(Byte value) {
+            addCriterion("user_level >=", value, "userLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserLevelLessThan(Byte value) {
+            addCriterion("user_level <", value, "userLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserLevelLessThanOrEqualTo(Byte value) {
+            addCriterion("user_level <=", value, "userLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserLevelIn(List<Byte> values) {
+            addCriterion("user_level in", values, "userLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserLevelNotIn(List<Byte> values) {
+            addCriterion("user_level not in", values, "userLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserLevelBetween(Byte value1, Byte value2) {
+            addCriterion("user_level between", value1, value2, "userLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserLevelNotBetween(Byte value1, Byte value2) {
+            addCriterion("user_level not between", value1, value2, "userLevel");
+            return (Criteria) this;
+        }
+
+        public Criteria andCardHoldIsNull() {
+            addCriterion("card_hold is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCardHoldIsNotNull() {
+            addCriterion("card_hold is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCardHoldEqualTo(Integer value) {
+            addCriterion("card_hold =", value, "cardHold");
+            return (Criteria) this;
+        }
+
+        public Criteria andCardHoldNotEqualTo(Integer value) {
+            addCriterion("card_hold <>", value, "cardHold");
+            return (Criteria) this;
+        }
+
+        public Criteria andCardHoldGreaterThan(Integer value) {
+            addCriterion("card_hold >", value, "cardHold");
+            return (Criteria) this;
+        }
+
+        public Criteria andCardHoldGreaterThanOrEqualTo(Integer value) {
+            addCriterion("card_hold >=", value, "cardHold");
+            return (Criteria) this;
+        }
+
+        public Criteria andCardHoldLessThan(Integer value) {
+            addCriterion("card_hold <", value, "cardHold");
+            return (Criteria) this;
+        }
+
+        public Criteria andCardHoldLessThanOrEqualTo(Integer value) {
+            addCriterion("card_hold <=", value, "cardHold");
+            return (Criteria) this;
+        }
+
+        public Criteria andCardHoldIn(List<Integer> values) {
+            addCriterion("card_hold in", values, "cardHold");
+            return (Criteria) this;
+        }
+
+        public Criteria andCardHoldNotIn(List<Integer> values) {
+            addCriterion("card_hold not in", values, "cardHold");
+            return (Criteria) this;
+        }
+
+        public Criteria andCardHoldBetween(Integer value1, Integer value2) {
+            addCriterion("card_hold between", value1, value2, "cardHold");
+            return (Criteria) this;
+        }
+
+        public Criteria andCardHoldNotBetween(Integer value1, Integer value2) {
+            addCriterion("card_hold not between", value1, value2, "cardHold");
             return (Criteria) this;
         }
 
