@@ -53,7 +53,19 @@ public enum EventEnum {
 	/** 就绪之后的发牌响应 */
 	DEAL_TILE_RESP(20),
 	/** 赢牌响应**/
-	WIN_TILE_RESP(21);
+	WIN_TILE_RESP(21),
+	/**
+	 * 发牌响应
+	 */
+	DRAW_TILE_RESP(22),
+	/**
+	 * 询问玩家是否吃碰杠胡
+	 */
+	ASK_CHOICE_RESP(23),
+	/**
+	 * 非法动作响应信息
+	 */
+	ILLEGAL_ACTION_RESP(24);
 	private int value;
 
 	public int getValue() {

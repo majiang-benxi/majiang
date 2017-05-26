@@ -1,5 +1,8 @@
 package com.mahjong.server.game.enums;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 玩家位置。
  * 
@@ -73,4 +76,17 @@ public enum PlayerLocation {
 				% 4];
 	}
 
+	public List<PlayerLocation> getOrderedNextLocations() {
+		List<PlayerLocation> playerLocations = new ArrayList<PlayerLocation>();
+		playerLocations.add(getLocationOf(Relation.NEXT));
+		playerLocations.add(getLocationOf(Relation.OPPOSITE));
+		playerLocations.add(getLocationOf(Relation.PREVIOUS));
+		return playerLocations;
+
+	}
+
+	public static void main(String[] args) {
+		PlayerLocation playerLocation = PlayerLocation.EAST;
+		System.out.println(playerLocation.getOrderedNextLocations());
+	}
 }

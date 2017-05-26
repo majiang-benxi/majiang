@@ -74,7 +74,7 @@ public class WinActionType extends AbstractActionType {
 				result.setPaoerLocation(context.getLastActionLocation());
 			}
 			result.caclulateScore();// 计算分数
-			context.setGameResult(result);// TODO 赢牌之后的分数，和牌【穷胡，飘胡】判断和写入
+			context.setGameResult(result);
 		}
 
 

@@ -36,7 +36,7 @@ public class DrawBottomActionType extends DrawActionType {
 		Tile drawBottomTile = context.getTable().drawBottom(1);
 		context.getTable().getPlayerByLocation(location).getAliveTiles().addTile(drawBottomTile);
 		context.getTable().getPlayerByLocation(location).setLastDrawedTile(drawBottomTile);
-		context.getLocalDoneActions().add(new ActionAndLocation(new Action(DRAW_BOTTOM, tile), location));
+		context.getLocalDoneActions().add(new ActionAndLocation(new Action(DRAW_BOTTOM, drawBottomTile), location));
 
 	}
 

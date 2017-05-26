@@ -10,6 +10,8 @@ function connect() {
 	}
 
 	if (window.WebSocket) {
+  		//socket = new WebSocket("ws://localhost:8888/mj");
+
   		socket = new WebSocket("ws://47.94.86.16:8888/mj");
   		socket.onmessage = function(event) {
   			alert("响应内容:"+event.data);
