@@ -11,6 +11,8 @@ import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.google.common.primitives.Bytes;
 
 public class Tile {
@@ -281,6 +283,13 @@ public class Tile {
 		for (byte b : tile.getPai()) {
 			System.out.print(b + " ");
 		}
+		String json = JSON.toJSONString(new Tile(getOneBoxMahjong()));
+		System.out.println(json);
 
+		Tile tile2 = JSON.parseObject(json, new TypeReference<Tile>() {
+		});
+		for (Byte pai : tile2.getPai()) {
+			System.out.print(pai + " ");
+		}
 	}
 }

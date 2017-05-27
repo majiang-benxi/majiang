@@ -39,7 +39,6 @@ public enum StandardTileUnitType implements TileUnitType {
 
 		@Override
 		protected boolean isLegalTilesWithCorrectSize(Tile tile) {
-			byte[] pais = tile.getPai();
 			List<Integer> list = new ArrayList<Integer>();
 			for (byte pai : tile.getPai()) {
 				list.add((int) pai);

@@ -107,5 +107,15 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	public void setUserLocation(int userLocation) {
 		this.userLocation = PlayerLocation.fromCode(userLocation);
 	}
-	
+
+
+	/**
+	 * 获取其他玩家的视图。
+	 */
+	public PlayerInfo getOtherPlayerInfoView() {
+		PlayerInfo playerInfo = this.clone();
+		playerInfo.setAliveTiles(null);// 活牌不可见
+		playerInfo.setLastDrawedTile(null);// 最后摸的牌不可见
+		return playerInfo;
+	}
 }

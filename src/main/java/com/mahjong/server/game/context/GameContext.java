@@ -9,6 +9,7 @@ import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.ActionAndLocation;
 import com.mahjong.server.game.enums.PlayerLocation;
+import com.mahjong.server.game.object.DiscardContext;
 import com.mahjong.server.game.object.GameResult;
 import com.mahjong.server.game.object.MahjongTable;
 import com.mahjong.server.game.object.PlayerInfo;
@@ -30,8 +31,7 @@ public class GameContext {
 	/*记录用户每一步出牌信息*/
 	private List<ActionAndLocation> localDoneActions = new ArrayList<ActionAndLocation>();
 	private GameResult gameResult;
-
-	private List<ActionAndLocation> needPassOrDoAction;// 存储一次打牌操作之后，其他所有玩家针对这次打牌的一个能够响应的动作情况，每次询问返回后需要删除。一旦有玩家执行了非过的操作，就清空此对象。
+	private DiscardContext discardContext;
 
 	public GameContext(MahjongTable table, GameStrategy gameStrategy) {
 		this.table = table;
@@ -145,12 +145,15 @@ public class GameContext {
 		this.gameStrategy = gameStrategy;
 	}
 
-	public List<ActionAndLocation> getNeedPassOrDoAction() {
-		return needPassOrDoAction;
+	public DiscardContext getDiscardContext() {
+		return discardContext;
 	}
-	public void setNeedPassOrDoAction(List<ActionAndLocation> actionAndLocations) {
-		this.needPassOrDoAction = actionAndLocations;
+
+	public void setDiscardContext(DiscardContext discardContext) {
+		this.discardContext = discardContext;
 	}
+
+
 
 
 }
