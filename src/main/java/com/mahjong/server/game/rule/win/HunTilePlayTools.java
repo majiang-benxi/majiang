@@ -4,8 +4,6 @@ import static com.mahjong.server.game.object.StandardTileUnitType.JIANG;
 import static com.mahjong.server.game.object.StandardTileUnitType.KEZI;
 import static com.mahjong.server.game.object.StandardTileUnitType.SHUNZI;
 
-import java.util.Arrays;
-
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.TileUnitInfo;
 
@@ -24,6 +22,17 @@ public class HunTilePlayTools {
 		return needNumArr[modNum];
 	}
 
+	public static CardPatternCheckResultVO x_hu_check(CardPatternCheckResultVO ck, int maxHunNum) {
+		for (int i = 0; i <= maxHunNum; i++) {
+			CardPatternCheckResultVO tempCk = ck.clone();
+			boolean canhu = hu_check(tempCk, i);
+			if (canhu) {
+				tempCk.canhu = true;
+				return tempCk;
+			}
+		}
+		return null;
+	}
 	public static boolean hu_check(CardPatternCheckResultVO ck, int hasHunNum) {
 		int unCheckPaiSize = ck.uncheckedTile.getPai().length;
 		if (unCheckPaiSize == 0 && ck.huiUsedNum <= MAX_HUN_NUM) {
@@ -32,7 +41,7 @@ public class HunTilePlayTools {
 		if (unCheckPaiSize == 1) {
 			byte pai = ck.uncheckedTile.getPai()[0];
 			if (ck.duiZiNum == 0 && hasHunNum > 0) {
-				ck.tileUnitInfos.add(new TileUnitInfo(JIANG, new Tile(new byte[] { pai,Tile.HUIPAI})));
+				ck.tileUnitInfos.add(new TileUnitInfo(JIANG, new Tile(new byte[] { pai, Tile.HUIPAI })));
 				ck.huiUsedNum++;
 				ck.duiZiNum++;
  				return true;
@@ -69,7 +78,6 @@ public class HunTilePlayTools {
 							ck.duiZiNum++;
 							ck.huiUsedNum++;
 						}
-
 						return hu_check(ck, hasHunNum - 1);// 继续递归
 					}
 
@@ -79,8 +87,8 @@ public class HunTilePlayTools {
 					return false;
 				}
 				if (Math.abs(b1 - b2) <= 2) {
-				ck.tileUnitInfos.add((new TileUnitInfo(SHUNZI, new Tile(new byte[] { b1, b2, Tile.HUIPAI }))));
-				ck.uncheckedTile.removeAll(new Tile(new byte[] { b1, b2 }));
+					ck.tileUnitInfos.add((new TileUnitInfo(SHUNZI, new Tile(new byte[] { b1, b2, Tile.HUIPAI }))));
+					ck.uncheckedTile.removeAll(new Tile(new byte[] { b1, b2 }));
 					return hu_check(ck, hasHunNum - 1);// 继续递归
 				} else {
 					if (hasHunNum < 4) {// 这个时候有2张散牌，混子数量需要大于等于4
@@ -96,83 +104,91 @@ public class HunTilePlayTools {
 				}
 			}
 		} else {// 大于等于三张
-			byte[] temp = new byte[unCheckPaiSize];
-			System.arraycopy(ck.uncheckedTile.getPai(), 0, temp, 0, unCheckPaiSize);
-			// 分离3同
-			for (int i = 0; i < temp.length; i++) {// 3同
-				if (i > 0 && i < temp.length - 1 && temp[i] > 0) {
-					if (temp[i] == temp[i - 1] && temp[i] == temp[i + 1]) {
-						Tile tile=new Tile(new byte[] { temp[i - 1], temp[i], temp[i + 1] });
-						ck.tileUnitInfos.add(
-								new TileUnitInfo(KEZI,tile ));
-						ck.uncheckedTile.removeAll(tile);
-						temp[i - 1] = 0x00;
-						temp[i] = 0x00;
-						temp[i + 1] = 0x00;
-					}
+			boolean res = false;
+			byte b1 = ck.uncheckedTile.getPai()[0];
+			// 第一张和另外两张构成一个组合
+			int uncheckLength = ck.uncheckedTile.getPai().length;
+			for (int i = 1; i < uncheckLength; i++) {
+				byte b2 = ck.uncheckedTile.getPai()[i];
+				if (b2 - b1 > 1) {// 13444 134不可能连一起
+					b1 = b2;
+					continue;
 				}
-			}
-			Arrays.sort(temp);
-			// 3、分离3连
-			for (int i = 0; i < temp.length; i++) {// 3连
-				if (i > 0 && i < temp.length - 1 && temp[i] > 0) {
-					if (temp[i + 1] < 0X31 && temp[i - 1] != 0 && temp[i + 1] != 0 && temp[i] == temp[i - 1] + 1
-							&& temp[i] == temp[i + 1] - 1) {
-						Tile  tile =new Tile(new byte[] { temp[i - 1], temp[i], temp[i + 1] });
-						ck.tileUnitInfos.add(
-								new TileUnitInfo(SHUNZI, tile));
-						ck.uncheckedTile.removeAll(tile);
-						temp[i - 1] = 0x00;
-						temp[i] = 0x00;
-						temp[i + 1] = 0x00;
+
+				if (i + 1 < uncheckLength) {
+					if (b1 != b2 && ck.uncheckedTile.getPai()[i + 1] == b2) {
+						continue;
 					}
-				}
-			}
-			if(ck.uncheckedTile.getPai().length<3){
-				return hu_check(ck, hasHunNum);
-			}else{
-				// 分离2同
-				for (int i = 0; i < temp.length; i++) {// 2同
-					if (i < temp.length - 1 && temp[i] > 0) {
-						if (temp[i] == temp[i + 1]) {
-							Tile tile=new Tile(new byte[] { Tile.HUIPAI, temp[i], temp[i + 1] });
-							ck.tileUnitInfos.add(
-									new TileUnitInfo(KEZI,tile ));
-							ck.uncheckedTile.removeAll(tile);
-							ck.huiUsedNum++;
-							temp[i] = 0x00;
-							temp[i + 1] = 0x00;
-							return hu_check(ck, hasHunNum - 1);
+					byte b3 = ck.uncheckedTile.getPai()[i + 1];
+					if (b1 == b2 && b2 == b3) {
+						ck.tileUnitInfos.add((new TileUnitInfo(KEZI, new Tile(new byte[] { b1, b2, b3 }))));
+						ck.uncheckedTile.removeAll(new Tile(new byte[] { b1, b2, b3 }));
+						res = hu_check(ck, hasHunNum);// 继续递归
+						if (!res) {
+							ck.uncheckedTile.addTile(new Tile(new byte[] { b1, b2, b3 })).sort();
+						} else {
+							return true;
+						}
+
+					}
+					if (b1 + 1 == b2 && b2 + 1 == b3) {
+						ck.tileUnitInfos.add((new TileUnitInfo(SHUNZI, new Tile(new byte[] { b1, b2, b3 }))));
+						ck.uncheckedTile.removeAll(new Tile(new byte[] { b1, b2, b3 }));
+						res = hu_check(ck, hasHunNum);// 继续递归
+						if (!res) {
+							ck.uncheckedTile.addTile(new Tile(new byte[] { b1, b2, b3 })).sort();
+						} else {
+							return true;
 						}
 					}
 				}
-				Arrays.sort(temp);
-				// 分离2连
-				for (int i = 0; i < temp.length; i++) {// 2连
-					if ( i < temp.length - 1 && temp[i] > 0) {
-						if (temp[i + 1] < 0X31 && temp[i] != 0 && temp[i + 1] != 0&& Math.abs(temp[i] -temp[i + 1]) <= 2) {
-							Tile  tile =new Tile(new byte[] { Tile.HUIPAI, temp[i], temp[i + 1] });
-							ck.tileUnitInfos.add(
-									new TileUnitInfo(SHUNZI, tile));
-							ck.uncheckedTile.removeAll(tile);
-							ck.huiUsedNum++;
-							temp[i] = 0x00;
-							temp[i + 1] = 0x00;
-							return hu_check(ck, hasHunNum - 1);
-						}
+
+			}
+			// 第一个和第二个一铺
+			for (int i = 1; i < uncheckLength; i++) {
+				byte b2 = ck.uncheckedTile.getPai()[i];
+				if (b2 - b1 > 2) {// 13444 134不可能连一起
+					b1 = b2;
+					continue;
+				}
+
+				if (b1 == b2 && hasHunNum > 0) {
+					ck.tileUnitInfos.add((new TileUnitInfo(KEZI, new Tile(new byte[] { b1, b2, Tile.HUIPAI }))));
+					ck.uncheckedTile.removeAll(new Tile(new byte[] { b1, b2 }));
+					ck.huiUsedNum++;
+
+					res = hu_check(ck, hasHunNum - 1);// 继续递归
+					if (!res) {
+						ck.uncheckedTile.addTile(new Tile(new byte[] { b1, b2 })).sort();
+					} else {
+						return true;
 					}
 				}
-				if (hasHunNum >= 2) {// 分离完毕之后牌还多余三张。此时用2个混和第一张组成牌组
-					byte b1 = ck.uncheckedTile.getPai()[0];
-					Tile tile = new Tile(new byte[] { Tile.HUIPAI, Tile.HUIPAI, b1 });
-					ck.tileUnitInfos.add(new TileUnitInfo(KEZI, tile));
-					ck.uncheckedTile.removeAll(tile);
-					ck.huiUsedNum = ck.huiUsedNum + 2;
-					return hu_check(ck, hasHunNum - 2);
+				if (b1 + 1 == b2 && hasHunNum > 0) {
+					ck.tileUnitInfos.add((new TileUnitInfo(SHUNZI, new Tile(new byte[] { b1, b2, Tile.HUIPAI }))));
+					ck.uncheckedTile.removeAll(new Tile(new byte[] { b1, b2 }));
+					ck.huiUsedNum++;
+					res = hu_check(ck, hasHunNum - 1);// 继续递归
+					if (!res) {
+						ck.uncheckedTile.addTile(new Tile(new byte[] { b1, b2 })).sort();
+					} else {
+						return true;
+					}
+				}
+			}
+			// 第一个自己一铺
+			if (hasHunNum > 2) {
+				ck.tileUnitInfos.add((new TileUnitInfo(KEZI, new Tile(new byte[] { b1, Tile.HUIPAI, Tile.HUIPAI }))));
+				ck.uncheckedTile.removeAll(new Tile(new byte[] { b1 }));
+				ck.huiUsedNum += 2;
+				res = hu_check(ck, hasHunNum - 2);// 继续递归
+				if (!res) {
+					ck.uncheckedTile.addTile(new Tile(new byte[] { b1 })).sort();
 				} else {
-					return false;
+					return true;
 				}
 			}
 		}
+		return false;
 	}
 }

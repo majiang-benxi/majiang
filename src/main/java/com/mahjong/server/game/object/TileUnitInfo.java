@@ -4,6 +4,9 @@ public class TileUnitInfo {
 	private TileUnitType tileUnitType;
 	private Tile tile;
 
+	public TileUnitInfo() {
+
+	}
 	public TileUnitInfo(TileUnitType tileUnitType, Tile tile) {
 		super();
 		this.tileUnitType = tileUnitType;
@@ -26,4 +29,10 @@ public class TileUnitInfo {
 		this.tileUnitType = tileUnitType;
 	}
 
+	public TileUnitInfo clone() {
+		TileUnitInfo tileUnitInfo = new TileUnitInfo();
+		tileUnitInfo.tile = tile.clone();
+		tileUnitInfo.tileUnitType = tileUnitType;// 枚举类型浅拷贝
+		return tileUnitInfo;
+	}
 }

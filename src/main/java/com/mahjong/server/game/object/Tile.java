@@ -220,6 +220,9 @@ public class Tile {
 		return jiangPAI;
 	}
 
+	public static int getMaxHuiNum() {
+		return 7;
+	}
 	public static Tile getSortedHuaSePaiFromPai(Tile tile, HuaSe huaSe) {
 		List<Byte>list=new ArrayList<Byte>();
 		for (Byte pai : tile.getPai()) {
