@@ -13,17 +13,41 @@ import org.apache.commons.lang.ArrayUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.google.common.primitives.Bytes;
 
 public class Tile {
-	private byte[] pai;// 存储相关的一组牌
-
+	@JSONField(serialize = false)
+	private byte[] pai;// 存储相关的一组牌，后端用此字段
+	private int[] qianduanPai;// 前端coco2dx不支持byte类型的JSON互转，此字段用来支持前端牌的展示跟后端牌的映射，详情参见对应的set和get
 	public Tile() {
 
 	}
 
 	public Tile(byte[] pai) {
 		this.pai = pai;
+	}
+
+	public int[] getQianduanPai() {
+		if (pai == null) {
+			return null;
+		}
+		qianduanPai = new int[pai.length];
+		for (int i = 0; i < pai.length; i++){
+			qianduanPai[i] = Integer.parseInt(pai[i] + "", 16);
+		}
+		return qianduanPai;
+	}
+
+	public void setQianduanPai(int[] qianduanPai) {
+		if (qianduanPai != null) {
+			pai = new byte[qianduanPai.length];
+			for (int i = 0; i < qianduanPai.length; i++) {
+				pai[i] = (byte) (0xff & qianduanPai[i]);
+			}
+
+		}
+		this.qianduanPai = qianduanPai;
 	}
 
 	public enum HuaSe {
