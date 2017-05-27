@@ -192,4 +192,22 @@ public class UserController {
 		
 	}
 	
+	
+	@RequestMapping(value = "/updateAdminUserRoomnNum")
+	@ResponseBody
+	public Object updateAdminUserRoomnNum(HttpServletRequest request, HttpServletResponse response) {
+		
+		String uid = request.getParameter("usid");
+		String roomcartEditNum = request.getParameter("roomcartEditNum");
+		
+		ManageUser manageUser = new ManageUser();
+		manageUser.setId(Integer.parseInt(uid));
+		manageUser.setCardHold(Integer.parseInt(roomcartEditNum));
+		
+		dbService.updateManageUserByID(manageUser);
+		
+		return "success";
+		
+	}
+	
 }

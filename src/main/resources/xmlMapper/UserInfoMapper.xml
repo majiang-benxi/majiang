@@ -288,24 +288,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByExample" parameterType="map" >
-    update user_info
-    set id = #{record.id,jdbcType=INTEGER},
-      nick_name = #{record.nickName,jdbcType=VARCHAR},
-      weixin_mark = #{record.weixinMark,jdbcType=VARCHAR},
-      sex = #{record.sex,jdbcType=TINYINT},
-      head_imgurl = #{record.headImgurl,jdbcType=VARCHAR},
-      create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      room_cart_num = #{record.roomCartNum,jdbcType=INTEGER},
-      score_num = #{record.scoreNum,jdbcType=INTEGER},
-      last_login_ip = #{record.lastLoginIp,jdbcType=VARCHAR},
-      last_login_time = #{record.lastLoginTime,jdbcType=TIMESTAMP},
-      curr_room = #{record.currRoom,jdbcType=INTEGER},
-      state = #{record.state,jdbcType=TINYINT}
-    <if test="_parameter != null" >
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
+  
   <update id="updateByPrimaryKeySelective" parameterType="com.mahjong.server.entity.UserInfo" >
     update user_info
     <set >
@@ -345,24 +328,6 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.mahjong.server.entity.UserInfo" >
-    update user_info
-    set nick_name = #{nickName,jdbcType=VARCHAR},
-      weixin_mark = #{weixinMark,jdbcType=VARCHAR},
-      sex = #{sex,jdbcType=TINYINT},
-      head_imgurl = #{headImgurl,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      room_cart_num = #{roomCartNum,jdbcType=INTEGER},
-      score_num = #{scoreNum,jdbcType=INTEGER},
-      last_login_ip = #{lastLoginIp,jdbcType=VARCHAR},
-      last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
-      curr_room = #{currRoom,jdbcType=INTEGER},
-      state = #{state,jdbcType=TINYINT}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  
-  
-  
   
   <select id="selectUserInfoByWeiXinMark" resultMap="BaseResultMap" parameterType="string" >
     select 

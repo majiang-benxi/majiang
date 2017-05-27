@@ -26,11 +26,8 @@ public interface UserRoomRecordMapper {
 
     int updateByExampleSelective(@Param("record") UserRoomRecord record, @Param("example") UserRoomRecordExample example);
 
-    int updateByExample(@Param("record") UserRoomRecord record, @Param("example") UserRoomRecordExample example);
-
     int updateByPrimaryKeySelective(UserRoomRecord record);
 
-    int updateByPrimaryKey(UserRoomRecord record);
 
 	List<UserRoomRecord> selectUserRoomRecordInfoByUserID(Integer userId);
 

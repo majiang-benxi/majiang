@@ -205,18 +205,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByExample" parameterType="map" >
-    update room_record
-    set id = #{record.id,jdbcType=INTEGER},
-      room_num = #{record.roomNum,jdbcType=INTEGER},
-      room_rule = #{record.roomRule,jdbcType=VARCHAR},
-      creator_id = #{record.creatorId,jdbcType=INTEGER},
-      create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      room_state = #{record.roomState,jdbcType=TINYINT}
-    <if test="_parameter != null" >
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
+  
   <update id="updateByPrimaryKeySelective" parameterType="com.mahjong.server.entity.RoomRecord" >
     update room_record
     <set >
@@ -238,15 +227,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.mahjong.server.entity.RoomRecord" >
-    update room_record
-    set room_num = #{roomNum,jdbcType=INTEGER},
-      room_rule = #{roomRule,jdbcType=VARCHAR},
-      creator_id = #{creatorId,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      room_state = #{roomState,jdbcType=TINYINT}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+  
   
    <update id="deleteRoomRecordInfoByID" parameterType="int" >
     update user_info

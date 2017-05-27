@@ -64,7 +64,7 @@ public class DBServiceImpl implements DBService {
 	}
 	@Override
 	public boolean updateUserInfoById(UserInfo userInfo) {
-		return userInfoMapper.updateByPrimaryKey(userInfo)>0;
+		return userInfoMapper.updateByPrimaryKeySelective(userInfo)>0;
 	}
 	@Override
 	public boolean deleteUserInfoByID(Integer userId) {
@@ -105,7 +105,7 @@ public class DBServiceImpl implements DBService {
 	}
 	@Override
 	public boolean updateRoomRecordInfoByPrimaryKey(RoomRecord queryRecord) {
-		return roomRecordMapper.updateByPrimaryKey(queryRecord)>0;
+		return roomRecordMapper.updateByPrimaryKeySelective(queryRecord)>0;
 	}
 	@Override
 	public boolean deleteRoomRecordInfoByID(Integer recordId) {
@@ -130,7 +130,7 @@ public class DBServiceImpl implements DBService {
 	}
 	@Override
 	public boolean updateUserRoomRecordInfoPrimaryKey(UserRoomRecord userRoomRecord) {
-		return userRoomRecordMapper.updateByPrimaryKey(userRoomRecord)>0;
+		return userRoomRecordMapper.updateByPrimaryKeySelective(userRoomRecord)>0;
 	}
 	@Override
 	public boolean deleteUserRoomRecordInfoByID(Integer recordId) {
@@ -149,7 +149,7 @@ public class DBServiceImpl implements DBService {
 	}
 	@Override
 	public boolean updateUserActionScoreInfoPrimaryKey(UserActionScore userActionScore) {
-		return userActionScoreMapper.updateByPrimaryKey(userActionScore)>0;
+		return userActionScoreMapper.updateByPrimaryKeySelective(userActionScore)>0;
 	}
 	@Override
 	public boolean deleteUserActionScoreInfoByID(Integer recordId) {
@@ -208,7 +208,7 @@ public class DBServiceImpl implements DBService {
 	
 	@Override
 	public boolean updateMessageInfoById(MessageInfo messageInfo){
-		return messageInfoMapper.updateByPrimaryKey(messageInfo)>0;
+		return messageInfoMapper.updateByPrimaryKeySelective(messageInfo)>0;
 	}
 	
 	@Override
@@ -231,7 +231,7 @@ public class DBServiceImpl implements DBService {
 	
 	@Override
 	public boolean updateManageUserByID(ManageUser manageUser){
-		return manageUserMapper.updateByPrimaryKey(manageUser)>0;
+		return manageUserMapper.updateByPrimaryKeySelective(manageUser)>0;
 	}
 	
 	
@@ -293,7 +293,7 @@ public class DBServiceImpl implements DBService {
 	}
 	@Override
 	public boolean updateUpdateInfoById(UpdateInfo updateInfo) {
-		return updateInfoMapper.updateByPrimaryKey(updateInfo)>0;
+		return updateInfoMapper.updateByPrimaryKeySelective(updateInfo)>0;
 	}
 	
 	@Override

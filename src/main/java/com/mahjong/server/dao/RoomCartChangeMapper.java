@@ -26,9 +26,6 @@ public interface RoomCartChangeMapper {
 
     int updateByExampleSelective(@Param("record") RoomCartChange record, @Param("example") RoomCartChangeExample example);
 
-    int updateByExample(@Param("record") RoomCartChange record, @Param("example") RoomCartChangeExample example);
-
     int updateByPrimaryKeySelective(RoomCartChange record);
 
-    int updateByPrimaryKey(RoomCartChange record);
 }

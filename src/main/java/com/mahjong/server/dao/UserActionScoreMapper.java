@@ -26,11 +26,7 @@ public interface UserActionScoreMapper {
 
     int updateByExampleSelective(@Param("record") UserActionScore record, @Param("example") UserActionScoreExample example);
 
-    int updateByExample(@Param("record") UserActionScore record, @Param("example") UserActionScoreExample example);
-
     int updateByPrimaryKeySelective(UserActionScore record);
-
-    int updateByPrimaryKey(UserActionScore record);
 
 	List<UserActionScore> selectUserActionScoreInfoByRecordId(@Param("recordId")Integer userId);
 

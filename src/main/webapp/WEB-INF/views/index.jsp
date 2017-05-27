@@ -66,7 +66,7 @@
 	<a aria-hidden="false" class="Hui-nav-toggle" href="#"></a> </header>
 <aside class="Hui-aside"  style="height: 800;">
 	<input runat="server" id="divScrollValue" type="hidden" value="" />
-	<div class="menu_dropdown bk_2">
+	<div class="menu_dropdown bk_2" style="margin-top: 5%;">
 	
 		<dl id="menu-admin">
 			<dt><i class="Hui-iconfont">&#xe62d;</i> <a _href="/mvc/user/getAdminUser" id="menu-admin-manage" href="javascript:;">会员管理</a></dt>

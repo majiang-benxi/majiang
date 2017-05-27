@@ -26,11 +26,8 @@ public interface RoomRecordMapper {
 
     int updateByExampleSelective(@Param("record") RoomRecord record, @Param("example") RoomRecordExample example);
 
-    int updateByExample(@Param("record") RoomRecord record, @Param("example") RoomRecordExample example);
-
     int updateByPrimaryKeySelective(RoomRecord record);
 
-    int updateByPrimaryKey(RoomRecord record);
 
 	int deleteRoomRecordInfoByID(@Param("recordId")Integer recordId);
 }

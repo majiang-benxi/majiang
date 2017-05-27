@@ -231,20 +231,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByExample" parameterType="map" >
-    update room_cart_change
-    set id = #{record.id,jdbcType=INTEGER},
-      manage_user_id = #{record.manageUserId,jdbcType=INTEGER},
-      manage_name = #{record.manageName,jdbcType=VARCHAR},
-      user_id = #{record.userId,jdbcType=INTEGER},
-      user_name = #{record.userName,jdbcType=VARCHAR},
-      change_num = #{record.changeNum,jdbcType=INTEGER},
-      change_time = #{record.changeTime,jdbcType=TIMESTAMP},
-      is_success = #{record.isSuccess,jdbcType=TINYINT}
-    <if test="_parameter != null" >
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
+  
   <update id="updateByPrimaryKeySelective" parameterType="com.mahjong.server.entity.RoomCartChange" >
     update room_cart_change
     <set >
@@ -272,15 +259,5 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.mahjong.server.entity.RoomCartChange" >
-    update room_cart_change
-    set manage_user_id = #{manageUserId,jdbcType=INTEGER},
-      manage_name = #{manageName,jdbcType=VARCHAR},
-      user_id = #{userId,jdbcType=INTEGER},
-      user_name = #{userName,jdbcType=VARCHAR},
-      change_num = #{changeNum,jdbcType=INTEGER},
-      change_time = #{changeTime,jdbcType=TIMESTAMP},
-      is_success = #{isSuccess,jdbcType=TINYINT}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+  
 </mapper>

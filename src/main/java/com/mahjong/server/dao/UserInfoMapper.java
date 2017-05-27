@@ -26,11 +26,7 @@ public interface UserInfoMapper {
 
     int updateByExampleSelective(@Param("record") UserInfo record, @Param("example") UserInfoExample example);
 
-    int updateByExample(@Param("record") UserInfo record, @Param("example") UserInfoExample example);
-
     int updateByPrimaryKeySelective(UserInfo record);
-
-    int updateByPrimaryKey(UserInfo record);
 
 	UserInfo selectUserInfoByWeiXinMark(@Param("weixinMark")String weiXinMark);
 

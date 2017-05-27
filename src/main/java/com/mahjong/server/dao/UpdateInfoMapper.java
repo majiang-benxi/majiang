@@ -26,11 +26,8 @@ public interface UpdateInfoMapper {
 
     int updateByExampleSelective(@Param("record") UpdateInfo record, @Param("example") UpdateInfoExample example);
 
-    int updateByExample(@Param("record") UpdateInfo record, @Param("example") UpdateInfoExample example);
-
     int updateByPrimaryKeySelective(UpdateInfo record);
 
-    int updateByPrimaryKey(UpdateInfo record);
 
 	List<UpdateInfo> selectUpdateInfoByDeviceType(@Param("deviceType")Integer deviceType,@Param("appVersion")Float version);
 }

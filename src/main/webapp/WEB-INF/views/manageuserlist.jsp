@@ -78,9 +78,9 @@
 							管理员
 						</c:if>
 					</td>
-					<td>
+					<td  style="position: relative;">
 						<c:if test="${eachVar.userLevel == 1}">
-							${eachVar.cardHold}
+							 <div class="f-14 td-manage" style="position: relative;">${eachVar.cardHold}<a style="text-decoration:none;margin-left: 20px;" onClick="changeRNum('${eachVar.id}')" href="javascript:;" title="修改">修改</a></div> 
 						</c:if>
 						<c:if test="${eachVar.userLevel == 2}">
 							--
@@ -284,6 +284,45 @@ function admin_start(obj,id){
 		layer.msg('已启用!', {icon: 6,time:1000});
 	});
 }
+
+
+
+
+
+
+
+
+function changeRNum(usid) {
+    layer.open({
+        type: 1,
+        content:"<div class='formControls col-5'><input id='roomcartEditNum' class='form-control' type='text' style='height: 25px; margin-top: 20px; width: 71px; margin-left: 44%;' name='awardKind' value=''/>" +
+        "<button  type='button' style='text-decoration:none;margin-left: 64%;margin-top: 25%;' class='btn btn-block btn-success btn-lg' onclick='changeUserRoomCartNum("+usid+");'>提交</button></div>"
+    });
+}
+
+function changeUserRoomCartNum(usid){
+	var roomcartEditNum = document.getElementById("roomcartEditNum").value;
+	
+	$.ajax({
+	    url:'/mvc/user/updateAdminUserRoomnNum',
+	    type:'POST', //GET
+	    async:true,    //或false,是否异步
+	    data:{
+	    	roomcartEditNum:roomcartEditNum,usid:usid
+	    },
+	    timeout:2000,    //超时时间
+	    dataType:'json',    //返回的数据格式：json/xml/html/script/jsonp/text
+	    success:function(data,textStatus,jqXHR){
+	    	location.replace("/mvc/user/getAdminUser");
+	    },
+	    complete:function(){
+	        console.log('结束')
+	    }
+	});
+	
+}
+
+
 </script>
 </body>
 </html>

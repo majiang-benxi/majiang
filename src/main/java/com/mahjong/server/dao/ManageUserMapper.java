@@ -26,12 +26,8 @@ public interface ManageUserMapper {
 
     int updateByExampleSelective(@Param("record") ManageUser record,@Param("example")  ManageUserExample example);
 
-    int updateByExample(@Param("record")ManageUser record, @Param("example") ManageUserExample example);
-
     int updateByPrimaryKeySelective(ManageUser record);
 
-    int updateByPrimaryKey(ManageUser record);
-    
     int updateUserSate(@Param("id")Integer id, @Param("state") Integer state);
 
 	ManageUser selectManageUserByUname(@Param("userName")String userName);

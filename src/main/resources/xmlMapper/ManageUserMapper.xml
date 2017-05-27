@@ -246,21 +246,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByExample" parameterType="map" >
-    update manage_user
-    set id = #{record.id,jdbcType=INTEGER},
-      uname = #{record.uname,jdbcType=VARCHAR},
-      upasswd = #{record.upasswd,jdbcType=VARCHAR},
-      nick_name = #{record.nickName,jdbcType=VARCHAR},
-      mobile = #{record.mobile,jdbcType=VARCHAR},
-      create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      user_level = #{record.userLevel,jdbcType=TINYINT},
-      card_hold = #{record.cardHold,jdbcType=INTEGER},
-      state = #{record.state,jdbcType=TINYINT}
-    <if test="_parameter != null" >
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.mahjong.server.entity.ManageUser" >
     update manage_user
     <set >
@@ -291,18 +277,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.mahjong.server.entity.ManageUser" >
-    update manage_user
-    set uname = #{uname,jdbcType=VARCHAR},
-      upasswd = #{upasswd,jdbcType=VARCHAR},
-      nick_name = #{nickName,jdbcType=VARCHAR},
-      mobile = #{mobile,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      user_level = #{userLevel,jdbcType=TINYINT},
-      card_hold = #{cardHold,jdbcType=INTEGER},
-      state = #{state,jdbcType=TINYINT}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+
   <update id="updateUserSate" parameterType="map" >
     update manage_user
     set 

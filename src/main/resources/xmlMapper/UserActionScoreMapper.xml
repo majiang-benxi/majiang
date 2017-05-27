@@ -177,16 +177,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByExample" parameterType="map" >
-    update user_action_score
-    set id = #{record.id,jdbcType=INTEGER},
-      user_room_record_id = #{record.userRoomRecordId,jdbcType=INTEGER},
-      action_type = #{record.actionType,jdbcType=INTEGER},
-      action_score = #{record.actionScore,jdbcType=INTEGER}
-    <if test="_parameter != null" >
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
+  
   <update id="updateByPrimaryKeySelective" parameterType="com.mahjong.server.entity.UserActionScore" >
     update user_action_score
     <set >
@@ -202,14 +193,6 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.mahjong.server.entity.UserActionScore" >
-    update user_action_score
-    set user_room_record_id = #{userRoomRecordId,jdbcType=INTEGER},
-      action_type = #{actionType,jdbcType=INTEGER},
-      action_score = #{actionScore,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  
   
    <select id="selectUserActionScoreInfoByRecordId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 

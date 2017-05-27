@@ -218,19 +218,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByExample" parameterType="map" >
-    update user_room_record
-    set id = #{record.id,jdbcType=INTEGER},
-      room_record_id = #{record.roomRecordId,jdbcType=INTEGER},
-      room_num = #{record.roomNum,jdbcType=INTEGER},
-      user_id = #{record.userId,jdbcType=INTEGER},
-      user_direction = #{record.userDirection,jdbcType=TINYINT},
-      join_time = #{record.joinTime,jdbcType=TIMESTAMP},
-      last_score = #{record.lastScore,jdbcType=INTEGER}
-    <if test="_parameter != null" >
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
+  
   <update id="updateByPrimaryKeySelective" parameterType="com.mahjong.server.entity.UserRoomRecord" >
     update user_room_record
     <set >
@@ -253,16 +241,6 @@
         last_score = #{lastScore,jdbcType=INTEGER},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.mahjong.server.entity.UserRoomRecord" >
-    update user_room_record
-    set room_record_id = #{roomRecordId,jdbcType=INTEGER},
-      room_num = #{roomNum,jdbcType=INTEGER},
-      user_id = #{userId,jdbcType=INTEGER},
-      user_direction = #{userDirection,jdbcType=TINYINT},
-      join_time = #{joinTime,jdbcType=TIMESTAMP},
-      last_score = #{lastScore,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
   

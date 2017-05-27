@@ -26,11 +26,7 @@ public interface MessageInfoMapper {
 
     int updateByExampleSelective( @Param("record")MessageInfo record, @Param("example")  MessageInfoExample example);
 
-    int updateByExample( @Param("record")MessageInfo record, @Param("example")  MessageInfoExample example);
-
     int updateByPrimaryKeySelective(MessageInfo record);
-
-    int updateByPrimaryKey(MessageInfo record);
 
 	int deleteMessageInfoById(Integer id);
 }

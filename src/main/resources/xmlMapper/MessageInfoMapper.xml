@@ -232,20 +232,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByExample" parameterType="map" >
-    update message_info
-    set id = #{record.id,jdbcType=INTEGER},
-      mes_type = #{record.mesType,jdbcType=TINYINT},
-      mes_position = #{record.mesPosition,jdbcType=TINYINT},
-      mes_title = #{record.mesTitle,jdbcType=VARCHAR},
-      message_content = #{record.messageContent,jdbcType=VARCHAR},
-      create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      interval_time = #{record.intervalTime,jdbcType=INTEGER},
-      state = #{record.state,jdbcType=TINYINT}
-    <if test="_parameter != null" >
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.mahjong.server.entity.MessageInfo" >
     update message_info
     <set >
@@ -273,17 +260,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.mahjong.server.entity.MessageInfo" >
-    update message_info
-    set mes_type = #{mesType,jdbcType=TINYINT},
-      mes_position = #{mesPosition,jdbcType=TINYINT},
-      mes_title = #{mesTitle,jdbcType=VARCHAR},
-      message_content = #{messageContent,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      interval_time = #{intervalTime,jdbcType=INTEGER},
-      state = #{state,jdbcType=TINYINT}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+
   <update id="deleteMessageInfoById" parameterType="int" >
     update message_info
     set 
