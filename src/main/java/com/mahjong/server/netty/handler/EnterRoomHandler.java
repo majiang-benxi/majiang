@@ -64,7 +64,6 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 							flag = roomContex.joinRoom(userInfo);
 							if (flag) {
 								HouseContext.weixinIdToRoom.put(weixinId, roomContex);
-								enterRoomRespModel = new EnterRoomRespModel(weixinId, true, "恭喜您，加入房间成功！", roomContex);
 								// 通知其他三家
 								ProtocolModel enterRoomProtocolModel = new ProtocolModel();
 								enterRoomProtocolModel.setCommandId(EventEnum.NEW_ENTER_RESP.getValue());
