@@ -65,5 +65,4 @@ public class CreateRoomHandler extends SimpleChannelInboundHandler<ProtocolModel
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
 		ctx.fireExceptionCaught(cause);
 	}
-	
 }

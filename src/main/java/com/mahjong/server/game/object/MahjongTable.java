@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.mahjong.server.game.enums.PlayerLocation;
 
@@ -24,7 +25,7 @@ public class MahjongTable {
 	private byte fanhui;
 	
 	public void init() {
-		tileWall = new Tile();
+		tileWall = new Tile(Tile.getOneBoxMahjong());
 		playerInfos = new EnumMap<PlayerLocation, PlayerInfo>(PlayerLocation.class);
 		for (PlayerLocation location : PlayerLocation.values()) {
 			playerInfos.put(location, new PlayerInfo());
@@ -104,4 +105,17 @@ public class MahjongTable {
 		this.fanhui = fanhui;
 	}
 
+	public void printAllPlayTiles() {
+		try {
+		for (Entry<PlayerLocation, PlayerInfo> entry : playerInfos.entrySet()) {
+				System.out.print(
+					"方位:" + entry.getKey().getCode() + " aliveTile: ");
+			entry.getValue().getAliveTiles().printTile();
+		}
+			System.out.print("会牌:");
+			Tile.getHuiPai(fanhui).printTile();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

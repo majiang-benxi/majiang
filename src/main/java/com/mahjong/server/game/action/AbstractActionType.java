@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -177,13 +176,12 @@ public abstract class AbstractActionType implements ActionType {
 	@Override
 	public boolean isLegalAction(GameContext context, PlayerLocation location,
 			Action action) {
-		Objects.requireNonNull(action);
 		if (!matchBy(action.getType()))
 			throw new IllegalArgumentException(
 					action.getType().getRealTypeClass().getSimpleName()
 							+ " is not " + getRealTypeClass());
 		if (!isLegalActionTiles(context, location,
-				action.getTile()))
+				action == null ? null : action.getTile()))
 			return false;
 		return true;
 	}

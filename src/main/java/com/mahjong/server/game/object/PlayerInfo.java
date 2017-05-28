@@ -114,9 +114,9 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 
 
 	/**
-	 * 获取其他玩家的视图。
+	 * 获取其他玩家的视图。不要以get开头
 	 */
-	public PlayerInfo getOtherPlayerInfoView() {
+	public PlayerInfo _getOtherPlayerInfoView() {
 		PlayerInfo playerInfo = this.clone();
 		playerInfo.setAliveTiles(null);// 活牌不可见
 		playerInfo.setLastDrawedTile(null);// 最后摸的牌不可见

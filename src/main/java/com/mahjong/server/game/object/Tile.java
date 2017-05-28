@@ -79,6 +79,16 @@ public class Tile {
 				0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, // 番子
 				0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, // 番子（49-55）
 		};
+		List<Integer> list = new ArrayList<Integer>();
+		for (byte onePai : allPai) {
+			list.add((int) onePai);
+		}
+		Collections.shuffle(list);
+		int i = 0;
+		for (Integer intByte : list) {
+			allPai[i] = (byte) intByte.intValue();
+			i++;
+		}
 		return allPai;
 	}
 
@@ -125,7 +135,9 @@ public class Tile {
 	}
 
 	public void sort() {
-		Collections.sort(Bytes.asList(this.getPai()));
+		if (this.getPai() != null) {
+			Collections.sort(Bytes.asList(this.getPai()));
+		}
 	}
 	// 会改变当前类
 	public Tile addTile(Tile tile) {
@@ -288,6 +300,14 @@ public class Tile {
 			result[1] = (byte) (fanHui + 1);
 		}
 		return new Tile(result);
+	}
+
+	public void printTile() {
+		for (byte b : this.getPai()) {
+			System.out.print(b + " ");
+		}
+		System.out.println(" ");
+
 	}
 	public static void main(String[] args) {
 		Tile allTile = new Tile();

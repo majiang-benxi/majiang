@@ -50,7 +50,6 @@
                         <value>WriteNullNumberAsZero</value>
                         <value>WriteNullBooleanAsFalse</value>
                         <value>SkipTransientField</value>
-                        <value>DisableCircularReferenceDetect</value>
                         <value>WriteEnumUsingToString</value>
                     </list>
                 </property>

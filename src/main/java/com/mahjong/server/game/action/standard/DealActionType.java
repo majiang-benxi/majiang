@@ -60,7 +60,9 @@ public class DealActionType implements ActionType {
 		Tile zhuangFirstTile=table.draw(1);
 		context.getTable().getPlayerByLocation(zhuangLocation).getAliveTiles()
 				.addTile(zhuangFirstTile).sort();
+		context.getTable().getPlayerByLocation(zhuangLocation).setLastDrawedTile(zhuangFirstTile);
 		context.getTable().setFanhui(table.drawBottom(1).getPai()[0]);// 系统翻出一张会牌
+		context.getTable().printAllPlayTiles();
 		context.getLocalDoneActions().add(new ActionAndLocation(new Action(DEAL, zhuangFirstTile), zhuangLocation));
 	}
 
@@ -90,5 +92,4 @@ public class DealActionType implements ActionType {
 	public boolean matchBy(ActionType testType) {
 		return getRealTypeClass().isAssignableFrom(testType.getRealTypeClass());
 	}
-
 }

@@ -18,7 +18,7 @@ public class DiscardRespModel  extends RoomRespModel{
 			if (playerInfo.getUserLocation() == playerLocation.getCode()) {
 				continue;
 			} else {
-				playerInfo = playerInfo.getOtherPlayerInfoView();
+				playerInfo = playerInfo._getOtherPlayerInfoView();
 			}
 		}
 		return this;
