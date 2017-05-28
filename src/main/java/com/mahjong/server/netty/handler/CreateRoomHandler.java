@@ -49,7 +49,6 @@ public class CreateRoomHandler extends SimpleChannelInboundHandler<ProtocolModel
 					roomContex =  HouseContext.addRoom( userInfo, ruleStrategy, fangKaStrategy);
 					HouseContext.weixinIdToRoom.put(weixinId, roomContex);
 				}
-				
 				CreateRoomRespModel createRoomRespModel = new CreateRoomRespModel(weixinId, true,roomContex);
 				protocolModel.setCommandId(EventEnum.CREATE_ROOM_RESP.getValue());
 				protocolModel.setBody(JSON.toJSONString(createRoomRespModel));

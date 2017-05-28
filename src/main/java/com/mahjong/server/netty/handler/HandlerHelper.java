@@ -145,7 +145,7 @@ public class HandlerHelper {
 		DrawActionType drawActionType = new DrawActionType();
 			drawActionType.doAction(roomContext.getGameContext(), playerLocation, new Action(drawActionType));
 			ProtocolModel drawTileProtocolModel = new ProtocolModel();
-			DrawCardRespModel drawCardRespModel = new DrawCardRespModel(playerLocation);
+		DrawCardRespModel drawCardRespModel = new DrawCardRespModel(roomContext, playerLocation);
 			drawTileProtocolModel.setCommandId(EventEnum.DRAW_TILE_RESP.getValue());
 			drawTileProtocolModel.setBody(JSON.toJSONString(drawCardRespModel));
 			HandlerHelper.noticeMsg2Players(roomContext, null, drawTileProtocolModel);
@@ -160,7 +160,7 @@ public class HandlerHelper {
 			drawBottomActionType.doAction(roomContext.getGameContext(), discardPlayLocation, new Action(BUGANG));
 		}
 		ProtocolModel cpgProtocolModel = new ProtocolModel();
-		DiscardRespModel discardRespModel = new DiscardRespModel(roomContext).getPlayView(discardPlayLocation);
+		DiscardRespModel discardRespModel = new DiscardRespModel(roomContext, discardPlayLocation);
 		cpgProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
 		cpgProtocolModel.setBody(JSON.toJSONString(discardRespModel));
 		HandlerHelper.noticeMsg2Players(roomContext, null, cpgProtocolModel);
@@ -176,7 +176,7 @@ public class HandlerHelper {
 			drawBottomActionType.doAction(roomContext.getGameContext(), discardPlayLocation, new Action(BUGANG));
 		}
 		ProtocolModel xfgProtocolModel = new ProtocolModel();
-		DiscardRespModel discardRespModel = new DiscardRespModel(roomContext).getPlayView(discardPlayLocation);
+		DiscardRespModel discardRespModel = new DiscardRespModel(roomContext, discardPlayLocation);
 		xfgProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
 		xfgProtocolModel.setBody(JSON.toJSONString(discardRespModel));
 		HandlerHelper.noticeMsg2Players(roomContext, null, xfgProtocolModel);
@@ -266,8 +266,8 @@ public class HandlerHelper {
 					disCardActionAndLocation.getActionAndLocation().getLocation(),
 					new Action(WIN, disCardActionAndLocation.getActionAndLocation().getAction().getTile()));
 			ProtocolModel winProtocolModel = new ProtocolModel();
-			DiscardRespModel discardRespModel = new DiscardRespModel(roomContext)
-					.getPlayView(disCardActionAndLocation.getActionAndLocation().getLocation());
+			DiscardRespModel discardRespModel = new DiscardRespModel(roomContext,
+					disCardActionAndLocation.getActionAndLocation().getLocation());
 			winProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
 			winProtocolModel.setBody(JSON.toJSONString(discardRespModel));
 			HandlerHelper.noticeMsg2Players(roomContext, null, winProtocolModel);

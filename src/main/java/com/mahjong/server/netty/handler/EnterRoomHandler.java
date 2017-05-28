@@ -1,5 +1,7 @@
 package com.mahjong.server.netty.handler;
 
+import static com.mahjong.server.game.action.standard.StandardActionType.WIN;
+
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.exception.IllegalActionException;
+import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.standard.DealActionType;
 import com.mahjong.server.game.action.standard.WinActionType;
 import com.mahjong.server.game.context.HouseContext;
@@ -54,14 +57,14 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 				if (userInfo == null) {
 					enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "您未注册，无法加入房间，请见注册！", null);
 				} else {
-					RoomContext roomContex = null;
-					if ((roomContex = HouseContext.weixinIdToRoom.get(weixinId)) == null) {
+					RoomContext roomContex = HouseContext.weixinIdToRoom.get(weixinId);
+					if (roomContex == null) {
 
 						if ((roomContex = HouseContext.rommList.get(roomId)) != null) {
 							flag = roomContex.joinRoom(userInfo);
 							if (flag) {
 								HouseContext.weixinIdToRoom.put(weixinId, roomContex);
-								enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "恭喜您，加入房间成功！", roomContex);
+								enterRoomRespModel = new EnterRoomRespModel(weixinId, true, "恭喜您，加入房间成功！", roomContex);
 								// 通知其他三家
 								ProtocolModel enterRoomProtocolModel = new ProtocolModel();
 								enterRoomProtocolModel.setCommandId(EventEnum.NEW_ENTER_RESP.getValue());
@@ -81,10 +84,10 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 									HandlerHelper.noticeMsg2Players(roomContex, null, dealTileProtocolModel);
 									WinActionType winActionType = new WinActionType();
 									boolean winFirst = winActionType.isLegalAction(roomContex.getGameContext(),
-											roomContex.getGameContext().getZhuangLocation(), null);
+											roomContex.getGameContext().getZhuangLocation(), new Action(WIN));
 									if (winFirst) {
 										winActionType.doAction(roomContex.getGameContext(),
-												roomContex.getGameContext().getZhuangLocation(), null);
+												roomContex.getGameContext().getZhuangLocation(), new Action(WIN));
 										ProtocolModel winProtocolModel = new ProtocolModel();
 										winProtocolModel.setCommandId(EventEnum.WIN_TILE_RESP.getValue());
 										roomContex.setRoomStatus(RoomStatus.PLAYING);

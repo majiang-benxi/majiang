@@ -60,6 +60,7 @@ public class Tile {
 	}
 
 	public static byte HUIPAI = 0x00;
+	public static byte CAN_NOT_SEE_PAI = 0X64;// 约定100是不可见的
 	public static byte QIANG = 0x27;
 	public static byte[] getOneBoxMahjong() {
 		byte[] allPai = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, // 万（1-9）
@@ -235,6 +236,13 @@ public class Tile {
 		return jiangPAI;
 	}
 
+	public static Tile getOtherPlayerTileView(int num) {
+		byte[] cannotview=new byte[num];
+		for(int i=0;i<num;i++){
+			cannotview[i]=CAN_NOT_SEE_PAI;
+		}
+		return new Tile(cannotview);
+	}
 	public static int getMaxHuiNum() {
 		return 7;
 	}

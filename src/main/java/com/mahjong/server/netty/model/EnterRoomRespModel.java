@@ -26,12 +26,13 @@ public class EnterRoomRespModel extends RoomRespModel {
 			this.setRoomId(roomContex.getRoomNum());
 			this.setRuleStrategy(gameContext.getGameStrategy().getRuleInfo().getMysqlRule());
 			List<PlayerInfo> players = new ArrayList<PlayerInfo>();
+			players.addAll(gameContext.getTable().getPlayerInfos().values());
 			for(PlayerInfo play : players){
-				if (StringUtils.isNotBlank(weixinId) && weixinId.equals(play.getUserInfo().getWeixinMark())) {
+				if (play != null && play.getUserInfo() != null && StringUtils.isNotBlank(weixinId)
+						&& weixinId.equals(play.getUserInfo().getWeixinMark())) {
 					this.setCurUserLocation(play.getUserLocation());
 				}
 			}
-			players.addAll(gameContext.getTable().getPlayerInfos().values());
 			this.setPlayers(players);
 			this.roomState = roomContex.getRoomStatus().getCode();
 		}else{

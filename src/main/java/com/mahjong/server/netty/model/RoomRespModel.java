@@ -17,8 +17,11 @@ public class RoomRespModel extends MajiangPlayView {
 	public RoomRespModel() {
 
 	}
-	public RoomRespModel(RoomContext roomContex) {
+
+	// 此函数会隐藏其他玩家信息。
+	public RoomRespModel(RoomContext roomContex, PlayerLocation playerLocation) {
 		GameContext gameContext = roomContex.getGameContext();
+		this.setCurUserLocation(playerLocation.getCode());
 		this.setFangKaStrategy(gameContext.getGameStrategy().getRuleInfo().getFangKa().getCode());
 		this.setRoomId(roomContex.getRoomNum());
 		this.setRuleStrategy(gameContext.getGameStrategy().getRuleInfo().getMysqlRule());
@@ -27,6 +30,7 @@ public class RoomRespModel extends MajiangPlayView {
 		this.setPlayers(players);
 	}
 
+	// 创建房间的时候调用此构造函数，其余请调用上一个构造。此函数不会隐藏其他玩家信息。
 	public RoomRespModel(String weixinId, RoomContext roomContex) {
 		GameContext gameContext = roomContex.getGameContext();
 		this.setFangKaStrategy(gameContext.getGameStrategy().getRuleInfo().getFangKa().getCode());

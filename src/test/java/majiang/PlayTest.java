@@ -2,6 +2,7 @@ package majiang;
 
 import static com.mahjong.server.game.action.standard.StandardActionType.DISCARD;
 import static com.mahjong.server.game.action.standard.StandardActionType.DRAW;
+import static com.mahjong.server.game.action.standard.StandardActionType.WIN;
 
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.exception.IllegalActionException;
@@ -9,6 +10,7 @@ import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.standard.DealActionType;
 import com.mahjong.server.game.action.standard.DiscardActionType;
 import com.mahjong.server.game.action.standard.DrawActionType;
+import com.mahjong.server.game.action.standard.WinActionType;
 import com.mahjong.server.game.context.HouseContext;
 import com.mahjong.server.game.context.RoomContext;
 import com.mahjong.server.game.enums.PlayerLocation.Relation;
@@ -41,6 +43,8 @@ public class PlayTest {
 				roomContex.getGameContext().getZhuangLocation().getLocationOf(Relation.NEXT),
 				new Action(DRAW));
 		roomContex.getGameContext().getTable().printAllPlayTiles();
-
+		WinActionType winActionType = new WinActionType();
+		winActionType.isLegalAction(roomContex.getGameContext(),
+				roomContex.getGameContext().getZhuangLocation().getLocationOf(Relation.NEXT), new Action(WIN));
 	}
 }
