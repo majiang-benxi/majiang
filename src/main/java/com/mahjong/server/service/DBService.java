@@ -226,7 +226,7 @@ public interface DBService {
 	 * @param userName 用户名
 	 * @return 管理员用户
 	 */
-	List<ManageUser> selectAllManageUser();
+	List<ManageUser> selectAllManageUserLimit(String datemin,String datemax,String searchUname,Integer start,Integer count);
 
 	/**
 	 * 更新管理员用户
@@ -302,6 +302,37 @@ public interface DBService {
 	 * @return 管理员信息
 	 */
 	ManageUser selectManageUserByID(Integer uid);
+
+	/**
+	 *管理员总数
+	 * @param datemin
+	 * @param datemax
+	 * @param searchUname
+	 * @return
+	 */
+	int selectAllManageUserCount(String datemin, String datemax, String searchUname);
+
+	/**
+	 * 获取前台用户列表
+	 * @param uid
+	 * @param datemin
+	 * @param datemax
+	 * @param searchUname
+	 * @return
+	 */
+	public int selectAllUserCount(String uid, String datemin, String datemax, String searchUname);
+
+	/**
+	 * 获取用户列表
+	 * @param datemin
+	 * @param datemax
+	 * @param searchUname
+	 * @param startIndex
+	 * @param eachCount
+	 * @return
+	 */
+	List<UserInfo> selectAllUserLimit(String uid, String datemin, String datemax, String searchUname, Integer startIndex,
+			Integer eachCount);
 	
 
 }

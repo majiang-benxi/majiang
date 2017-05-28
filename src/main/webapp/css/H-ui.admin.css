@@ -139,3 +139,19 @@ h4{line-height:30px}
 .portfolio-area li .textbox{ display: none; margin-top: 5px;}
 .portfolio-area li.hover .textbox{ display: block;}
 .portfolio-area li label{ display:block; cursor:pointer}
+
+
+/*分页*/
+.pagination{text-align:center; margin:30px 0 0; clear:both; padding-bottom:30px;position: absolute;}
+.pagination a{display:inline-block;width:43px; height:34px; line-height:34px;margin:0 5px; background:#dbdada; font-family:'微软雅黑'; font-size:16px; color:#3f3e3e; overflow:hidden;}
+.pagination span{display:inline-block;height:40px; line-height:40px; color:#999;}
+.pagination span.next{height:40px; line-height:40px;background:url(../images/icon2.png) -35px -320px no-repeat; width:40px;}
+.pagination .icons{float:none; width:5px; border:0px; padding:0px; line-height:0px; margin:0px; *vertical-align:middle;}
+.pagination a.next{ width:86px;background:#dbdada;}
+.pagination a.cur{ background:#34c4f9;}
+.pagination a:hover{color:#fff;background:#34c4f9;}
+.pagination a.next:hover{background:#34c4f9;}
+.pagination .cur{ color:#fff; background:#34c4f9;}
+.pagination input{border:1px solid #f0f0f0; height:19px; line-height:19px; text-align:center; width:32px; *position:relative; *margin-top:-1px; _margin-top:-2px;}
+.pagination input.btn{height:21px; margin-left:5px; cursor:pointer; background-color:transparent;}
+.pagination .inputBtnGo{background: url(../images/gotoBtn.gif) no-repeat;width: 31px;height: 19px; border:0px; cursor:pointer;}

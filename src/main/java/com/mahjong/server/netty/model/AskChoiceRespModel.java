@@ -1,25 +1,27 @@
 package com.mahjong.server.netty.model;
 
+import java.util.List;
+
 import com.mahjong.server.game.action.Action;
 
 public class AskChoiceRespModel {
-	private Action action;
+	private List<Action> actions;
 
-	public AskChoiceRespModel(Action action) {
+	public AskChoiceRespModel(List<Action> actions) {
 		super();
-		this.action = action;
+		this.actions = actions;
 	}
 
 	public AskChoiceRespModel() {
 		super();
 	}
 
-	public Action getAction() {
-		return action;
+	public List<Action> getActions() {
+		return actions;
 	}
 
-	public void setAction(Action action) {
-		this.action = action;
+	public void setActions(List<Action> actions) {
+		this.actions = actions;
 	}
 
 }

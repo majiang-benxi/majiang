@@ -35,4 +35,9 @@ public interface UserInfoMapper {
 	int deleteUserInfoByID(@Param("id")Integer userId);
 
 	int updateUserRoomCard(@Param("userId")Integer userId,@Param("cartNum") Integer cartNum);
+
+	int selectAllUserCount(@Param("userId")String uid, @Param("datemin")String datemin, @Param("datemax")String datemax, @Param("searchUname")String searchUname);
+
+	List<UserInfo> selectAllUserLimit(@Param("userId")String uid, @Param("datemin")String datemin, @Param("datemax")String datemax, @Param("searchUname")String searchUname
+			, @Param("start")Integer startIndex, @Param("count")Integer eachCount);
 }

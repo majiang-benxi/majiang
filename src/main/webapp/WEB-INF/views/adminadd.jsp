@@ -144,7 +144,7 @@ function submitProxy(){
 		    timeout:2000,    //超时时间
 		    dataType:'json',    //返回的数据格式：json/xml/html/script/jsonp/text
 		    success:function(data,textStatus,jqXHR){
-		    	parent.location.href="/mvc/user/getAdminUser";
+		    	changeItemPage('');
 		    },
 		    complete:function(){
 		        console.log('结束')

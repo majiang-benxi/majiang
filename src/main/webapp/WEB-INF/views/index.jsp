@@ -76,7 +76,7 @@
 			<dt><i class="Hui-iconfont">&#xe60d;</i> 用户管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
 			<dd>
 				<ul>
-					<li><a _href="member-list.html" href="javascript:;">用户列表</a></li>
+					<li><a _href="/mvc/frontuser/getUserInfo" href="javascript:;">用户列表</a></li>
 					<li><a _href="member-del.html" href="javascript:;">游戏记录</a></li>
 				</ul>
 			</dd>

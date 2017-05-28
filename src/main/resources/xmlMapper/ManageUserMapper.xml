@@ -292,4 +292,39 @@
     where uname = #{userName,jdbcType=VARCHAR}
   </select>
   
+  <select id="selectAllManageUserLimit" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List" />
+    from manage_user
+    where 1=1
+     <if test="datemin != null" >
+     	and createTime <![CDATA[>= ]]> #{datemin}
+     </if>
+     <if test="datemax != null" >
+     	and createTime  <![CDATA[<= ]]>#{datemax}
+     </if>
+     <if test="searchUname != null" >
+     	and uname like CONCAT('%',#{searchUname},'%')
+     </if>
+     <if test="start != null" >
+     	limit #{start,jdbcType=INTEGER},#{count,jdbcType=INTEGER}
+     </if>
+  </select>
+  
+  <select id="selectAllManageUserCount" resultType="int" parameterType="map" >
+    select 
+   		count(1)
+    from manage_user
+     where 1=1
+     <if test="datemin != null" >
+     	and createTime <![CDATA[>= ]]>  #{datemin}
+     </if>
+     <if test="datemax != null" >
+     	and createTime  <![CDATA[<= ]]>#{datemax}
+     </if>
+     <if test="searchUname != null" >
+     	and uname like CONCAT('%',#{searchUname},'%')
+     </if>
+  </select>
+  
 </mapper>

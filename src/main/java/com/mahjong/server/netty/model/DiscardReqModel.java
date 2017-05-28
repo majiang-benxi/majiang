@@ -8,7 +8,7 @@ import com.mahjong.server.game.object.Tile;
  */
 public class DiscardReqModel  extends RequestBaseMode{
 	private Tile tile;
-	private int tileGroupType;// 打牌的类型。单张，吃碰杠
+	private int tileGroupType;// 打牌的类型。单张，吃碰杠(可以不传递tile)
 
 	public Tile getTile() {
 		return tile;

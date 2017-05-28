@@ -17,7 +17,6 @@ import com.mahjong.server.dao.UserActionScoreMapper;
 import com.mahjong.server.dao.UserInfoMapper;
 import com.mahjong.server.dao.UserRoomRecordMapper;
 import com.mahjong.server.entity.ManageUser;
-import com.mahjong.server.entity.ManageUserExample;
 import com.mahjong.server.entity.MessageInfo;
 import com.mahjong.server.entity.RoomCartChange;
 import com.mahjong.server.entity.RoomRecord;
@@ -297,13 +296,24 @@ public class DBServiceImpl implements DBService {
 	}
 	
 	@Override
-	public List<ManageUser> selectAllManageUser() {
-		ManageUserExample manageUserExample = new ManageUserExample();
-		return manageUserMapper.selectByExample(manageUserExample);	
+	public List<ManageUser> selectAllManageUserLimit(String datemin,String datemax,String searchUname,Integer start,Integer count) {
+		return manageUserMapper.selectAllManageUserLimit(datemin,datemax,searchUname,start, count);	
+	}
+	@Override
+	public int selectAllManageUserCount(String datemin,String datemax,String searchUname) {
+		return manageUserMapper.selectAllManageUserCount(datemin,datemax,searchUname);	
 	}
 	@Override
 	public void updateAdminUserSate(Integer uid, Integer tostate) {
 		manageUserMapper.updateUserSate(uid, tostate);
+	}
+	@Override
+	public int selectAllUserCount(String uid, String datemin, String datemax, String searchUname) {
+		return userInfoMapper.selectAllUserCount(uid, datemin, datemax, searchUname);
+	}
+	@Override
+	public List<UserInfo> selectAllUserLimit(String uid,String datemin, String datemax, String searchUname, Integer startIndex,	Integer eachCount) {
+		return userInfoMapper.selectAllUserLimit(uid, datemin, datemax, searchUname, startIndex, eachCount);
 	}
 	
 	

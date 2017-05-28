@@ -25,7 +25,7 @@ import com.mahjong.server.util.MD5Util;
 
 @Controller
 @RequestMapping(value = "/user")
-public class UserController {
+public class ManageUserController {
 	
 	@Autowired
 	private DBService dbService;
@@ -64,27 +64,56 @@ public class UserController {
 		
 		ModelAndView modelAndView = new ModelAndView();
 		
+		
+		modelAndView.setViewName("manageuser");
+		
+		return modelAndView;
+		
+	}
+	
+	
+	@RequestMapping(value = "/getAdminUserList")
+	public ModelAndView getAdminUserList(HttpServletRequest request, HttpServletResponse response) {
+		
+		ModelAndView modelAndView = new ModelAndView();
+		
 		String datemin = request.getParameter("datemin");
 		String datemax = request.getParameter("datemax");
 		String searchUname = request.getParameter("searchUname");
+		String eachPageCount = request.getParameter("eachPageCount");
+		String curPage = request.getParameter("curPage");
 		
 		List<ManageUser> newmanageUserList = new ArrayList<ManageUser>();
 		
-		List<ManageUser> manageUserList = dbService.selectAllManageUser();
+		
+		if(StringUtils.isEmpty(datemin)){
+			datemin = null;
+		}
+		if(StringUtils.isEmpty(datemax)){
+			datemax = null;
+		}
+		if(StringUtils.isEmpty(searchUname)){
+			searchUname = null;
+		}
+		
+		
+		if(StringUtils.isEmpty(eachPageCount)){
+			eachPageCount = "10";
+		}
+		if(StringUtils.isEmpty(curPage)){
+			curPage = "1";
+		}
+		
+		Integer curP = Integer.parseInt(curPage)-1;
+		Integer eachCount = Integer.parseInt(eachPageCount);
+		
+		int totalcount = dbService.selectAllManageUserCount(datemin, datemax, searchUname);
+		
+		List<ManageUser> manageUserList = dbService.selectAllManageUserLimit(datemin,datemax,searchUname,curP*eachCount,eachCount);
 		if(CollectionUtils.isNotEmpty(manageUserList)){
 			
 			for(ManageUser manageUser : manageUserList){
 				
-				String createDate = DateUtil.fromatDateToYYMMDDHHMMSS(manageUser.getCreateTime());
-				if((!StringUtils.isEmpty(datemin)&&createDate.compareTo(datemin)<0)){
-					continue;
-				}
-				if((!StringUtils.isEmpty(datemax)&&createDate.compareTo(datemax)>0)){
-					continue;
-				}
-				if((!StringUtils.isEmpty(searchUname)&& !manageUser.getUname().contains(searchUname))){
-					continue;
-				}
 				manageUser.setCreateTimeStr(DateUtil.fromatDateToYYMMDDHHMMSS(manageUser.getCreateTime()));
 				
 				newmanageUserList.add(manageUser);
@@ -92,13 +121,19 @@ public class UserController {
 			
 		}
 		
-		modelAndView.addObject("manageUserList", newmanageUserList);
+		modelAndView.addObject("currentPage", curPage);
+		modelAndView.addObject("pageCount", totalcount%eachCount==0? (totalcount/eachCount):(totalcount/eachCount+1));
+ 		modelAndView.addObject("manageUserList", newmanageUserList);
 		
-		modelAndView.setViewName("manageuserlist");
+		modelAndView.setViewName("ajax/muserlist");
 		
 		return modelAndView;
 		
 	}
+	
+	
+	
+	
 	
 	@RequestMapping(value = "/addAdminUser")
 	@ResponseBody

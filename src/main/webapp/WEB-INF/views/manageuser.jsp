@@ -42,79 +42,10 @@
 			</a> 
 			<a href="javascript:;" onclick="admin_add('添加用户','/mvc/frame/static?topage=adminadd','800','500')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加用户</a>
 			</span> <span class="r">共有数据：<strong>54</strong> 条</span> </div>
-	<table class="table table-border table-bordered table-bg  table-sort">
-		<thead>
-			<tr>
-				<th scope="col" colspan="9">员工列表</th>
-			</tr>
-			<tr class="text-c">
-				<th width="25">
-				<th width="40">ID</th>
-				<th width="150">登录名</th>
-				<th width="150">昵称</th>
-				<th width="130">加入时间</th>
-				<th width="120">手机</th>
-				<th width="30">角色</th>
-				<th width="100">房卡数</th>
-				<th width="30">状态</th>
-				<th width="150">操作</th>
-			</tr>
-		</thead>
-		<tbody>
-			<c:forEach items="${manageUserList}" var="eachVar">
-			
-				<tr class="text-c">
-					<td><input type="checkbox" value="1" name="" onchange="checkLineChange(this,'${eachVar.id}')"></td>
-					<td>${eachVar.id}</td>
-					<td>${eachVar.uname}</td>
-					<td>${eachVar.nickName}</td>
-					<td>${eachVar.createTimeStr}</td>
-					<td>${eachVar.mobile}</td>
-					<td>
-						<c:if test="${eachVar.userLevel == 1}">
-							会员
-						</c:if>
-						<c:if test="${eachVar.userLevel == 2}">
-							管理员
-						</c:if>
-					</td>
-					<td  style="position: relative;">
-						<c:if test="${eachVar.userLevel == 1}">
-							 <div class="f-14 td-manage" style="position: relative;">${eachVar.cardHold}<a style="text-decoration:none;margin-left: 20px;" onClick="changeRNum('${eachVar.id}')" href="javascript:;" title="修改">修改</a></div> 
-						</c:if>
-						<c:if test="${eachVar.userLevel == 2}">
-							--
-						</c:if>
-					</td>
-					<td class="td-status">
-						
-							<c:if test="${eachVar.state == 1}">
-								<span class="label label-success radius">已启用</span>
-							</c:if>
-							<c:if test="${eachVar.state == 0}">
-								<span class="label radius">
-								已冻结
-								</span>
-							</c:if>
-						
-					</td>
-					<td class="td-manage">
-						<c:if test="${eachVar.state == 1}">
-							<a style="text-decoration:none" onClick="admin_stop(this,'${eachVar.id}')" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a>
-						</c:if>
-						<c:if test="${eachVar.state == 0}">
-							<a style="text-decoration:none" onClick="admin_start(this,'${eachVar.id}')" href="javascript:;" title="启用"><i class="Hui-iconfont">&#xe615;</i></a> 
-						</c:if>
-						
-						<a title="编辑" href="javascript:;" onclick="admin_edit('管理员编辑','/mvc/user/toEditAdminUser?uid=${eachVar.id}','1','800','500')" class="ml-5" style="text-decoration:none;margin-left: 10px;">
-						<i class="Hui-iconfont">&#xe6df;</i></a> 
-					</td>
-				</tr>
-			
-			</c:forEach>
+	<table class="table table-border table-bordered table-bg" id="itemlistul">
 		
-		</tbody>
 	</table>
+	
 </div>
 <script type="text/javascript" src="/lib/jquery/1.9.1/jquery.min.js"></script>  
 <script type="text/javascript" src="/lib/layer/1.9.3/layer.js"></script> 
@@ -125,27 +56,62 @@
 <script type="text/javascript" src="/js/H-ui.admin.js"></script> 
 <script type="text/javascript">
 
-var checkedUserIds = "";
 
-$(function(){
-	$('.table-sort').dataTable({
-		"aaSorting": [[ 1, "asc" ]],//默认第几个排序
-		"bStateSave": true,//状态保存
-		"aoColumnDefs": [
-		  {"orderable":false,"aTargets":[0,8,9]}// 制定列不参与排序
-		]
-	});
-	$('.table-sort tbody').on( 'click', 'tr', function () {
-		if ( $(this).hasClass('selected') ) {
-			$(this).removeClass('selected');
-		}
-		else {
-			table.$('tr.selected').removeClass('selected');
-			$(this).addClass('selected');
-		}
-	});
+var datemin;
+var datemax;
+var searchUname;
+var eachPageCount = 10;
+var curPage = 1;
+
+var changeItemPage = function(curPageP){
+	
+	if(curPageP!=null&&curPageP!=''){
+		curPage = curPageP;
+	}
+	
+	var queryStr = "";
+	if(datemin==null || datemin=='' || datemin=='undefined'){
+		datemin="";
+	}
+	if(datemax==null || datemax=='' || datemax=='undefined'){
+		datemax="";
+	}
+	if(searchUname==null || searchUname=='' || searchUname=='undefined'){
+		searchUname="";
+	}
+	
+	 $.ajax({
+			type: "get",
+			url : "/mvc/user/getAdminUserList?datemin="+datemin+"&datemax="+datemax+"&searchUname="+searchUname+"&eachPageCount="+eachPageCount+"&curPage="+curPage,
+			dataType:'html',
+			data: '', 
+			async:true,
+			success: function(data){
+				data = data.replace(/(^\s*)|(\s*$)/g,"");
+				document.getElementById("itemlistul").innerHTML=data;
+			} 
+		});
+};
+
+$(document).ready(function(){
+	changeItemPage('');
 });
 
+
+function searchUser(){
+	
+	datemin = document.getElementById("datemin").value;
+	datemax = document.getElementById("datemax").value;
+	searchUname = document.getElementById("searchUname").value;
+	curPage = 1;
+	
+	changeItemPage('');
+	
+}
+
+
+
+var checkedUserIds = "";
 
 function checkLineChange(obj,userId){
 	if(obj.checked ){
@@ -173,7 +139,7 @@ function datadel(){
 	    timeout:2000,    //超时时间
 	    dataType:'json',    //返回的数据格式：json/xml/html/script/jsonp/text
 	    success:function(data,textStatus,jqXHR){
-	    	location.replace(location.href);
+	    	changeItemPage('');
 	    },
 	    complete:function(){
 	        console.log('结束')
@@ -187,16 +153,6 @@ function datadel(){
 		regExp = new RegExp((checkedUserIds,","+userId)); 
 		checkedUserIds = checkedUserIds.replace(regExp, ""); 
 	}
-}
-
-function searchUser(){
-	
-	var datemin = document.getElementById("datemin").value;
-	var datemax = document.getElementById("datemax").value;
-	var searchUname = document.getElementById("searchUname").value;
-	
-	location.replace("/mvc/user/getAdminUser?datemin="+datemin+"&datemax="+datemax+"&searchUname="+searchUname);
-	
 }
 
 /*
@@ -243,7 +199,7 @@ function admin_stop(obj,id){
 		    timeout:2000,    //超时时间
 		    dataType:'json',    //返回的数据格式：json/xml/html/script/jsonp/text
 		    success:function(data,textStatus,jqXHR){
-		    	
+		    	changeItemPage('');
 		    },
 		    complete:function(){
 		        console.log('结束')
@@ -270,7 +226,7 @@ function admin_start(obj,id){
 		    timeout:2000,    //超时时间
 		    dataType:'json',    //返回的数据格式：json/xml/html/script/jsonp/text
 		    success:function(data,textStatus,jqXHR){
-		    	
+		    	changeItemPage('');
 		    },
 		    complete:function(){
 		        console.log('结束')
@@ -313,7 +269,7 @@ function changeUserRoomCartNum(usid){
 	    timeout:2000,    //超时时间
 	    dataType:'json',    //返回的数据格式：json/xml/html/script/jsonp/text
 	    success:function(data,textStatus,jqXHR){
-	    	location.replace("/mvc/user/getAdminUser");
+	    	changeItemPage('');
 	    },
 	    complete:function(){
 	        console.log('结束')
