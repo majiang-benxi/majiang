@@ -33,6 +33,7 @@ public class HunTilePlayTools {
 		}
 		return null;
 	}
+
 	public static boolean hu_check(CardPatternCheckResultVO ck, int hasHunNum) {
 		int unCheckPaiSize = ck.uncheckedTile.getPai().length;
 		if (unCheckPaiSize == 0 && ck.huiUsedNum <= MAX_HUN_NUM) {
@@ -44,9 +45,9 @@ public class HunTilePlayTools {
 				ck.tileUnitInfos.add(new TileUnitInfo(JIANG, new Tile(new byte[] { pai, Tile.HUIPAI })));
 				ck.huiUsedNum++;
 				ck.duiZiNum++;
- 				return true;
+				return true;
 			}
-			if(hasHunNum>=2){
+			if (hasHunNum >= 2) {
 				ck.tileUnitInfos.add((new TileUnitInfo(KEZI, new Tile(new byte[] { pai, Tile.HUIPAI, Tile.HUIPAI }))));
 				ck.huiUsedNum = ck.huiUsedNum + 2;
 				return true;
@@ -154,16 +155,29 @@ public class HunTilePlayTools {
 					continue;
 				}
 
-				if (b1 == b2 && hasHunNum > 0) {
-					ck.tileUnitInfos.add((new TileUnitInfo(KEZI, new Tile(new byte[] { b1, b2, Tile.HUIPAI }))));
-					ck.uncheckedTile.removeAll(new Tile(new byte[] { b1, b2 }));
-					ck.huiUsedNum++;
+				if (b1 == b2) {
+					if (hasHunNum > 0) {
+						ck.tileUnitInfos.add((new TileUnitInfo(KEZI, new Tile(new byte[] { b1, b2, Tile.HUIPAI }))));
+						ck.uncheckedTile.removeAll(new Tile(new byte[] { b1, b2 }));
+						ck.huiUsedNum++;
 
-					res = hu_check(ck, hasHunNum - 1);// 继续递归
-					if (!res) {
-						ck.uncheckedTile.addTile(new Tile(new byte[] { b1, b2 })).sort();
-					} else {
-						return true;
+						res = hu_check(ck, hasHunNum - 1);// 继续递归
+						if (!res) {
+							ck.uncheckedTile.addTile(new Tile(new byte[] { b1, b2 })).sort();
+						} else {
+							return true;
+						}
+					}
+					else if (uncheckLength <= 5) {// 最后这张剩下55777但没有混牌的时候
+						ck.tileUnitInfos.add((new TileUnitInfo(JIANG, new Tile(new byte[] { b1, b2 }))));
+						ck.uncheckedTile.removeAll(new Tile(new byte[] { b1, b2 }));
+						ck.duiZiNum++;
+						res = hu_check(ck, hasHunNum);// 继续递归
+						if (!res) {
+							ck.uncheckedTile.addTile(new Tile(new byte[] { b1, b2 })).sort();
+						} else {
+							return true;
+						}
 					}
 				}
 				if (b1 + 1 == b2 && hasHunNum > 0) {
