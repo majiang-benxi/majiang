@@ -145,6 +145,8 @@ public class HunTilePlayTools {
 
 			}
 			// 第一个和第二个一铺
+			b1 = ck.uncheckedTile.getPai()[0];
+
 			for (int i = 1; i < uncheckLength; i++) {
 				byte b2 = ck.uncheckedTile.getPai()[i];
 				if (b2 - b1 > 2) {// 13444 134不可能连一起
@@ -176,6 +178,7 @@ public class HunTilePlayTools {
 					}
 				}
 			}
+			b1 = ck.uncheckedTile.getPai()[0];
 			// 第一个自己一铺
 			if (hasHunNum > 2) {
 				ck.tileUnitInfos.add((new TileUnitInfo(KEZI, new Tile(new byte[] { b1, Tile.HUIPAI, Tile.HUIPAI }))));
