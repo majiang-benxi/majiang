@@ -36,4 +36,14 @@ public class PlayerTiles  {
 	public void setTileGroups(List<TileGroup> tileGroups) {
 		this.tileGroups = tileGroups;
 	}
+
+	public PlayerTiles clone() {
+		PlayerTiles result = new PlayerTiles();
+		result.aliveTiles = this.aliveTiles.clone();
+		result.tileGroups = new ArrayList<TileGroup>();
+		for (TileGroup tileGroup : tileGroups) {
+			result.tileGroups.add(tileGroup);
+		}
+		return result;
+	}
 }

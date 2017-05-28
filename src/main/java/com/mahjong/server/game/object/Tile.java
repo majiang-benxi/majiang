@@ -108,6 +108,9 @@ public class Tile {
 
 	@Override
 	public Tile clone() {
+		if (this.pai == null) {
+			return null;
+		}
 		byte[] destPai = new byte[this.pai.length];
 		System.arraycopy(this.pai, 0, destPai, 0, this.pai.length);
 		Tile tile = new Tile();

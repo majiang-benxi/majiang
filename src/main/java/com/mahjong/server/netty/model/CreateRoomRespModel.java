@@ -3,7 +3,9 @@ package com.mahjong.server.netty.model;
 import com.mahjong.server.game.context.RoomContext;
 
 public class CreateRoomRespModel extends RoomRespModel {
+	public CreateRoomRespModel() {
 
+	}
 	public CreateRoomRespModel(String weixinId ,boolean result,RoomContext roomContex) {
 		super(weixinId, roomContex);
 		if(result){

@@ -2,7 +2,7 @@ package com.mahjong.server.entity;
 
 import java.util.Date;
 
-public class UserInfo {
+public class UserInfo implements Cloneable {
     private Integer id;
 
     private String nickName;
@@ -122,4 +122,14 @@ public class UserInfo {
     public void setState(Byte state) {
         this.state = state;
     }
+
+	@Override
+	public UserInfo clone() {
+		try {
+			return (UserInfo) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

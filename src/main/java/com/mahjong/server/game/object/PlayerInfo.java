@@ -1,7 +1,5 @@
 package com.mahjong.server.game.object;
 
-import java.util.ArrayList;
-
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.game.enums.PlayerLocation;
 
@@ -20,11 +18,11 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	/**
 	 * 最后摸的牌。
 	 */
-	private Tile lastDrawedTile = null;
+	private Tile lastDrawedTile = new Tile();
 	/**
 	 * 已经打出的牌。
 	 */
-	private Tile discardedTiles = null;
+	private Tile discardedTiles = new Tile();
 	/**
 	 * 是否胡牌。
 	 */
@@ -65,6 +63,10 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 		this.isHu = isHu;
 	}
 
+	public void setUserLocation(PlayerLocation userLocation) {
+		this.userLocation = userLocation;
+	}
+
 	/**
 	 * 清空玩家的牌，回到初始状态。
 	 */
@@ -78,17 +80,9 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 
 	public PlayerInfo clone() {
 		PlayerInfo c;
-		try {
-			c = (PlayerInfo) super.clone();
-			c.aliveTiles = (Tile) super.clone();
-			c.discardedTiles = (Tile) super.clone();
-		} catch (CloneNotSupportedException e) {
-			// 不可能，因为PlayerInfo,Tile已经实现了Cloneable
-			throw new RuntimeException(e);
-		}
-		// deep copy
-
-		c.tileGroups = new ArrayList<TileGroup>(tileGroups);
+		c = (PlayerInfo) super.clone();
+		c.discardedTiles = this.discardedTiles.clone();
+		c.userInfo = userInfo.clone();
 		return c;
 	}
 
