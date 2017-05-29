@@ -73,7 +73,7 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 								EnterRoomRespModel newEnterRoomRespModel = new EnterRoomRespModel(weixinId, true,
 										"新人加入", roomContex);
 								enterRoomProtocolModel.setBody(JSON.toJSONString(newEnterRoomRespModel));
-								HandlerHelper.noticeMsg2Players(roomContex, weixinId, enterRoomProtocolModel);
+								HandlerHelper.noticeMsg2Players(roomContex, null, enterRoomProtocolModel);
 								boolean hashDealTile = dealTile2AllPlayersCheck(roomContex);
 								if (hashDealTile) {// 通知所有玩家已经发牌
 									for (Entry<PlayerLocation, PlayerInfo> entry : roomContex.getGameContext()

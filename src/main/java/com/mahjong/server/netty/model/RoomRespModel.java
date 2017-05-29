@@ -8,6 +8,7 @@ import com.mahjong.server.game.context.GameContext;
 import com.mahjong.server.game.context.RoomContext;
 import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.object.PlayerInfo;
+import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.vo.MajiangPlayView;
 
 public class RoomRespModel extends MajiangPlayView {
@@ -28,6 +29,9 @@ public class RoomRespModel extends MajiangPlayView {
 		List<PlayerInfo> players = new ArrayList<PlayerInfo>();
 		players.addAll(gameContext.getTable().getPlayerInfos().values());
 		this.setPlayers(players);
+		Tile tile = Tile.getHuiPai(gameContext.getTable().getFanhui());
+		this.setHui1(tile.getPai()[0]);
+		this.setHui2(tile.getPai()[1]);
 	}
 
 	// 创建房间的时候调用此构造函数，其余请调用上一个构造。此函数不会隐藏其他玩家信息。
@@ -45,6 +49,9 @@ public class RoomRespModel extends MajiangPlayView {
 		}
 		players.addAll(gameContext.getTable().getPlayerInfos().values());
 		this.setPlayers(players);
+		Tile tile = Tile.getHuiPai(gameContext.getTable().getFanhui());
+		this.setHui1(tile.getPai()[0]);
+		this.setHui2(tile.getPai()[1]);
 	}
 	public boolean isResult() {
 		return result;

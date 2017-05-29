@@ -12,6 +12,8 @@ public class MajiangPlayView {
 	private int roomId;
 	private List<PlayerInfo> players;
 	private int curUserLocation;
+	private int hui1;
+	private int hui2;
 
 	public String getRuleStrategy() {
 		return ruleStrategy;
@@ -68,5 +70,21 @@ public class MajiangPlayView {
 
 	public void setCurUserLocation(int curUserLocation) {
 		this.curUserLocation = curUserLocation;
+	}
+
+	public int getHui1() {
+		return hui1;
+	}
+
+	public void setHui1(int hui1) {
+		this.hui1 = hui1;
+	}
+
+	public int getHui2() {
+		return hui2;
+	}
+
+	public void setHui2(int hui2) {
+		this.hui2 = hui2;
 	}
 }

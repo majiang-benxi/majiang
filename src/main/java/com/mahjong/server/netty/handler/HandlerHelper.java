@@ -201,10 +201,10 @@ public class HandlerHelper {
 			DisCardActionAndLocation actionAndLocation=needPassOrDoActions.get(0);
 			if(actionAndLocation.getActionAndLocation().getLocation()==discardPlayLocation){
 				if(multimap.keys().size()==1){
-					doDiscardResp(roomContext);
+					doDiscardResp(roomContext, discardReqModel.getTile());
 				}else{
 					if(actionAndLocation.getTileGroupType()==discardReqModel.getTileGroupType()){
-						doDiscardResp(roomContext);
+						doDiscardResp(roomContext, discardReqModel.getTile());
 					}else{
 						removeNotChooseButHighLevelAction(needPassOrDoActions, new DisCardActionAndLocation(
 								new ActionAndLocation(null, discardPlayLocation), discardReqModel.getTileGroupType()));
@@ -215,7 +215,7 @@ public class HandlerHelper {
 			}
 			roomContext.getGameContext().getDiscardContext().releaseRemainVoter();
 			if (roomContext.getGameContext().getDiscardContext().getRemainVoter() == 0) {
-				doDiscardResp(roomContext);
+				doDiscardResp(roomContext, discardReqModel.getTile());
 			}
 		} else {
 			HandlerHelper.drawTile2Player(roomContext,
@@ -244,29 +244,34 @@ public class HandlerHelper {
 
 	}
 
-	private static void doDiscardResp(RoomContext roomContext) throws IllegalActionException {
+	private static void doDiscardResp(RoomContext roomContext, Tile tile) throws IllegalActionException {
 		List<DisCardActionAndLocation> needPassOrDoActions = roomContext.getGameContext().getDiscardContext()
 				.getNeedPassOrDoAction();
 		DisCardActionAndLocation disCardActionAndLocation = needPassOrDoActions.get(0);
 		if (disCardActionAndLocation.getTileGroupType() == TileGroupType.CHI_GROUP.getCode()) {
 			HandlerHelper.cpgProcess2Players(roomContext, PENG_GROUP,
-					new Action(CHI, disCardActionAndLocation.getActionAndLocation().getAction().getTile()),
+					new Action(CHI,
+							Tile.addTile(tile, disCardActionAndLocation.getActionAndLocation().getAction().getTile())),
 					disCardActionAndLocation.getActionAndLocation().getLocation());
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.PENG_GROUP.getCode()) {
 			HandlerHelper.cpgProcess2Players(roomContext, PENG_GROUP,
-					new Action(PENG, disCardActionAndLocation.getActionAndLocation().getAction().getTile()),
+					new Action(PENG,
+							Tile.addTile(tile, disCardActionAndLocation.getActionAndLocation().getAction().getTile())),
 					disCardActionAndLocation.getActionAndLocation().getLocation());
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.BUGANG_GROUP.getCode()) {
 			HandlerHelper.cpgProcess2Players(roomContext, PENG_GROUP,
-					new Action(BUGANG, disCardActionAndLocation.getActionAndLocation().getAction().getTile()),
+					new Action(BUGANG,
+							Tile.addTile(tile, disCardActionAndLocation.getActionAndLocation().getAction().getTile())),
 					disCardActionAndLocation.getActionAndLocation().getLocation());
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.XUAN_FENG_GANG_ZFB_GROUP.getCode()) {
 			HandlerHelper.xfgProcess2Players(roomContext, XUAN_FENG_GANG_ZFB_GROUP,
-					new Action(ZIPAI, disCardActionAndLocation.getActionAndLocation().getAction().getTile()),
+					new Action(ZIPAI,
+							Tile.addTile(tile, disCardActionAndLocation.getActionAndLocation().getAction().getTile())),
 					disCardActionAndLocation.getActionAndLocation().getLocation());
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.XUAN_FENG_GANG_DNXB_GROUP.getCode()) {
 			HandlerHelper.xfgProcess2Players(roomContext, XUAN_FENG_GANG_DNXB_GROUP,
-					new Action(ZIPAI, disCardActionAndLocation.getActionAndLocation().getAction().getTile()),
+					new Action(ZIPAI,
+							Tile.addTile(tile, disCardActionAndLocation.getActionAndLocation().getAction().getTile())),
 					disCardActionAndLocation.getActionAndLocation().getLocation());
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.HU_GROUP.getCode()) {
 			roomContext.getGameContext().getDiscardContext().clear();
