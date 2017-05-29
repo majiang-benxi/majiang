@@ -36,6 +36,9 @@ public class PlayTest {
 		EnterRoomRespModel enterRoomRespModel = new EnterRoomRespModel("user1", true, "发牌", roomContex,
 				roomContex.getGameContext().getZhuangLocation());
 		System.out.println("zhuang  enterRoomRespModel:" + JSON.toJSONString(enterRoomRespModel));
+		EnterRoomRespModel nextEnterRoomRespModel = new EnterRoomRespModel("user1", true, "发牌", roomContex,
+				roomContex.getGameContext().getZhuangLocation().getLocationOf(Relation.NEXT));
+		System.out.println("zhuang.next  enterRoomRespModel:" + JSON.toJSONString(nextEnterRoomRespModel));
 		DiscardActionType discardActionType = new DiscardActionType();
 		discardActionType.doAction(roomContex.getGameContext(), roomContex.getGameContext().getZhuangLocation(),
 				new Action(DISCARD,
