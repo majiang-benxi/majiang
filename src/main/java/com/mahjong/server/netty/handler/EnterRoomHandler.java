@@ -82,12 +82,13 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 										ProtocolModel dealTileProtocolModel = new ProtocolModel();
 										dealTileProtocolModel.setCommandId(EventEnum.DEAL_TILE_RESP.getValue());
 										roomContex.setRoomStatus(RoomStatus.PLAYING);
-										EnterRoomRespModel dealTileRoomRespModel = new EnterRoomRespModel(null, true,
+										String playWinXinId = entry.getValue().getUserInfo().getWeixinMark();
+										EnterRoomRespModel dealTileRoomRespModel = new EnterRoomRespModel(playWinXinId,
+												true,
 												"发牌", roomContex, entry.getKey());// 创建每个方位的牌响应信息
 										dealTileProtocolModel.setBody(JSON.toJSONString(dealTileRoomRespModel));
-										String playWinXinId = entry.getValue().getUserInfo().getWeixinMark();
 										ChannelHandlerContext userCtx = ClientSession.sessionMap.get(playWinXinId);
-										userCtx.writeAndFlush(protocolModel);
+										userCtx.writeAndFlush(dealTileProtocolModel);
 									}
 
 									WinActionType winActionType = new WinActionType();
