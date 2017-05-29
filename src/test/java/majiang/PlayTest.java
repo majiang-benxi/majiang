@@ -4,6 +4,7 @@ import static com.mahjong.server.game.action.standard.StandardActionType.DISCARD
 import static com.mahjong.server.game.action.standard.StandardActionType.DRAW;
 import static com.mahjong.server.game.action.standard.StandardActionType.WIN;
 
+import com.alibaba.fastjson.JSON;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.exception.IllegalActionException;
 import com.mahjong.server.game.action.Action;
@@ -14,6 +15,7 @@ import com.mahjong.server.game.action.standard.WinActionType;
 import com.mahjong.server.game.context.HouseContext;
 import com.mahjong.server.game.context.RoomContext;
 import com.mahjong.server.game.enums.PlayerLocation.Relation;
+import com.mahjong.server.netty.model.EnterRoomRespModel;
 
 public class PlayTest {
 	public static void main(String[] args) throws IllegalActionException {
@@ -31,6 +33,9 @@ public class PlayTest {
 		roomContex.getGameContext().joinRoom(userInfo4);
 		DealActionType dealActionType = new DealActionType();
 		dealActionType.doAction(roomContex.getGameContext(), roomContex.getGameContext().getZhuangLocation(), null);
+		EnterRoomRespModel enterRoomRespModel = new EnterRoomRespModel("user1", true, "发牌", roomContex,
+				roomContex.getGameContext().getZhuangLocation());
+		System.out.println("zhuang  enterRoomRespModel:" + JSON.toJSONString(enterRoomRespModel));
 		DiscardActionType discardActionType = new DiscardActionType();
 		discardActionType.doAction(roomContex.getGameContext(), roomContex.getGameContext().getZhuangLocation(),
 				new Action(DISCARD,
@@ -42,6 +47,7 @@ public class PlayTest {
 		drawActionType.doAction(roomContex.getGameContext(),
 				roomContex.getGameContext().getZhuangLocation().getLocationOf(Relation.NEXT),
 				new Action(DRAW));
+
 		roomContex.getGameContext().getTable().printAllPlayTiles();
 		WinActionType winActionType = new WinActionType();
 		winActionType.isLegalAction(roomContex.getGameContext(),

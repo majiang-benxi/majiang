@@ -3,6 +3,7 @@ package com.mahjong.server.netty.handler;
 import static com.mahjong.server.game.action.standard.StandardActionType.WIN;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,7 @@ import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.netty.model.EnterRoomReqModel;
 import com.mahjong.server.netty.model.EnterRoomRespModel;
 import com.mahjong.server.netty.model.ProtocolModel;
+import com.mahjong.server.netty.session.ClientSession;
 import com.mahjong.server.service.DBService;
 
 import io.netty.channel.ChannelHandler.Sharable;
@@ -74,13 +76,20 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 								HandlerHelper.noticeMsg2Players(roomContex, weixinId, enterRoomProtocolModel);
 								boolean hashDealTile = dealTile2AllPlayersCheck(roomContex);
 								if (hashDealTile) {// 通知所有玩家已经发牌
-									ProtocolModel dealTileProtocolModel = new ProtocolModel();
-									dealTileProtocolModel.setCommandId(EventEnum.DEAL_TILE_RESP.getValue());
-									roomContex.setRoomStatus(RoomStatus.PLAYING);
-									EnterRoomRespModel dealTileRoomRespModel = new EnterRoomRespModel(null, true,
-											"发牌", roomContex);
-									dealTileProtocolModel.setBody(JSON.toJSONString(dealTileRoomRespModel));
-									HandlerHelper.noticeMsg2Players(roomContex, null, dealTileProtocolModel);
+									for (Entry<PlayerLocation, PlayerInfo> entry : roomContex.getGameContext()
+											.getTable().getPlayerInfos()
+											.entrySet()) {
+										ProtocolModel dealTileProtocolModel = new ProtocolModel();
+										dealTileProtocolModel.setCommandId(EventEnum.DEAL_TILE_RESP.getValue());
+										roomContex.setRoomStatus(RoomStatus.PLAYING);
+										EnterRoomRespModel dealTileRoomRespModel = new EnterRoomRespModel(null, true,
+												"发牌", roomContex, entry.getKey());// 创建每个方位的牌响应信息
+										dealTileProtocolModel.setBody(JSON.toJSONString(dealTileRoomRespModel));
+										String playWinXinId = entry.getValue().getUserInfo().getWeixinMark();
+										ChannelHandlerContext userCtx = ClientSession.sessionMap.get(playWinXinId);
+										userCtx.writeAndFlush(protocolModel);
+									}
+
 									WinActionType winActionType = new WinActionType();
 									boolean winFirst = winActionType.isLegalAction(roomContex.getGameContext(),
 											roomContex.getGameContext().getZhuangLocation(), new Action(WIN));

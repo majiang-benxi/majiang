@@ -1,5 +1,6 @@
 package com.mahjong.server.vo;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,14 +42,16 @@ public class MajiangPlayView {
 		if (players == null) {
 			return Collections.EMPTY_LIST;
 		}
+		List<PlayerInfo> result = new ArrayList<PlayerInfo>();
 		for (PlayerInfo playerInfo : players) {
 			if (playerInfo.getUserLocation() == null || playerInfo.getUserLocation() == curUserLocation) {
-				continue;
+				result.add(playerInfo);
 			} else {
 				playerInfo = playerInfo._getOtherPlayerInfoView();
+				result.add(playerInfo);
 			}
 		}
-		return players;
+		return result;
 	}
 
 	// 正常获取所有玩家的真实信息

@@ -118,8 +118,10 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	 */
 	public PlayerInfo _getOtherPlayerInfoView() {
 		PlayerInfo playerInfo = this.clone();
-		playerInfo.setAliveTiles(null);// 活牌不可见
-		playerInfo.setLastDrawedTile(null);// 最后摸的牌不可见
+		playerInfo.setAliveTiles(
+				playerInfo.getAliveTiles().getOtherPlayerTileView(playerInfo.getAliveTiles().getPai().length));// 活牌不可见
+		playerInfo.setLastDrawedTile(
+				playerInfo.getLastDrawedTile().getOtherPlayerTileView(playerInfo.getLastDrawedTile().getPai().length));// 最后摸的牌不可见
 		return playerInfo;
 	}
 
