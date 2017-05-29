@@ -4,6 +4,8 @@ import static com.mahjong.server.game.action.standard.StandardActionType.DISCARD
 import static com.mahjong.server.game.action.standard.StandardActionType.DRAW;
 import static com.mahjong.server.game.action.standard.StandardActionType.WIN;
 
+import java.util.List;
+
 import com.alibaba.fastjson.JSON;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.exception.IllegalActionException;
@@ -15,6 +17,9 @@ import com.mahjong.server.game.action.standard.WinActionType;
 import com.mahjong.server.game.context.HouseContext;
 import com.mahjong.server.game.context.RoomContext;
 import com.mahjong.server.game.enums.PlayerLocation.Relation;
+import com.mahjong.server.game.object.DisCardActionAndLocation;
+import com.mahjong.server.game.object.Tile;
+import com.mahjong.server.netty.handler.HandlerHelper;
 import com.mahjong.server.netty.model.EnterRoomRespModel;
 
 public class PlayTest {
@@ -46,6 +51,30 @@ public class PlayTest {
 								.getPlayerByLocation(roomContex.getGameContext().getZhuangLocation())
 								.getLastDrawedTile()));
 		roomContex.getGameContext().getTable().printAllPlayTiles();
+		System.out.println("zhuang last tile :");
+		roomContex.getGameContext().getTable().getPlayerByLocation(roomContex.getGameContext().getZhuangLocation())
+				.getLastDrawedTile().printTile();
+		byte lastTileByte = roomContex.getGameContext().getTable()
+				.getPlayerByLocation(roomContex.getGameContext().getZhuangLocation()).getLastDrawedTile().getPai()[0];
+		byte lastTileByte_1 = (byte) (lastTileByte + 1);
+		byte lastTileByte_2 = (byte) (lastTileByte + 2);
+
+		roomContex.getGameContext().getTable()
+				.getPlayerByLocation(
+						roomContex.getGameContext().getZhuangLocation()
+								.getLocationOf(
+										Relation.OPPOSITE))
+
+				.setAliveTiles(new Tile(new byte[] { lastTileByte, lastTileByte,
+						lastTileByte, 0x14, 0x15, 0x16, 0x15, 0x15, 0x22, 0x23, 0x24, 0x25, 0x26 }));
+		roomContex.getGameContext().getTable().printAllPlayTiles();
+
+		List<DisCardActionAndLocation> res = HandlerHelper.getActionAfterDiscardTile(roomContex,
+				roomContex.getGameContext().getTable()
+				.getPlayerByLocation(roomContex.getGameContext().getZhuangLocation())
+				.getLastDrawedTile(), roomContex.getGameContext().getZhuangLocation());
+		System.out.println("zhuang.DisCardActionAndLocation last tile :" + JSON.toJSONString(res));
+
 		DrawActionType drawActionType = new DrawActionType();
 		drawActionType.doAction(roomContex.getGameContext(),
 				roomContex.getGameContext().getZhuangLocation().getLocationOf(Relation.NEXT),

@@ -105,6 +105,7 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 										winProtocolModel.setBody(JSON.toJSONString(winTileRoomRespModel));
 										HandlerHelper.noticeMsg2Players(roomContex, null, winProtocolModel);
 									}
+									return;
 								}
 
 							} else {

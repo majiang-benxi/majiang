@@ -82,6 +82,9 @@ public class HandlerHelper {
 		List<DisCardActionAndLocation> disCardActionAndLocation = new ArrayList<DisCardActionAndLocation>();
 		// 胡检测
 		for (PlayerLocation playerLocation : playerLocations) {
+			if (playerLocation == discardPlayLocation) {
+				continue;
+			}
 			boolean canWin = winActionType.canDo(roomContext.getGameContext(), playerLocation);
 			if (canWin) {
 				disCardActionAndLocation.add(new DisCardActionAndLocation(new ActionAndLocation(new Action(WIN, tile), playerLocation),HU_GROUP.getCode()));
@@ -89,6 +92,9 @@ public class HandlerHelper {
 		}
 		// 杠检测
 		for (PlayerLocation playerLocation : playerLocations) {
+			if (playerLocation == discardPlayLocation) {
+				continue;
+			}
 			CpgActionType cpgActionType = new CpgActionType(BUGANG_GROUP, null);
 			boolean canGang = cpgActionType.canDo(roomContext.getGameContext(), playerLocation);
 			if (canGang) {
@@ -98,6 +104,9 @@ public class HandlerHelper {
 		}
 		// 碰检测
 		for (PlayerLocation playerLocation : playerLocations) {
+			if (playerLocation == discardPlayLocation) {
+				continue;
+			}
 			CpgActionType cpgActionType = new CpgActionType(PENG_GROUP, null);
 			boolean canPeng = cpgActionType.canDo(roomContext.getGameContext(), playerLocation);
 			if (canPeng) {

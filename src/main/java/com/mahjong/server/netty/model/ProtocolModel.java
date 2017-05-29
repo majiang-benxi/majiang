@@ -57,5 +57,4 @@ public class ProtocolModel {
 	public void setDeviceType(int deviceType) {
 		this.deviceType = deviceType;
 	}
-
 }

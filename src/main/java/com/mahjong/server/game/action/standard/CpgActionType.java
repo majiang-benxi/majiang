@@ -99,7 +99,7 @@ public class CpgActionType extends AbstractActionType {
 	@Override
 	protected boolean isLegalActionWithPreconition(GameContext context,PlayerLocation location,
 			Tile tile) {
-		Tile testTiles = Tile.addTile(tile, context.getTable().getPlayerByLocation(location).getLastDrawedTile());
+		Tile testTiles = Tile.addTile(tile, context.getLastAction().getTile());
 		boolean legal = groupType.isLegalTile(testTiles);
 		return legal;
 	}

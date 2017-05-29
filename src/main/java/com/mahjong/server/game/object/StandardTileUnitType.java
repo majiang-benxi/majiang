@@ -29,7 +29,7 @@ public enum StandardTileUnitType implements TileUnitType {
 		@Override
 		protected boolean isLegalTilesWithCorrectSize(Tile tile) {
 			byte[] pais = tile.getPai();
-			if (pais[0] != pais[1] && pais[1] != pais[2]) {
+			if (pais[0] != pais[1] || pais[1] != pais[2]) {
 				return false;
 			}
 			return true;
@@ -44,7 +44,7 @@ public enum StandardTileUnitType implements TileUnitType {
 				list.add((int) pai);
 			}
 			Collections.sort(list);
-			if ((list.get(0) + 1 == list.get(2)) && (list.get(2) == list.get(3) - 1)) {
+			if ((list.get(0) + 1 == list.get(1)) && (list.get(1) == list.get(2) - 1)) {
 				return true;
 			} else {
 				return false;
@@ -57,7 +57,7 @@ public enum StandardTileUnitType implements TileUnitType {
 		@Override
 		protected boolean isLegalTilesWithCorrectSize(Tile tile) {
 			byte[] pais = tile.getPai();
-			if (pais[0] == pais[1] && pais[0] == pais[2] && pais[0] == pais[3] && pais[0] == pais[4]) {
+			if (pais[0] == pais[1] && pais[0] == pais[2] && pais[0] == pais[3]) {
 				return true;
 			}
 			return false;
