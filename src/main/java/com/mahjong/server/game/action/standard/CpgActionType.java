@@ -109,7 +109,7 @@ public class CpgActionType extends AbstractActionType {
 			Tile tile) {
 		PlayerInfo playerInfo = context.getTable().getPlayerByLocation(location);
 
-		playerInfo.getAliveTiles().removeAll(tile);
+		playerInfo.getSortAliveTiles().removeAll(tile);
 
 		Tile gotTile = context.getLastAction().getTile();
 		TileGroup group = new TileGroup(groupType, gotTile,

@@ -48,7 +48,7 @@ public class BugangActionType extends AbstractActionType {
 					"Illegal bugang tiles: " + tile);
 
 		// 在aliveTiles中去掉动作牌
-		playerInfo.getAliveTiles().removeAll(tile);
+		playerInfo.getSortAliveTiles().removeAll(tile);
 
 		// 把碰组改为补杠组，并加上动作牌
 		TileGroup newGroup = new TileGroup(TileGroupType.BUGANG_GROUP, group.getGotTile(),

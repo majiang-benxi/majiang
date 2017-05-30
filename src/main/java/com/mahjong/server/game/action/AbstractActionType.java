@@ -70,7 +70,8 @@ public abstract class AbstractActionType implements ActionType {
 	 */
 	protected boolean meetPrecondition(GameContext context,PlayerLocation location) {
 		// 验证aliveTiles数量条件
-		boolean res = checkAliveTileSizeCondition(context.getTable().getPlayerByLocation(location).getAliveTiles().getPai().length);
+		boolean res = checkAliveTileSizeCondition(
+				context.getTable().getPlayerByLocation(location).getSortAliveTiles().getPai().length);
 		if (!res) {
 			return false;
 		}
@@ -217,7 +218,7 @@ public abstract class AbstractActionType implements ActionType {
 	 * 默认实现为指定玩家的aliveTiles。
 	 */
 	protected Tile getActionTilesRange(PlayerInfo playerInfo ) {
-		return playerInfo.getAliveTiles();
+		return playerInfo.getSortAliveTiles();
 	}
 
 	/**
