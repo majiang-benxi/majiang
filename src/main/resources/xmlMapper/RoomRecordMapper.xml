@@ -7,6 +7,7 @@
     <result column="room_rule" property="roomRule" jdbcType="VARCHAR" />
     <result column="creator_id" property="creatorId" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
     <result column="room_state" property="roomState" jdbcType="TINYINT" />
   </resultMap>
   <sql id="Example_Where_Clause" >
@@ -68,7 +69,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, room_num, room_rule, creator_id, create_time, room_state
+    id, room_num, room_rule, creator_id, create_time,end_time, room_state
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.mahjong.server.entity.RoomRecordExample" >
     select
@@ -230,10 +231,84 @@
   
   
    <update id="deleteRoomRecordInfoByID" parameterType="int" >
-    update user_info
+    update room_record
      set room_state = 0
    	where id = #{recordId,jdbcType=INTEGER}
   </update>
+  
+  
+  <select id="selectRoomRecordInfoList" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List" />
+    from room_record
+     <if test="recordIdList != null" >
+       where id in 
+       
+      	<foreach collection="recordIdList" item="item" open="and(" separator="," close=")">
+			#{item} 
+		</foreach>
+       
+     </if>
+     
+  </select>
+  
+  
+  
+    
+    
+  <select id="selectRoomRecordInfoCount" resultType="int" parameterType="map" >
+    select 
+   		count(1)
+    from room_record
+      where 1=1
+	    
+	     <if test="roomNum != null" >
+	     	and  room_num = #{roomNum,jdbcType=INTEGER}
+	     </if>
+	     <if test="datemin != null" >
+	     	and operate_time <![CDATA[>= ]]>  #{datemin}
+	     </if>
+	     <if test="datemax != null" >
+	     	and operate_time  <![CDATA[<= ]]>#{datemax}
+	     </if>
+    
+  </select>
+  
+  
+   <select id="selectRoomRecordInfoLimit" resultMap="BaseResultMap" parameterType="map" >
+	    select 
+	    <include refid="Base_Column_List" />
+	    from room_record
+	    where 1=1
+		   	 
+		     <if test="roomNum != null" >
+		     	and  room_num = #{roomNum,jdbcType=INTEGER}
+		     </if>
+		     <if test="datemin != null" >
+		     	and operate_time <![CDATA[>= ]]>  #{datemin}
+		     </if>
+		     <if test="datemax != null" >
+		     	and operate_time  <![CDATA[<= ]]>#{datemax}
+		     </if>
+		     <if test="start != null" >
+		     	limit #{start,jdbcType=INTEGER},#{count,jdbcType=INTEGER}
+		     </if>
+  </select>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   

@@ -1,7 +1,6 @@
 package com.mahjong.server.controller;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,11 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.mahjong.server.entity.ManageUser;
 import com.mahjong.server.entity.UserInfo;
+import com.mahjong.server.entity.UserRoomRecord;
 import com.mahjong.server.service.DBService;
 import com.mahjong.server.util.DateUtil;
-import com.mahjong.server.util.MD5Util;
+import com.mahjong.server.vo.UserRecordScoreVO;
 
 @Controller
 @RequestMapping(value = "/frontuser")
@@ -150,6 +149,167 @@ public class FrontUserController {
 		return returnMap;
 		
 	}
+	
+	
+	
+	
+	@RequestMapping(value = "/getRecordInfo")
+	public ModelAndView recordInfo(HttpServletRequest request, HttpServletResponse response) {
+		
+		ModelAndView modelAndView = new ModelAndView();
+		
+		modelAndView.setViewName("recordInfo");
+		
+		return modelAndView;
+		
+	}
+	
+	
+	@RequestMapping(value = "/getUserPlayRecordInfoList")
+	public ModelAndView getUserPlayRecordInfoList(HttpServletRequest request, HttpServletResponse response) {
+		
+		ModelAndView modelAndView = new ModelAndView();
+		
+		String uid = request.getParameter("uid");
+		String roomNum = request.getParameter("roomnum");
+		String datemin = request.getParameter("datemin");
+		String datemax = request.getParameter("datemax");
+		
+		String eachPageCount = request.getParameter("eachPageCount");
+		String curPage = request.getParameter("curPage");
+		
+		List<UserRoomRecord> newuserInfoList = new ArrayList<UserRoomRecord>();
+		
+		if(StringUtils.isEmpty(uid)){
+			uid = null;
+		}
+		if(StringUtils.isEmpty(roomNum)){
+			roomNum = null;
+		}
+		if(StringUtils.isEmpty(datemin)){
+			datemin = null;
+		}
+		if(StringUtils.isEmpty(datemax)){
+			datemax = null;
+		}
+		
+		
+		if(StringUtils.isEmpty(eachPageCount)){
+			eachPageCount = "10";
+		}
+		if(StringUtils.isEmpty(curPage)){
+			curPage = "1";
+		}
+		
+		Integer curP = Integer.parseInt(curPage)-1;
+		Integer eachCount = Integer.parseInt(eachPageCount);
+		
+		int totalcount = dbService.getUserPlayRecordInfoCount(uid, roomNum, datemin, datemax);
+		
+		List<UserRoomRecord> userInfoList = dbService.getUserPlayRecordInfoLimit(uid,roomNum,datemin,datemax,curP*eachCount,eachCount);
+		if(CollectionUtils.isNotEmpty(userInfoList)){
+			
+			for(UserRoomRecord userInfo : userInfoList){
+				
+				userInfo.setOperateTimeStr(DateUtil.fromatDateToYYMMDDHHMMSS(userInfo.getOperateTime()));
+				
+				newuserInfoList.add(userInfo);
+			}
+			
+		}
+		
+		modelAndView.addObject("currentPage", curPage);
+		modelAndView.addObject("pageCount", totalcount%eachCount==0? (totalcount/eachCount):(totalcount/eachCount+1));
+ 		modelAndView.addObject("newInfoList", newuserInfoList);
+		
+		modelAndView.setViewName("ajax/recordInfolist");
+		
+		return modelAndView;
+		
+	}
+	
+	
+	
+	
+	@RequestMapping(value = "/getUserScoreInfo")
+	public ModelAndView getUserScoreInfo(HttpServletRequest request, HttpServletResponse response) {
+		
+		ModelAndView modelAndView = new ModelAndView();
+		
+		modelAndView.setViewName("userscoreinfo");
+		
+		return modelAndView;
+		
+	}
+	
+	
+	@RequestMapping(value = "/getUserscoreinfoInfoList")
+	public ModelAndView getUserscoreinfoInfoList(HttpServletRequest request, HttpServletResponse response) {
+		
+	ModelAndView modelAndView = new ModelAndView();
+		
+		String uid = request.getParameter("uid");
+		String roomNum = request.getParameter("roomnum");
+		String datemin = request.getParameter("datemin");
+		String datemax = request.getParameter("datemax");
+		
+		String eachPageCount = request.getParameter("eachPageCount");
+		String curPage = request.getParameter("curPage");
+		
+		if(StringUtils.isEmpty(uid)){
+			uid = null;
+		}
+		if(StringUtils.isEmpty(roomNum)){
+			roomNum = null;
+		}
+		if(StringUtils.isEmpty(datemin)){
+			datemin = null;
+		}
+		if(StringUtils.isEmpty(datemax)){
+			datemax = null;
+		}
+		
+		
+		if(StringUtils.isEmpty(eachPageCount)){
+			eachPageCount = "10";
+		}
+		if(StringUtils.isEmpty(curPage)){
+			curPage = "1";
+		}
+		
+		Integer curP = Integer.parseInt(curPage)-1;
+		Integer eachCount = Integer.parseInt(eachPageCount);
+		
+		int totalcount = dbService.getUserScoreInfoInfoCount(uid, roomNum, datemin, datemax);
+		
+		List<UserRecordScoreVO> userInfoList = dbService.getUserScoreInfoInfoListLimit(uid,roomNum,datemin,datemax,curP*eachCount,eachCount);
+		
+		if(CollectionUtils.isNotEmpty(userInfoList)){
+			
+			for(UserRecordScoreVO userInfo : userInfoList){
+				userInfo.setRoomCreateTimeStr(DateUtil.fromatDateToYYMMDDHHMMSS(userInfo.getRoomCreateTime()));
+			}
+			
+		}
+		
+		modelAndView.addObject("currentPage", curPage);
+		modelAndView.addObject("pageCount", totalcount%eachCount==0? (totalcount/eachCount):(totalcount/eachCount+1));
+ 		modelAndView.addObject("newInfoList", userInfoList);
+		
+		modelAndView.setViewName("ajax/scoreInfolist");
+		
+		return modelAndView;
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

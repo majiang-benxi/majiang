@@ -29,4 +29,9 @@ public interface MessageInfoMapper {
     int updateByPrimaryKeySelective(MessageInfo record);
 
 	int deleteMessageInfoById(Integer id);
+
+	int selectMessageInfoCount(@Param("msgPositionnum")Integer msgPositionnum,@Param("mesgstate")Integer mesgstate, @Param("datemin")String datemin, @Param("datemax")String datemax);
+
+	List<MessageInfo> selectMessageInfoLimit(@Param("msgPositionnum")Integer msgPositionnum,@Param("mesgstate")Integer mesgstate, @Param("datemin")String datemin, @Param("datemax")String datemax,
+			 @Param("start") Integer startIndex,@Param("count")Integer eachCount);
 }

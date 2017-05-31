@@ -405,123 +405,433 @@ public class UserRoomRecordExample {
             return (Criteria) this;
         }
 
-        public Criteria andJoinTimeIsNull() {
-            addCriterion("join_time is null");
+        public Criteria andOperateTimeIsNull() {
+            addCriterion("operate_time is null");
             return (Criteria) this;
         }
 
-        public Criteria andJoinTimeIsNotNull() {
-            addCriterion("join_time is not null");
+        public Criteria andOperateTimeIsNotNull() {
+            addCriterion("operate_time is not null");
             return (Criteria) this;
         }
 
-        public Criteria andJoinTimeEqualTo(Date value) {
-            addCriterion("join_time =", value, "joinTime");
+        public Criteria andOperateTimeEqualTo(Date value) {
+            addCriterion("operate_time =", value, "operateTime");
             return (Criteria) this;
         }
 
-        public Criteria andJoinTimeNotEqualTo(Date value) {
-            addCriterion("join_time <>", value, "joinTime");
+        public Criteria andOperateTimeNotEqualTo(Date value) {
+            addCriterion("operate_time <>", value, "operateTime");
             return (Criteria) this;
         }
 
-        public Criteria andJoinTimeGreaterThan(Date value) {
-            addCriterion("join_time >", value, "joinTime");
+        public Criteria andOperateTimeGreaterThan(Date value) {
+            addCriterion("operate_time >", value, "operateTime");
             return (Criteria) this;
         }
 
-        public Criteria andJoinTimeGreaterThanOrEqualTo(Date value) {
-            addCriterion("join_time >=", value, "joinTime");
+        public Criteria andOperateTimeGreaterThanOrEqualTo(Date value) {
+            addCriterion("operate_time >=", value, "operateTime");
             return (Criteria) this;
         }
 
-        public Criteria andJoinTimeLessThan(Date value) {
-            addCriterion("join_time <", value, "joinTime");
+        public Criteria andOperateTimeLessThan(Date value) {
+            addCriterion("operate_time <", value, "operateTime");
             return (Criteria) this;
         }
 
-        public Criteria andJoinTimeLessThanOrEqualTo(Date value) {
-            addCriterion("join_time <=", value, "joinTime");
+        public Criteria andOperateTimeLessThanOrEqualTo(Date value) {
+            addCriterion("operate_time <=", value, "operateTime");
             return (Criteria) this;
         }
 
-        public Criteria andJoinTimeIn(List<Date> values) {
-            addCriterion("join_time in", values, "joinTime");
+        public Criteria andOperateTimeIn(List<Date> values) {
+            addCriterion("operate_time in", values, "operateTime");
             return (Criteria) this;
         }
 
-        public Criteria andJoinTimeNotIn(List<Date> values) {
-            addCriterion("join_time not in", values, "joinTime");
+        public Criteria andOperateTimeNotIn(List<Date> values) {
+            addCriterion("operate_time not in", values, "operateTime");
             return (Criteria) this;
         }
 
-        public Criteria andJoinTimeBetween(Date value1, Date value2) {
-            addCriterion("join_time between", value1, value2, "joinTime");
+        public Criteria andOperateTimeBetween(Date value1, Date value2) {
+            addCriterion("operate_time between", value1, value2, "operateTime");
             return (Criteria) this;
         }
 
-        public Criteria andJoinTimeNotBetween(Date value1, Date value2) {
-            addCriterion("join_time not between", value1, value2, "joinTime");
+        public Criteria andOperateTimeNotBetween(Date value1, Date value2) {
+            addCriterion("operate_time not between", value1, value2, "operateTime");
             return (Criteria) this;
         }
 
-        public Criteria andLastScoreIsNull() {
-            addCriterion("last_score is null");
+        public Criteria andOperateTypeIsNull() {
+            addCriterion("operate_type is null");
             return (Criteria) this;
         }
 
-        public Criteria andLastScoreIsNotNull() {
-            addCriterion("last_score is not null");
+        public Criteria andOperateTypeIsNotNull() {
+            addCriterion("operate_type is not null");
             return (Criteria) this;
         }
 
-        public Criteria andLastScoreEqualTo(Integer value) {
-            addCriterion("last_score =", value, "lastScore");
+        public Criteria andOperateTypeEqualTo(Byte value) {
+            addCriterion("operate_type =", value, "operateType");
             return (Criteria) this;
         }
 
-        public Criteria andLastScoreNotEqualTo(Integer value) {
-            addCriterion("last_score <>", value, "lastScore");
+        public Criteria andOperateTypeNotEqualTo(Byte value) {
+            addCriterion("operate_type <>", value, "operateType");
             return (Criteria) this;
         }
 
-        public Criteria andLastScoreGreaterThan(Integer value) {
-            addCriterion("last_score >", value, "lastScore");
+        public Criteria andOperateTypeGreaterThan(Byte value) {
+            addCriterion("operate_type >", value, "operateType");
             return (Criteria) this;
         }
 
-        public Criteria andLastScoreGreaterThanOrEqualTo(Integer value) {
-            addCriterion("last_score >=", value, "lastScore");
+        public Criteria andOperateTypeGreaterThanOrEqualTo(Byte value) {
+            addCriterion("operate_type >=", value, "operateType");
             return (Criteria) this;
         }
 
-        public Criteria andLastScoreLessThan(Integer value) {
-            addCriterion("last_score <", value, "lastScore");
+        public Criteria andOperateTypeLessThan(Byte value) {
+            addCriterion("operate_type <", value, "operateType");
             return (Criteria) this;
         }
 
-        public Criteria andLastScoreLessThanOrEqualTo(Integer value) {
-            addCriterion("last_score <=", value, "lastScore");
+        public Criteria andOperateTypeLessThanOrEqualTo(Byte value) {
+            addCriterion("operate_type <=", value, "operateType");
             return (Criteria) this;
         }
 
-        public Criteria andLastScoreIn(List<Integer> values) {
-            addCriterion("last_score in", values, "lastScore");
+        public Criteria andOperateTypeIn(List<Byte> values) {
+            addCriterion("operate_type in", values, "operateType");
             return (Criteria) this;
         }
 
-        public Criteria andLastScoreNotIn(List<Integer> values) {
-            addCriterion("last_score not in", values, "lastScore");
+        public Criteria andOperateTypeNotIn(List<Byte> values) {
+            addCriterion("operate_type not in", values, "operateType");
             return (Criteria) this;
         }
 
-        public Criteria andLastScoreBetween(Integer value1, Integer value2) {
-            addCriterion("last_score between", value1, value2, "lastScore");
+        public Criteria andOperateTypeBetween(Byte value1, Byte value2) {
+            addCriterion("operate_type between", value1, value2, "operateType");
             return (Criteria) this;
         }
 
-        public Criteria andLastScoreNotBetween(Integer value1, Integer value2) {
-            addCriterion("last_score not between", value1, value2, "lastScore");
+        public Criteria andOperateTypeNotBetween(Byte value1, Byte value2) {
+            addCriterion("operate_type not between", value1, value2, "operateType");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIpIsNull() {
+            addCriterion("user_ip is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIpIsNotNull() {
+            addCriterion("user_ip is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIpEqualTo(String value) {
+            addCriterion("user_ip =", value, "userIp");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIpNotEqualTo(String value) {
+            addCriterion("user_ip <>", value, "userIp");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIpGreaterThan(String value) {
+            addCriterion("user_ip >", value, "userIp");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIpGreaterThanOrEqualTo(String value) {
+            addCriterion("user_ip >=", value, "userIp");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIpLessThan(String value) {
+            addCriterion("user_ip <", value, "userIp");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIpLessThanOrEqualTo(String value) {
+            addCriterion("user_ip <=", value, "userIp");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIpLike(String value) {
+            addCriterion("user_ip like", value, "userIp");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIpNotLike(String value) {
+            addCriterion("user_ip not like", value, "userIp");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIpIn(List<String> values) {
+            addCriterion("user_ip in", values, "userIp");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIpNotIn(List<String> values) {
+            addCriterion("user_ip not in", values, "userIp");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIpBetween(String value1, String value2) {
+            addCriterion("user_ip between", value1, value2, "userIp");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIpNotBetween(String value1, String value2) {
+            addCriterion("user_ip not between", value1, value2, "userIp");
+            return (Criteria) this;
+        }
+
+        public Criteria andOperateCauseIsNull() {
+            addCriterion("operate_cause is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOperateCauseIsNotNull() {
+            addCriterion("operate_cause is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOperateCauseEqualTo(Byte value) {
+            addCriterion("operate_cause =", value, "operateCause");
+            return (Criteria) this;
+        }
+
+        public Criteria andOperateCauseNotEqualTo(Byte value) {
+            addCriterion("operate_cause <>", value, "operateCause");
+            return (Criteria) this;
+        }
+
+        public Criteria andOperateCauseGreaterThan(Byte value) {
+            addCriterion("operate_cause >", value, "operateCause");
+            return (Criteria) this;
+        }
+
+        public Criteria andOperateCauseGreaterThanOrEqualTo(Byte value) {
+            addCriterion("operate_cause >=", value, "operateCause");
+            return (Criteria) this;
+        }
+
+        public Criteria andOperateCauseLessThan(Byte value) {
+            addCriterion("operate_cause <", value, "operateCause");
+            return (Criteria) this;
+        }
+
+        public Criteria andOperateCauseLessThanOrEqualTo(Byte value) {
+            addCriterion("operate_cause <=", value, "operateCause");
+            return (Criteria) this;
+        }
+
+        public Criteria andOperateCauseIn(List<Byte> values) {
+            addCriterion("operate_cause in", values, "operateCause");
+            return (Criteria) this;
+        }
+
+        public Criteria andOperateCauseNotIn(List<Byte> values) {
+            addCriterion("operate_cause not in", values, "operateCause");
+            return (Criteria) this;
+        }
+
+        public Criteria andOperateCauseBetween(Byte value1, Byte value2) {
+            addCriterion("operate_cause between", value1, value2, "operateCause");
+            return (Criteria) this;
+        }
+
+        public Criteria andOperateCauseNotBetween(Byte value1, Byte value2) {
+            addCriterion("operate_cause not between", value1, value2, "operateCause");
+            return (Criteria) this;
+        }
+
+        public Criteria andWinTimesIsNull() {
+            addCriterion("win_times is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWinTimesIsNotNull() {
+            addCriterion("win_times is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWinTimesEqualTo(Integer value) {
+            addCriterion("win_times =", value, "winTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andWinTimesNotEqualTo(Integer value) {
+            addCriterion("win_times <>", value, "winTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andWinTimesGreaterThan(Integer value) {
+            addCriterion("win_times >", value, "winTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andWinTimesGreaterThanOrEqualTo(Integer value) {
+            addCriterion("win_times >=", value, "winTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andWinTimesLessThan(Integer value) {
+            addCriterion("win_times <", value, "winTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andWinTimesLessThanOrEqualTo(Integer value) {
+            addCriterion("win_times <=", value, "winTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andWinTimesIn(List<Integer> values) {
+            addCriterion("win_times in", values, "winTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andWinTimesNotIn(List<Integer> values) {
+            addCriterion("win_times not in", values, "winTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andWinTimesBetween(Integer value1, Integer value2) {
+            addCriterion("win_times between", value1, value2, "winTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andWinTimesNotBetween(Integer value1, Integer value2) {
+            addCriterion("win_times not between", value1, value2, "winTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoseTimesIsNull() {
+            addCriterion("lose_times is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoseTimesIsNotNull() {
+            addCriterion("lose_times is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoseTimesEqualTo(Integer value) {
+            addCriterion("lose_times =", value, "loseTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoseTimesNotEqualTo(Integer value) {
+            addCriterion("lose_times <>", value, "loseTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoseTimesGreaterThan(Integer value) {
+            addCriterion("lose_times >", value, "loseTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoseTimesGreaterThanOrEqualTo(Integer value) {
+            addCriterion("lose_times >=", value, "loseTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoseTimesLessThan(Integer value) {
+            addCriterion("lose_times <", value, "loseTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoseTimesLessThanOrEqualTo(Integer value) {
+            addCriterion("lose_times <=", value, "loseTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoseTimesIn(List<Integer> values) {
+            addCriterion("lose_times in", values, "loseTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoseTimesNotIn(List<Integer> values) {
+            addCriterion("lose_times not in", values, "loseTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoseTimesBetween(Integer value1, Integer value2) {
+            addCriterion("lose_times between", value1, value2, "loseTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoseTimesNotBetween(Integer value1, Integer value2) {
+            addCriterion("lose_times not between", value1, value2, "loseTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andHuTimesIsNull() {
+            addCriterion("hu_times is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andHuTimesIsNotNull() {
+            addCriterion("hu_times is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andHuTimesEqualTo(Integer value) {
+            addCriterion("hu_times =", value, "huTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andHuTimesNotEqualTo(Integer value) {
+            addCriterion("hu_times <>", value, "huTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andHuTimesGreaterThan(Integer value) {
+            addCriterion("hu_times >", value, "huTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andHuTimesGreaterThanOrEqualTo(Integer value) {
+            addCriterion("hu_times >=", value, "huTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andHuTimesLessThan(Integer value) {
+            addCriterion("hu_times <", value, "huTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andHuTimesLessThanOrEqualTo(Integer value) {
+            addCriterion("hu_times <=", value, "huTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andHuTimesIn(List<Integer> values) {
+            addCriterion("hu_times in", values, "huTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andHuTimesNotIn(List<Integer> values) {
+            addCriterion("hu_times not in", values, "huTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andHuTimesBetween(Integer value1, Integer value2) {
+            addCriterion("hu_times between", value1, value2, "huTimes");
+            return (Criteria) this;
+        }
+
+        public Criteria andHuTimesNotBetween(Integer value1, Integer value2) {
+            addCriterion("hu_times not between", value1, value2, "huTimes");
             return (Criteria) this;
         }
     }

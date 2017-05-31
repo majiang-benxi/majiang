@@ -3,6 +3,7 @@ package com.mahjong.server.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.entity.UserRoomRecord;
 import com.mahjong.server.service.DBService;
 import com.mahjong.server.vo.UserLatestPlayRecord;
+import com.mahjong.server.vo.UserRecordScoreVO;
 
 @Service
 public class DBServiceImpl implements DBService {
@@ -314,6 +316,54 @@ public class DBServiceImpl implements DBService {
 	@Override
 	public List<UserInfo> selectAllUserLimit(String uid,String datemin, String datemax, String searchUname, Integer startIndex,	Integer eachCount) {
 		return userInfoMapper.selectAllUserLimit(uid, datemin, datemax, searchUname, startIndex, eachCount);
+	}
+	@Override
+	public int getUserPlayRecordInfoCount(String uid, String roomNum, String datemin, String datemax) {
+		return userRoomRecordMapper.getUserPlayRecordInfoCount( uid,  roomNum,  datemin,  datemax);
+	}
+	@Override
+	public List<UserRoomRecord> getUserPlayRecordInfoLimit(String uid, String roomNum, String datemin, String datemax, Integer startIndex, Integer eachCount) {
+		return userRoomRecordMapper.getUserPlayRecordInfoLimit( uid,roomNum, datemin, datemax,  startIndex, eachCount);
+	}
+	@Override
+	public List<RoomRecord> selectRoomRecordInfoList(Set<Integer> recordIdList) {
+		return roomRecordMapper.selectRoomRecordInfoList(recordIdList);
+	}
+	@Override
+	public List<UserActionScore> selectUserActionScoreInfos(Set<Integer> userRoomRecordIdList) {
+		return userActionScoreMapper.selectUserActionScoreInfos(userRoomRecordIdList);
+	}
+	@Override
+	public int getUserScoreInfoInfoCount(String uid, String roomNum, String datemin, String datemax) {
+		return userActionScoreMapper.getUserPlayRecordInfoCount( uid,  roomNum,  datemin,  datemax);
+	}
+	
+	@Override
+	public List<UserRecordScoreVO> getUserScoreInfoInfoListLimit(String uid, String roomNum, String datemin,
+			String datemax, Integer startIndex, Integer eachCount) {
+		return userActionScoreMapper.getUserPlayRecordInfoLimit( uid,roomNum, datemin, datemax,  startIndex, eachCount);
+	}
+	@Override
+	public int selectRoomRecordInfoCount(String roomNum, String datemin, String datemax) {
+		return roomRecordMapper.selectRoomRecordInfoCount( roomNum,  datemin,  datemax);
+	}
+	@Override
+	public List<RoomRecord> selectRoomRecordInfoLimit(String roomNum, String datemin, String datemax, Integer start,
+			Integer eachCount) {
+		return roomRecordMapper.selectRoomRecordInfoLimit( roomNum,  datemin,  datemax, start, eachCount);
+	}
+	@Override
+	public List<UserRoomRecord> selectUserRoomRecordInfoByRoomId(Integer roomid) {
+		return userRoomRecordMapper.selectUserRoomRecordInfoByRoomId(roomid);
+	}
+	@Override
+	public int selectMessageInfoCount(Integer msgPositionnum,Integer mesgstate, String datemin, String datemax) {
+		return messageInfoMapper.selectMessageInfoCount(msgPositionnum, mesgstate,  datemin,  datemax);
+	}
+	@Override
+	public List<MessageInfo> selectMessageInfoLimit(Integer msgPositionnum,Integer mesgstate, String datemin, String datemax, Integer start,
+			Integer eachCount) {
+		return messageInfoMapper.selectMessageInfoLimit(msgPositionnum, mesgstate,  datemin,  datemax, start, eachCount);
 	}
 	
 	

@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.mahjong.server.dao.UserActionScoreMapper" >
+
   <resultMap id="BaseResultMap" type="com.mahjong.server.entity.UserActionScore" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="user_room_record_id" property="userRoomRecordId" jdbcType="INTEGER" />
+     <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="room_record_id" property="roomRecordId" jdbcType="INTEGER" />
+    <result column="round_num" property="roundNum" jdbcType="INTEGER" />
     <result column="action_type" property="actionType" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="action_score" property="actionScore" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Example_Where_Clause" >
@@ -66,7 +70,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, user_room_record_id, action_type, action_score
+    id, user_id, room_record_id, round_num, action_type, create_time, action_score
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.mahjong.server.entity.UserActionScoreExample" >
     select
@@ -93,11 +97,20 @@
     <include refid="Base_Column_List" />
     from user_action_score
     <where >
-      <if test="userRoomRecordId != null" >
-        and user_room_record_id = #{userRoomRecordId,jdbcType=INTEGER}
+      <if test="userId != null" >
+        and user_id = #{userId,jdbcType=INTEGER}
+      </if>
+      <if test="roomRecordId != null" >
+        and room_record_id = #{roomRecordId,jdbcType=INTEGER}
+      </if>
+      <if test="roundNum != null" >
+        and round_num = #{roundNum,jdbcType=INTEGER}
       </if>
       <if test="actionType != null" >
         and action_type = #{actionType,jdbcType=INTEGER}
+      </if>
+      <if test="createTime != null" >
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
       </if>
       <if test="actionScore != null" >
         and action_score = #{actionScore,jdbcType=INTEGER}
@@ -115,9 +128,11 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.mahjong.server.entity.UserActionScore" >
-    insert into user_action_score (id, user_room_record_id, action_type, 
+    insert into user_action_score (id, user_id, room_record_id, 
+      round_num, action_type, create_time, 
       action_score)
-    values (#{id,jdbcType=INTEGER}, #{userRoomRecordId,jdbcType=INTEGER}, #{actionType,jdbcType=INTEGER}, 
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{roomRecordId,jdbcType=INTEGER}, 
+      #{roundNum,jdbcType=INTEGER}, #{actionType,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
       #{actionScore,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.mahjong.server.entity.UserActionScore" >
@@ -126,11 +141,20 @@
       <if test="id != null" >
         id,
       </if>
-      <if test="userRoomRecordId != null" >
-        user_room_record_id,
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="roomRecordId != null" >
+        room_record_id,
+      </if>
+      <if test="roundNum != null" >
+        round_num,
       </if>
       <if test="actionType != null" >
         action_type,
+      </if>
+      <if test="createTime != null" >
+        create_time,
       </if>
       <if test="actionScore != null" >
         action_score,
@@ -140,11 +164,20 @@
       <if test="id != null" >
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="userRoomRecordId != null" >
-        #{userRoomRecordId,jdbcType=INTEGER},
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="roomRecordId != null" >
+        #{roomRecordId,jdbcType=INTEGER},
+      </if>
+      <if test="roundNum != null" >
+        #{roundNum,jdbcType=INTEGER},
       </if>
       <if test="actionType != null" >
         #{actionType,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="actionScore != null" >
         #{actionScore,jdbcType=INTEGER},
@@ -163,11 +196,20 @@
       <if test="record.id != null" >
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.userRoomRecordId != null" >
-        user_room_record_id = #{record.userRoomRecordId,jdbcType=INTEGER},
+      <if test="record.userId != null" >
+        user_id = #{record.userId,jdbcType=INTEGER},
+      </if>
+      <if test="record.roomRecordId != null" >
+        room_record_id = #{record.roomRecordId,jdbcType=INTEGER},
+      </if>
+      <if test="record.roundNum != null" >
+        round_num = #{record.roundNum,jdbcType=INTEGER},
       </if>
       <if test="record.actionType != null" >
         action_type = #{record.actionType,jdbcType=INTEGER},
+      </if>
+      <if test="record.createTime != null" >
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.actionScore != null" >
         action_score = #{record.actionScore,jdbcType=INTEGER},
@@ -177,15 +219,24 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  
+
   <update id="updateByPrimaryKeySelective" parameterType="com.mahjong.server.entity.UserActionScore" >
     update user_action_score
     <set >
-      <if test="userRoomRecordId != null" >
-        user_room_record_id = #{userRoomRecordId,jdbcType=INTEGER},
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="roomRecordId != null" >
+        room_record_id = #{roomRecordId,jdbcType=INTEGER},
+      </if>
+      <if test="roundNum != null" >
+        round_num = #{roundNum,jdbcType=INTEGER},
       </if>
       <if test="actionType != null" >
         action_type = #{actionType,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="actionScore != null" >
         action_score = #{actionScore,jdbcType=INTEGER},
@@ -200,6 +251,77 @@
     from user_action_score
     where user_room_record_id = #{id,jdbcType=INTEGER}
   </select>
+  
+   <select id="selectUserActionScoreInfos" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_action_score
+      <if test="userRoomRecordIdList != null" >
+       where user_room_record_id in 
+       
+      	<foreach collection="userRoomRecordIdList" item="item" open="and(" separator="," close=")">
+			#{item} 
+		</foreach>
+       
+      </if>
+  </select>
+  
+  
+  <select id="getUserPlayRecordInfoCount" resultType="int" parameterType="map" >
+    
+    	SELECT
+			count(DISTINCT(CONCAT(uas.user_id,rr.room_num,uas.round_num)))
+		FROM
+			user_action_score AS uas
+		LEFT JOIN room_record AS rr ON rr.id = uas.room_record_id
+		WHERE
+			1 = 1
+		  <if test="userId != null" >
+	     	and uas.user_id = #{userId,jdbcType=INTEGER}
+	     </if>
+	     <if test="roomNum != null" >
+	     	and  rr.room_num = #{roomNum,jdbcType=INTEGER}
+	     </if>
+	     <if test="datemin != null" >
+	     	and rr.create_time <![CDATA[>= ]]>  #{datemin}
+	     </if>
+	     <if test="datemax != null" >
+	     	and rr.create_time  <![CDATA[<= ]]>#{datemax}
+	     </if>
+		
+  </select>
+  
+  
+   <select id="getUserPlayRecordInfoLimit" resultType="com.mahjong.server.vo.UserRecordScoreVO" parameterType="map" >
+		 SELECT
+			uas.user_id AS userId,
+			rr.room_num AS roomNum,
+			uas.create_time roomCreateTime,
+			uas.round_num AS roundNum,
+			SUM(uas.action_score) AS scoreNum
+		FROM
+			user_action_score AS uas
+		LEFT JOIN room_record AS rr ON rr.id = uas.room_record_id
+		WHERE 1=1 
+		  <if test="userId != null" >
+	     	and uas.user_id = #{userId,jdbcType=INTEGER}
+	     </if>
+	     <if test="roomNum != null" >
+	     	and  rr.room_num = #{roomNum,jdbcType=INTEGER}
+	     </if>
+	     <if test="datemin != null" >
+	     	and rr.create_time <![CDATA[>= ]]>  #{datemin}
+	     </if>
+	     <if test="datemax != null" >
+	     	and rr.create_time  <![CDATA[<= ]]>#{datemax}
+	     </if>
+		GROUP BY uas.user_id,rr.room_num,uas.round_num
+    	<if test="start != null" >
+		    limit #{start,jdbcType=INTEGER},#{count,jdbcType=INTEGER}
+		</if>
+		    
+  </select>
+  
   
   
 </mapper>

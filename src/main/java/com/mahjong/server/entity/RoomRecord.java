@@ -12,8 +12,22 @@ public class RoomRecord {
     private Integer creatorId;
 
     private Date createTime;
+    
+    private Date endTime;
 
     private Byte roomState;
+    
+    private String createTimeStr;
+    
+    private String endTimeStr;
+    
+    private Integer eastUid;
+    
+    private Integer southUid;
+    
+    private Integer westUid;
+    
+    private Integer northUid;
 
     public Integer getId() {
         return id;
@@ -62,4 +76,61 @@ public class RoomRecord {
     public void setRoomState(Byte roomState) {
         this.roomState = roomState;
     }
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+
+	public String getCreateTimeStr() {
+		return createTimeStr;
+	}
+
+	public void setCreateTimeStr(String createTimeStr) {
+		this.createTimeStr = createTimeStr;
+	}
+
+	public Integer getEastUid() {
+		return eastUid;
+	}
+
+	public void setEastUid(Integer eastUid) {
+		this.eastUid = eastUid;
+	}
+
+	public Integer getSouthUid() {
+		return southUid;
+	}
+
+	public void setSouthUid(Integer southUid) {
+		this.southUid = southUid;
+	}
+
+	public Integer getWestUid() {
+		return westUid;
+	}
+
+	public void setWestUid(Integer westUid) {
+		this.westUid = westUid;
+	}
+
+	public Integer getNorthUid() {
+		return northUid;
+	}
+
+	public void setNorthUid(Integer northUid) {
+		this.northUid = northUid;
+	}
+
+	public String getEndTimeStr() {
+		return endTimeStr;
+	}
+
+	public void setEndTimeStr(String endTimeStr) {
+		this.endTimeStr = endTimeStr;
+	}
+	
 }

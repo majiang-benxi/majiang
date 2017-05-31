@@ -77,17 +77,18 @@
 			<dd>
 				<ul>
 					<li><a _href="/mvc/frontuser/getUserInfo" href="javascript:;">用户列表</a></li>
-					<li><a _href="member-del.html" href="javascript:;">游戏记录</a></li>
+					<li><a _href="/mvc/frontuser/getRecordInfo" href="javascript:;">进出记录</a></li>
+					<li><a _href="/mvc/frontuser/getUserScoreInfo" href="javascript:;">得分记录</a></li>
 				</ul>
 			</dd>
 		</dl>
 	
 		<dl id="menu-system">
-			<dt><i class="Hui-iconfont">&#xe62e;</i> 房间管理</dt>
+			<dt><i class="Hui-iconfont">&#xe62e;</i> <a _href="/mvc/room/roomrecordinfo" id="menu-admin-manage" href="javascript:;">房间信息</a></dt>
 		</dl>
 		
 		<dl id="menu-article">
-			<dt><i class="Hui-iconfont">&#xe616;</i> 消息管理</dt>
+			<dt><i class="Hui-iconfont">&#xe616;</i> <a _href="/mvc/message/messageinfo" id="menu-admin-manage" href="javascript:;"> 消息管理</a></dt>
 		</dl>
 		
 		

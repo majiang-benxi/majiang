@@ -77,7 +77,7 @@ public class ToWinHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 							UserActionScore userActionScore = new UserActionScore();
 							userActionScore.setActionScore(tileGroup.getTileGroupTypeScore());
 							userActionScore.setActionType(tileGroup.getType().getCode());
-							userActionScore.setUserRoomRecordId(userRoomRecord.getId());
+							userActionScore.setRoomRecordId(userRoomRecord.getRoomRecordId());
 							dbService.insertUserActionScoreInfo(userActionScore);
 							userActionScores.add(userActionScore);
 						}
