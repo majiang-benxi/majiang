@@ -183,7 +183,8 @@ public class MessageController {
 		messg.setCreateTime(new Date());
 		
 		dbService.inserMessageInfo(messg);
-		return " success!";
+		
+		return "success";
 		
 	}
 	

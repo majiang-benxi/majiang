@@ -144,7 +144,10 @@ function submitProxy(){
 		    timeout:2000,    //超时时间
 		    dataType:'json',    //返回的数据格式：json/xml/html/script/jsonp/text
 		    success:function(data,textStatus,jqXHR){
-		    	changeItemPage('');
+		    	
+		    	parent.changeItemPage('');
+		    	var index = parent.layer.getFrameIndex(window.name);
+				parent.layer.close(index);
 		    },
 		    complete:function(){
 		        console.log('结束')
