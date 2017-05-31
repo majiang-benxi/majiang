@@ -29,7 +29,7 @@ public class HeartBeatHandler extends SimpleChannelInboundHandler<ProtocolModel>
 					new TypeReference<RequestBaseMode>() {
 					});
 			String weixinId = requestBaseMode.getWeiXinId();
-			if(weixinId!=null&&ClientSession.sessionMap.get(weixinId) == null) {
+			if(weixinId!=null) {
 				ClientSession.sessionMap.put(weixinId, ctx);
 			}
 			Date now = new Date();

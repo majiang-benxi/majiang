@@ -24,7 +24,7 @@ public class PlayerTiles  {
 	public Tile getAliveTiles() {
 		return aliveTiles;
 	}
-	public Tile getSortAliveTiles() {
+	public Tile _getSortAliveTiles() {
 		aliveTiles.sort();
 		return aliveTiles;
 	}

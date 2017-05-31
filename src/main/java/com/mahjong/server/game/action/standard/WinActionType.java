@@ -54,7 +54,7 @@ public class WinActionType extends AbstractActionType {
 		boolean ziMo = !DISCARD.matchBy(context.getLastAction().getType());
 		PlayerInfo playerInfo = context.getTable().getPlayerByLocation(playerLocation);
 		if (!ziMo) {
-			playerInfo.getSortAliveTiles().addTile(lastTile);// 非自摸情况，把别人的牌加进来判断，自摸的时候牌已经在自摸的动作中添加了
+			playerInfo._getSortAliveTiles().addTile(lastTile);// 非自摸情况，把别人的牌加进来判断，自摸的时候牌已经在自摸的动作中添加了
 		}
 		WinInfo winInfo = WinInfo.fromPlayerTiles(playerInfo, context.getTable().getFanhui(), ziMo);
 		HuType huType = chooseBestWinType(winInfo, context.getGameStrategy().getRuleInfo());
@@ -88,12 +88,12 @@ public class WinActionType extends AbstractActionType {
 		boolean ziMo = !DISCARD.matchBy(context.getLastAction().getType());
 		PlayerInfo playerInfo = context.getTable().getPlayerByLocation(playerLocation);
 		if (!ziMo) {
-			playerInfo.getSortAliveTiles().addTile(lastTile);// 非自摸情况，把别人的牌加进来判断，自摸的时候牌已经在自摸的动作中添加了
+			playerInfo._getSortAliveTiles().addTile(lastTile);// 非自摸情况，把别人的牌加进来判断，自摸的时候牌已经在自摸的动作中添加了
 		}
 		WinInfo winInfo = WinInfo.fromPlayerTiles(playerInfo, context.getTable().getFanhui(), ziMo);
 		HuType huType = chooseBestWinType(winInfo, context.getGameStrategy().getRuleInfo());
 		if (!ziMo) {
-			playerInfo.getSortAliveTiles().removeAll(lastTile);// 把之前加入判断的牌给去掉。
+			playerInfo._getSortAliveTiles().removeAll(lastTile);// 把之前加入判断的牌给去掉。
 		}
 		if (huType == null) {
 			return false;

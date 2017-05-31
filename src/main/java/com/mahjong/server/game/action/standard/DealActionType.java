@@ -54,11 +54,11 @@ public class DealActionType implements ActionType {
 			for (Relation relation : Relation.values()) {
 				PlayerLocation playerLocation = zhuang.getLocationOf(relation);
 				PlayerInfo playerInfo = context.getTable().getPlayerByLocation(playerLocation);
-				playerInfo.getSortAliveTiles().addTile(table.draw(drawCount));
+				playerInfo._getSortAliveTiles().addTile(table.draw(drawCount));
 			}
 		}
 		Tile zhuangFirstTile=table.draw(1);
-		context.getTable().getPlayerByLocation(zhuangLocation).getSortAliveTiles()
+		context.getTable().getPlayerByLocation(zhuangLocation)._getSortAliveTiles()
 				.addTile(zhuangFirstTile).sort();
 		context.getTable().getPlayerByLocation(zhuangLocation).setLastDrawedTile(zhuangFirstTile);
 		context.getTable().setFanhui(table.drawBottom(1).getPai()[0]);// 系统翻出一张会牌

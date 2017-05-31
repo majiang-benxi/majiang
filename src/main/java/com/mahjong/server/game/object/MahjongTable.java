@@ -110,7 +110,7 @@ public class MahjongTable {
 		for (Entry<PlayerLocation, PlayerInfo> entry : playerInfos.entrySet()) {
 				System.out.print(
 					"方位:" + entry.getKey().getCode() + " aliveTile: ");
-				entry.getValue().getSortAliveTiles().printTile();
+				entry.getValue()._getSortAliveTiles().printTile();
 		}
 			System.out.print("会牌:");
 			Tile.getHuiPai(fanhui).printTile();

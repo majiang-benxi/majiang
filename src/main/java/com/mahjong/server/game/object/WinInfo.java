@@ -24,15 +24,15 @@ public class WinInfo extends PlayerInfo {
 		WinInfo winInfo = new WinInfo();
 		winInfo.fanhui = fanhui;
 		winInfo.dropTileGroups = playerTiles.getTileGroups();
-		Tile allWinTile = playerTiles.getSortAliveTiles().clone();
+		Tile allWinTile = playerTiles._getSortAliveTiles().clone();
 		for (TileGroup tileGroup : playerTiles.getTileGroups()) {
 			allWinTile = Tile.addTile(allWinTile, tileGroup.getTile());
 		}
 		winInfo.huiTile = Tile.getOwnHuiPai(allWinTile, fanhui);
 		allWinTile.removeAll(winInfo.huiTile);// 剔除会牌
 		winInfo.winTile = allWinTile;
-		playerTiles.getSortAliveTiles().removeAll(winInfo.getHuiTile());// 把会牌移走
-		winInfo.aliveTile = playerTiles.getSortAliveTiles();
+		playerTiles._getSortAliveTiles().removeAll(winInfo.getHuiTile());// 把会牌移走
+		winInfo.aliveTile = playerTiles._getSortAliveTiles();
 		winInfo.tileGroups = playerTiles.getTileGroups();
 		winInfo.ziMo = ziMo;
 		return winInfo;
