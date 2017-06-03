@@ -53,7 +53,22 @@
 		<td>${eachVar.lastLoginIp}</td>
 		<td>${eachVar.lastLoginTimeStr}</td>
 		<td>${eachVar.loginTimes}</td>
-		<td>${eachVar.currRoom}</td>
+		<td>
+			<c:if test="${eachVar.currRoom == null}">
+				闲逛
+			</c:if>
+			<c:if test="${eachVar.currRoom != null}">
+				游戏中
+			</c:if>
+		</td>
+		<td>
+			<c:if test="${eachVar.currRoom == null}">
+				--
+			</c:if>
+			<c:if test="${eachVar.currRoom != null}">
+				${eachVar.currRoom}
+			</c:if>
+		</td>
 
 	</tr>
 
