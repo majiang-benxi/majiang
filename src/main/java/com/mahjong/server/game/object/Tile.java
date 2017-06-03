@@ -13,17 +13,41 @@ import org.apache.commons.lang.ArrayUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.google.common.primitives.Bytes;
 
 public class Tile {
-	private byte[] pai;// 存储相关的一组牌
-
+	@JSONField(serialize = false)
+	private byte[] pai;// 存储相关的一组牌，后端用此字段
+	private int[] qianduanPai;// 前端coco2dx不支持byte类型的JSON互转，此字段用来支持前端牌的展示跟后端牌的映射，详情参见对应的set和get
 	public Tile() {
-
+		pai = new byte[0];
 	}
 
 	public Tile(byte[] pai) {
 		this.pai = pai;
+	}
+
+	public int[] getQianduanPai() {
+		if (pai == null) {
+			return null;
+		}
+		qianduanPai = new int[pai.length];
+		for (int i = 0; i < pai.length; i++){
+			qianduanPai[i] = Integer.valueOf(pai[i] + "");
+		}
+		return qianduanPai;
+	}
+
+	public void setQianduanPai(int[] qianduanPai) {
+		if (qianduanPai != null) {
+			pai = new byte[qianduanPai.length];
+			for (int i = 0; i < qianduanPai.length; i++) {
+				pai[i] = (byte) (0xff & qianduanPai[i]);
+			}
+
+		}
+		this.qianduanPai = qianduanPai;
 	}
 
 	public enum HuaSe {
@@ -36,6 +60,7 @@ public class Tile {
 	}
 
 	public static byte HUIPAI = 0x00;
+	public static byte CAN_NOT_SEE_PAI = 0X64;// 约定100是不可见的
 	public static byte QIANG = 0x27;
 	public static byte[] getOneBoxMahjong() {
 		byte[] allPai = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, // 万（1-9）
@@ -55,6 +80,16 @@ public class Tile {
 				0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, // 番子
 				0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, // 番子（49-55）
 		};
+		List<Integer> list = new ArrayList<Integer>();
+		for (byte onePai : allPai) {
+			list.add((int) onePai);
+		}
+		Collections.shuffle(list);
+		int i = 0;
+		for (Integer intByte : list) {
+			allPai[i] = (byte) intByte.intValue();
+			i++;
+		}
 		return allPai;
 	}
 
@@ -84,6 +119,9 @@ public class Tile {
 
 	@Override
 	public Tile clone() {
+		if (this.pai == null) {
+			return null;
+		}
 		byte[] destPai = new byte[this.pai.length];
 		System.arraycopy(this.pai, 0, destPai, 0, this.pai.length);
 		Tile tile = new Tile();
@@ -98,7 +136,9 @@ public class Tile {
 	}
 
 	public void sort() {
-		Collections.sort(Bytes.asList(this.getPai()));
+		if (this.getPai() != null) {
+			Collections.sort(Bytes.asList(this.getPai()));
+		}
 	}
 	// 会改变当前类
 	public Tile addTile(Tile tile) {
@@ -196,6 +236,16 @@ public class Tile {
 		return jiangPAI;
 	}
 
+	public static Tile getOtherPlayerTileView(int num) {
+		byte[] cannotview=new byte[num];
+		for(int i=0;i<num;i++){
+			cannotview[i]=CAN_NOT_SEE_PAI;
+		}
+		return new Tile(cannotview);
+	}
+	public static int getMaxHuiNum() {
+		return 7;
+	}
 	public static Tile getSortedHuaSePaiFromPai(Tile tile, HuaSe huaSe) {
 		List<Byte>list=new ArrayList<Byte>();
 		for (Byte pai : tile.getPai()) {
@@ -258,6 +308,14 @@ public class Tile {
 			result[1] = (byte) (fanHui + 1);
 		}
 		return new Tile(result);
+	}
+
+	public void printTile() {
+		for (byte b : this.getPai()) {
+			System.out.print(b + " ");
+		}
+		System.out.println(" ");
+
 	}
 	public static void main(String[] args) {
 		Tile allTile = new Tile();

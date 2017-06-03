@@ -1,7 +1,5 @@
 package com.mahjong.server.game.action;
 
-import java.util.Objects;
-
 import com.mahjong.server.game.enums.PlayerLocation;
 
 /**
@@ -13,7 +11,6 @@ public class ActionAndLocation {
 	private final PlayerLocation location;
 
 	public ActionAndLocation(Action action, PlayerLocation location) {
-		Objects.requireNonNull(action);
 		this.action = action;
 		this.location = location;
 	}

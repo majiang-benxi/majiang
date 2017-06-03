@@ -1,6 +1,9 @@
 package com.mahjong.server.netty.handler;
 
+import static com.mahjong.server.game.action.standard.StandardActionType.WIN;
+
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -9,6 +12,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.exception.IllegalActionException;
+import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.standard.DealActionType;
 import com.mahjong.server.game.action.standard.WinActionType;
 import com.mahjong.server.game.context.HouseContext;
@@ -20,6 +24,7 @@ import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.netty.model.EnterRoomReqModel;
 import com.mahjong.server.netty.model.EnterRoomRespModel;
 import com.mahjong.server.netty.model.ProtocolModel;
+import com.mahjong.server.netty.session.ClientSession;
 import com.mahjong.server.service.DBService;
 
 import io.netty.channel.ChannelHandler.Sharable;
@@ -54,14 +59,13 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 				if (userInfo == null) {
 					enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "您未注册，无法加入房间，请见注册！", null);
 				} else {
-					RoomContext roomContex = null;
-					if ((roomContex = HouseContext.weixinIdToRoom.get(weixinId)) == null) {
+					RoomContext roomContex = HouseContext.weixinIdToRoom.get(weixinId);
+					if (roomContex == null) {
 
 						if ((roomContex = HouseContext.rommList.get(roomId)) != null) {
 							flag = roomContex.joinRoom(userInfo);
 							if (flag) {
 								HouseContext.weixinIdToRoom.put(weixinId, roomContex);
-								enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "恭喜您，加入房间成功！", roomContex);
 								// 通知其他三家
 								ProtocolModel enterRoomProtocolModel = new ProtocolModel();
 								enterRoomProtocolModel.setCommandId(EventEnum.NEW_ENTER_RESP.getValue());
@@ -69,22 +73,30 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 								EnterRoomRespModel newEnterRoomRespModel = new EnterRoomRespModel(weixinId, true,
 										"新人加入", roomContex);
 								enterRoomProtocolModel.setBody(JSON.toJSONString(newEnterRoomRespModel));
-								HandlerHelper.noticeMsg2Players(roomContex, weixinId, enterRoomProtocolModel);
+								HandlerHelper.noticeMsg2Players(roomContex, null, enterRoomProtocolModel);
 								boolean hashDealTile = dealTile2AllPlayersCheck(roomContex);
 								if (hashDealTile) {// 通知所有玩家已经发牌
-									ProtocolModel dealTileProtocolModel = new ProtocolModel();
-									dealTileProtocolModel.setCommandId(EventEnum.DEAL_TILE_RESP.getValue());
-									roomContex.setRoomStatus(RoomStatus.PLAYING);
-									EnterRoomRespModel dealTileRoomRespModel = new EnterRoomRespModel(null, true,
-											"发牌", roomContex);
-									dealTileProtocolModel.setBody(JSON.toJSONString(dealTileRoomRespModel));
-									HandlerHelper.noticeMsg2Players(roomContex, null, dealTileProtocolModel);
+									for (Entry<PlayerLocation, PlayerInfo> entry : roomContex.getGameContext()
+											.getTable().getPlayerInfos()
+											.entrySet()) {
+										ProtocolModel dealTileProtocolModel = new ProtocolModel();
+										dealTileProtocolModel.setCommandId(EventEnum.DEAL_TILE_RESP.getValue());
+										roomContex.setRoomStatus(RoomStatus.PLAYING);
+										String playWinXinId = entry.getValue().getUserInfo().getWeixinMark();
+										EnterRoomRespModel dealTileRoomRespModel = new EnterRoomRespModel(playWinXinId,
+												true,
+												"发牌", roomContex, entry.getKey());// 创建每个方位的牌响应信息
+										dealTileProtocolModel.setBody(JSON.toJSONString(dealTileRoomRespModel));
+										ChannelHandlerContext userCtx = ClientSession.sessionMap.get(playWinXinId);
+										userCtx.writeAndFlush(dealTileProtocolModel);
+									}
+
 									WinActionType winActionType = new WinActionType();
 									boolean winFirst = winActionType.isLegalAction(roomContex.getGameContext(),
-											roomContex.getGameContext().getZhuangLocation(), null);
+											roomContex.getGameContext().getZhuangLocation(), new Action(WIN));
 									if (winFirst) {
 										winActionType.doAction(roomContex.getGameContext(),
-												roomContex.getGameContext().getZhuangLocation(), null);
+												roomContex.getGameContext().getZhuangLocation(), new Action(WIN));
 										ProtocolModel winProtocolModel = new ProtocolModel();
 										winProtocolModel.setCommandId(EventEnum.WIN_TILE_RESP.getValue());
 										roomContex.setRoomStatus(RoomStatus.PLAYING);
@@ -93,6 +105,7 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 										winProtocolModel.setBody(JSON.toJSONString(winTileRoomRespModel));
 										HandlerHelper.noticeMsg2Players(roomContex, null, winProtocolModel);
 									}
+									return;
 								}
 
 							} else {

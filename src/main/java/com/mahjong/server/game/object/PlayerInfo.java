@@ -20,11 +20,11 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	/**
 	 * 最后摸的牌。
 	 */
-	private Tile lastDrawedTile = null;
+	private Tile lastDrawedTile = new Tile();
 	/**
 	 * 已经打出的牌。
 	 */
-	private Tile discardedTiles = null;
+	private Tile discardedTiles = new Tile();
 	/**
 	 * 是否胡牌。
 	 */
@@ -65,6 +65,10 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 		this.isHu = isHu;
 	}
 
+	public void setUserLocation(PlayerLocation userLocation) {
+		this.userLocation = userLocation;
+	}
+
 	/**
 	 * 清空玩家的牌，回到初始状态。
 	 */
@@ -80,15 +84,15 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 		PlayerInfo c;
 		try {
 			c = (PlayerInfo) super.clone();
-			c.aliveTiles = (Tile) super.clone();
-			c.discardedTiles = (Tile) super.clone();
 		} catch (CloneNotSupportedException e) {
-			// 不可能，因为PlayerInfo,Tile已经实现了Cloneable
+			// 不可能，因为PlayerInfo已经实现了Cloneable
 			throw new RuntimeException(e);
 		}
-		// deep copy
-
+		c.aliveTiles = this.aliveTiles == null ? new Tile() : this.aliveTiles.clone();
+		c.discardedTiles = this.discardedTiles == null ? new Tile() : this.discardedTiles.clone();
+		c.userInfo = userInfo == null ? null : userInfo.clone();
 		c.tileGroups = new ArrayList<TileGroup>(tileGroups);
+
 		return c;
 	}
 
@@ -110,12 +114,25 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 
 
 	/**
-	 * 获取其他玩家的视图。
+	 * 获取其他玩家的视图。不要以get开头
 	 */
-	public PlayerInfo getOtherPlayerInfoView() {
+	public PlayerInfo _getOtherPlayerInfoView() {
 		PlayerInfo playerInfo = this.clone();
-		playerInfo.setAliveTiles(null);// 活牌不可见
-		playerInfo.setLastDrawedTile(null);// 最后摸的牌不可见
+		if (playerInfo.getAliveTiles() != null) {
+		playerInfo.setAliveTiles(
+				playerInfo.getAliveTiles().getOtherPlayerTileView(playerInfo.getAliveTiles().getPai().length));// 活牌不可见
+
+		}
+		if (playerInfo.getLastDrawedTile() != null) {
+			playerInfo.setLastDrawedTile(
+				playerInfo.getLastDrawedTile().getOtherPlayerTileView(playerInfo.getLastDrawedTile().getPai().length));// 最后摸的牌不可见
+
+		}
 		return playerInfo;
+	}
+
+	public static void main(String[] args) {
+		PlayerInfo playerInfo = new PlayerInfo();
+		playerInfo.clone();
 	}
 }

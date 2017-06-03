@@ -3,6 +3,7 @@ package com.mahjong.server.game.action.standard;
 import static com.mahjong.server.game.action.standard.StandardActionType.CHI;
 import static com.mahjong.server.game.action.standard.StandardActionType.DISCARD;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -35,7 +36,7 @@ public class CpgActionType extends AbstractActionType {
 			.getLogger(CpgActionType.class.getSimpleName());
 
 	private TileGroupType groupType;
-	private Collection<PlayerLocation.Relation> lastActionRelations;
+	private Collection<PlayerLocation.Relation> lastActionRelations = new ArrayList<PlayerLocation.Relation>();
 
 	/**
 	 * 新建实例。
@@ -54,7 +55,7 @@ public class CpgActionType extends AbstractActionType {
 		} else {
 			for (Relation relation : Relation.values()) {
 				if (relation.isOther()) {
-					lastActionRelations.add(relation);
+					this.lastActionRelations.add(relation);
 				}
 			}
 		}
@@ -98,7 +99,7 @@ public class CpgActionType extends AbstractActionType {
 	@Override
 	protected boolean isLegalActionWithPreconition(GameContext context,PlayerLocation location,
 			Tile tile) {
-		Tile testTiles = Tile.addTile(tile, context.getTable().getPlayerByLocation(location).getLastDrawedTile());
+		Tile testTiles = Tile.addTile(tile, context.getLastAction().getTile());
 		boolean legal = groupType.isLegalTile(testTiles);
 		return legal;
 	}
@@ -108,7 +109,7 @@ public class CpgActionType extends AbstractActionType {
 			Tile tile) {
 		PlayerInfo playerInfo = context.getTable().getPlayerByLocation(location);
 
-		playerInfo.getAliveTiles().removeAll(tile);
+		playerInfo._getSortAliveTiles().removeAll(tile);
 
 		Tile gotTile = context.getLastAction().getTile();
 		TileGroup group = new TileGroup(groupType, gotTile,

@@ -23,6 +23,10 @@ public class Action {
 	 */
 	private long time;
 
+	public Action() {
+
+	}
+
 	/**
 	 * 新建一个实例，没有相关的牌。
 	 */

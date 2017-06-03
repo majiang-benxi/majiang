@@ -16,7 +16,6 @@ public class BootStrapGame implements InitializingBean, DisposableBean {
 	@Autowired
 	private WebSocketServer server;
 
-
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		try {

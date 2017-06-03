@@ -24,6 +24,10 @@ public class PlayerTiles  {
 	public Tile getAliveTiles() {
 		return aliveTiles;
 	}
+	public Tile _getSortAliveTiles() {
+		aliveTiles.sort();
+		return aliveTiles;
+	}
 
 	public void setAliveTiles(Tile aliveTiles) {
 		this.aliveTiles = aliveTiles;

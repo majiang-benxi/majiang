@@ -17,6 +17,7 @@ public class HouseContext {
 	public static ConcurrentHashMap<Integer, RoomContext> rommList = new ConcurrentHashMap<Integer, RoomContext>();
 	
 	public static ConcurrentHashMap<String, RoomContext> weixinIdToRoom = new ConcurrentHashMap<String, RoomContext>();
+
 	
 	public static ConcurrentHashMap<String, UserInfo> weixinIdToUserInfo = new ConcurrentHashMap<String, UserInfo>();
 	
@@ -30,7 +31,6 @@ public class HouseContext {
 	public static AtomicInteger waitUserNum = new AtomicInteger(0);
 	
 	
-
 	public RoomContext getRoomByNum(Integer roomNum) {
 		return rommList.get(roomNum);
 	}

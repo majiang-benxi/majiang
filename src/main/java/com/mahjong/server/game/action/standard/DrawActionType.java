@@ -48,7 +48,7 @@ public class DrawActionType extends AbstractActionType {
 	@Override
 	protected void doLegalAction(GameContext context, PlayerLocation location, Tile tile) {
 		Tile drawTile = context.getTable().draw(1);
-		context.getTable().getPlayerByLocation(location).getAliveTiles().addTile(drawTile);
+		context.getTable().getPlayerByLocation(location)._getSortAliveTiles().addTile(drawTile);
 		context.getTable().getPlayerByLocation(location).setLastDrawedTile(drawTile);
 		context.getLocalDoneActions().add(new ActionAndLocation(new Action(DRAW, drawTile), location));
 	}

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -71,7 +70,8 @@ public abstract class AbstractActionType implements ActionType {
 	 */
 	protected boolean meetPrecondition(GameContext context,PlayerLocation location) {
 		// 验证aliveTiles数量条件
-		boolean res = checkAliveTileSizeCondition(context.getTable().getPlayerByLocation(location).getAliveTiles().getPai().length);
+		boolean res = checkAliveTileSizeCondition(
+				context.getTable().getPlayerByLocation(location)._getSortAliveTiles().getPai().length);
 		if (!res) {
 			return false;
 		}
@@ -177,13 +177,12 @@ public abstract class AbstractActionType implements ActionType {
 	@Override
 	public boolean isLegalAction(GameContext context, PlayerLocation location,
 			Action action) {
-		Objects.requireNonNull(action);
 		if (!matchBy(action.getType()))
 			throw new IllegalArgumentException(
 					action.getType().getRealTypeClass().getSimpleName()
 							+ " is not " + getRealTypeClass());
 		if (!isLegalActionTiles(context, location,
-				action.getTile()))
+				action == null ? null : action.getTile()))
 			return false;
 		return true;
 	}
@@ -219,7 +218,7 @@ public abstract class AbstractActionType implements ActionType {
 	 * 默认实现为指定玩家的aliveTiles。
 	 */
 	protected Tile getActionTilesRange(PlayerInfo playerInfo ) {
-		return playerInfo.getAliveTiles();
+		return playerInfo._getSortAliveTiles();
 	}
 
 	/**

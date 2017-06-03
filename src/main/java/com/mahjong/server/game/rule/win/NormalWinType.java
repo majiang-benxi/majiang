@@ -51,33 +51,31 @@ public class NormalWinType implements WinType {
 		CardPatternCheckResultVO wanCardPatternCheckResult = new CardPatternCheckResultVO(
 				Tile.getSortedHuaSePaiFromPai(winInfo.getAliveTile(), HuaSe.WAN), tileUnitInfos, 0);
 		// 赢牌组合check
-		boolean wanRes = HunTilePlayTools.hu_check(wanCardPatternCheckResult, huiNum);
-		if (wanRes == false) {
+		CardPatternCheckResultVO wanRes = HunTilePlayTools.x_hu_check(wanCardPatternCheckResult, huiNum);
+		if (wanRes == null || wanRes.canhu == false) {
 			return false;
 		}
 		CardPatternCheckResultVO tiaoCardPatternCheckResult = new CardPatternCheckResultVO(
 				Tile.getSortedHuaSePaiFromPai(winInfo.getAliveTile(), HuaSe.TIAO), tileUnitInfos, 0);
-		boolean tiaoRes = HunTilePlayTools.hu_check(tiaoCardPatternCheckResult, huiNum);
-		if (tiaoRes == false) {
+		CardPatternCheckResultVO tiaoRes = HunTilePlayTools.x_hu_check(tiaoCardPatternCheckResult, huiNum);
+		if (tiaoRes == null || tiaoRes.canhu == false) {
 			return false;
 		}
 		CardPatternCheckResultVO bingCardPatternCheckResult = new CardPatternCheckResultVO(
 				Tile.getSortedHuaSePaiFromPai(winInfo.getAliveTile(), HuaSe.BING), tileUnitInfos, 0);
-		boolean bingRes = HunTilePlayTools.hu_check(bingCardPatternCheckResult, huiNum);
-		if (bingRes == false) {
+		CardPatternCheckResultVO bingRes = HunTilePlayTools.x_hu_check(bingCardPatternCheckResult, huiNum);
+		if (bingRes == null || bingRes.canhu == false) {
 			return false;
 		}
 		CardPatternCheckResultVO ziCardPatternCheckResult = new CardPatternCheckResultVO(
 				Tile.getSortedHuaSePaiFromPai(winInfo.getAliveTile(), HuaSe.ZI), tileUnitInfos, 0);
-		boolean ziRes = HunTilePlayTools.hu_check(ziCardPatternCheckResult, huiNum);
-		if (ziRes == false) {
+		CardPatternCheckResultVO ziRes = HunTilePlayTools.x_hu_check(ziCardPatternCheckResult, huiNum);
+		if (ziRes == null || ziRes.canhu == false) {
 			return false;
 		}
 		// 检测到这里表明至少用了癞子后每个花色都可以凑成对应的一句或者多句话。
-		int totalDuizi = wanCardPatternCheckResult.duiZiNum + tiaoCardPatternCheckResult.duiZiNum
-				+ bingCardPatternCheckResult.duiZiNum + ziCardPatternCheckResult.duiZiNum;
-		int	totalHunAll = tiaoCardPatternCheckResult.huiUsedNum + bingCardPatternCheckResult.huiUsedNum
-					+ ziCardPatternCheckResult.huiUsedNum+wanCardPatternCheckResult.huiUsedNum;
+		int totalDuizi = wanRes.duiZiNum + tiaoRes.duiZiNum + bingRes.duiZiNum + ziRes.duiZiNum;
+		int totalHunAll = wanRes.huiUsedNum + tiaoRes.huiUsedNum + bingRes.huiUsedNum + ziRes.huiUsedNum;
 		if (totalDuizi == 0) {// 没有将的情况
 			if (totalHunAll + 2 == huiNum) {// 还有两个会牌的话，可以胡牌
 				return true;
@@ -198,23 +196,39 @@ public class NormalWinType implements WinType {
 
 	public static void main(String[] args) {
 		byte[] pais = new byte[] { 0x01, 0x02, 0x03, 0x12, 0x12, 0x12, 0x21, 0x22, 0x23, 0x29, 0x29 };// 没有会牌
-		pais = new byte[] { 0x01, 0x02, 0x14, 0x12, 0x12, 0x12, 0x21, 0x22, 0x23, 0x29, 0x29 };// 1张会牌
-		pais = new byte[] { 0x01, 0x15, 0x14, 0x12, 0x12, 0x12, 0x21, 0x22, 0x23, 0x29, 0x29 };// 2张会牌
-		pais = new byte[] { 0x14, 0x15, 0x14, 0x12, 0x12, 0x12, 0x21, 0x22, 0x23, 0x29, 0x29 };// 3张会牌,缺花色
+																										// true
+		pais = new byte[] { 0x01, 0x02, 0x14, 0x12, 0x12, 0x12, 0x21, 0x22, 0x23, 0x29, 0x29 };// 1张会牌true
+		pais = new byte[] { 0x01, 0x15, 0x14, 0x12, 0x12, 0x12, 0x21, 0x22, 0x23, 0x29, 0x29 };// 2张会牌true
+		pais = new byte[] { 0x14, 0x15, 0x14, 0x12, 0x12, 0x12, 0x21, 0x22, 0x23, 0x29, 0x29 };// 3张会牌,缺花色false
 		pais = new byte[] { 0x14, 0x15, 0x14, 0x12, 0x12, 0x12, 0x21, 0x01, 0x23, 0x29, 0x29 };// 3张会牌
-		pais = new byte[] { 0x21, 0x22, 0x23, 0x22, 0x23, 0x14, 0x21, 0x22, 0x23, 0x29, 0x29 };// 清一色
-		pais = new byte[] { 0x21, 0x15, 0x23, 0x22, 0x23, 0x24, 0x27, 0x27, 0x27, 0x27, 0x28, 0x29, 0x14, 0x29 };// 清一色
-		pais = new byte[] { 0x01, 0x02, 0x03, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x07, 0x07, 0x07, 0x05, 0x05 }; // 清一色,
-																													// 带会,带枪
-		Tile tile=new Tile(pais);
+		pais = new byte[] { 0x21, 0x22, 0x23, 0x22, 0x23, 0x14, 0x21, 0x22, 0x23, 0x29, 0x29 };// 清一色true
+		// pais = new byte[] { 0x21, 0x15, 0x23, 0x22, 0x23, 0x24, 0x27, 0x27,
+		// 0x27, 0x27, 0x28, 0x29, 0x14, 0x29 };// 清一色true
+		// pais = new byte[] { 0x01, 0x02, 0x03, 0x02, 0x03, 0x04, 0x05, 0x06,
+		// 0x07, 0x07, 0x07, 0x07, 0x05, 0x05 }; // 清一色带会,带枪,true
+		// pais = new byte[] { 0x11, 0x15, 0x11, 0x12, 0x12, 0x12, 0x18, 0x18,
+		// 0x18, 0x15, 0x17, 0x17, 0x16, 0x15 }; // 清一色飘
+		// pais = new byte[] { 0x11, 0x11, 0x12, 0x12, 0x16, 0x16, 0x18, 0x18,
+		// 0x13, 0x13, 0x17, 0x17, 0x19, 0x19 };// 清一色七小对true
+		// pais = new byte[] { 0x01, 0x01, 0x01, 0x02, 0x02, 0x02, 0x07, 0x07,
+		// 0x07, 0x08, 0x08, 0x08, 0x06, 0x06 }; // 清一色穷true
+		// pais = new byte[] { 0x11, 0x11, 0x36, 0x36, 0x21, 0x21, 0x15, 0x31,
+		// 0x32, 0x15, 0x16, 0x16, 0x37, 0x37 };// 七小对true
+		pais = new byte[] { 0x11, 0x11, 0x36, 0x36, 0x21, 0x21, 0x31, 0x31, 0x32, 0x32, 0x16, 0x16, 0x37, 0x37 };// 七小对穷true
+		pais = new byte[] { 0x11, 0x15, 0x11, 0x02, 0x02, 0x02, 0x28, 0x28, 0x28, 0x14, 0x17, 0x17, 0x16, 0x15 };// 飘true
+		pais = new byte[] { 0x11, 0x11, 0x11, 0x02, 0x02, 0x02, 0x28, 0x28, 0x28, 0x17, 0x17, 0x17, 0x16, 0x16 };// 飘穷true
+		pais = new byte[] { 0x27, 0x27, 0x14, 0x32, 0x33, 0x15, 0x12, 0x13, 0x14, 0x12, 0x13, 0x14, 0x36, 0x36 };// 普通胡带会带枪false
+		pais = new byte[] { 0x11, 0x11, 0x11, 0x07, 0x08, 0x09, 0x33, 0x33, 0x33, 0x34, 0x34, 0x34, 0x21, 0x21 };// 穷胡true
+		Tile tile = new Tile(pais);
 		PlayerTiles playerTiles=new PlayerTiles();
 		playerTiles.setAliveTiles(tile);
 		WinInfo winInfo= WinInfo.fromPlayerTiles(playerTiles,(byte)0x14,false);
 		RuleInfo ruleInfo = new RuleInfo();
 		ruleInfo.setPlayRules(RuleInfo.parseRuleFromBitString("01111"));
 		ruleInfo.setFangKa(FangKa.ONE_SIXTEEN);
-		// NormalWinType winType = new NormalWinType();
-		QingYiSeWinType winType = new QingYiSeWinType();
+		NormalWinType winType = new NormalWinType();
+		// QingYiSeWinType winType = new QingYiSeWinType();
+		// QiDuiWinType winType = new QiDuiWinType();
 		System.out.println(winType.canWin(winInfo, ruleInfo));
 
 	}

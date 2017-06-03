@@ -82,6 +82,9 @@ public class HandlerHelper {
 		List<DisCardActionAndLocation> disCardActionAndLocation = new ArrayList<DisCardActionAndLocation>();
 		// 胡检测
 		for (PlayerLocation playerLocation : playerLocations) {
+			if (playerLocation == discardPlayLocation) {
+				continue;
+			}
 			boolean canWin = winActionType.canDo(roomContext.getGameContext(), playerLocation);
 			if (canWin) {
 				disCardActionAndLocation.add(new DisCardActionAndLocation(new ActionAndLocation(new Action(WIN, tile), playerLocation),HU_GROUP.getCode()));
@@ -89,6 +92,9 @@ public class HandlerHelper {
 		}
 		// 杠检测
 		for (PlayerLocation playerLocation : playerLocations) {
+			if (playerLocation == discardPlayLocation) {
+				continue;
+			}
 			CpgActionType cpgActionType = new CpgActionType(BUGANG_GROUP, null);
 			boolean canGang = cpgActionType.canDo(roomContext.getGameContext(), playerLocation);
 			if (canGang) {
@@ -98,6 +104,9 @@ public class HandlerHelper {
 		}
 		// 碰检测
 		for (PlayerLocation playerLocation : playerLocations) {
+			if (playerLocation == discardPlayLocation) {
+				continue;
+			}
 			CpgActionType cpgActionType = new CpgActionType(PENG_GROUP, null);
 			boolean canPeng = cpgActionType.canDo(roomContext.getGameContext(), playerLocation);
 			if (canPeng) {
@@ -145,7 +154,7 @@ public class HandlerHelper {
 		DrawActionType drawActionType = new DrawActionType();
 			drawActionType.doAction(roomContext.getGameContext(), playerLocation, new Action(drawActionType));
 			ProtocolModel drawTileProtocolModel = new ProtocolModel();
-			DrawCardRespModel drawCardRespModel = new DrawCardRespModel(playerLocation);
+		DrawCardRespModel drawCardRespModel = new DrawCardRespModel(roomContext, playerLocation);
 			drawTileProtocolModel.setCommandId(EventEnum.DRAW_TILE_RESP.getValue());
 			drawTileProtocolModel.setBody(JSON.toJSONString(drawCardRespModel));
 			HandlerHelper.noticeMsg2Players(roomContext, null, drawTileProtocolModel);
@@ -160,7 +169,7 @@ public class HandlerHelper {
 			drawBottomActionType.doAction(roomContext.getGameContext(), discardPlayLocation, new Action(BUGANG));
 		}
 		ProtocolModel cpgProtocolModel = new ProtocolModel();
-		DiscardRespModel discardRespModel = new DiscardRespModel(roomContext).getPlayView(discardPlayLocation);
+		DiscardRespModel discardRespModel = new DiscardRespModel(roomContext, discardPlayLocation);
 		cpgProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
 		cpgProtocolModel.setBody(JSON.toJSONString(discardRespModel));
 		HandlerHelper.noticeMsg2Players(roomContext, null, cpgProtocolModel);
@@ -176,7 +185,7 @@ public class HandlerHelper {
 			drawBottomActionType.doAction(roomContext.getGameContext(), discardPlayLocation, new Action(BUGANG));
 		}
 		ProtocolModel xfgProtocolModel = new ProtocolModel();
-		DiscardRespModel discardRespModel = new DiscardRespModel(roomContext).getPlayView(discardPlayLocation);
+		DiscardRespModel discardRespModel = new DiscardRespModel(roomContext, discardPlayLocation);
 		xfgProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
 		xfgProtocolModel.setBody(JSON.toJSONString(discardRespModel));
 		HandlerHelper.noticeMsg2Players(roomContext, null, xfgProtocolModel);
@@ -192,10 +201,10 @@ public class HandlerHelper {
 			DisCardActionAndLocation actionAndLocation=needPassOrDoActions.get(0);
 			if(actionAndLocation.getActionAndLocation().getLocation()==discardPlayLocation){
 				if(multimap.keys().size()==1){
-					doDiscardResp(roomContext);
+					doDiscardResp(roomContext, discardReqModel.getTile());
 				}else{
 					if(actionAndLocation.getTileGroupType()==discardReqModel.getTileGroupType()){
-						doDiscardResp(roomContext);
+						doDiscardResp(roomContext, discardReqModel.getTile());
 					}else{
 						removeNotChooseButHighLevelAction(needPassOrDoActions, new DisCardActionAndLocation(
 								new ActionAndLocation(null, discardPlayLocation), discardReqModel.getTileGroupType()));
@@ -206,7 +215,7 @@ public class HandlerHelper {
 			}
 			roomContext.getGameContext().getDiscardContext().releaseRemainVoter();
 			if (roomContext.getGameContext().getDiscardContext().getRemainVoter() == 0) {
-				doDiscardResp(roomContext);
+				doDiscardResp(roomContext, discardReqModel.getTile());
 			}
 		} else {
 			HandlerHelper.drawTile2Player(roomContext,
@@ -235,29 +244,34 @@ public class HandlerHelper {
 
 	}
 
-	private static void doDiscardResp(RoomContext roomContext) throws IllegalActionException {
+	private static void doDiscardResp(RoomContext roomContext, Tile tile) throws IllegalActionException {
 		List<DisCardActionAndLocation> needPassOrDoActions = roomContext.getGameContext().getDiscardContext()
 				.getNeedPassOrDoAction();
 		DisCardActionAndLocation disCardActionAndLocation = needPassOrDoActions.get(0);
 		if (disCardActionAndLocation.getTileGroupType() == TileGroupType.CHI_GROUP.getCode()) {
 			HandlerHelper.cpgProcess2Players(roomContext, PENG_GROUP,
-					new Action(CHI, disCardActionAndLocation.getActionAndLocation().getAction().getTile()),
+					new Action(CHI,
+							Tile.addTile(tile, disCardActionAndLocation.getActionAndLocation().getAction().getTile())),
 					disCardActionAndLocation.getActionAndLocation().getLocation());
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.PENG_GROUP.getCode()) {
 			HandlerHelper.cpgProcess2Players(roomContext, PENG_GROUP,
-					new Action(PENG, disCardActionAndLocation.getActionAndLocation().getAction().getTile()),
+					new Action(PENG,
+							Tile.addTile(tile, disCardActionAndLocation.getActionAndLocation().getAction().getTile())),
 					disCardActionAndLocation.getActionAndLocation().getLocation());
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.BUGANG_GROUP.getCode()) {
 			HandlerHelper.cpgProcess2Players(roomContext, PENG_GROUP,
-					new Action(BUGANG, disCardActionAndLocation.getActionAndLocation().getAction().getTile()),
+					new Action(BUGANG,
+							Tile.addTile(tile, disCardActionAndLocation.getActionAndLocation().getAction().getTile())),
 					disCardActionAndLocation.getActionAndLocation().getLocation());
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.XUAN_FENG_GANG_ZFB_GROUP.getCode()) {
 			HandlerHelper.xfgProcess2Players(roomContext, XUAN_FENG_GANG_ZFB_GROUP,
-					new Action(ZIPAI, disCardActionAndLocation.getActionAndLocation().getAction().getTile()),
+					new Action(ZIPAI,
+							Tile.addTile(tile, disCardActionAndLocation.getActionAndLocation().getAction().getTile())),
 					disCardActionAndLocation.getActionAndLocation().getLocation());
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.XUAN_FENG_GANG_DNXB_GROUP.getCode()) {
 			HandlerHelper.xfgProcess2Players(roomContext, XUAN_FENG_GANG_DNXB_GROUP,
-					new Action(ZIPAI, disCardActionAndLocation.getActionAndLocation().getAction().getTile()),
+					new Action(ZIPAI,
+							Tile.addTile(tile, disCardActionAndLocation.getActionAndLocation().getAction().getTile())),
 					disCardActionAndLocation.getActionAndLocation().getLocation());
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.HU_GROUP.getCode()) {
 			roomContext.getGameContext().getDiscardContext().clear();
@@ -266,8 +280,8 @@ public class HandlerHelper {
 					disCardActionAndLocation.getActionAndLocation().getLocation(),
 					new Action(WIN, disCardActionAndLocation.getActionAndLocation().getAction().getTile()));
 			ProtocolModel winProtocolModel = new ProtocolModel();
-			DiscardRespModel discardRespModel = new DiscardRespModel(roomContext)
-					.getPlayView(disCardActionAndLocation.getActionAndLocation().getLocation());
+			DiscardRespModel discardRespModel = new DiscardRespModel(roomContext,
+					disCardActionAndLocation.getActionAndLocation().getLocation());
 			winProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
 			winProtocolModel.setBody(JSON.toJSONString(discardRespModel));
 			HandlerHelper.noticeMsg2Players(roomContext, null, winProtocolModel);

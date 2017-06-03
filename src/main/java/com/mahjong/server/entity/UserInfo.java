@@ -2,7 +2,7 @@ package com.mahjong.server.entity;
 
 import java.util.Date;
 
-public class UserInfo {
+public class UserInfo implements Cloneable {
     private Integer id;
 
     private String nickName;
@@ -163,7 +163,6 @@ public class UserInfo {
 		this.lastLoginTimeStr = lastLoginTimeStr;
 	}
 	
-
 	@Override
 	public UserInfo clone() {
 		try {

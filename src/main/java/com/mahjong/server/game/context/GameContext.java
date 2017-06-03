@@ -53,6 +53,9 @@ public class GameContext {
 
 
 	public PlayerLocation getZhuangLocation() {
+		if (gameResult != null) {
+			zhuangLocation = gameResult.getWinnerLocation();
+		}
 		return zhuangLocation;
 	}
 
