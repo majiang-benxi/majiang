@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import com.mahjong.server.game.action.AbstractActionType;
+ import com.mahjong.server.game.action.AbstractActionType;
 import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.ActionAndLocation;
 import com.mahjong.server.game.action.ActionType;
@@ -116,6 +116,7 @@ public class CpgActionType extends AbstractActionType {
 				location.getRelationOf(context.getLastActionLocation()),
 				Tile.addTile(tile, gotTile));
 		playerInfo.getTileGroups().add(group);
+		playerInfo.setDiscardAuth(true);
 		context.getLocalDoneActions().add(new ActionAndLocation(new Action(CHI, tile), location));// 存吃和碰这里没啥区别
 
 	}

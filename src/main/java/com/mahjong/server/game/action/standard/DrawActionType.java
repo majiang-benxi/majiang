@@ -9,6 +9,7 @@ import com.mahjong.server.game.action.ActionAndLocation;
 import com.mahjong.server.game.context.GameContext;
 import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.enums.PlayerLocation.Relation;
+import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.Tile;
 
 /**
@@ -48,8 +49,11 @@ public class DrawActionType extends AbstractActionType {
 	@Override
 	protected void doLegalAction(GameContext context, PlayerLocation location, Tile tile) {
 		Tile drawTile = context.getTable().draw(1);
-		context.getTable().getPlayerByLocation(location)._getSortAliveTiles().addTile(drawTile);
-		context.getTable().getPlayerByLocation(location).setLastDrawedTile(drawTile);
+		PlayerInfo playerInfo=context.getTable().getPlayerByLocation(location);
+		playerInfo._getSortAliveTiles().addTile(drawTile);
+		playerInfo.setLastDrawedTile(drawTile);
+		playerInfo.setDiscardAuth(true);
+		context.getTable().resetPlayersLastTile(location);
 		context.getLocalDoneActions().add(new ActionAndLocation(new Action(DRAW, drawTile), location));
 	}
 

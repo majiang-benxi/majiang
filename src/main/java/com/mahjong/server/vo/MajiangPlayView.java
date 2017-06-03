@@ -17,7 +17,6 @@ public class MajiangPlayView {
 	private int curUserLocation;
 	private int hui1;
 	private int hui2;
-
 	public String getRuleStrategy() {
 		return ruleStrategy;
 	}

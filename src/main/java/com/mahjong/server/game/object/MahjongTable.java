@@ -104,7 +104,15 @@ public class MahjongTable {
 	public void setFanhui(byte fanhui) {
 		this.fanhui = fanhui;
 	}
-
+	public void resetPlayersLastTile(PlayerLocation excludePlayerLocation){
+		for (PlayerInfo playerInfo : playerInfos.values()) {
+			if(playerInfo.getUserLocation()==excludePlayerLocation.getCode()){
+				continue;
+			}else{
+				playerInfo.resetLastTile();
+			}
+		}
+	}
 	public void printAllPlayTiles() {
 		try {
 		for (Entry<PlayerLocation, PlayerInfo> entry : playerInfos.entrySet()) {

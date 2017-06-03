@@ -7,6 +7,7 @@ import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.ActionAndLocation;
 import com.mahjong.server.game.context.GameContext;
 import com.mahjong.server.game.enums.PlayerLocation;
+import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.Tile;
 
 /**
@@ -34,8 +35,11 @@ public class DrawBottomActionType extends DrawActionType {
 	@Override
 	protected void doLegalAction(GameContext context, PlayerLocation location, Tile tile) {
 		Tile drawBottomTile = context.getTable().drawBottom(1);
-		context.getTable().getPlayerByLocation(location)._getSortAliveTiles().addTile(drawBottomTile);
-		context.getTable().getPlayerByLocation(location).setLastDrawedTile(drawBottomTile);
+		PlayerInfo playerInfo = context.getTable().getPlayerByLocation(location);
+		playerInfo.setDiscardAuth(true);
+		playerInfo._getSortAliveTiles().addTile(drawBottomTile);
+		playerInfo.setLastDrawedTile(drawBottomTile);
+		context.getTable().resetPlayersLastTile(location);
 		context.getLocalDoneActions().add(new ActionAndLocation(new Action(DRAW_BOTTOM, drawBottomTile), location));
 
 	}

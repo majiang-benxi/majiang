@@ -26,12 +26,19 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	 */
 	private Tile discardedTiles = new Tile();
 	/**
+	 * 最后打的一张牌
+	 */
+	private Tile lastDiscardTile= new Tile();//上一个玩家打的牌
+
+	/**
 	 * 是否胡牌。
 	 */
 	private boolean isHu = false;
 	
 	private int curScore;// 分数
-
+	private boolean zhuang=false;
+	private boolean offline=false;
+	private boolean discardAuth=false;//默认都没有打牌权限，只有吃碰杠和摸牌之后才可以
 	public UserInfo getUserInfo() {
 		return userInfo;
 	}
@@ -113,6 +120,30 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	}
 
 
+	public boolean isZhuang() {
+		return zhuang;
+	}
+
+	public void setZhuang(boolean zhuang) {
+		this.zhuang = zhuang;
+	}
+
+	public boolean isOffline() {
+		return offline;
+	}
+
+	public void setOffline(boolean offline) {
+		this.offline = offline;
+	}
+
+	public Tile getLastDiscardTile() {
+		return lastDiscardTile;
+	}
+
+	public void setLastDiscardTile(Tile lastDiscardTile) {
+		this.lastDiscardTile = lastDiscardTile;
+	}
+
 	/**
 	 * 获取其他玩家的视图。不要以get开头
 	 */
@@ -130,9 +161,24 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 		}
 		return playerInfo;
 	}
+	
+	public boolean isDiscardAuth() {
+		return discardAuth;
+	}
 
+	public void setDiscardAuth(boolean discardAuth) {
+		this.discardAuth = discardAuth;
+	}
+	public void resetLastTile() {
+		this.lastDiscardTile=new Tile();
+		this.lastDrawedTile=new Tile();
+
+	}
 	public static void main(String[] args) {
 		PlayerInfo playerInfo = new PlayerInfo();
 		playerInfo.clone();
 	}
+
+	
+	
 }
