@@ -17,7 +17,6 @@ public class HouseContext {
 	public static ConcurrentHashMap<Integer, RoomContext> rommList = new ConcurrentHashMap<Integer, RoomContext>();
 	
 	public static ConcurrentHashMap<String, RoomContext> weixinIdToRoom = new ConcurrentHashMap<String, RoomContext>();
-
 	
 	public static ConcurrentHashMap<String, UserInfo> weixinIdToUserInfo = new ConcurrentHashMap<String, UserInfo>();
 	
@@ -59,6 +58,7 @@ public class HouseContext {
 	    creatorPlayer.setCurScore(1000);
 	    creatorPlayer.setUserLocation(PlayerLocation.EAST.getCode());
 	    table.setPlayer(PlayerLocation.EAST, creatorPlayer);
+	    creatorPlayer.setZhuang(true);
 	    GameStrategy gameStrategy = new GameStrategy();
 	    RuleInfo ruleInfo = new RuleInfo();
 		ruleInfo.setPlayRules(RuleInfo.parseRuleFromBitString(ruleStr));
