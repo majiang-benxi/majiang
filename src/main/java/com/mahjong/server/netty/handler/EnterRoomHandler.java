@@ -105,9 +105,8 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 										winProtocolModel.setBody(JSON.toJSONString(winTileRoomRespModel));
 										HandlerHelper.noticeMsg2Players(roomContex, null, winProtocolModel);
 									}
-									return;
 								}
-
+								return;
 							} else {
 								enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "加入房间失败，房间已满！", null);
 							}
@@ -116,7 +115,7 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 						}
 
 					} else {
-						enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "加入房间失败，您还没有登录！", null);
+						enterRoomRespModel = new EnterRoomRespModel(weixinId, true, "重新加入房间", roomContex);
 					}
 				}
 				protocolModel.setCommandId(EventEnum.ROOM_ENTER_RESP.getValue());

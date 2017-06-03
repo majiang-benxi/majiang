@@ -128,7 +128,7 @@ public class MajiangPlayView {
 		byte hui2 = 6;
 		majiangPlayView.setHui1(hui1);
 		majiangPlayView.setHui2(hui2);
-		majiangPlayView.setCurUserLocation(1);
+		majiangPlayView.setCurUserLocation(2);
 		System.out.println(JSON.toJSONString(majiangPlayView));
 	}
 }

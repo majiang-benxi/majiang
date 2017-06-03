@@ -14,6 +14,7 @@ import static com.mahjong.server.game.object.TileGroupType.XUAN_FENG_GANG_ZFB_GR
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -57,16 +58,25 @@ public class HandlerHelper {
 	public static void noticeMsg2Players(RoomContext roomContex, String ignoreWinXinId, ProtocolModel protocolModel) {
 		for (PlayerInfo entry : roomContex.getGameContext().getTable().getPlayerInfos().values()) {
 			UserInfo user = entry.getUserInfo();
-			if (user != null && StringUtils.isNotBlank(ignoreWinXinId) && user.getWeixinMark().equals(ignoreWinXinId)) {
-				continue;
-			} else {
-				String weixinId = user.getWeixinMark();
-				ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinId);
-				userCtx.writeAndFlush(protocolModel);
+			if (user != null) {
+				if (StringUtils.isNotBlank(ignoreWinXinId) && user.getWeixinMark().equals(ignoreWinXinId)) {
+					continue;
+				} else {
+					String weixinId = user.getWeixinMark();
+					ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinId);
+					userCtx.writeAndFlush(protocolModel);
+				}
 			}
 		}
 	}
-
+	public static void noticeMsg2Player(RoomContext roomContex, PlayerInfo playerInfo, ProtocolModel protocolModel) {
+			UserInfo user = playerInfo.getUserInfo();
+			if (user != null) {
+					String weixinId = user.getWeixinMark();
+					ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinId);
+					userCtx.writeAndFlush(protocolModel);
+		}
+	}
 	/**
 	 * 获取打出一张牌之后其他玩家可以做的操作
 	 * 
@@ -87,7 +97,8 @@ public class HandlerHelper {
 			}
 			boolean canWin = winActionType.canDo(roomContext.getGameContext(), playerLocation);
 			if (canWin) {
-				disCardActionAndLocation.add(new DisCardActionAndLocation(new ActionAndLocation(new Action(WIN, tile), playerLocation),HU_GROUP.getCode()));
+				disCardActionAndLocation.add(new DisCardActionAndLocation(
+						new ActionAndLocation(new Action(WIN, tile), playerLocation), HU_GROUP.getCode()));
 			}
 		}
 		// 杠检测
@@ -110,7 +121,8 @@ public class HandlerHelper {
 			CpgActionType cpgActionType = new CpgActionType(PENG_GROUP, null);
 			boolean canPeng = cpgActionType.canDo(roomContext.getGameContext(), playerLocation);
 			if (canPeng) {
-				disCardActionAndLocation.add(new DisCardActionAndLocation(new ActionAndLocation(new Action(PENG, tile), playerLocation),PENG_GROUP.getCode()));
+				disCardActionAndLocation.add(new DisCardActionAndLocation(
+						new ActionAndLocation(new Action(PENG, tile), playerLocation), PENG_GROUP.getCode()));
 			}
 		}
 		// 吃检测
@@ -118,8 +130,9 @@ public class HandlerHelper {
 		boolean canChi = cpgActionType.canDo(roomContext.getGameContext(),
 				discardPlayLocation.getLocationOf(Relation.NEXT));
 		if (canChi) {
-			disCardActionAndLocation.add(
-					new DisCardActionAndLocation(new ActionAndLocation(new Action(CHI, tile), discardPlayLocation.getLocationOf(Relation.NEXT)),CHI_GROUP.getCode()));
+			disCardActionAndLocation.add(new DisCardActionAndLocation(
+					new ActionAndLocation(new Action(CHI, tile), discardPlayLocation.getLocationOf(Relation.NEXT)),
+					CHI_GROUP.getCode()));
 		}
 		return disCardActionAndLocation;
 	}
@@ -132,8 +145,8 @@ public class HandlerHelper {
 					new ArrayList<Action>(multiMap.get(playerLocation)));
 			canDoProtocolModel.setCommandId(EventEnum.ASK_CHOICE_RESP.getValue());
 			canDoProtocolModel.setBody(JSON.toJSONString(askChoiceRespModel));
-			String weixinMarkId = roomContext.getGameContext().getTable()
-					.getPlayerByLocation(playerLocation).getUserInfo().getWeixinMark();
+			String weixinMarkId = roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation)
+					.getUserInfo().getWeixinMark();
 			ChannelHandlerContext ctx = ClientSession.sessionMap.get(weixinMarkId);
 			ctx.writeAndFlush(canDoProtocolModel);
 		}
@@ -152,28 +165,35 @@ public class HandlerHelper {
 	public static void drawTile2Player(RoomContext roomContext, PlayerLocation playerLocation)
 			throws IllegalActionException {
 		DrawActionType drawActionType = new DrawActionType();
-			drawActionType.doAction(roomContext.getGameContext(), playerLocation, new Action(drawActionType));
+		drawActionType.doAction(roomContext.getGameContext(), playerLocation, new Action(drawActionType));
+		for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext()
+				.getTable().getPlayerInfos()
+				.entrySet()) {
 			ProtocolModel drawTileProtocolModel = new ProtocolModel();
-		DrawCardRespModel drawCardRespModel = new DrawCardRespModel(roomContext, playerLocation);
+			DrawCardRespModel drawCardRespModel = new DrawCardRespModel(roomContext, entry.getKey());
 			drawTileProtocolModel.setCommandId(EventEnum.DRAW_TILE_RESP.getValue());
 			drawTileProtocolModel.setBody(JSON.toJSONString(drawCardRespModel));
-			HandlerHelper.noticeMsg2Players(roomContext, null, drawTileProtocolModel);
+			HandlerHelper.noticeMsg2Player(roomContext,entry.getValue(),drawTileProtocolModel);
+		}
 	}
 
-	public static void cpgProcess2Players(RoomContext roomContext, TileGroupType tileGroupType,
-			Action action, PlayerLocation discardPlayLocation) throws IllegalActionException {
+	public static void cpgProcess2Players(RoomContext roomContext, TileGroupType tileGroupType, Action action,
+			PlayerLocation discardPlayLocation) throws IllegalActionException {
 		CpgActionType cpgActionType = new CpgActionType(tileGroupType);
 		cpgActionType.doAction(roomContext.getGameContext(), discardPlayLocation, action);
 		if (tileGroupType == TileGroupType.BUGANG_GROUP) {
 			DrawBottomActionType drawBottomActionType = new DrawBottomActionType();
 			drawBottomActionType.doAction(roomContext.getGameContext(), discardPlayLocation, new Action(BUGANG));
 		}
-		ProtocolModel cpgProtocolModel = new ProtocolModel();
-		DiscardRespModel discardRespModel = new DiscardRespModel(roomContext, discardPlayLocation);
-		cpgProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
-		cpgProtocolModel.setBody(JSON.toJSONString(discardRespModel));
-		HandlerHelper.noticeMsg2Players(roomContext, null, cpgProtocolModel);
-
+		for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext()
+				.getTable().getPlayerInfos()
+				.entrySet()) {
+			ProtocolModel cpgProtocolModel = new ProtocolModel();
+			DiscardRespModel discardRespModel = new DiscardRespModel(roomContext, entry.getKey());
+			cpgProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
+			cpgProtocolModel.setBody(JSON.toJSONString(discardRespModel));
+			HandlerHelper.noticeMsg2Player(roomContext,entry.getValue(),cpgProtocolModel);
+		}
 	}
 
 	public static void xfgProcess2Players(RoomContext roomContext, TileGroupType xuanFengGangGroup, Action action,
@@ -197,15 +217,15 @@ public class HandlerHelper {
 		List<DisCardActionAndLocation> needPassOrDoActions = roomContext.getGameContext().getDiscardContext()
 				.getNeedPassOrDoAction();
 		if (!needPassOrDoActions.isEmpty()) {
-			Multimap<PlayerLocation, Action> multimap=groupByActionByLocation(needPassOrDoActions);
-			DisCardActionAndLocation actionAndLocation=needPassOrDoActions.get(0);
-			if(actionAndLocation.getActionAndLocation().getLocation()==discardPlayLocation){
-				if(multimap.keys().size()==1){
+			Multimap<PlayerLocation, Action> multimap = groupByActionByLocation(needPassOrDoActions);
+			DisCardActionAndLocation actionAndLocation = needPassOrDoActions.get(0);
+			if (actionAndLocation.getActionAndLocation().getLocation() == discardPlayLocation) {
+				if (multimap.keys().size() == 1) {
 					doDiscardResp(roomContext, discardReqModel.getTile());
-				}else{
-					if(actionAndLocation.getTileGroupType()==discardReqModel.getTileGroupType()){
+				} else {
+					if (actionAndLocation.getTileGroupType() == discardReqModel.getTileGroupType()) {
 						doDiscardResp(roomContext, discardReqModel.getTile());
-					}else{
+					} else {
 						removeNotChooseButHighLevelAction(needPassOrDoActions, new DisCardActionAndLocation(
 								new ActionAndLocation(null, discardPlayLocation), discardReqModel.getTileGroupType()));
 					}
@@ -218,10 +238,9 @@ public class HandlerHelper {
 				doDiscardResp(roomContext, discardReqModel.getTile());
 			}
 		} else {
-			HandlerHelper.drawTile2Player(roomContext,
-					discardPlayLocation.getLocationOf(Relation.NEXT));
+			HandlerHelper.drawTile2Player(roomContext, discardPlayLocation.getLocationOf(Relation.NEXT));
 		}
-		
+
 	}
 
 	private static void removeNotChooseButHighLevelAction(List<DisCardActionAndLocation> needPassOrDoActions,
@@ -234,7 +253,7 @@ public class HandlerHelper {
 			} else {
 				if (needPassOrDoActions.get(i).getTileGroupType() == actionAndLocation.getTileGroupType()) {
 					currentIndex = i;
-				}else{
+				} else {
 					if (i < currentIndex) {
 						needPassOrDoActions.remove(i);// 移除优先级高的，用户却没有选择的
 					}
@@ -251,27 +270,27 @@ public class HandlerHelper {
 		if (disCardActionAndLocation.getTileGroupType() == TileGroupType.CHI_GROUP.getCode()) {
 			HandlerHelper.cpgProcess2Players(roomContext, CHI_GROUP,
 					new Action(CHI,
-							Tile.addTile(tile, disCardActionAndLocation.getActionAndLocation().getAction().getTile())),
+							tile),
 					disCardActionAndLocation.getActionAndLocation().getLocation());
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.PENG_GROUP.getCode()) {
 			HandlerHelper.cpgProcess2Players(roomContext, PENG_GROUP,
 					new Action(PENG,
-							Tile.addTile(tile, disCardActionAndLocation.getActionAndLocation().getAction().getTile())),
+							tile),
 					disCardActionAndLocation.getActionAndLocation().getLocation());
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.BUGANG_GROUP.getCode()) {
 			HandlerHelper.cpgProcess2Players(roomContext, BUGANG_GROUP,
 					new Action(BUGANG,
-							Tile.addTile(tile, disCardActionAndLocation.getActionAndLocation().getAction().getTile())),
+							tile),
 					disCardActionAndLocation.getActionAndLocation().getLocation());
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.XUAN_FENG_GANG_ZFB_GROUP.getCode()) {
 			HandlerHelper.xfgProcess2Players(roomContext, XUAN_FENG_GANG_ZFB_GROUP,
 					new Action(ZIPAI,
-							Tile.addTile(tile, disCardActionAndLocation.getActionAndLocation().getAction().getTile())),
+							tile),
 					disCardActionAndLocation.getActionAndLocation().getLocation());
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.XUAN_FENG_GANG_DNXB_GROUP.getCode()) {
 			HandlerHelper.xfgProcess2Players(roomContext, XUAN_FENG_GANG_DNXB_GROUP,
 					new Action(ZIPAI,
-							Tile.addTile(tile, disCardActionAndLocation.getActionAndLocation().getAction().getTile())),
+							tile),
 					disCardActionAndLocation.getActionAndLocation().getLocation());
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.HU_GROUP.getCode()) {
 			roomContext.getGameContext().getDiscardContext().clear();
@@ -289,10 +308,10 @@ public class HandlerHelper {
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.PASS_GROUP.getCode()) {
 			ActionAndLocation lastActionAndLocation = roomContext.getGameContext().getLastActionAndLocation();
 			roomContext.getGameContext().getDiscardContext().clear();
-				// 执行发牌
+			// 执行发牌
 			HandlerHelper.drawTile2Player(roomContext,
-						lastActionAndLocation.getLocation().getLocationOf(Relation.NEXT));
-			}
+					lastActionAndLocation.getLocation().getLocationOf(Relation.NEXT));
 		}
+	}
 
 }

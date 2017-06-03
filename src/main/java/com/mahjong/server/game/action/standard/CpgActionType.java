@@ -117,7 +117,7 @@ public class CpgActionType extends AbstractActionType {
 				Tile.addTile(tile, gotTile));
 		playerInfo.getTileGroups().add(group);
 		playerInfo.setDiscardAuth(true);
-		context.getLocalDoneActions().add(new ActionAndLocation(new Action(CHI, tile), location));// 存吃和碰这里没啥区别
+		context.getLocalDoneActions().add(new ActionAndLocation(new Action(CHI, Tile.addTile(tile, gotTile)), location));// 存吃和碰这里没啥区别
 
 	}
 
