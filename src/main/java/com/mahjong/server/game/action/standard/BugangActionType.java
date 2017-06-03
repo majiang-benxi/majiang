@@ -40,7 +40,7 @@ public class BugangActionType extends AbstractActionType {
 	protected void doLegalAction(GameContext context, PlayerLocation location,
 			Tile tile) {
 		PlayerInfo playerInfo = context.getTable().getPlayerByLocation(location);
-
+		playerInfo.setDiscardAuth(true);
 		TileGroup group = findLegalPengGroup(playerInfo, tile);
 		if (group == null)
 			// tiles不合法，抛异常，因为调用此方法时应该确保是合法的

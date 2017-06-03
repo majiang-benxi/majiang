@@ -180,7 +180,7 @@ public class HandlerHelper {
 			PlayerLocation discardPlayLocation) throws IllegalActionException {
 		ZiPaiActionType ziPaiActionType = new ZiPaiActionType();
 		ziPaiActionType.doAction(roomContext.getGameContext(), discardPlayLocation, action);
-		if (xuanFengGangGroup == TileGroupType.XUAN_FENG_GANG_ZFB_GROUP) {
+		if (xuanFengGangGroup != TileGroupType.XUAN_FENG_GANG_ZFB_GROUP) {
 			DrawBottomActionType drawBottomActionType = new DrawBottomActionType();
 			drawBottomActionType.doAction(roomContext.getGameContext(), discardPlayLocation, new Action(BUGANG));
 		}
@@ -249,7 +249,7 @@ public class HandlerHelper {
 				.getNeedPassOrDoAction();
 		DisCardActionAndLocation disCardActionAndLocation = needPassOrDoActions.get(0);
 		if (disCardActionAndLocation.getTileGroupType() == TileGroupType.CHI_GROUP.getCode()) {
-			HandlerHelper.cpgProcess2Players(roomContext, PENG_GROUP,
+			HandlerHelper.cpgProcess2Players(roomContext, CHI_GROUP,
 					new Action(CHI,
 							Tile.addTile(tile, disCardActionAndLocation.getActionAndLocation().getAction().getTile())),
 					disCardActionAndLocation.getActionAndLocation().getLocation());
@@ -259,7 +259,7 @@ public class HandlerHelper {
 							Tile.addTile(tile, disCardActionAndLocation.getActionAndLocation().getAction().getTile())),
 					disCardActionAndLocation.getActionAndLocation().getLocation());
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.BUGANG_GROUP.getCode()) {
-			HandlerHelper.cpgProcess2Players(roomContext, PENG_GROUP,
+			HandlerHelper.cpgProcess2Players(roomContext, BUGANG_GROUP,
 					new Action(BUGANG,
 							Tile.addTile(tile, disCardActionAndLocation.getActionAndLocation().getAction().getTile())),
 					disCardActionAndLocation.getActionAndLocation().getLocation());
