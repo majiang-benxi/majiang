@@ -1,6 +1,7 @@
 package com.mahjong.server.game.context;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -18,6 +19,8 @@ public class RoomContext {
 	 * 房间状态
 	 */
 	private RoomStatus roomStatus;
+	
+	private Date createTime;
 
 	/**
 	 * 游戏上下文
@@ -86,6 +89,14 @@ public class RoomContext {
 
 	public void setDisagreeUserNames(List<String> disagreeUserNames) {
 		this.disagreeUserNames = disagreeUserNames;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
 }

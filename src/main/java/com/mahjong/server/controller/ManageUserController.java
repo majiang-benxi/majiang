@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,9 +20,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mahjong.server.entity.ManageUser;
+import com.mahjong.server.entity.RoomCartChange;
 import com.mahjong.server.service.DBService;
 import com.mahjong.server.util.DateUtil;
 import com.mahjong.server.util.MD5Util;
+import com.mahjong.server.util.ManageUserSessionUtil;
 
 @Controller
 @RequestMapping(value = "/user")
@@ -52,6 +55,9 @@ public class ManageUserController {
 		if(manageUser != null && MD5Util.checkPassword(passwd, manageUser.getUpasswd())){
 			modelAndView.addObject("manageUser", manageUser);
 			modelAndView.setViewName("index");
+			Cookie uidCookie = new Cookie("manageuid",ManageUserSessionUtil.createManegeSession(manageUser));
+			response.addCookie(uidCookie);
+			
 		}else{
 			modelAndView.addObject("errorpassw", 1);
 			modelAndView.setViewName("login");
@@ -234,12 +240,39 @@ public class ManageUserController {
 		
 		String uid = request.getParameter("usid");
 		String roomcartEditNum = request.getParameter("roomcartEditNum");
+		ManageUser muser = dbService.selectManageUserByID(Integer.parseInt(uid));
+		if(muser.getUserLevel()==2){
+			return null;
+		}
 		
 		ManageUser manageUser = new ManageUser();
 		manageUser.setId(Integer.parseInt(uid));
 		manageUser.setCardHold(Integer.parseInt(roomcartEditNum));
 		
 		dbService.updateManageUserByID(manageUser);
+		
+		Integer changeNum = (Integer.parseInt(roomcartEditNum) - (muser.getCardHold()==null?0:muser.getCardHold()));
+		
+		String value = ManageUserSessionUtil.getCookieValue(request.getCookies(), "manageuid");
+		ManageUser opemanageUser = ManageUserSessionUtil.getManegeSession(value);
+		
+		
+		RoomCartChange roomCartChange = new RoomCartChange();
+		roomCartChange.setChangeNum(changeNum);
+		roomCartChange.setChangeTime(new Date());
+		roomCartChange.setIsSuccess((byte) 1);
+		if(opemanageUser!=null){
+			roomCartChange.setManageName(opemanageUser.getNickName());
+			roomCartChange.setManageUserId(opemanageUser.getId());
+		}else{
+			roomCartChange.setManageName("someroot");
+			roomCartChange.setManageUserId(0);
+		}
+		
+		roomCartChange.setUserId(Integer.parseInt(uid));
+		roomCartChange.setUserName(muser.getNickName());
+		
+		dbService.insertRoomCartChange(roomCartChange);
 		
 		return "success";
 		

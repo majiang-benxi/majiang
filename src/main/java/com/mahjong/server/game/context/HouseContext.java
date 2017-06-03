@@ -1,6 +1,7 @@
 package com.mahjong.server.game.context;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.game.enums.PlayerLocation;
@@ -16,6 +17,19 @@ public class HouseContext {
 	public static ConcurrentHashMap<Integer, RoomContext> rommList = new ConcurrentHashMap<Integer, RoomContext>();
 	
 	public static ConcurrentHashMap<String, RoomContext> weixinIdToRoom = new ConcurrentHashMap<String, RoomContext>();
+	
+	public static ConcurrentHashMap<String, UserInfo> weixinIdToUserInfo = new ConcurrentHashMap<String, UserInfo>();
+	
+	
+	public static AtomicInteger onlineRoomNum = new AtomicInteger(0);
+	public static AtomicInteger playRoomNum = new AtomicInteger(0);
+	public static AtomicInteger waitRoomNum = new AtomicInteger(0);
+	
+	public static AtomicInteger onlineUserNum = new AtomicInteger(0);
+	public static AtomicInteger playUserNum = new AtomicInteger(0);
+	public static AtomicInteger waitUserNum = new AtomicInteger(0);
+	
+	
 
 	public RoomContext getRoomByNum(Integer roomNum) {
 		return rommList.get(roomNum);

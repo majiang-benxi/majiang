@@ -96,14 +96,20 @@
 			<dt><i class="Hui-iconfont">&#xe61a;</i> 实时数据<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
 			<dd>
 				<ul>
-					<li><a _href="charts-1.html" href="javascript:void(0)">统计信息</a></li>
-					<li><a _href="member-list.html" href="javascript:;">在线房间</a></li>
-					<li><a _href="charts-2.html" href="javascript:void(0)">在线用户</a></li>
+					<li><a _href="/mvc/statistics/statistics" href="javascript:void(0)">统计信息</a></li>
+					<li><a _href="/mvc/statistics/getRoomOnLineInfo" href="javascript:;">在线房间</a></li>
+					<li><a _href="/mvc/statistics/getonlineuserinfo" href="javascript:void(0)">在线用户</a></li>
 				</ul>
 			</dd>
 		</dl>
 		<dl id="menu-tongji">
 			<dt><i class="Hui-iconfont">&#xe61a;</i> 营收统计</dt>
+			<dd>
+				<ul>
+					<li><a _href="/mvc/statistics/statistics" href="javascript:void(0)">充卡记录</a></li>
+					<li><a _href="/mvc/statistics/getRoomOnLineInfo" href="javascript:;">总消费情况</a></li>
+				</ul>
+			</dd>
 		</dl>
 		
 	
