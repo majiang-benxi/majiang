@@ -162,4 +162,15 @@ public class UserInfo {
 	public void setLastLoginTimeStr(String lastLoginTimeStr) {
 		this.lastLoginTimeStr = lastLoginTimeStr;
 	}
+	
+
+	@Override
+	public UserInfo clone() {
+		try {
+			return (UserInfo) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

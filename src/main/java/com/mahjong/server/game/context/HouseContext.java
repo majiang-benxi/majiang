@@ -67,7 +67,7 @@ public class HouseContext {
 	    gameStrategy.setRuleInfo(ruleInfo);
 	   
 	    GameContext gameContext = new GameContext(table, gameStrategy);
-	   
+		gameContext.setZhuangLocation(PlayerLocation.EAST);// 创建房间的人为庄
 	    roomContext.setGameContext(gameContext);
 	    roomContext.setRoomStatus(RoomStatus.WAIT_FOR_READY);
 	   
