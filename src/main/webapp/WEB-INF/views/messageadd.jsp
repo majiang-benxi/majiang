@@ -26,7 +26,7 @@
 </head>
 <body>
 <div class="pd-20">
-	<div method="post" class="form form-horizontal" id="form-message-add">
+	<div  class="form form-horizontal" id="form-message-add">
 	
 		<div class="row cl">
 			<label class="form-label col-3"><span class="c-red">*</span>消息类型：</label>
@@ -94,9 +94,9 @@
 function messageTypeChecked(){
 	var ocj=$("#messageType option:selected")
 	if(ocj.val()==1){
-		document .getElementById("messagePositiondiv").style.display="none";
+		document.getElementById("messagePositiondiv").style.display="none";
 	}else{
-		document .getElementById("messagePositiondiv").style.display="block";
+		document.getElementById("messagePositiondiv").style.display="block";
 	}
 }
 
@@ -128,13 +128,11 @@ function submitProxy(){
 		    timeout:2000,    //超时时间
 		    dataType:'json',    //返回的数据格式：json/xml/html/script/jsonp/text
 		    success:function(data,textStatus,jqXHR){
-		    	
 		    	parent.changeItemPage('');
 		    	var index = parent.layer.getFrameIndex(window.name);
 				parent.layer.close(index);
 		    },
 		    complete:function(){
-		        console.log('结束')
 		    }
 		})
 		
@@ -142,7 +140,7 @@ function submitProxy(){
 		return false;
 	}
 	
-}
+};
 
 
 

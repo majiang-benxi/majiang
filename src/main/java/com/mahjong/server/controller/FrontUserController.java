@@ -17,10 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.mahjong.server.entity.ManageUser;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.entity.UserRoomRecord;
 import com.mahjong.server.service.DBService;
 import com.mahjong.server.util.DateUtil;
+import com.mahjong.server.util.ManageUserSessionUtil;
 import com.mahjong.server.vo.UserRecordScoreVO;
 
 @Controller
@@ -120,11 +122,19 @@ public class FrontUserController {
 		
 		if(!StringUtils.isEmpty(checkedUserIds)){
 			userIds = checkedUserIds.split(",");
+		}else{
+			return "error";
 		}
+		
+
+		String value = ManageUserSessionUtil.getCookieValue(request.getCookies(), "manageuid");
+		ManageUser opemanageUser = ManageUserSessionUtil.getManegeSession(value);
 		
 		if(userIds!=null){
 			for(String uid : userIds){
 				if(!StringUtils.isEmpty(uid)&&NumberUtils.isNumber(uid)){
+					
+					UserInfo dbuserInfo = dbService.selectUserInfoByID(Integer.parseInt(uid));
 					
 					UserInfo userInfo = new UserInfo();
 					userInfo.setId(Integer.parseInt(uid));
@@ -135,6 +145,10 @@ public class FrontUserController {
 					}
 					
 					if(!StringUtils.isEmpty(roomcartEditNum)){
+						
+						if(opemanageUser.getUserLevel()==1&&(Integer.parseInt(roomcartEditNum)-dbuserInfo.getRoomCartNum())<0){
+							return "error";
+						}
 						userInfo.setRoomCartNum(Integer.parseInt(roomcartEditNum));
 					}
 					

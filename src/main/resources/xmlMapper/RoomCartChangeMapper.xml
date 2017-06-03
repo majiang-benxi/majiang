@@ -9,7 +9,7 @@
     <result column="user_name" property="userName" jdbcType="VARCHAR" />
     <result column="change_num" property="changeNum" jdbcType="INTEGER" />
     <result column="change_time" property="changeTime" jdbcType="TIMESTAMP" />
-    <result column="is_success" property="isSuccess" jdbcType="TINYINT" />
+    <result column="changecause" property="changecause" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -70,7 +70,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, manage_user_id, manage_name, user_id, user_name, change_num, change_time, is_success
+    id, manage_user_id, manage_name, user_id, user_name, change_num, change_time, changecause
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.mahjong.server.entity.RoomCartChangeExample" >
     select
@@ -115,8 +115,8 @@
       <if test="changeTime != null" >
         and change_time = #{changeTime,jdbcType=TIMESTAMP}
       </if>
-      <if test="isSuccess != null" >
-        and is_success = #{isSuccess,jdbcType=TINYINT}
+      <if test="changecause != null" >
+        and changecause = #{changecause,jdbcType=VARCHAR}
       </if>
     </where>
   </select>
@@ -133,10 +133,10 @@
   <insert id="insert" parameterType="com.mahjong.server.entity.RoomCartChange" >
     insert into room_cart_change (id, manage_user_id, manage_name, 
       user_id, user_name, change_num, 
-      change_time, is_success)
+      change_time, changecause)
     values (#{id,jdbcType=INTEGER}, #{manageUserId,jdbcType=INTEGER}, #{manageName,jdbcType=VARCHAR}, 
       #{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{changeNum,jdbcType=INTEGER}, 
-      #{changeTime,jdbcType=TIMESTAMP}, #{isSuccess,jdbcType=TINYINT})
+      #{changeTime,jdbcType=TIMESTAMP}, #{changecause,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.mahjong.server.entity.RoomCartChange" >
     insert into room_cart_change
@@ -162,8 +162,8 @@
       <if test="changeTime != null" >
         change_time,
       </if>
-      <if test="isSuccess != null" >
-        is_success,
+      <if test="changecause != null" >
+        changecause,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -188,8 +188,8 @@
       <if test="changeTime != null" >
         #{changeTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="isSuccess != null" >
-        #{isSuccess,jdbcType=TINYINT},
+      <if test="changecause != null" >
+        #{changecause,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -223,15 +223,14 @@
       <if test="record.changeTime != null" >
         change_time = #{record.changeTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.isSuccess != null" >
-        is_success = #{record.isSuccess,jdbcType=TINYINT},
+      <if test="record.changecause != null" >
+        changecause = #{record.changecause,jdbcType=VARCHAR},
       </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  
   <update id="updateByPrimaryKeySelective" parameterType="com.mahjong.server.entity.RoomCartChange" >
     update room_cart_change
     <set >
@@ -253,11 +252,77 @@
       <if test="changeTime != null" >
         change_time = #{changeTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="isSuccess != null" >
-        is_success = #{isSuccess,jdbcType=TINYINT},
+      <if test="changecause != null" >
+        changecause = #{changecause,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  
+  
+  
+     
+  <select id="selectRoomCardChangeInfoCount" resultType="int" parameterType="map" >
+    select 
+   		count(1)
+    from room_cart_change
+      where 1=1
+	    
+	     <if test="changeTypeNum != null" >
+	     	 AND change_type = #{changeTypeNum,jdbcType=INTEGER}
+	     </if>
+	     <if test="userID != null" >
+	     	 AND user_id = #{userID,jdbcType=INTEGER}
+	     </if>
+	     <if test="datemin != null" >
+	     	and changeTime <![CDATA[>= ]]>  #{datemin}
+	     </if>
+	     <if test="datemax != null" >
+	     	and changeTime  <![CDATA[<= ]]>#{datemax}
+	     </if>
+    
+  </select>
+  
+  
+   <select id="selectRoomCardChangeInfoLimit" resultMap="BaseResultMap" parameterType="map" >
+	    select 
+	    <include refid="Base_Column_List" />
+	    from room_cart_change
+	    where 1=1
+		   	  <if test="changeTypeNum != null" >
+		     	 AND change_type = #{changeTypeNum,jdbcType=INTEGER}
+		     </if>
+		     <if test="userID != null" >
+		     	 AND user_id = #{userID,jdbcType=INTEGER}
+		     </if>
+		     <if test="datemin != null" >
+		     	and changeTime <![CDATA[>= ]]>  #{datemin}
+		     </if>
+		     <if test="datemax != null" >
+		     	and changeTime  <![CDATA[<= ]]>#{datemax}
+		     </if>
+		     <if test="start != null" >
+		     	limit #{start,jdbcType=INTEGER},#{count,jdbcType=INTEGER}
+		     </if>
+  </select>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
 </mapper>

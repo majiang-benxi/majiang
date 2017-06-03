@@ -1,7 +1,6 @@
 package com.mahjong.server.controller;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSON;
+import com.mahjong.server.entity.RoomCartChange;
 import com.mahjong.server.entity.RoomRecord;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.game.context.HouseContext;
@@ -209,38 +209,6 @@ public class StatisticsController {
 			
 		}
 		
-		
-		
-		RoomOnLineVO roomOnLineVO = new RoomOnLineVO();
-		
-		roomOnLineVO.setRoomNum(325423);
-		roomOnLineVO.setRoomState(1);
-		
-		String createTime = DateUtil.fromatDateToYYMMDDHHMMSS(new Date());
-		
-		roomOnLineVO.setRoomCreateTime(createTime);
-		
-		roomOnLineVO.setGameRuleStr("sw32t34");
-		
-		roomOnLineVO.setEastUid(1);
-		roomOnLineVO.setEastUName("245325we");
-		
-		roomOnLineVO.setNorthUid(2);
-		roomOnLineVO.setNorthUName("245325wwewe");
-		
-		roomOnLineVO.setWestUid(3);
-		roomOnLineVO.setWestUName("142wa");
-		
-		roomOnLineVO.setSouthUid(4);
-		roomOnLineVO.setSouthUName("32人微望轻");
-		
-		returnList.add(roomOnLineVO);
-		returnList.add(roomOnLineVO);
-		returnList.add(roomOnLineVO);
-		returnList.add(roomOnLineVO);
-		returnList.add(roomOnLineVO);
-		
-		//TODO
 		
 		modelAndView.addObject("currentPage", curPage);
 		modelAndView.addObject("pageCount", totalcount%eachCount==0? (totalcount/eachCount):(totalcount/eachCount+1));
@@ -438,24 +406,88 @@ public class StatisticsController {
 	
 	
 	
+	@RequestMapping(value = "/roomCardChangeInfo")
+	public ModelAndView roomCardChangeInfo(HttpServletRequest request, HttpServletResponse response) {
+		
+		ModelAndView modelAndView = new ModelAndView();
+		
+		modelAndView.setViewName("roomcardchangeinfo");
+		
+		return modelAndView;
+		
+	}
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	@RequestMapping(value = "/getRoomCardCahngeInfoList")
+	public ModelAndView getRoomCardCahngeInfoList(HttpServletRequest request, HttpServletResponse response) {
+		
+		ModelAndView modelAndView = new ModelAndView();
+		
+		String changeType = request.getParameter("changeType");
+		String userid = request.getParameter("userid");
+		String datemin = request.getParameter("datemin");
+		String datemax = request.getParameter("datemax");
+		
+		String eachPageCount = request.getParameter("eachPageCount");
+		String curPage = request.getParameter("curPage");
+		
+		List<RoomCartChange> newInfoList = new ArrayList<RoomCartChange>();
+		
+		Integer userID = null;
+		
+		if(StringUtils.isEmpty(userid)){
+			userid = null;
+		}else{
+			userID = Integer.parseInt(userid);
+		}
+		
+		Integer changeTypeNum = null;
+		
+		if(StringUtils.isEmpty(changeType)){
+			changeType = null;
+		}else{
+			changeTypeNum = Integer.parseInt(changeType);
+		}
+		if(StringUtils.isEmpty(datemin)){
+			datemin = null;
+		}
+		if(StringUtils.isEmpty(datemax)){
+			datemax = null;
+		}
+		
+		if(StringUtils.isEmpty(eachPageCount)){
+			eachPageCount = "10";
+		}
+		if(StringUtils.isEmpty(curPage)){
+			curPage = "1";
+		}
+		
+		Integer curP = Integer.parseInt(curPage)-1;
+		Integer eachCount = Integer.parseInt(eachPageCount);
+		
+		int totalcount = dbService.selectRoomCardChangeInfoCount(userID,changeTypeNum, datemin, datemax);
+		
+		List<RoomCartChange> roomRecordInfoList = dbService.selectRoomCardChangeInfoLimit(userID,changeTypeNum, datemin, datemax ,curP*eachCount,eachCount);
+		if(CollectionUtils.isNotEmpty(roomRecordInfoList)){
+			
+			for(RoomCartChange roomRecordInfo : roomRecordInfoList){
+				
+				roomRecordInfo.setChangeTimeStr(DateUtil.fromatDateToYYMMDDHHMMSS(roomRecordInfo.getChangeTime()));
+				
+				newInfoList.add(roomRecordInfo);
+			}
+			
+		}
+		
+		modelAndView.addObject("currentPage", curPage);
+		modelAndView.addObject("pageCount", totalcount%eachCount==0? (totalcount/eachCount):(totalcount/eachCount+1));
+ 		modelAndView.addObject("newInfoList", newInfoList);
+		
+		modelAndView.setViewName("ajax/roomcardchangeinfolist");
+		
+		return modelAndView;
+		
+	}
 	
 }

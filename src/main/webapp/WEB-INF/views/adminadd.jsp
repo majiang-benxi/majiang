@@ -26,7 +26,7 @@
 </head>
 <body>
 <div class="pd-20">
-	<form action="" method="post" class="form form-horizontal" id="form-admin-add">
+	<div  class="form form-horizontal" id="form-admin-add">
 		<div class="row cl">
 			<label class="form-label col-3"><span class="c-red">*</span>用户名：</label>
 			<div class="formControls col-5">
@@ -78,10 +78,10 @@
 
 		<div class="row cl">
 			<div class="col-9 col-offset-3">
-				<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+				<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;" onclick="submitProxy()">
 			</div>
 		</div>
-	</form>
+	</div>
 </div>
 <script type="text/javascript" src="/lib/jquery/1.9.1/jquery.min.js"></script> 
 <script type="text/javascript" src="/lib/icheck/jquery.icheck.min.js"></script> 
@@ -98,7 +98,7 @@ function adminroleChecked(){
 	}else{
 		document .getElementById("user-card-num-div").style.display="none";
 	}
-}
+};
 
 var toedit = 0;
 var userId=0;
@@ -150,7 +150,6 @@ function submitProxy(){
 				parent.layer.close(index);
 		    },
 		    complete:function(){
-		        console.log('结束')
 		    }
 		})
 		
@@ -158,7 +157,7 @@ function submitProxy(){
 		return false;
 	}
 	
-}
+};
 
 
 
@@ -173,7 +172,6 @@ $(function(){
 	$("#form-admin-add").Validform({
 		tiptype:2,
 		callback:function(form){
-			submitProxy();
 		}
 	});
 });

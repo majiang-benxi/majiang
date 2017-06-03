@@ -103,13 +103,7 @@
 			</dd>
 		</dl>
 		<dl id="menu-tongji">
-			<dt><i class="Hui-iconfont">&#xe61a;</i> 营收统计</dt>
-			<dd>
-				<ul>
-					<li><a _href="/mvc/statistics/statistics" href="javascript:void(0)">充卡记录</a></li>
-					<li><a _href="/mvc/statistics/getRoomOnLineInfo" href="javascript:;">总消费情况</a></li>
-				</ul>
-			</dd>
+			<dt><i class="Hui-iconfont">&#xe61a;</i><a _href="/mvc/statistics/roomCardChangeInfo" href="javascript:void(0)">营收统计</a></dt>
 		</dl>
 		
 	

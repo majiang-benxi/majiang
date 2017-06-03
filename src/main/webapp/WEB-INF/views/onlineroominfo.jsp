@@ -138,8 +138,6 @@ function killRoom(obj,id){
 }
 
 
-roomState
-
 
 </script>
 </body>

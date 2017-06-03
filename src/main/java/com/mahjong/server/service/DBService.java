@@ -258,16 +258,6 @@ public interface DBService {
 	 */
 	boolean insertRoomCartChange(RoomCartChange roomCartChange);
 
-	/**
-	 * 为用户冲房卡
-	 * @param userId 用户ID
-	 * @param userName 用户名
-	 * @param cartNum 冲卡数
-	 * @param manageUser 管理员用户
-	 * @return 充值是否成功
-	 */
-	boolean insertRoomCart(Integer userId, String userName, Integer cartNum, ManageUser manageUser);
-	
 
 	/**
 	 * 查询更新下载信息
@@ -443,6 +433,26 @@ public interface DBService {
 	 */
 	public List<MessageInfo> selectMessageInfoLimit(Integer msgPositionnum,Integer mesgstate, String datemin, String datemax, Integer start,
 			Integer eachCount);
+
+	/**
+	 * 用户房卡数目变化明细条数
+	 * @param userID
+	 * @param datemin
+	 * @param datemax
+	 * @return
+	 */
+	public int selectRoomCardChangeInfoCount(Integer userID,Integer changeTypeNum, String datemin, String datemax);
+
+	/**
+	 *  用户房卡数目变化明细
+	 * @param userID
+	 * @param datemin
+	 * @param datemax
+	 * @param start
+	 * @param eachCount
+	 * @return
+	 */
+	public List<RoomCartChange> selectRoomCardChangeInfoLimit(Integer userID,Integer changeTypeNum, String datemin, String datemax, int start,Integer eachCount);
 	
 
 }

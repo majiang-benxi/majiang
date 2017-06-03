@@ -52,10 +52,12 @@ public class ManageUserController {
 		
 		ManageUser manageUser = dbService.selectManageUserByUname(uname);
 		
-		if(manageUser != null && MD5Util.checkPassword(passwd, manageUser.getUpasswd())){
+		if(manageUser != null &&manageUser.getState()!=0 && MD5Util.checkPassword(passwd, manageUser.getUpasswd())){
 			modelAndView.addObject("manageUser", manageUser);
 			modelAndView.setViewName("index");
 			Cookie uidCookie = new Cookie("manageuid",ManageUserSessionUtil.createManegeSession(manageUser));
+			uidCookie.setMaxAge(3600);
+			uidCookie.setPath("/");
 			response.addCookie(uidCookie);
 			
 		}else{
@@ -65,11 +67,12 @@ public class ManageUserController {
 		return modelAndView;
 
 	}
+	
+	
 	@RequestMapping(value = "/getAdminUser")
 	public ModelAndView getAdminUser(HttpServletRequest request, HttpServletResponse response) {
 		
 		ModelAndView modelAndView = new ModelAndView();
-		
 		
 		modelAndView.setViewName("manageuser");
 		
@@ -83,9 +86,9 @@ public class ManageUserController {
 		
 		ModelAndView modelAndView = new ModelAndView();
 		
+		String searchUname = request.getParameter("searchUname");
 		String datemin = request.getParameter("datemin");
 		String datemax = request.getParameter("datemax");
-		String searchUname = request.getParameter("searchUname");
 		String eachPageCount = request.getParameter("eachPageCount");
 		String curPage = request.getParameter("curPage");
 		
@@ -160,6 +163,8 @@ public class ManageUserController {
 		
 		if(!StringUtils.isEmpty(usercardnum)&&NumberUtils.isNumber(usercardnum)){
 			manageUser.setCardHold(Integer.parseInt(usercardnum));
+		}else{
+			manageUser.setCardHold(0);
 		}
 		
 		manageUser.setMobile(usertel);
@@ -170,11 +175,10 @@ public class ManageUserController {
 		
 		if(!StringUtils.isEmpty(userLevel)&&NumberUtils.isNumber(userLevel)){
 			manageUser.setUserLevel((byte) Integer.parseInt(userLevel));
-			manageUser.setCreateTime(new Date());
 		}else{
 			manageUser.setUserLevel((byte)1);
 		}
-		
+		manageUser.setCreateTime(new Date());
 		if(toedit.equals("1")){
 			manageUser.setId(Integer.parseInt(userId));
 			dbService.updateManageUserByID(manageUser);
@@ -182,7 +186,7 @@ public class ManageUserController {
 			dbService.insertManageUser(manageUser);
 		}
 		
-		return " success!";
+		return "success!";
 		
 	}
 	
@@ -260,7 +264,7 @@ public class ManageUserController {
 		RoomCartChange roomCartChange = new RoomCartChange();
 		roomCartChange.setChangeNum(changeNum);
 		roomCartChange.setChangeTime(new Date());
-		roomCartChange.setIsSuccess((byte) 1);
+		roomCartChange.setChangecause("管理员充值");
 		if(opemanageUser!=null){
 			roomCartChange.setManageName(opemanageUser.getNickName());
 			roomCartChange.setManageUserId(opemanageUser.getId());

@@ -262,24 +262,7 @@ public class DBServiceImpl implements DBService {
 	/************************充值房卡**********************/
 	
 
-	@Override
-	public boolean insertRoomCart(Integer userId,String userName,Integer cartNum,ManageUser manageUser){
-		
-		Integer rest = userInfoMapper.updateUserRoomCard(userId,cartNum);
-		
-		RoomCartChange roomCartChange = new RoomCartChange();
-		roomCartChange.setChangeNum(cartNum);
-		roomCartChange.setChangeTime(new Date());
-		roomCartChange.setIsSuccess((byte)(rest>0?1:0));
-		roomCartChange.setManageName(manageUser.getNickName());
-		roomCartChange.setManageUserId(roomCartChange.getId());
-		roomCartChange.setUserId(userId);
-		roomCartChange.setUserName(userName);
-		
-		roomCartChangeMapper.insert(roomCartChange);
-		
-		return rest>0;
-	}
+	
 	@Override
 	public UpdateInfo selectUpdateInfoByDeviceType(Integer deviceType,float version ) {
 		List<UpdateInfo> updateInfos =  updateInfoMapper.selectUpdateInfoByDeviceType(deviceType,version);
@@ -364,6 +347,17 @@ public class DBServiceImpl implements DBService {
 	public List<MessageInfo> selectMessageInfoLimit(Integer msgPositionnum,Integer mesgstate, String datemin, String datemax, Integer start,
 			Integer eachCount) {
 		return messageInfoMapper.selectMessageInfoLimit(msgPositionnum, mesgstate,  datemin,  datemax, start, eachCount);
+	}
+	
+	
+	@Override
+	public int selectRoomCardChangeInfoCount(Integer userID,Integer changeTypeNum, String datemin, String datemax) {
+		return roomCartChangeMapper.selectRoomCardChangeInfoCount( userID,changeTypeNum,  datemin,  datemax);
+	}
+	@Override
+	public List<RoomCartChange> selectRoomCardChangeInfoLimit(Integer userID,Integer changeTypeNum, String datemin, String datemax, int start,
+			Integer eachCount) {
+		return roomCartChangeMapper.selectRoomCardChangeInfoLimit( userID,changeTypeNum,  datemin,  datemax, start, eachCount);
 	}
 	
 	

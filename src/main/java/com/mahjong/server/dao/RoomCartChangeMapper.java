@@ -28,4 +28,8 @@ public interface RoomCartChangeMapper {
 
     int updateByPrimaryKeySelective(RoomCartChange record);
 
+	int selectRoomCardChangeInfoCount(@Param("userID")Integer userID,@Param("changeTypeNum")Integer changeTypeNum, @Param("datemin")String datemin, @Param("datemax")String datemax);
+
+	List<RoomCartChange> selectRoomCardChangeInfoLimit(@Param("userID")Integer userID,@Param("changeTypeNum")Integer changeTypeNum, @Param("datemin")String datemin, @Param("datemax")String datemax, @Param("start") Integer startIndex,@Param("count")Integer eachCount);
+
 }

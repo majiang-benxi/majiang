@@ -545,63 +545,73 @@ public class RoomCartChangeExample {
             return (Criteria) this;
         }
 
-        public Criteria andIsSuccessIsNull() {
-            addCriterion("is_success is null");
+        public Criteria andChangecauseIsNull() {
+            addCriterion("changecause is null");
             return (Criteria) this;
         }
 
-        public Criteria andIsSuccessIsNotNull() {
-            addCriterion("is_success is not null");
+        public Criteria andChangecauseIsNotNull() {
+            addCriterion("changecause is not null");
             return (Criteria) this;
         }
 
-        public Criteria andIsSuccessEqualTo(Byte value) {
-            addCriterion("is_success =", value, "isSuccess");
+        public Criteria andChangecauseEqualTo(String value) {
+            addCriterion("changecause =", value, "changecause");
             return (Criteria) this;
         }
 
-        public Criteria andIsSuccessNotEqualTo(Byte value) {
-            addCriterion("is_success <>", value, "isSuccess");
+        public Criteria andChangecauseNotEqualTo(String value) {
+            addCriterion("changecause <>", value, "changecause");
             return (Criteria) this;
         }
 
-        public Criteria andIsSuccessGreaterThan(Byte value) {
-            addCriterion("is_success >", value, "isSuccess");
+        public Criteria andChangecauseGreaterThan(String value) {
+            addCriterion("changecause >", value, "changecause");
             return (Criteria) this;
         }
 
-        public Criteria andIsSuccessGreaterThanOrEqualTo(Byte value) {
-            addCriterion("is_success >=", value, "isSuccess");
+        public Criteria andChangecauseGreaterThanOrEqualTo(String value) {
+            addCriterion("changecause >=", value, "changecause");
             return (Criteria) this;
         }
 
-        public Criteria andIsSuccessLessThan(Byte value) {
-            addCriterion("is_success <", value, "isSuccess");
+        public Criteria andChangecauseLessThan(String value) {
+            addCriterion("changecause <", value, "changecause");
             return (Criteria) this;
         }
 
-        public Criteria andIsSuccessLessThanOrEqualTo(Byte value) {
-            addCriterion("is_success <=", value, "isSuccess");
+        public Criteria andChangecauseLessThanOrEqualTo(String value) {
+            addCriterion("changecause <=", value, "changecause");
             return (Criteria) this;
         }
 
-        public Criteria andIsSuccessIn(List<Byte> values) {
-            addCriterion("is_success in", values, "isSuccess");
+        public Criteria andChangecauseLike(String value) {
+            addCriterion("changecause like", value, "changecause");
             return (Criteria) this;
         }
 
-        public Criteria andIsSuccessNotIn(List<Byte> values) {
-            addCriterion("is_success not in", values, "isSuccess");
+        public Criteria andChangecauseNotLike(String value) {
+            addCriterion("changecause not like", value, "changecause");
             return (Criteria) this;
         }
 
-        public Criteria andIsSuccessBetween(Byte value1, Byte value2) {
-            addCriterion("is_success between", value1, value2, "isSuccess");
+        public Criteria andChangecauseIn(List<String> values) {
+            addCriterion("changecause in", values, "changecause");
             return (Criteria) this;
         }
 
-        public Criteria andIsSuccessNotBetween(Byte value1, Byte value2) {
-            addCriterion("is_success not between", value1, value2, "isSuccess");
+        public Criteria andChangecauseNotIn(List<String> values) {
+            addCriterion("changecause not in", values, "changecause");
+            return (Criteria) this;
+        }
+
+        public Criteria andChangecauseBetween(String value1, String value2) {
+            addCriterion("changecause between", value1, value2, "changecause");
+            return (Criteria) this;
+        }
+
+        public Criteria andChangecauseNotBetween(String value1, String value2) {
+            addCriterion("changecause not between", value1, value2, "changecause");
             return (Criteria) this;
         }
     }

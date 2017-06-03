@@ -28,11 +28,12 @@
 <body>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 管理员管理 <span class="c-gray en">&gt;</span> 管理员列表 <a class="btn btn-success radius r mr-20" style="line-height:1.6em;margin-top:3px" id="manageUserListRef" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="pd-20">
-	<div class="text-c"> 日期范围：
+	<div class="text-c"> 
+	用户名：<input type="text" class="input-text" style="width:250px" placeholder="输入管理员用户名" id="searchUname" name="">
+	日期范围：
 		<input type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" id="datemin" class="input-text Wdate" style="width:120px;">
 		-
 		<input type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" id="datemax" class="input-text Wdate" style="width:120px;">
-		<input type="text" class="input-text" style="width:250px" placeholder="输入管理员用户名" id="searchUname" name="">
 		<button type="submit" class="btn btn-success" onclick="searchUser()"    id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜用户</button>
 	</div>
 	<div class="cl pd-5 bg-1 bk-gray mt-20"> 
@@ -41,7 +42,7 @@
 				<i class="Hui-iconfont">&#xe6e2;</i> 批量冻结
 			</a> 
 			<a href="javascript:;" onclick="admin_add('添加用户','/mvc/frame/static?topage=adminadd','800','500')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加用户</a>
-			</span> <span class="r">共有数据：<strong>54</strong> 条</span> </div>
+			</span>  </div>
 	<table class="table table-border table-bordered table-bg" id="itemlistul">
 		
 	</table>
@@ -107,7 +108,7 @@ function searchUser(){
 	
 	changeItemPage('');
 	
-}
+};
 
 
 
@@ -142,17 +143,8 @@ function datadel(){
 	    	changeItemPage('');
 	    },
 	    complete:function(){
-	        console.log('结束')
 	    }
 	})
-	
-	
-	if(obj.checked ){
-		checkedUserIds += (","+userId);
-	}else{
-		regExp = new RegExp((checkedUserIds,","+userId)); 
-		checkedUserIds = checkedUserIds.replace(regExp, ""); 
-	}
 }
 
 /*
@@ -240,12 +232,6 @@ function admin_start(obj,id){
 		layer.msg('已启用!', {icon: 6,time:1000});
 	});
 }
-
-
-
-
-
-
 
 
 function changeRNum(usid) {

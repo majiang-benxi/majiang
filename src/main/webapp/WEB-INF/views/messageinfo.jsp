@@ -173,13 +173,6 @@ function datadel(){
 	    }
 	})
 	
-	
-	if(obj.checked ){
-		checkedItemIds += (","+userId);
-	}else{
-		regExp = new RegExp((checkedItemIds,","+userId)); 
-		checkedItemIds = checkedItemIds.replace(regExp, ""); 
-	}
 }
 
 /*
