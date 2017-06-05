@@ -72,6 +72,7 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 						HandlerHelper.processDiscardResp(roomContext, discardPlayLocation, discardReqModel);
 					}
 				} catch (IllegalActionException e) {
+					roomContext.getGameContext().getTable().printAllPlayTiles();
 					ProtocolModel illegalProtocolModel = new ProtocolModel();
 					illegalProtocolModel.setCommandId(EventEnum.ILLEGAL_ACTION_RESP.getValue());
 					illegalProtocolModel.setBody(null);
