@@ -128,7 +128,7 @@ public interface DBService {
 	 * @param queryRecord 房间记录信息
 	 * @return 成功如否
 	 */
-	boolean updateUserRoomRecordInfoPrimaryKey(UserRoomRecord userRoomRecord);
+	//boolean updateUserRoomRecordInfoPrimaryKey(UserRoomRecord userRoomRecord);
 
 	/**
 	 * 删除房间记录信息
@@ -453,6 +453,15 @@ public interface DBService {
 	 * @return
 	 */
 	public List<RoomCartChange> selectRoomCardChangeInfoLimit(Integer userID,Integer changeTypeNum, String datemin, String datemax, int start,Integer eachCount);
+
+	/**
+	 * 查用户房间记录
+	 * @param userRoomRecordInfoID
+	 * @return
+	 */
+	public UserRoomRecord selectUserRoomRecordInfoByID(Integer userRoomRecordInfoID);
+
+	public void updateUserRoomRecordInfoPrimaryKey(UserRoomRecord winuserRoomRecForUpdate);
 	
 
 }

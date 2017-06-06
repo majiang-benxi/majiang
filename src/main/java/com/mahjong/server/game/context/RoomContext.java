@@ -7,9 +7,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.game.enums.RoomStatus;
+import com.mahjong.server.game.object.PlayerInfo;
 
 public class RoomContext {
 	
+	/**
+	 * 房间号
+	 */
+	private Integer roomID;
 	/**
 	 * 房间号
 	 */
@@ -63,7 +68,7 @@ public class RoomContext {
 		this.gameContext = gameContext;
 	}
 
-	public boolean joinRoom(UserInfo userInfo) {
+	public PlayerInfo joinRoom(UserInfo userInfo) {
 		return this.gameContext.joinRoom( userInfo);
 	}
 
@@ -97,6 +102,14 @@ public class RoomContext {
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+
+	public Integer getRoomID() {
+		return roomID;
+	}
+
+	public void setRoomID(Integer roomID) {
+		this.roomID = roomID;
 	}
 
 }

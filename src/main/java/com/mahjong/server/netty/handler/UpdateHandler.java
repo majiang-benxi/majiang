@@ -1,9 +1,12 @@
 package com.mahjong.server.netty.handler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.mahjong.server.entity.UpdateInfo;
 import com.mahjong.server.game.enums.EventEnum;
@@ -23,6 +26,9 @@ import io.netty.channel.SimpleChannelInboundHandler;
 @Sharable
 @Component
 public class UpdateHandler extends SimpleChannelInboundHandler<ProtocolModel> {
+	
+	private static final Logger logger = LoggerFactory.getLogger(UpdateHandler.class);
+	
 	@Autowired
 	private DBService dbService;
 	@Override
@@ -37,6 +43,9 @@ public class UpdateHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 				});
 				
 				float version = downModel.getAppVersion();
+				
+				logger.info("更新请求：DeviceType="+protocolModel.getDeviceType()+",version="+version);
+				
 				UpdateInfo updateInfo = dbService.selectUpdateInfoByDeviceType(protocolModel.getDeviceType(),version);
 				
 				if(updateInfo!=null){
@@ -46,6 +55,8 @@ public class UpdateHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 				}
 				protocolModel.setCommandId(EventEnum.UPDATE_RESP.getValue());
 				ctx.writeAndFlush(protocolModel);
+				
+				logger.error("胡返回数据："+JSONObject.toJSONString(protocolModel));
 			}
 		} else {
 			ctx.fireChannelRead(protocolModel);

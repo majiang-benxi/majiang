@@ -30,18 +30,7 @@ public class HeartBeatHandler extends SimpleChannelInboundHandler<ProtocolModel>
 					new TypeReference<RequestBaseMode>() {
 					});
 			String weixinId = requestBaseMode.getWeiXinId();
-			InetSocketAddress newsocketAddr = (InetSocketAddress) ctx.channel().remoteAddress();
-			if(weixinId!=null) {
-				if(ClientSession.sessionMap.get(weixinId) == null){
 					ClientSession.sessionMap.put(weixinId, ctx);
-				}else{
-					ChannelHandlerContext oldCtx=ClientSession.sessionMap.get(weixinId);
-					InetSocketAddress oldsocketAddr = (InetSocketAddress) oldCtx.channel().remoteAddress();
-					if(newsocketAddr.getAddress().getHostAddress().equals(oldsocketAddr.getAddress().getHostAddress())){
-						ClientSession.sessionMap.put(weixinId, ctx);//客户端断网重联的情况，重新刷新ctx,此处先根据weixinId+ip判断是否是统一用户
-					}
-				}
-			}	
 			Date now = new Date();
 			ClientSession.sessionHeartBeatTimeMap.put(weixinId, now);
 		}

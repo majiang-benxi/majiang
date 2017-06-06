@@ -323,5 +323,27 @@
   </select>
   
   
+   <select id="selectLatestUserRoomRecordScoreInfo" resultMap="BaseResultMap" parameterType="map" >
+		SELECT
+			*
+		FROM
+			user_action_score AS uas
+		WHERE
+			uas.user_id = #{userId}
+		AND uas.room_record_id IN (
+			SELECT
+				room_record_id
+			FROM
+				user_action_score AS uasi
+			WHERE
+				uasi.user_id = uas.user_id
+			GROUP BY
+				uasi.room_record_id
+			limit 0,#{topNum,jdbcType=INTEGER} 
+		)
+		    
+  </select>
+  
+  
   
 </mapper>

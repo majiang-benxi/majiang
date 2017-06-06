@@ -1,8 +1,12 @@
 package com.mahjong.server.service.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -129,10 +133,10 @@ public class DBServiceImpl implements DBService {
 		}
 		return userRoomRecordMapper.selectLatestUserRoomRecordInfo(userId,topNum);
 	}
-	@Override
+/*	@Override
 	public boolean updateUserRoomRecordInfoPrimaryKey(UserRoomRecord userRoomRecord) {
 		return userRoomRecordMapper.updateByPrimaryKeySelective(userRoomRecord)>0;
-	}
+	}*/
 	@Override
 	public boolean deleteUserRoomRecordInfoByID(Integer recordId) {
 		return userRoomRecordMapper.deleteByPrimaryKey(recordId)>0;
@@ -161,21 +165,50 @@ public class DBServiceImpl implements DBService {
 	/****************查询用户top10战绩*******************/
 	@Override
 	public List<UserLatestPlayRecord> selectUserLatestPlayRecord(Integer userId,Integer topNum){
+		
 		List<UserLatestPlayRecord> returnRecordList = new ArrayList<UserLatestPlayRecord>();
-		List<UserRoomRecord> latestRecords = selectLatestUserRoomRecordInfo(userId,topNum);
+		
+		List<UserActionScore> latestRecords = selectLatestUserRoomRecordScoreInfo(userId,topNum);
+		
+		Map<Integer,UserLatestPlayRecord> roomRecordScoreMap = new HashMap<Integer,UserLatestPlayRecord>();
+		Set<Integer> roomRecordList = new HashSet<Integer>();
+		
 		if(CollectionUtils.isNotEmpty(latestRecords)){
-			for(UserRoomRecord userRoomRecord : latestRecords){
-				UserLatestPlayRecord userLatestPlayRecord = new UserLatestPlayRecord();
-				List<UserActionScore>  actionRecordList = selectUserActionScoreInfoByRecorId(userRoomRecord.getId());
-				RoomRecord roomRecord = selectRoomRecordInfoByID(userRoomRecord.getRoomRecordId());
-				userLatestPlayRecord.setRoomRecord(roomRecord);
-				userLatestPlayRecord.setUserRoomRecord(userRoomRecord);
-				userLatestPlayRecord.setUserActionScoreList(actionRecordList);
+			for(UserActionScore userRoomScore : latestRecords){
 				
-				returnRecordList.add(userLatestPlayRecord);
+				Integer roomRecordId = userRoomScore.getRoomRecordId();
+				roomRecordList.add(roomRecordId);
+				
+				if(roomRecordScoreMap.containsKey(roomRecordId)){
+					UserLatestPlayRecord userLatestPlayRecord = roomRecordScoreMap.get(roomRecordId);
+					userLatestPlayRecord.getUserActionScoreList().add(userRoomScore);
+				}else{
+					
+					RoomRecord roomRecord = selectRoomRecordInfoByID(roomRecordId);
+					UserLatestPlayRecord userLatestPlayRecord = new UserLatestPlayRecord();
+					userLatestPlayRecord.setRoomRecord(roomRecord);
+					userLatestPlayRecord.getUserActionScoreList().add(userRoomScore);
+					roomRecordScoreMap.put(roomRecordId, userLatestPlayRecord);
+				}
 			}
+			returnRecordList = new ArrayList<UserLatestPlayRecord>(roomRecordScoreMap.values());
+			
+			Collections.sort(returnRecordList, new Comparator<UserLatestPlayRecord>() {
+				@Override
+				public int compare(UserLatestPlayRecord o1, UserLatestPlayRecord o2) {
+					return o1.getRoomRecord().getCreateTime().compareTo(o2.getRoomRecord().getCreateTime());
+				}
+			});;
+			
 		}
+		
 		return returnRecordList;
+	}
+	private List<UserActionScore> selectLatestUserRoomRecordScoreInfo(Integer userId, Integer topNum) {
+		if(topNum==null){
+			topNum = 10;
+		}
+		return userActionScoreMapper.selectLatestUserRoomRecordScoreInfo(userId,topNum);
 	}
 	/****************查询用户top10战绩*******************/
 	
@@ -358,6 +391,14 @@ public class DBServiceImpl implements DBService {
 	public List<RoomCartChange> selectRoomCardChangeInfoLimit(Integer userID,Integer changeTypeNum, String datemin, String datemax, int start,
 			Integer eachCount) {
 		return roomCartChangeMapper.selectRoomCardChangeInfoLimit( userID,changeTypeNum,  datemin,  datemax, start, eachCount);
+	}
+	@Override
+	public UserRoomRecord selectUserRoomRecordInfoByID(Integer userRoomRecordInfoID) {
+		return userRoomRecordMapper.selectByPrimaryKey(userRoomRecordInfoID);
+	}
+	@Override
+	public void updateUserRoomRecordInfoPrimaryKey(UserRoomRecord winuserRoomRecForUpdate) {
+		userRoomRecordMapper.updateByPrimaryKeySelective(winuserRoomRecForUpdate);
 	}
 	
 	

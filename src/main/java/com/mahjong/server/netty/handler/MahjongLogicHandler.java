@@ -3,9 +3,12 @@ package com.mahjong.server.netty.handler;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.mahjong.server.exception.IllegalActionException;
 import com.mahjong.server.game.action.Action;
@@ -30,6 +33,9 @@ import io.netty.channel.SimpleChannelInboundHandler;
 @Sharable
 @Component
 public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolModel> {
+	
+	private static final Logger logger = LoggerFactory.getLogger(EnterRoomHandler.class);
+	
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, ProtocolModel protocolModel) throws Exception {
 		if (protocolModel.getCommandId() == EventEnum.DISCARD_ONE_CARD_REQ.getValue()) {
@@ -77,6 +83,8 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 					illegalProtocolModel.setCommandId(EventEnum.ILLEGAL_ACTION_RESP.getValue());
 					illegalProtocolModel.setBody(null);
 					ctx.writeAndFlush(illegalProtocolModel);
+					
+					logger.error("主逻辑返回数据："+JSONObject.toJSONString(illegalProtocolModel));
 				}
 			}
 

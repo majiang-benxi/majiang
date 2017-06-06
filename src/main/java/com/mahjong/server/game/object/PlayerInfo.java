@@ -15,6 +15,8 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	 */
 	private UserInfo userInfo;
 	
+	private Integer userRoomRecordInfoID;
+	
 	private PlayerLocation userLocation;
 
 	/**
@@ -177,6 +179,14 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	public static void main(String[] args) {
 		PlayerInfo playerInfo = new PlayerInfo();
 		playerInfo.clone();
+	}
+
+	public Integer getUserRoomRecordInfoID() {
+		return userRoomRecordInfoID;
+	}
+
+	public void setUserRoomRecordInfoID(Integer userRoomRecordInfo) {
+		this.userRoomRecordInfoID = userRoomRecordInfo;
 	}
 
 	
