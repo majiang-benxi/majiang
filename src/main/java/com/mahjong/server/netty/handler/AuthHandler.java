@@ -56,30 +56,37 @@ public class AuthHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 				//用户初次注册，或者是登陆
 				
 				ChannelHandlerContext ctxx = ClientSession.sessionMap.get(weixinId);
+				userInfo = dbService.selectUserInfoByWeiXinMark(weixinId);
 				Date now = new Date();
 				
-				if (ctxx== null) {
+				if (userInfo==null) {
 					
-					userInfo = dbService.selectUserInfoByWeiXinMark(weixinId);
-					if (userInfo==null) {
-						userInfo = new UserInfo();
-						userInfo.setCreateTime(now);
-						userInfo.setHeadImgurl(authModel.getHeadImgUrl());
-						userInfo.setLastLoginIp(socketAddr.getAddress().getHostAddress());
-						userInfo.setLastLoginTime(now);
-						userInfo.setNickName(authModel.getNickName());
-						userInfo.setRoomCartNum(0);
-						userInfo.setSex((byte) authModel.getSex());
-						userInfo.setState((byte) 1);
-						userInfo.setWeixinMark(weixinId);
+					userInfo = new UserInfo();
+					userInfo.setCreateTime(now);
+					userInfo.setHeadImgurl(authModel.getHeadImgUrl());
+					userInfo.setLastLoginIp(socketAddr.getAddress().getHostAddress());
+					userInfo.setLastLoginTime(now);
+					userInfo.setNickName(authModel.getNickName());
+					userInfo.setRoomCartNum(0);
+					userInfo.setSex((byte) authModel.getSex());
+					userInfo.setState((byte) 1);
+					userInfo.setWeixinMark(weixinId);
+					
+					userInfo.setRoomCartNumUsed(0);
+					userInfo.setLoginTimes(1);
+					
+					int res = dbService.insertUserInfo(userInfo);
+					
+					logger.info("新用户注册："+authModel.getNickName()+",weixinId="+weixinId+",res="+res);
+					
+					int fangKaSize = userInfo.getRoomCartNum();
+					authRespModel = new AuthRespModel(true, fangKaSize, playingRoom == null ? 0 : playingRoom.getRoomNum());
+							
 						
-						userInfo.setRoomCartNumUsed(0);
-						userInfo.setLoginTimes(1);
-						
-						int res = dbService.insertUserInfo(userInfo);
-						
-						logger.info("新用户注册："+authModel.getNickName()+",weixinId="+weixinId+",res="+res);
-						
+				}else{
+					
+					if(userInfo.getState()!=1){
+						authRespModel = new AuthRespModel(false, 0,  null );
 					}else{
 						
 						UserInfo updateUserInfo = new UserInfo();
@@ -109,64 +116,36 @@ public class AuthHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 						userInfo.setWeixinMark(weixinId);
 						
 						userInfo.setLoginTimes(userInfo.getLoginTimes()+1);
-						
-					}
 					
-					int fangKaSize = userInfo.getRoomCartNum();
-					authRespModel = new AuthRespModel(true, fangKaSize, playingRoom == null ? 0 : playingRoom.getRoomNum());
-					
-				}else{
-					
-					logger.info("用户掉线超时重连："+authModel.getNickName()+",weixinId="+weixinId);
-					
-					//用户掉线超时重新登陆
-					userInfo = dbService.selectUserInfoByWeiXinMark(weixinId);
-					
-					if(userInfo==null){
-						
-						logger.info("用户掉线超时重连失败");
-						authRespModel = new AuthRespModel(false, 0, null);
-					}else{
-						
-						
-						UserInfo updateUserInfo = new UserInfo();
-						
-						updateUserInfo.setHeadImgurl(authModel.getHeadImgUrl());
-						updateUserInfo.setLastLoginIp(socketAddr.getAddress().getHostAddress());
-						updateUserInfo.setLastLoginTime(now);
-						updateUserInfo.setNickName(authModel.getNickName());
-						updateUserInfo.setSex((byte) authModel.getSex());
-						updateUserInfo.setId(userInfo.getId());
-						updateUserInfo.setState((byte) 1);
-						updateUserInfo.setWeixinMark(weixinId);
-						
-						updateUserInfo.setLoginTimes(userInfo.getLoginTimes()+1);
-						
-						Boolean res = dbService.updateUserInfoById(updateUserInfo);
-						
-						userInfo.setHeadImgurl(authModel.getHeadImgUrl());
-						userInfo.setLastLoginIp(socketAddr.getAddress().getHostAddress());
-						userInfo.setLastLoginTime(now);
-						userInfo.setNickName(authModel.getNickName());
-						userInfo.setSex((byte) authModel.getSex());
-						userInfo.setState((byte) 1);
-						userInfo.setWeixinMark(weixinId);
-						
-						userInfo.setLoginTimes(userInfo.getLoginTimes()+1);
-						
-						playingRoom = HouseContext.weixinIdToRoom.get(weixinId);
-						
 						int fangKaSize = userInfo.getRoomCartNum();
-						authRespModel = new AuthRespModel(true, fangKaSize, playingRoom == null ? 0 : playingRoom.getRoomNum());
 						
+						if(ctxx != null){
+							
+							playingRoom = HouseContext.weixinIdToRoom.get(weixinId);
+							logger.info("用户掉线超时重连："+authModel.getNickName()+",weixinId="+weixinId);
+							
+						}else{
+							
+							logger.info("用户登录："+authModel.getNickName()+",weixinId="+weixinId);
+							
+						}
+						
+						authRespModel = new AuthRespModel(true, fangKaSize, playingRoom == null ? 0 : playingRoom.getRoomNum());
 					}
-					
+				
 				}
 				
 				if(authRespModel.isAuth()){
+					
 					ClientSession.sessionMap.put(weixinId, ctx);
 					HouseContext.weixinIdToUserInfo.put(weixinId, userInfo);
-					HouseContext.onlineUserNum.incrementAndGet();
+					
+					Integer unum = HouseContext.weixinIdToUserInfo.size();
+					
+					if(unum>HouseContext.onlineUserNum.get()){
+						HouseContext.onlineUserNum.incrementAndGet();
+					}
+					
 				}
 				
 				// 回写ACK

@@ -13,7 +13,6 @@ import com.alibaba.fastjson.TypeReference;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.game.context.HouseContext;
 import com.mahjong.server.game.enums.EventEnum;
-import com.mahjong.server.netty.model.CreateRoomRespModel;
 import com.mahjong.server.netty.model.HistoryRecordReqModel;
 import com.mahjong.server.netty.model.HistoryRecordRespModel;
 import com.mahjong.server.netty.model.ProtocolModel;
@@ -26,8 +25,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 /**
- * 登陆认证
- *
+ * 登陆认证s
+ *o
  */
 @Sharable
 

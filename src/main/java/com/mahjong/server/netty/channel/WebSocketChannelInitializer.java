@@ -65,6 +65,7 @@ public class WebSocketChannelInitializer extends ChannelInitializer<NioSocketCha
 		// 处理其他的 WebSocketFrame
 		pipeline.addLast(new WebSocketServerProtocolHandler("/mj"));
 		// 处理 TextWebSocketFrame
+		pipeline.addLast(requestPrintHandler);
 		pipeline.addLast(webSocketProtocolCodec);
 		pipeline.addLast(authHandler);
 		pipeline.addLast(heartBeatHandler);

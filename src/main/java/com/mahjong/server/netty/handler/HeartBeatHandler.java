@@ -1,6 +1,5 @@
 package com.mahjong.server.netty.handler;
 
-import java.net.InetSocketAddress;
 import java.util.Date;
 
 import org.springframework.stereotype.Component;
