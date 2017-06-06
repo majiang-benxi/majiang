@@ -11,6 +11,7 @@ import com.mahjong.server.netty.handler.HeartBeatHandler;
 import com.mahjong.server.netty.handler.HistoryRecordHandler;
 import com.mahjong.server.netty.handler.KillRoomHandler;
 import com.mahjong.server.netty.handler.MahjongLogicHandler;
+import com.mahjong.server.netty.handler.RequestPrintHandler;
 import com.mahjong.server.netty.handler.SendMessageHandler;
 import com.mahjong.server.netty.handler.ToWinHandler;
 import com.mahjong.server.netty.handler.UpdateHandler;
@@ -28,6 +29,8 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 @Component
 public class WebSocketChannelInitializer extends ChannelInitializer<NioSocketChannel> {
 
+	@Autowired
+	private RequestPrintHandler requestPrintHandler;
 	@Autowired
 	private WebSocketProtocolCodec webSocketProtocolCodec;
 	@Autowired
