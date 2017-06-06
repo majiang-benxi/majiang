@@ -17,6 +17,7 @@
 				<th width="50">最后登录IP </th>
 				<th width="50">最后登录时间 </th>
 				<th width="30">登录次数</th>
+				<th width="30">状态</th>
 				<th width="30">所在房间</th>
 			</tr>
 		</thead>

@@ -1,4 +1,5 @@
 package com.mahjong.server.game.context;
+import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -69,6 +70,7 @@ public class HouseContext {
 		gameContext.setZhuangLocation(PlayerLocation.EAST);// 创建房间的人为庄
 	    roomContext.setGameContext(gameContext);
 	    roomContext.setRoomStatus(RoomStatus.WAIT_FOR_READY);
+	    roomContext.setCreateTime(new Date());
 	   
 		return roomContext;
 

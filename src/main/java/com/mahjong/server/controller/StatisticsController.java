@@ -328,22 +328,6 @@ public class StatisticsController {
 			
 		}
 		
-		
-		List<UserInfo> userInfoList = dbService.selectAllUserLimit(userId,datemin,datemax,null,curP*eachCount,eachCount);
-		if(CollectionUtils.isNotEmpty(userInfoList)){
-			
-			for(UserInfo userInfo : userInfoList){
-				
-				userInfo.setCreateTimeStr(DateUtil.fromatDateToYYMMDDHHMMSS(userInfo.getCreateTime()));
-				userInfo.setLastLoginTimeStr(DateUtil.fromatDateToYYMMDDHHMMSS(userInfo.getLastLoginTime()));
-				userInfo.setCurrRoom(21321);
-				returnList.add(userInfo);
-			}
-			
-		}
-		
-		
-		
 		modelAndView.addObject("currentPage", curPage);
 		modelAndView.addObject("pageCount", totalcount%eachCount==0? (totalcount/eachCount):(totalcount/eachCount+1));
 		modelAndView.addObject("newInfoList", returnList);
