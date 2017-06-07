@@ -118,9 +118,6 @@ public class GameContext {
 			return null;
 		}
 		
-		if(this.table.getPlayerInfos().size()==4){
-			//TODO init 
-		}
 		return nowPlayer;
 	}
 

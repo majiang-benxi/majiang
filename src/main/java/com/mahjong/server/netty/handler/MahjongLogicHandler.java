@@ -49,6 +49,7 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 				ctx = ClientSession.sessionMap.get(weixinId);
 				RoomContext roomContext = HouseContext.weixinIdToRoom.get(weixinId);
 				PlayerLocation discardPlayLocation = null;
+				
 				for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext().getTable().getPlayerInfos()
 						.entrySet()) {
 					if (weixinId.equals(entry.getValue().getUserInfo().getWeixinMark())) {
@@ -56,6 +57,7 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 						break;
 					}
 				}
+				
 				try {
 					if (discardReqModel.getTileGroupType() == TileGroupType.ONE_GROUP.getCode()) {
 						// 剩余玩家吃碰杠胡检测,如果其他玩家可以吃碰杠胡的时候，按照优先级逐个通知处理
