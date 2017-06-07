@@ -297,12 +297,12 @@ public class Tile {
 		} else if (fanHui == 0x29) {
 			result[0] = (byte) 0x29;
 			result[1] = (byte) 0x21;
-		} else if (fanHui == 0x52) {
-			result[0] = (byte) 0x49;
-			result[1] = (byte) 0x52;
-		} else if (fanHui == 0x55) {
-			result[0] = (byte) 0x53;
-			result[1] = (byte) 0x55;
+		} else if (fanHui == 0x34) {
+			result[0] = (byte) 0x31;
+			result[1] = (byte) 0x34;
+		} else if (fanHui == 0x37) {
+			result[0] = (byte) 0x35;
+			result[1] = (byte) 0x37;
 		} else {
 			result[0] = fanHui;
 			result[1] = (byte) (fanHui + 1);
