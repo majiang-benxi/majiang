@@ -325,23 +325,28 @@
   
    <select id="selectLatestUserRoomRecordScoreInfo" resultMap="BaseResultMap" parameterType="map" >
 		SELECT
-			*
+			<include refid="Base_Column_List" />
 		FROM
 			user_action_score AS uas
 		WHERE
 			uas.user_id = #{userId}
-		AND uas.room_record_id IN (
-			SELECT
-				room_record_id
-			FROM
-				user_action_score AS uasi
-			WHERE
-				uasi.user_id = uas.user_id
-			GROUP BY
-				uasi.room_record_id
-			limit 0,#{topNum,jdbcType=INTEGER} 
-		)
-		    
+		AND uas.room_record_id IN 
+		<foreach collection="latestRoomRecordIds" item="item" index="index" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+  </select>
+  
+  
+   <select id="selectLatestRoomRecordIds" resultType="int" parameterType="map" >
+		SELECT
+			uasi.room_record_id
+		FROM
+			user_action_score AS uasi
+		WHERE
+			uasi.user_id = #{userId}
+		GROUP BY
+			uasi.room_record_id
+		LIMIT  0,#{topNum} 
   </select>
   
   

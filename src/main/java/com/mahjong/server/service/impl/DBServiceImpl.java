@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,6 +31,7 @@ import com.mahjong.server.entity.UserRoomRecord;
 import com.mahjong.server.service.DBService;
 import com.mahjong.server.vo.UserLatestPlayRecord;
 import com.mahjong.server.vo.UserRecordScoreVO;
+import com.mahjong.server.vo.UserRoomActScore;
 
 @Service
 public class DBServiceImpl implements DBService {
@@ -168,30 +168,83 @@ public class DBServiceImpl implements DBService {
 		
 		List<UserLatestPlayRecord> returnRecordList = new ArrayList<UserLatestPlayRecord>();
 		
-		List<UserActionScore> latestRecords = selectLatestUserRoomRecordScoreInfo(userId,topNum);
+		List<Integer> latestRoomRecordIds = selectLatestRoomRecordIds(userId,topNum);
+		
+		if(CollectionUtils.isEmpty(latestRoomRecordIds)){
+			return returnRecordList; 
+		}
+		
+		List<UserActionScore> latestRecords = selectLatestUserRoomRecordScoreInfo(userId,latestRoomRecordIds);
 		
 		Map<Integer,UserLatestPlayRecord> roomRecordScoreMap = new HashMap<Integer,UserLatestPlayRecord>();
-		Set<Integer> roomRecordList = new HashSet<Integer>();
+		Map<Integer,Map<Integer,UserRoomActScore>> roomScoreMap = new HashMap<Integer,Map<Integer,UserRoomActScore>>();
 		
 		if(CollectionUtils.isNotEmpty(latestRecords)){
 			for(UserActionScore userRoomScore : latestRecords){
 				
 				Integer roomRecordId = userRoomScore.getRoomRecordId();
-				roomRecordList.add(roomRecordId);
+				
+				UserRoomActScore userRoomActScore = null;
+				
+				Integer actType = userRoomScore.getActionType();
 				
 				if(roomRecordScoreMap.containsKey(roomRecordId)){
-					UserLatestPlayRecord userLatestPlayRecord = roomRecordScoreMap.get(roomRecordId);
-					userLatestPlayRecord.getUserActionScoreList().add(userRoomScore);
+					
+					
+					Map<Integer,UserRoomActScore> scoreMap = roomScoreMap.get(roomRecordId);
+					if(scoreMap.containsKey(actType)){
+						
+						userRoomActScore = scoreMap.get(actType);
+						userRoomActScore.setActionScore(userRoomActScore.getActionScore()+userRoomScore.getActionScore());
+						
+					}else{
+						
+						userRoomActScore = new UserRoomActScore();
+						userRoomActScore.setActionScore(userRoomScore.getActionScore());
+						userRoomActScore.setActionType(actType);
+						scoreMap.put(actType, userRoomActScore);
+						
+					}
+					
+					
 				}else{
 					
 					RoomRecord roomRecord = selectRoomRecordInfoByID(roomRecordId);
+					
 					UserLatestPlayRecord userLatestPlayRecord = new UserLatestPlayRecord();
 					userLatestPlayRecord.setRoomRecord(roomRecord);
-					userLatestPlayRecord.getUserActionScoreList().add(userRoomScore);
+					
 					roomRecordScoreMap.put(roomRecordId, userLatestPlayRecord);
+					
+					
+					Map<Integer,UserRoomActScore> scoreMap = new HashMap<Integer, UserRoomActScore>();
+					
+					userRoomActScore = new UserRoomActScore();
+					userRoomActScore.setActionScore(userRoomScore.getActionScore());
+					userRoomActScore.setActionType(actType);
+					scoreMap.put(actType, userRoomActScore);
+					
+					roomScoreMap.put(roomRecordId, scoreMap);
+					
+					
 				}
 			}
 			returnRecordList = new ArrayList<UserLatestPlayRecord>(roomRecordScoreMap.values());
+			
+			
+			for(UserLatestPlayRecord userLatestPlayRecord : returnRecordList){
+				
+				Integer roomRecordId = userLatestPlayRecord.getRoomRecord().getId();
+				
+				Map<Integer,UserRoomActScore> scoreMap = roomScoreMap.get(roomRecordId);
+				
+				if(scoreMap!=null&&scoreMap.size()>0){
+					userLatestPlayRecord.getUserActionScoreList().addAll(new ArrayList<UserRoomActScore>(scoreMap.values()));
+				}
+				
+			}
+			
+			
 			
 			Collections.sort(returnRecordList, new Comparator<UserLatestPlayRecord>() {
 				@Override
@@ -204,11 +257,11 @@ public class DBServiceImpl implements DBService {
 		
 		return returnRecordList;
 	}
-	private List<UserActionScore> selectLatestUserRoomRecordScoreInfo(Integer userId, Integer topNum) {
-		if(topNum==null){
-			topNum = 10;
-		}
-		return userActionScoreMapper.selectLatestUserRoomRecordScoreInfo(userId,topNum);
+	private List<Integer> selectLatestRoomRecordIds(Integer userId, Integer topNum) {
+		return userActionScoreMapper.selectLatestRoomRecordIds( userId,  topNum);
+	}
+	private List<UserActionScore> selectLatestUserRoomRecordScoreInfo(Integer userId, List<Integer> latestRoomRecordIds) {
+		return userActionScoreMapper.selectLatestUserRoomRecordScoreInfo(userId,latestRoomRecordIds);
 	}
 	/****************查询用户top10战绩*******************/
 	

@@ -39,6 +39,8 @@ public interface UserActionScoreMapper {
 	List<UserRecordScoreVO> getUserPlayRecordInfoLimit(@Param("userId")String uid, @Param("roomNum")String roomNum, @Param("datemin")String datemin, @Param("datemax")String datemax,
 			 @Param("start") Integer startIndex,@Param("count")Integer eachCount);
 
-	List<UserActionScore> selectLatestUserRoomRecordScoreInfo(@Param("userId")Integer userId, @Param("topNum")Integer topNum);
+	List<UserActionScore> selectLatestUserRoomRecordScoreInfo(@Param("userId")Integer userId, @Param("latestRoomRecordIds")List<Integer> latestRoomRecordIds);
+
+	List<Integer> selectLatestRoomRecordIds(@Param("userId")Integer userId, @Param("topNum")Integer topNum);
 
 }
