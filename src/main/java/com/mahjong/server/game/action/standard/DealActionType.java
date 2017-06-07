@@ -54,7 +54,9 @@ public class DealActionType implements ActionType {
 			for (Relation relation : Relation.values()) {
 				PlayerLocation playerLocation = zhuang.getLocationOf(relation);
 				PlayerInfo playerInfo = context.getTable().getPlayerByLocation(playerLocation);
-				playerInfo._getSortAliveTiles().addTile(table.draw(drawCount));
+				if(playerInfo!=null){
+					playerInfo._getSortAliveTiles().addTile(table.draw(drawCount));
+				}
 			}
 		}
 		Tile zhuangFirstTile=table.draw(1);

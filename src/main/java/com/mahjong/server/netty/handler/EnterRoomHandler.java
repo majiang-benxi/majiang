@@ -84,14 +84,22 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 							
 							if ((roomContex = HouseContext.rommList.get(roomId)) != null) {
 									
-								if(roomContex.getGameContext().getTable().getPlayerInfos().size()>=4){
-									enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "房间人数已满，无法加入房间！", null);
+								if(roomContex.getRoomStatus().getCode()!=RoomStatus.WAIT_USERS.getCode()){
+									enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "房间人数已满或已结束，无法加入房间！", null);
 									logger.info("房间人数已满，无法加入房间，weixinId="+weixinId);
 								}else{
 									
 									playerInfo = roomContex.joinRoom(userInfo);
 									
 									if (playerInfo!=null) {
+										
+										UserInfo updateuserInfo = new UserInfo();
+										updateuserInfo.setId(userInfo.getId());
+										updateuserInfo.setRoomCartNum(userInfo.getRoomCartNum()-1);
+										updateuserInfo.setRoomCartNumUsed(userInfo.getRoomCartNumUsed()+1);
+										updateuserInfo.setCurrRoom(roomId);
+										
+										dbService.updateUserInfoById(updateuserInfo);
 										
 										HouseContext.waitUserNum.incrementAndGet();
 										HouseContext.weixinIdToRoom.put(weixinId, roomContex);
@@ -103,15 +111,15 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 										
 										if(playerInfo.getUserLocation().intValue() == PlayerLocation.NORTH.getCode()){
 											roomRecord.setNorthUid(userInfo.getId());
-											userRoomRecord.setOperateType((byte) 4);
+											userRoomRecord.setUserDirection((byte) 4);
 											
 										}else if(playerInfo.getUserLocation().intValue() == PlayerLocation.WEST.getCode()){
 											roomRecord.setWestUid(userInfo.getId());
-											userRoomRecord.setOperateType((byte) 3);
+											userRoomRecord.setUserDirection((byte) 3);
 											
 										}else if(playerInfo.getUserLocation().intValue() == PlayerLocation.SOUTH.getCode()){
 											roomRecord.setSouthUid(userInfo.getId());
-											userRoomRecord.setOperateType((byte) 2);
+											userRoomRecord.setUserDirection((byte) 2);
 											
 										}
 										
@@ -145,13 +153,16 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 										enterRoomProtocolModel.setCommandId(EventEnum.NEW_ENTER_RESP.getValue());
 										EnterRoomRespModel newEnterRoomRespModel = new EnterRoomRespModel(weixinId, true, "新人加入", roomContex);
 										enterRoomProtocolModel.setBody(JSON.toJSONString(newEnterRoomRespModel));
-										HandlerHelper.noticeMsg2Players(roomContex, null, enterRoomProtocolModel);
-										
+										HandlerHelper.noticeMsg2Players(roomContex, null, enterRoomProtocolModel);//TODO
 										
 										boolean hashDealTile = dealTile2AllPlayersCheck(roomContex);
 										if (hashDealTile) {// 通知所有玩家已经发牌
 											
-											roomRecord.setRoomState((byte) 1);
+											roomRecord.setRoomState((byte) 2);
+											
+											boolean flg = dbService.updateRoomRecordInfoByPrimaryKey(roomRecord);
+											
+											logger.error("更新房间信息，flg="+flg+",roomRecord="+JSONObject.toJSONString(roomRecord));
 											
 											HouseContext.playRoomNum.incrementAndGet();
 											HouseContext.waitRoomNum.decrementAndGet();
@@ -180,6 +191,7 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 											boolean winFirst = winActionType.isLegalAction(roomContex.getGameContext(),	roomContex.getGameContext().getZhuangLocation(), new Action(WIN));
 											
 											if (winFirst) {
+												
 												PlayerInfo zhuangWinPlayerInfo = roomContex.getGameContext().getTable().getPlayerByLocation(roomContex.getGameContext().getZhuangLocation());
 												
 												updateUserRoomRecordInfo(zhuangWinPlayerInfo.getUserRoomRecordInfoID(),1,1,null);
@@ -196,13 +208,10 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 												HandlerHelper.noticeMsg2Players(roomContex, null, winProtocolModel);
 												
 											}
+										}else{
+											enterRoomRespModel = new EnterRoomRespModel(weixinId, true, "加入成功", roomContex);;
 										}
 										
-										boolean flg = dbService.updateRoomRecordInfoByPrimaryKey(roomRecord);
-										
-										logger.error("更新房间信息，flg="+flg+",roomRecord="+JSONObject.toJSONString(roomRecord));
-										
-										return;
 									} else {
 										enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "加入房间失败，房间已满！", null);
 									}

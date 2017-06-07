@@ -47,10 +47,12 @@ public class ZiPaiActionType extends AbstractActionType {
 	public boolean canDo(GameContext context, PlayerLocation location) {
 		if (context.getLastAction().equals(DEAL)) {
 			PlayerInfo playerInfo = context.getTable().getPlayerByLocation(location);
-			Tile aliveTile = playerInfo._getSortAliveTiles();
-			if (aliveTile.containsAll(new Tile(new byte[] { 0x31, 0x32, 0x33, 0x34 }))
-					|| aliveTile.containsAll(new Tile(new byte[] { 0x35, 0x36, 0x37 }))) {
-				return true;
+			if(playerInfo!=null){
+				Tile aliveTile = playerInfo._getSortAliveTiles();
+				if (aliveTile.containsAll(new Tile(new byte[] { 0x31, 0x32, 0x33, 0x34 }))
+						|| aliveTile.containsAll(new Tile(new byte[] { 0x35, 0x36, 0x37 }))) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -66,13 +68,15 @@ public class ZiPaiActionType extends AbstractActionType {
 	protected void doLegalAction(GameContext context, PlayerLocation location,
 			Tile tile) {
 		PlayerInfo playerInfo = context.getTable().getPlayerByLocation(location);
-		playerInfo._getSortAliveTiles().removeAll(tile);
-		if (tile.getPai().length == 3) {
-			playerInfo.getTileGroups().add(new TileGroup(XUAN_FENG_GANG_ZFB_GROUP, tile));
-		} else {
-			playerInfo.getTileGroups().add(new TileGroup(XUAN_FENG_GANG_DNXB_GROUP, tile));
+		if(playerInfo!=null){
+			playerInfo._getSortAliveTiles().removeAll(tile);
+			if (tile.getPai().length == 3) {
+				playerInfo.getTileGroups().add(new TileGroup(XUAN_FENG_GANG_ZFB_GROUP, tile));
+			} else {
+				playerInfo.getTileGroups().add(new TileGroup(XUAN_FENG_GANG_DNXB_GROUP, tile));
+			}
+			context.getLocalDoneActions().add(new ActionAndLocation(new Action(ZIPAI, tile), location));
 		}
-		context.getLocalDoneActions().add(new ActionAndLocation(new Action(ZIPAI, tile), location));
 
 	}
 

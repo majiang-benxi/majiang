@@ -108,16 +108,18 @@ public class CpgActionType extends AbstractActionType {
 	protected void doLegalAction(GameContext context, PlayerLocation location,
 			Tile tile) {
 		PlayerInfo playerInfo = context.getTable().getPlayerByLocation(location);
+		if(playerInfo!=null){
+			playerInfo._getSortAliveTiles().removeAll(tile);
+			
+			Tile gotTile = context.getLastAction().getTile();
+			TileGroup group = new TileGroup(groupType, gotTile,
+					location.getRelationOf(context.getLastActionLocation()),
+					Tile.addTile(tile, gotTile));
+			playerInfo.getTileGroups().add(group);
+			playerInfo.setDiscardAuth(true);
+			context.getLocalDoneActions().add(new ActionAndLocation(new Action(CHI, Tile.addTile(tile, gotTile)), location));// 存吃和碰这里没啥区别
+		}
 
-		playerInfo._getSortAliveTiles().removeAll(tile);
-
-		Tile gotTile = context.getLastAction().getTile();
-		TileGroup group = new TileGroup(groupType, gotTile,
-				location.getRelationOf(context.getLastActionLocation()),
-				Tile.addTile(tile, gotTile));
-		playerInfo.getTileGroups().add(group);
-		playerInfo.setDiscardAuth(true);
-		context.getLocalDoneActions().add(new ActionAndLocation(new Action(CHI, Tile.addTile(tile, gotTile)), location));// 存吃和碰这里没啥区别
 
 	}
 

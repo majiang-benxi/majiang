@@ -2,13 +2,17 @@ package com.mahjong.server.netty.handler;
 
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.mahjong.server.entity.UserInfo;
+import com.mahjong.server.game.context.HouseContext;
 import com.mahjong.server.netty.model.ProtocolModel;
 import com.mahjong.server.netty.model.RequestBaseMode;
 import com.mahjong.server.netty.session.ClientSession;
+import com.mahjong.server.service.DBService;
 
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -21,6 +25,11 @@ import io.netty.channel.SimpleChannelInboundHandler;
 @Sharable
 @Component
 public class HeartBeatHandler extends SimpleChannelInboundHandler<ProtocolModel> {
+	
+
+	@Autowired
+	private DBService dbService;
+	
 	@Override
 	public void channelRead0(ChannelHandlerContext ctx, ProtocolModel protocolModel) throws Exception {
 		
@@ -29,7 +38,14 @@ public class HeartBeatHandler extends SimpleChannelInboundHandler<ProtocolModel>
 					new TypeReference<RequestBaseMode>() {
 					});
 			String weixinId = requestBaseMode.getWeiXinId();
-					ClientSession.sessionMap.put(weixinId, ctx);
+			ClientSession.sessionMap.put(weixinId, ctx);
+			
+			if(HouseContext.weixinIdToUserInfo.containsKey(weixinId)){
+				UserInfo userInfo = dbService.selectUserInfoByWeiXinMark(weixinId);
+				HouseContext.weixinIdToUserInfo.put(weixinId, userInfo);
+			}
+			
+			
 			Date now = new Date();
 			ClientSession.sessionHeartBeatTimeMap.put(weixinId, now);
 		}

@@ -50,11 +50,13 @@ public class DrawActionType extends AbstractActionType {
 	protected void doLegalAction(GameContext context, PlayerLocation location, Tile tile) {
 		Tile drawTile = context.getTable().draw(1);
 		PlayerInfo playerInfo=context.getTable().getPlayerByLocation(location);
-		playerInfo._getSortAliveTiles().addTile(drawTile);
-		playerInfo.setLastDrawedTile(drawTile);
-		playerInfo.setDiscardAuth(true);
-		context.getTable().resetPlayersLastTile(location);
-		context.getLocalDoneActions().add(new ActionAndLocation(new Action(DRAW, drawTile), location));
+		if(playerInfo!=null){
+			playerInfo._getSortAliveTiles().addTile(drawTile);
+			playerInfo.setLastDrawedTile(drawTile);
+			playerInfo.setDiscardAuth(true);
+			context.getTable().resetPlayersLastTile(location);
+			context.getLocalDoneActions().add(new ActionAndLocation(new Action(DRAW, drawTile), location));
+		}
 	}
 
 }

@@ -69,7 +69,7 @@ public class HouseContext {
 	    GameContext gameContext = new GameContext(table, gameStrategy);
 		gameContext.setZhuangLocation(PlayerLocation.EAST);// 创建房间的人为庄
 	    roomContext.setGameContext(gameContext);
-	    roomContext.setRoomStatus(RoomStatus.WAIT_FOR_READY);
+	    roomContext.setRoomStatus(RoomStatus.WAIT_USERS);
 	    roomContext.setCreateTime(new Date());
 	   
 		return roomContext;
@@ -79,11 +79,18 @@ public class HouseContext {
 	private static int getRoomNum(){
 		String roomNum = "";
 		for(int i=0;i<6;i++){
+			
 			Random random = new Random();
 			int eachNum = random.nextInt(10);
+			
+			if(i==0){
+				while(eachNum==0){
+					eachNum = random.nextInt(10);
+				}
+			}
 			roomNum += eachNum;
 		}
 		return Integer.parseInt(roomNum);
 	}
-
+	
 }

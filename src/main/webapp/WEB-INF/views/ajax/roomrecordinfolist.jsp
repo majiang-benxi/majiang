@@ -34,20 +34,20 @@
 		
 		<td class="td-status">
 			
-				<c:if test="${eachVar.roomState == 1}">
+				<c:if test="${eachVar.roomState == 2}">
 					<span class=" ">进行中</span>
 				</c:if>
-				<c:if test="${eachVar.roomState == 2}">
+				<c:if test="${eachVar.roomState == 0}">
 					<span class=" ">
 					等待
 					</span>
 				</c:if>
-				<c:if test="${eachVar.roomState == 3}">
+				<c:if test="${eachVar.roomState == 1}">
 					<span class="  ">
-					解散
+					待确认
 					</span>
 				</c:if>
-				<c:if test="${eachVar.roomState == 4}">
+				<c:if test="${eachVar.roomState == 3}">
 					<span class=" ">
 					结束
 					</span>

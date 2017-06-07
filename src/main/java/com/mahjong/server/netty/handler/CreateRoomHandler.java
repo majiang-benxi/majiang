@@ -80,6 +80,12 @@ public class CreateRoomHandler extends SimpleChannelInboundHandler<ProtocolModel
 						HouseContext.waitRoomNum.incrementAndGet();
 						HouseContext.waitUserNum.incrementAndGet();
 						
+						UserInfo updateuserInfo = new UserInfo();
+						updateuserInfo.setId(userInfo.getId());
+						updateuserInfo.setCurrRoom(roomContex.getRoomNum());
+						
+						dbService.updateUserInfoById(updateuserInfo);
+						
 						logger.info("用户创建房间，weixinId="+weixinId);
 						
 						RoomRecord roomRecord = new RoomRecord();
@@ -91,7 +97,7 @@ public class CreateRoomHandler extends SimpleChannelInboundHandler<ProtocolModel
 						roomRecord.setEastUid(userInfo.getId());
 						roomRecord.setRoomNum(roomContex.getRoomNum());
 						roomRecord.setRoomRule(ruleStrategy);
-						roomRecord.setRoomState((byte) 2);
+						roomRecord.setRoomState((byte) 0);
 						
 						Integer roomRecId = dbService.insertRoomRecordInfo(roomRecord);
 						
@@ -118,7 +124,6 @@ public class CreateRoomHandler extends SimpleChannelInboundHandler<ProtocolModel
 						PlayerInfo playerInfo = roomContex.getGameContext().getTable().getPlayerByLocation(PlayerLocation.EAST);
 						playerInfo.setUserRoomRecordInfoID(uroomRecId);
 						
-						
 					}else{
 						
 						logger.error("用户已经在房间中，weixinId="+weixinId+",房间号："+roomContex.getRoomNum());
@@ -131,7 +136,10 @@ public class CreateRoomHandler extends SimpleChannelInboundHandler<ProtocolModel
 				protocolModel.setCommandId(EventEnum.CREATE_ROOM_RESP.getValue());
 				protocolModel.setBody(JSON.toJSONString(createRoomRespModel));
 				ctx.writeAndFlush(protocolModel);
-				logger.error("创建房间返回数据："+JSONObject.toJSONString(protocolModel));
+				
+				
+				
+				logger.error("创建房间返回数据："+JSONObject.parseObject(JSONObject.toJSONString(protocolModel)).toJSONString());
 				
 			}
 		} else {
