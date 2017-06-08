@@ -75,7 +75,7 @@ public class SendMessageHandler extends SimpleChannelInboundHandler<ProtocolMode
 							newProtocolModel.setCommandId(EventEnum.SEND_MESG_RESP.getValue());
 							newProtocolModel.setBody(JSON.toJSONString(sendMsgRespModel));
 							
-							ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinId);
+							ChannelHandlerContext userCtx = ClientSession.sessionMap.get(playerIn.getUserInfo().getWeixinMark());
 							userCtx.writeAndFlush(newProtocolModel);
 							
 							logger.error("获取消息返回数据："+JSONObject.toJSONString(newProtocolModel));

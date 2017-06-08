@@ -1,6 +1,8 @@
 package com.mahjong.server.controller;
 
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +24,7 @@ import com.alibaba.fastjson.JSON;
 import com.mahjong.server.entity.RoomCartChange;
 import com.mahjong.server.entity.RoomRecord;
 import com.mahjong.server.entity.UserInfo;
+import com.mahjong.server.entity.UserRoomRecord;
 import com.mahjong.server.game.context.HouseContext;
 import com.mahjong.server.game.context.RoomContext;
 import com.mahjong.server.game.enums.EventEnum;
@@ -355,7 +358,7 @@ public class StatisticsController {
 			
 			KillRoomRespModel killRoomRespModel = new KillRoomRespModel();
 			killRoomRespModel.setResult(true);
-			killRoomRespModel.setMsg("解散成功！");
+			killRoomRespModel.setMsg("管理员强制解散成功！");
 			
 			protocolModel.setCommandId(EventEnum.KILL_ROOM_RESP.getValue());
 			protocolModel.setBody(JSON.toJSONString(killRoomRespModel));
@@ -368,17 +371,57 @@ public class StatisticsController {
 				HouseContext.weixinIdToRoom.remove(weixinmark);
 				
 			}
-			HouseContext.rommList.remove(roomNumber);
 			
-			RoomRecord roomRecordUpdate = new RoomRecord();
+			HouseContext.rommList.remove(roomContext.getRoomNum());
 			
-			List<RoomRecord> queryRecords = dbService.selectRoomRecordInfo(roomNumber, null, null);
-			if(queryRecords!=null&&queryRecords.size()>0){
-				RoomRecord roomRecord = queryRecords.get(0);
-				roomRecordUpdate.setId(roomRecord.getId());
-				roomRecordUpdate.setRoomState((byte) 3);
-				dbService.updateRoomRecordInfoByPrimaryKey(roomRecordUpdate);
+			HouseContext.playRoomNum.decrementAndGet();
+			HouseContext.playUserNum.addAndGet(-4);
+			
+			for(Entry<PlayerLocation, PlayerInfo>  ent : roomContext.getGameContext().getTable().getPlayerInfos().entrySet()){
+				PlayerInfo playerInfo = ent.getValue();
+				HouseContext.weixinIdToRoom.remove(playerInfo.getUserInfo().getWeixinMark());
+				
+				UserRoomRecord userRoomRecord = new UserRoomRecord();
+				
+				if(playerInfo.getUserLocation().intValue() == PlayerLocation.NORTH.getCode()){
+					userRoomRecord.setUserDirection((byte) 4);
+					
+				}else if(playerInfo.getUserLocation().intValue() == PlayerLocation.WEST.getCode()){
+					userRoomRecord.setUserDirection((byte) 3);
+					
+				}else if(playerInfo.getUserLocation().intValue() == PlayerLocation.SOUTH.getCode()){
+					userRoomRecord.setUserDirection((byte) 2);
+					
+				}
+				
+				Date now = new Date();
+				
+				ChannelHandlerContext userCtx = ClientSession.sessionMap.get(playerInfo.getUserInfo().getWeixinMark());
+				
+				InetSocketAddress socketAddr = (InetSocketAddress) userCtx.channel().remoteAddress();
+				
+				userRoomRecord.setHuTimes(0);
+				userRoomRecord.setLoseTimes(0);
+				userRoomRecord.setOperateCause("解散房间，离开");
+				userRoomRecord.setOperateType((byte) 2);
+				userRoomRecord.setOperateTime(now);
+				
+				userRoomRecord.setRoomNum(roomContext.getRoomNum());
+				
+				userRoomRecord.setRoomRecordId(roomContext.getRoomID());
+				
+				userRoomRecord.setUserId(playerInfo.getUserInfo().getId());
+				userRoomRecord.setUserIp(socketAddr.getAddress().getHostAddress());
+				userRoomRecord.setWinTimes(0);
+				
+				Integer userRoomRecordId = dbService.insertUserRoomRecordInfo(userRoomRecord);
+				
 			}
+			
+			RoomRecord roomRecord = new RoomRecord();
+			roomRecord.setId(roomContext.getRoomID());
+			roomRecord.setRoomState((byte) 3);
+			boolean flg = dbService.updateRoomRecordInfoByPrimaryKey(roomRecord);
 			
 		}
 		

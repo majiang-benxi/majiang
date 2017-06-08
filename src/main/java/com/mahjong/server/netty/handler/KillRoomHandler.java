@@ -60,7 +60,6 @@ public class KillRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> 
 				UserInfo userInfo = HouseContext.weixinIdToUserInfo.get(weixinId);
 				
 				if (userInfo != null && ctx!=null) {
-					logger.error("用户不存在，或者不在线，weixinId="+weixinId);
 					
 					RoomContext roomContex = HouseContext.weixinIdToRoom.get(weixinId);
 					
@@ -82,10 +81,10 @@ public class KillRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> 
 							
 							newProtocolModel.setBody(JSON.toJSONString(killRoomNoticeRespModel));
 							
-							ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinId);
+							ChannelHandlerContext userCtx = ClientSession.sessionMap.get(playerIn.getUserInfo().getWeixinMark());
 							userCtx.writeAndFlush(newProtocolModel);
 							
-							logger.error("解散房间返回数据：weixinId="+weixinId+"，数据："+JSONObject.toJSONString(protocolModel));
+							logger.error("解散房间返回数据：weixinId="+playerIn.getUserInfo().getWeixinMark()+"，数据："+JSONObject.toJSONString(protocolModel));
 							
 						}
 						
@@ -105,6 +104,30 @@ public class KillRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> 
 							
 							killRoomRespModel.setResult(true);
 							killRoomRespModel.setMsg("解散成功！");
+							
+						}else{
+							
+							killRoomRespModel.setResult(false);
+							killRoomRespModel.setMsg("解散失败！");
+							killRoomRespModel.setUnAgreeNickNames(roomContex.getDisagreeUserNames());
+							
+						}
+						
+						protocolModel.setCommandId(EventEnum.KILL_ROOM_RESP.getValue());
+						protocolModel.setBody(JSON.toJSONString(killRoomRespModel));
+						
+						for(Entry<PlayerLocation, PlayerInfo>  ent : roomContex.getGameContext().getTable().getPlayerInfos().entrySet()){
+							
+							PlayerInfo playerIn = ent.getValue();
+							
+							ChannelHandlerContext userCtx = ClientSession.sessionMap.get(playerIn.getUserInfo().getWeixinMark());
+							userCtx.writeAndFlush(protocolModel);
+						
+							logger.error("解散房间返回数据："+JSONObject.toJSONString(protocolModel));
+						}
+						
+						
+						if(roomContex.getDisAgreeKillRoomNum().intValue()==0){
 							
 							HouseContext.rommList.remove(roomContex.getRoomNum());
 							
@@ -130,7 +153,10 @@ public class KillRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> 
 								
 								Date now = new Date();
 								
-								InetSocketAddress socketAddr = (InetSocketAddress) ctx.channel().remoteAddress();
+								
+								ChannelHandlerContext userCtx = ClientSession.sessionMap.get(playerInfo.getUserInfo().getWeixinMark());
+								
+								InetSocketAddress socketAddr = (InetSocketAddress) userCtx.channel().remoteAddress();
 								
 								userRoomRecord.setHuTimes(0);
 								userRoomRecord.setLoseTimes(0);
@@ -157,10 +183,6 @@ public class KillRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> 
 							
 						}else{
 							
-							killRoomRespModel.setResult(false);
-							killRoomRespModel.setMsg("解散失败！");
-							killRoomRespModel.setUnAgreeNickNames(roomContex.getDisagreeUserNames());
-							
 							/**
 							 * 清空本次记录
 							 */
@@ -169,14 +191,11 @@ public class KillRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> 
 							roomContex.setDisagreeUserNames(new ArrayList<String>());
 						}
 						
-						protocolModel.setCommandId(EventEnum.KILL_ROOM_RESP.getValue());
-						protocolModel.setBody(JSON.toJSONString(killRoomRespModel));
-						ctx.writeAndFlush(protocolModel);
-						
-						logger.error("解散房间返回数据："+JSONObject.toJSONString(protocolModel));
 					}
 						
 				}else{
+					
+					logger.error("用户不存在，或者不在线，weixinId="+weixinId);
 					
 					KillRoomRespModel killRoomRespModel = new KillRoomRespModel();
 					killRoomRespModel.setResult(false);
