@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.mahjong.server.entity.RoomCartChange;
 import com.mahjong.server.entity.RoomRecord;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.entity.UserRoomRecord;
@@ -68,6 +69,11 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 				UserInfo userInfo = HouseContext.weixinIdToUserInfo.get(weixinId);
 				PlayerInfo playerInfo = null;
 				
+				RoomContext roomContex = HouseContext.weixinIdToRoom.get(weixinId);
+				RoomRecord roomRecord = new RoomRecord();
+				
+				boolean flag = false;
+				
 				if (userInfo == null) {
 					
 					enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "您未注册或者未在线，无法加入房间，请注册！", null);
@@ -75,7 +81,7 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 					
 				} else {
 					
-					RoomContext roomContex = HouseContext.weixinIdToRoom.get(weixinId);
+					
 					if (roomContex == null) {
 						if(userInfo.getRoomCartNum()<=0){
 							enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "您的房卡数目不够，无法加入房间，请充值！", null);
@@ -101,10 +107,21 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 										
 										dbService.updateUserInfoById(updateuserInfo);
 										
+										RoomCartChange roomCartChange = new RoomCartChange();
+										roomCartChange.setChangeNum(-1);
+										roomCartChange.setChangeTime(new Date());
+										roomCartChange.setChangecause("加入房间"+roomContex.getRoomNum()+"扣房卡");
+										
+										roomCartChange.setUserId(userInfo.getId());
+										roomCartChange.setUserName(userInfo.getNickName());
+										
+										dbService.insertRoomCartChange(roomCartChange);
+										
+										
 										HouseContext.waitUserNum.incrementAndGet();
 										HouseContext.weixinIdToRoom.put(weixinId, roomContex);
 										
-										RoomRecord roomRecord = new RoomRecord();
+										
 										UserRoomRecord userRoomRecord = new UserRoomRecord();
 										
 										roomRecord.setId(roomContex.getRoomID());
@@ -153,64 +170,11 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 										enterRoomProtocolModel.setCommandId(EventEnum.NEW_ENTER_RESP.getValue());
 										EnterRoomRespModel newEnterRoomRespModel = new EnterRoomRespModel(weixinId, true, "新人加入", roomContex);
 										enterRoomProtocolModel.setBody(JSON.toJSONString(newEnterRoomRespModel));
-										HandlerHelper.noticeMsg2Players(roomContex, null, enterRoomProtocolModel);//TODO
+										HandlerHelper.noticeMsg2Players(roomContex, weixinId, enterRoomProtocolModel);
 										
-										boolean hashDealTile = dealTile2AllPlayersCheck(roomContex);
-										if (hashDealTile) {// 通知所有玩家已经发牌
-											
-											roomRecord.setRoomState((byte) 2);
-											
-											boolean flg = dbService.updateRoomRecordInfoByPrimaryKey(roomRecord);
-											
-											logger.error("更新房间信息，flg="+flg+",roomRecord="+JSONObject.toJSONString(roomRecord));
-											
-											HouseContext.playRoomNum.incrementAndGet();
-											HouseContext.waitRoomNum.decrementAndGet();
-											
-											HouseContext.playUserNum.addAndGet(4);
-											HouseContext.waitUserNum.addAndGet(-4);
-											
-											roomContex.setRoomStatus(RoomStatus.PLAYING);
-											
-											for (Entry<PlayerLocation, PlayerInfo> entry : roomContex.getGameContext().getTable().getPlayerInfos().entrySet()) {
-												
-												ProtocolModel dealTileProtocolModel = new ProtocolModel();
-												dealTileProtocolModel.setCommandId(EventEnum.DEAL_TILE_RESP.getValue());
-												
-												String playWinXinId = entry.getValue().getUserInfo().getWeixinMark();
-												EnterRoomRespModel dealTileRoomRespModel = new EnterRoomRespModel(playWinXinId,	true, "发牌", roomContex, entry.getKey());// 创建每个方位的牌响应信息
-												dealTileProtocolModel.setBody(JSON.toJSONString(dealTileRoomRespModel));
-												
-												ChannelHandlerContext userCtx = ClientSession.sessionMap.get(playWinXinId);
-												
-												userCtx.writeAndFlush(dealTileProtocolModel);
-												logger.error("hashDealTile返回数据："+JSONObject.toJSONString(dealTileProtocolModel));
-											}
-		
-											WinActionType winActionType = new WinActionType();
-											boolean winFirst = winActionType.isLegalAction(roomContex.getGameContext(),	roomContex.getGameContext().getZhuangLocation(), new Action(WIN));
-											
-											if (winFirst) {
-												
-												PlayerInfo zhuangWinPlayerInfo = roomContex.getGameContext().getTable().getPlayerByLocation(roomContex.getGameContext().getZhuangLocation());
-												
-												updateUserRoomRecordInfo(zhuangWinPlayerInfo.getUserRoomRecordInfoID(),1,1,null);
-												
-												//TODO 庄家天胡谁输了，以及计分
-												
-												winActionType.doAction(roomContex.getGameContext(),	roomContex.getGameContext().getZhuangLocation(), new Action(WIN));
-												ProtocolModel winProtocolModel = new ProtocolModel();
-												winProtocolModel.setCommandId(EventEnum.WIN_TILE_RESP.getValue());
-												roomContex.setRoomStatus(RoomStatus.PLAYING);
-												EnterRoomRespModel winTileRoomRespModel = new EnterRoomRespModel(null, true, "庄家天胡", roomContex);
-												winProtocolModel.setBody(JSON.toJSONString(winTileRoomRespModel));
-												
-												HandlerHelper.noticeMsg2Players(roomContex, null, winProtocolModel);
-												
-											}
-										}else{
-											enterRoomRespModel = new EnterRoomRespModel(weixinId, true, "加入成功", roomContex);;
-										}
+										flag = true;
+										
+										enterRoomRespModel = new EnterRoomRespModel(weixinId, true, "加入成功", roomContex);
 										
 									} else {
 										enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "加入房间失败，房间已满！", null);
@@ -234,8 +198,69 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 				protocolModel.setCommandId(EventEnum.ROOM_ENTER_RESP.getValue());
 				protocolModel.setBody(JSON.toJSONString(enterRoomRespModel));
 				ctx.writeAndFlush(protocolModel);
+				
 				logger.error("进入房间返回数据："+JSONObject.toJSONString(protocolModel));
+				
+				if(flag){
+					boolean hashDealTile = dealTile2AllPlayersCheck(roomContex);
+					if (hashDealTile) {// 通知所有玩家已经发牌
+						
+						roomRecord.setRoomState((byte) 2);
+						
+						boolean flg = dbService.updateRoomRecordInfoByPrimaryKey(roomRecord);
+						
+						logger.error("更新房间信息，flg="+flg+",roomRecord="+JSONObject.toJSONString(roomRecord));
+						
+						HouseContext.playRoomNum.incrementAndGet();
+						HouseContext.waitRoomNum.decrementAndGet();
+						
+						HouseContext.playUserNum.addAndGet(4);
+						HouseContext.waitUserNum.addAndGet(-4);
+						
+						roomContex.setRoomStatus(RoomStatus.PLAYING);
+						
+						for (Entry<PlayerLocation, PlayerInfo> entry : roomContex.getGameContext().getTable().getPlayerInfos().entrySet()) {
+							
+							ProtocolModel dealTileProtocolModel = new ProtocolModel();
+							dealTileProtocolModel.setCommandId(EventEnum.DEAL_TILE_RESP.getValue());
+							
+							String playWinXinId = entry.getValue().getUserInfo().getWeixinMark();
+							EnterRoomRespModel dealTileRoomRespModel = new EnterRoomRespModel(playWinXinId,	true, "发牌", roomContex, entry.getKey());// 创建每个方位的牌响应信息
+							dealTileProtocolModel.setBody(JSON.toJSONString(dealTileRoomRespModel));
+							
+							ChannelHandlerContext userCtx = ClientSession.sessionMap.get(playWinXinId);
+							
+							userCtx.writeAndFlush(dealTileProtocolModel);
+							logger.error("hashDealTile返回数据："+JSONObject.toJSONString(dealTileProtocolModel));
+						}
+
+						WinActionType winActionType = new WinActionType();
+						boolean winFirst = winActionType.isLegalAction(roomContex.getGameContext(),	roomContex.getGameContext().getZhuangLocation(), new Action(WIN));
+						
+						if (winFirst) {
+							
+							PlayerInfo zhuangWinPlayerInfo = roomContex.getGameContext().getTable().getPlayerByLocation(roomContex.getGameContext().getZhuangLocation());
+							
+							updateUserRoomRecordInfo(zhuangWinPlayerInfo.getUserRoomRecordInfoID(),1,1,null);
+							
+							//TODO 庄家天胡谁输了，以及计分
+							
+							winActionType.doAction(roomContex.getGameContext(),	roomContex.getGameContext().getZhuangLocation(), new Action(WIN));
+							ProtocolModel winProtocolModel = new ProtocolModel();
+							winProtocolModel.setCommandId(EventEnum.WIN_TILE_RESP.getValue());
+							roomContex.setRoomStatus(RoomStatus.PLAYING);
+							EnterRoomRespModel winTileRoomRespModel = new EnterRoomRespModel(null, true, "庄家天胡", roomContex);
+							winProtocolModel.setBody(JSON.toJSONString(winTileRoomRespModel));
+							
+							HandlerHelper.noticeMsg2Players(roomContex, null, winProtocolModel);
+							
+						}
+						
+					}
+					
+				}
 			}
+				
 		} else {
 			ctx.fireChannelRead(protocolModel);
 		}

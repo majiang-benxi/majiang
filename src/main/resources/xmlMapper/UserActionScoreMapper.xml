@@ -128,6 +128,9 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.mahjong.server.entity.UserActionScore" >
+     	<selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
+		SELECT LAST_INSERT_ID()
+	</selectKey>
     insert into user_action_score (id, user_id, room_record_id, 
       round_num, action_type, create_time, 
       action_score)
@@ -136,6 +139,9 @@
       #{actionScore,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.mahjong.server.entity.UserActionScore" >
+  <selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
+		SELECT LAST_INSERT_ID()
+	</selectKey>
     insert into user_action_score
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >

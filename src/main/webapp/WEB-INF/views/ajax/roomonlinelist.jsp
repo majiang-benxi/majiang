@@ -55,7 +55,7 @@
 		<td>${eachVar.northUid}（${eachVar.northUName}）</td>
 		
 		<td class="td-manage">
-			<c:if test="${eachVar.roomState == 1}">
+			<c:if test="${eachVar.roomState != 3}">
 				<a style="text-decoration:none" onClick="killRoom(this,'${eachVar.roomNum}')" href="javascript:;" title="解散"><i class="Hui-iconfont"><span class="label label-success radius">解散</span></i></a>
 			</c:if>
 		</td>

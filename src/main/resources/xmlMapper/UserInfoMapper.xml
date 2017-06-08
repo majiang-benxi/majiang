@@ -156,6 +156,9 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.mahjong.server.entity.UserInfo" >
+     	<selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
+		SELECT LAST_INSERT_ID()
+	</selectKey>
     insert into user_info (id, nick_name, weixin_mark, 
       sex, head_imgurl, create_time, 
       room_cart_num, room_cart_num_used, score_num, 
@@ -168,6 +171,9 @@
       #{currRoom,jdbcType=INTEGER}, #{state,jdbcType=TINYINT})
   </insert>
   <insert id="insertSelective" parameterType="com.mahjong.server.entity.UserInfo" >
+  <selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
+		SELECT LAST_INSERT_ID()
+	</selectKey>
     insert into user_info
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >

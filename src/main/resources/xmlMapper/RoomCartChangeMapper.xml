@@ -131,6 +131,9 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.mahjong.server.entity.RoomCartChange" >
+     	<selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
+		SELECT LAST_INSERT_ID()
+	</selectKey>
     insert into room_cart_change (id, manage_user_id, manage_name, 
       user_id, user_name, change_num, 
       change_time, changecause)
@@ -139,6 +142,9 @@
       #{changeTime,jdbcType=TIMESTAMP}, #{changecause,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.mahjong.server.entity.RoomCartChange" >
+  <selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
+		SELECT LAST_INSERT_ID()
+	</selectKey>
     insert into room_cart_change
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >

@@ -1,6 +1,7 @@
 package com.mahjong.server.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mahjong.server.entity.ManageUser;
+import com.mahjong.server.entity.RoomCartChange;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.entity.UserRoomRecord;
 import com.mahjong.server.service.DBService;
@@ -130,6 +132,9 @@ public class FrontUserController {
 		String value = ManageUserSessionUtil.getCookieValue(request.getCookies(), "manageuid");
 		ManageUser opemanageUser = ManageUserSessionUtil.getManegeSession(value);
 		
+		ManageUser updatemanageUser = new ManageUser();
+		updatemanageUser.setId(opemanageUser.getId());
+		
 		if(userIds!=null){
 			for(String uid : userIds){
 				if(!StringUtils.isEmpty(uid)&&NumberUtils.isNumber(uid)){
@@ -146,14 +151,47 @@ public class FrontUserController {
 					
 					if(!StringUtils.isEmpty(roomcartEditNum)){
 						
-						if(opemanageUser.getUserLevel()==1&&(Integer.parseInt(roomcartEditNum)-dbuserInfo.getRoomCartNum())<0){
-							return "error";
+						if(opemanageUser.getUserLevel()==1){
+							if((Integer.parseInt(roomcartEditNum)-dbuserInfo.getRoomCartNum())<0 || (Integer.parseInt(roomcartEditNum)-opemanageUser.getCardHold())<0){
+								return "error";
+							}else{
+								updatemanageUser.setCardHold(updatemanageUser.getCardHold()-Integer.parseInt(roomcartEditNum));
+								
+								dbService.updateManageUserByID(updatemanageUser);
+								
+								RoomCartChange roomCartChange = new RoomCartChange();
+								roomCartChange.setChangeNum(-Integer.parseInt(roomcartEditNum));
+								roomCartChange.setChangeTime(new Date());
+								roomCartChange.setChangecause("给用户充值");
+								roomCartChange.setManageName(opemanageUser.getNickName());
+								roomCartChange.setManageUserId(opemanageUser.getId());
+								
+								roomCartChange.setUserId(userInfo.getId());
+								roomCartChange.setUserName(userInfo.getNickName());
+								
+								dbService.insertRoomCartChange(roomCartChange);
+								
+							}
+							
 						}
+						
 						userInfo.setRoomCartNum(Integer.parseInt(roomcartEditNum));
 					}
 					
-					
 					dbService.updateUserInfoById(userInfo);
+					
+					RoomCartChange roomCartChange = new RoomCartChange();
+					roomCartChange.setChangeNum(Integer.parseInt(roomcartEditNum));
+					roomCartChange.setChangeTime(new Date());
+					roomCartChange.setChangecause("充值");
+					roomCartChange.setManageName(opemanageUser.getNickName());
+					roomCartChange.setManageUserId(opemanageUser.getId());
+					
+					roomCartChange.setUserId(userInfo.getId());
+					roomCartChange.setUserName(userInfo.getNickName());
+					
+					dbService.insertRoomCartChange(roomCartChange);
+					
 				}
 			}
 		}
