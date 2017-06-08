@@ -51,8 +51,9 @@ public class HeartBeatHandler extends SimpleChannelInboundHandler<ProtocolModel>
 				Date now = new Date();
 				ClientSession.sessionHeartBeatTimeMap.put(weixinId, now);
 			}
-			ctx.fireChannelRead(protocolModel);// 此处要加这个不然后续handler无法处理
 		}
+		ctx.fireChannelRead(protocolModel);// 此处要加这个不然后续handler无法处理
+		
 	}
 
 	@Override
