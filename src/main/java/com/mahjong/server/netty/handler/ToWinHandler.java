@@ -145,7 +145,7 @@ public class ToWinHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 							
 							userRoomRecord.setRoomNum(roomContex.getRoomNum());
 							
-							userRoomRecord.setRoomRecordId(roomContex.getRoomID());
+							userRoomRecord.setRoomRecordId(roomContex.getRoomRecordID());
 							
 							userRoomRecord.setUserId(playerInfo.getUserInfo().getId());
 							userRoomRecord.setUserIp(socketAddr.getAddress().getHostAddress());
@@ -156,7 +156,7 @@ public class ToWinHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 						}
 						
 						RoomRecord roomRecord = new RoomRecord();
-						roomRecord.setId(roomContex.getRoomID());
+						roomRecord.setId(roomContex.getRoomRecordID());
 						roomRecord.setRoomState((byte) 4);
 						roomRecord.setEndTime(new Date());
 						boolean flg = dbService.updateRoomRecordInfoByPrimaryKey(roomRecord);

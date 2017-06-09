@@ -121,7 +121,7 @@ public class CreateRoomHandler extends SimpleChannelInboundHandler<ProtocolModel
 							
 							Integer roomRecId = dbService.insertRoomRecordInfo(roomRecord);
 							
-							roomContex.setRoomID(roomRecId);
+							roomContex.setRoomRecordID(roomRecId);
 							
 							UserRoomRecord userRoomRecord = new UserRoomRecord();
 							
@@ -143,14 +143,17 @@ public class CreateRoomHandler extends SimpleChannelInboundHandler<ProtocolModel
 							
 							PlayerInfo playerInfo = roomContex.getGameContext().getTable().getPlayerByLocation(PlayerLocation.EAST);
 							playerInfo.setUserRoomRecordInfoID(uroomRecId);
+							
+							createRoomRespModel = new CreateRoomRespModel(weixinId, true,roomContex);
 						}
 						
 					}else{
 						
 						logger.error("用户已经在房间中，weixinId="+weixinId+",房间号："+roomContex.getRoomNum());
+						createRoomRespModel = new CreateRoomRespModel(weixinId, true,roomContex);
 						
 					}
-					createRoomRespModel = new CreateRoomRespModel(weixinId, true,roomContex);
+					
 				}
 				
 				

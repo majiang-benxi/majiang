@@ -166,7 +166,7 @@ public class KillRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> 
 								
 								userRoomRecord.setRoomNum(roomContex.getRoomNum());
 								
-								userRoomRecord.setRoomRecordId(roomContex.getRoomID());
+								userRoomRecord.setRoomRecordId(roomContex.getRoomRecordID());
 								
 								userRoomRecord.setUserId(playerInfo.getUserInfo().getId());
 								userRoomRecord.setUserIp(socketAddr.getAddress().getHostAddress());
@@ -177,7 +177,7 @@ public class KillRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> 
 							}
 							
 							RoomRecord roomRecord = new RoomRecord();
-							roomRecord.setId(roomContex.getRoomID());
+							roomRecord.setId(roomContex.getRoomRecordID());
 							roomRecord.setRoomState((byte) 3);
 							boolean flg = dbService.updateRoomRecordInfoByPrimaryKey(roomRecord);
 							

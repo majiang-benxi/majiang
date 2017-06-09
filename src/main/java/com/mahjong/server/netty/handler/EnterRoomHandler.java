@@ -104,7 +104,7 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 										
 										UserRoomRecord userRoomRecord = new UserRoomRecord();
 										
-										roomRecord.setId(roomContex.getRoomID());
+										roomRecord.setId(roomContex.getRoomRecordID());
 										
 										if(playerInfo.getUserLocation().intValue() == PlayerLocation.NORTH.getCode()){
 											roomRecord.setNorthUid(userInfo.getId());
@@ -133,7 +133,7 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 										
 										userRoomRecord.setRoomNum(roomContex.getRoomNum());
 										
-										userRoomRecord.setRoomRecordId(roomContex.getRoomID());
+										userRoomRecord.setRoomRecordId(roomContex.getRoomRecordID());
 										
 										userRoomRecord.setUserId(userInfo.getId());
 										userRoomRecord.setUserIp(socketAddr.getAddress().getHostAddress());

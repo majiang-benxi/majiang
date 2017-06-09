@@ -408,7 +408,7 @@ public class StatisticsController {
 				
 				userRoomRecord.setRoomNum(roomContext.getRoomNum());
 				
-				userRoomRecord.setRoomRecordId(roomContext.getRoomID());
+				userRoomRecord.setRoomRecordId(roomContext.getRoomRecordID());
 				
 				userRoomRecord.setUserId(playerInfo.getUserInfo().getId());
 				userRoomRecord.setUserIp(socketAddr.getAddress().getHostAddress());
@@ -419,7 +419,7 @@ public class StatisticsController {
 			}
 			
 			RoomRecord roomRecord = new RoomRecord();
-			roomRecord.setId(roomContext.getRoomID());
+			roomRecord.setId(roomContext.getRoomRecordID());
 			roomRecord.setRoomState((byte) 3);
 			boolean flg = dbService.updateRoomRecordInfoByPrimaryKey(roomRecord);
 			

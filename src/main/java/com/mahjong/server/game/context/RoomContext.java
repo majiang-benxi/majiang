@@ -14,7 +14,7 @@ public class RoomContext {
 	/**
 	 * 房间号
 	 */
-	private Integer roomID;
+	private Integer roomRecordID;
 	/**
 	 * 房间号
 	 */
@@ -104,12 +104,12 @@ public class RoomContext {
 		this.createTime = createTime;
 	}
 
-	public Integer getRoomID() {
-		return roomID;
+	public Integer getRoomRecordID() {
+		return roomRecordID;
 	}
 
-	public void setRoomID(Integer roomID) {
-		this.roomID = roomID;
+	public void setRoomRecordID(Integer roomID) {
+		this.roomRecordID = roomID;
 	}
 
 }
