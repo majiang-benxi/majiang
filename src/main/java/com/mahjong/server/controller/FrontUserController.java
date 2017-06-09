@@ -155,7 +155,7 @@ public class FrontUserController {
 							if((Integer.parseInt(roomcartEditNum)-dbuserInfo.getRoomCartNum())<0 || (Integer.parseInt(roomcartEditNum)-opemanageUser.getCardHold())<0){
 								return "error";
 							}else{
-								updatemanageUser.setCardHold(updatemanageUser.getCardHold()-Integer.parseInt(roomcartEditNum));
+								updatemanageUser.setCardHold(opemanageUser.getCardHold()-Integer.parseInt(roomcartEditNum));
 								
 								dbService.updateManageUserByID(updatemanageUser);
 								
