@@ -233,12 +233,16 @@ function admin_start(obj,id){
 	});
 }
 
-
+var layerindexnum;
 function changeRNum(usid) {
     layer.open({
         type: 1,
         content:"<div class='formControls col-5'><input id='roomcartEditNum' class='form-control' type='text' style='height: 25px; margin-top: 20px; width: 71px; margin-left: 44%;' name='awardKind' value=''/>" +
-        "<button  type='button' style='text-decoration:none;margin-left: 64%;margin-top: 25%;' class='btn btn-block btn-success btn-lg' onclick='changeUserRoomCartNum("+usid+");'>提交</button></div>"
+        "<button  type='button' style='text-decoration:none;margin-left: 64%;margin-top: 25%;' class='btn btn-block btn-success btn-lg' onclick='changeUserRoomCartNum("+usid+");'>提交</button></div>",
+        success: function(layero, index){
+        	layerindexnum = index;
+        }
+    
     });
 }
 
@@ -255,6 +259,7 @@ function changeUserRoomCartNum(usid){
 	    timeout:2000,    //超时时间
 	    dataType:'json',    //返回的数据格式：json/xml/html/script/jsonp/text
 	    success:function(data,textStatus,jqXHR){
+	    	layer.close(layerindexnum);
 	    	changeItemPage('');
 	    },
 	    complete:function(){
