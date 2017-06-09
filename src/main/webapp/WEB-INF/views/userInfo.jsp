@@ -278,6 +278,11 @@ function changeUserRoomCartNum(usid){
 	    timeout:2000,    //超时时间
 	    dataType:'json',    //返回的数据格式：json/xml/html/script/jsonp/text
 	    success:function(data,textStatus,jqXHR){
+	    	
+	    	if(data.result=='fail')	{
+	    		alert(data.msg);
+	    	}
+	    	
 	    	layer.close(layerindexnum);
 	    	changeItemPage('');
 	    },

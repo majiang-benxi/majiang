@@ -135,6 +135,8 @@ public class FrontUserController {
 		ManageUser updatemanageUser = new ManageUser();
 		updatemanageUser.setId(opemanageUser.getId());
 		
+		Map<String,Object> returnMap = new HashMap<String, Object>();
+		
 		if(userIds!=null){
 			for(String uid : userIds){
 				if(!StringUtils.isEmpty(uid)&&NumberUtils.isNumber(uid)){
@@ -150,6 +152,7 @@ public class FrontUserController {
 					}
 					
 					Integer roomCardNumChanged = 0;
+					boolean flag = false;
 					
 					if(!StringUtils.isEmpty(roomcartEditNum)){
 						
@@ -158,7 +161,8 @@ public class FrontUserController {
 						
 						if(opemanageUser.getUserLevel()==1){
 							if((roomCardNumChanged)<=0 || (opemanageUser.getCardHold()-roomCardNumChanged)<0){
-								return "error";
+								returnMap.put("result", "fail");
+								returnMap.put("msg", "房卡变更数必须大于0或者管理员房卡不够");
 							}else{
 								updatemanageUser.setCardHold(opemanageUser.getCardHold()-roomCardNumChanged);
 								opemanageUser.setCardHold(opemanageUser.getCardHold()-roomCardNumChanged);
@@ -177,14 +181,18 @@ public class FrontUserController {
 								
 								dbService.insertRoomCartChange(roomCartChange);
 								
+								flag = true;
+								
 							}
 							
+						}else{
+							flag = true;
 						}
 						
 						userInfo.setRoomCartNum(Integer.parseInt(roomcartEditNum));
 					}
 					
-					if(roomCardNumChanged>0){
+					if(flag){
 						dbService.updateUserInfoById(userInfo);
 						
 						RoomCartChange roomCartChange = new RoomCartChange();
@@ -198,13 +206,12 @@ public class FrontUserController {
 						roomCartChange.setUserName(userInfo.getNickName());
 						
 						dbService.insertRoomCartChange(roomCartChange);
+						returnMap.put("result", "success");
 					}
 				}
 			}
 		}
 		
-		Map<String,Object> returnMap = new HashMap<String, Object>();
-		returnMap.put("info", "success");
 		return returnMap;
 		
 	}
