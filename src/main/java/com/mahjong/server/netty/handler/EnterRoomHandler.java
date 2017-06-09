@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
-import com.mahjong.server.entity.RoomCartChange;
 import com.mahjong.server.entity.RoomRecord;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.entity.UserRoomRecord;
@@ -98,25 +97,6 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 									playerInfo = roomContex.joinRoom(userInfo);
 									
 									if (playerInfo!=null) {
-										
-										UserInfo updateuserInfo = new UserInfo();
-										updateuserInfo.setId(userInfo.getId());
-										updateuserInfo.setRoomCartNum(userInfo.getRoomCartNum()-1);
-										updateuserInfo.setRoomCartNumUsed(userInfo.getRoomCartNumUsed()+1);
-										updateuserInfo.setCurrRoom(roomId);
-										
-										dbService.updateUserInfoById(updateuserInfo);
-										
-										RoomCartChange roomCartChange = new RoomCartChange();
-										roomCartChange.setChangeNum(-1);
-										roomCartChange.setChangeTime(new Date());
-										roomCartChange.setChangecause("加入房间"+roomContex.getRoomNum()+"扣房卡");
-										
-										roomCartChange.setUserId(userInfo.getId());
-										roomCartChange.setUserName(userInfo.getNickName());
-										
-										dbService.insertRoomCartChange(roomCartChange);
-										
 										
 										HouseContext.waitUserNum.incrementAndGet();
 										HouseContext.weixinIdToRoom.put(weixinId, roomContex);

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.mahjong.server.entity.RoomCartChange;
 import com.mahjong.server.entity.RoomRecord;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.entity.UserRoomRecord;
@@ -73,56 +74,76 @@ public class CreateRoomHandler extends SimpleChannelInboundHandler<ProtocolModel
 					//用户不在任何房间
 					if((roomContex = HouseContext.weixinIdToRoom.get(weixinId))==null){
 						
-						roomContex =  HouseContext.addRoom( userInfo, ruleStrategy, fangKaStrategy);
-						HouseContext.weixinIdToRoom.put(weixinId, roomContex);
-						
-						HouseContext.onlineRoomNum.incrementAndGet();
-						HouseContext.waitRoomNum.incrementAndGet();
-						HouseContext.waitUserNum.incrementAndGet();
-						
-						UserInfo updateuserInfo = new UserInfo();
-						updateuserInfo.setId(userInfo.getId());
-						updateuserInfo.setCurrRoom(roomContex.getRoomNum());
-						
-						dbService.updateUserInfoById(updateuserInfo);
-						
-						logger.info("用户创建房间，weixinId="+weixinId);
-						
-						RoomRecord roomRecord = new RoomRecord();
-						
-						Date now = new Date();
-						
-						roomRecord.setCreateTime(now);
-						roomRecord.setCreatorId(userInfo.getId());
-						roomRecord.setEastUid(userInfo.getId());
-						roomRecord.setRoomNum(roomContex.getRoomNum());
-						roomRecord.setRoomRule(ruleStrategy);
-						roomRecord.setRoomState((byte) 0);
-						
-						Integer roomRecId = dbService.insertRoomRecordInfo(roomRecord);
-						
-						roomContex.setRoomID(roomRecId);
-						
-						UserRoomRecord userRoomRecord = new UserRoomRecord();
-						
-						InetSocketAddress socketAddr = (InetSocketAddress) ctx.channel().remoteAddress();
-						
-						userRoomRecord.setHuTimes(0);
-						userRoomRecord.setLoseTimes(0);
-						userRoomRecord.setOperateCause("创建房间加入");
-						userRoomRecord.setOperateTime(now);
-						userRoomRecord.setOperateType((byte) 1);
-						userRoomRecord.setRoomNum(roomContex.getRoomNum());
-						userRoomRecord.setRoomRecordId(roomRecId);
-						userRoomRecord.setUserDirection((byte) 1);
-						userRoomRecord.setUserId(userInfo.getId());
-						userRoomRecord.setUserIp(socketAddr.getAddress().getHostAddress());
-						userRoomRecord.setWinTimes(0);
-						
-						Integer uroomRecId = dbService.insertUserRoomRecordInfo(userRoomRecord);
-						
-						PlayerInfo playerInfo = roomContex.getGameContext().getTable().getPlayerByLocation(PlayerLocation.EAST);
-						playerInfo.setUserRoomRecordInfoID(uroomRecId);
+						if(userInfo.getRoomCartNum()<=0){
+							createRoomRespModel = new CreateRoomRespModel(weixinId, false,null);
+							logger.info("房卡数目不够，无法创建，weixinId="+weixinId);
+						}else{
+							roomContex =  HouseContext.addRoom( userInfo, ruleStrategy, fangKaStrategy);
+							
+							UserInfo updateuserInfo = new UserInfo();
+							updateuserInfo.setId(userInfo.getId());
+							updateuserInfo.setRoomCartNum(userInfo.getRoomCartNum()-1);
+							updateuserInfo.setRoomCartNumUsed(userInfo.getRoomCartNumUsed()+1);
+							updateuserInfo.setCurrRoom(roomContex.getRoomNum());
+							
+							dbService.updateUserInfoById(updateuserInfo);
+							
+							RoomCartChange roomCartChange = new RoomCartChange();
+							roomCartChange.setChangeNum(-1);
+							roomCartChange.setChangeTime(new Date());
+							roomCartChange.setChangecause("加入房间"+roomContex.getRoomNum()+"扣房卡");
+							
+							roomCartChange.setUserId(userInfo.getId());
+							roomCartChange.setUserName(userInfo.getNickName());
+							
+							dbService.insertRoomCartChange(roomCartChange);
+							
+							HouseContext.weixinIdToRoom.put(weixinId, roomContex);
+							
+							HouseContext.onlineRoomNum.incrementAndGet();
+							HouseContext.waitRoomNum.incrementAndGet();
+							HouseContext.waitUserNum.incrementAndGet();
+							
+							
+							
+							logger.info("用户创建房间，weixinId="+weixinId);
+							
+							RoomRecord roomRecord = new RoomRecord();
+							
+							Date now = new Date();
+							
+							roomRecord.setCreateTime(now);
+							roomRecord.setCreatorId(userInfo.getId());
+							roomRecord.setEastUid(userInfo.getId());
+							roomRecord.setRoomNum(roomContex.getRoomNum());
+							roomRecord.setRoomRule(ruleStrategy);
+							roomRecord.setRoomState((byte) 0);
+							
+							Integer roomRecId = dbService.insertRoomRecordInfo(roomRecord);
+							
+							roomContex.setRoomID(roomRecId);
+							
+							UserRoomRecord userRoomRecord = new UserRoomRecord();
+							
+							InetSocketAddress socketAddr = (InetSocketAddress) ctx.channel().remoteAddress();
+							
+							userRoomRecord.setHuTimes(0);
+							userRoomRecord.setLoseTimes(0);
+							userRoomRecord.setOperateCause("创建房间加入");
+							userRoomRecord.setOperateTime(now);
+							userRoomRecord.setOperateType((byte) 1);
+							userRoomRecord.setRoomNum(roomContex.getRoomNum());
+							userRoomRecord.setRoomRecordId(roomRecId);
+							userRoomRecord.setUserDirection((byte) 1);
+							userRoomRecord.setUserId(userInfo.getId());
+							userRoomRecord.setUserIp(socketAddr.getAddress().getHostAddress());
+							userRoomRecord.setWinTimes(0);
+							
+							Integer uroomRecId = dbService.insertUserRoomRecordInfo(userRoomRecord);
+							
+							PlayerInfo playerInfo = roomContex.getGameContext().getTable().getPlayerByLocation(PlayerLocation.EAST);
+							playerInfo.setUserRoomRecordInfoID(uroomRecId);
+						}
 						
 					}else{
 						
