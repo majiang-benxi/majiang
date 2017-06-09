@@ -78,7 +78,7 @@ public class HouseContext {
 
 	private static int getRoomNum(){
 		String roomNum = "";
-		for(int i=0;i<9;i++){
+		for(int i=0;i<6;i++){
 			
 			Random random = new Random();
 			int eachNum = random.nextInt(10);
