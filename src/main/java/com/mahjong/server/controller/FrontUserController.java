@@ -149,21 +149,24 @@ public class FrontUserController {
 						userInfo.setState((byte) Integer.parseInt(tostate));
 					}
 					
+					Integer roomCardNumChanged = 0;
+					
 					if(!StringUtils.isEmpty(roomcartEditNum)){
 						
 						
-						Integer roomCardNumChanged = Integer.parseInt(roomcartEditNum)-dbuserInfo.getRoomCartNum(); 
+						roomCardNumChanged = Integer.parseInt(roomcartEditNum)-dbuserInfo.getRoomCartNum(); 
 						
 						if(opemanageUser.getUserLevel()==1){
 							if((roomCardNumChanged)<=0 || (opemanageUser.getCardHold()-roomCardNumChanged)<0){
 								return "error";
 							}else{
 								updatemanageUser.setCardHold(opemanageUser.getCardHold()-roomCardNumChanged);
+								opemanageUser.setCardHold(opemanageUser.getCardHold()-roomCardNumChanged);
 								
 								dbService.updateManageUserByID(updatemanageUser);
 								
 								RoomCartChange roomCartChange = new RoomCartChange();
-								roomCartChange.setChangeNum(-Integer.parseInt(roomcartEditNum));
+								roomCartChange.setChangeNum(-roomCardNumChanged);
 								roomCartChange.setChangeTime(new Date());
 								roomCartChange.setChangecause("给用户充值");
 								roomCartChange.setManageName(opemanageUser.getNickName());
@@ -181,20 +184,21 @@ public class FrontUserController {
 						userInfo.setRoomCartNum(Integer.parseInt(roomcartEditNum));
 					}
 					
-					dbService.updateUserInfoById(userInfo);
-					
-					RoomCartChange roomCartChange = new RoomCartChange();
-					roomCartChange.setChangeNum(Integer.parseInt(roomcartEditNum));
-					roomCartChange.setChangeTime(new Date());
-					roomCartChange.setChangecause("充值");
-					roomCartChange.setManageName(opemanageUser.getNickName());
-					roomCartChange.setManageUserId(opemanageUser.getId());
-					
-					roomCartChange.setUserId(userInfo.getId());
-					roomCartChange.setUserName(userInfo.getNickName());
-					
-					dbService.insertRoomCartChange(roomCartChange);
-					
+					if(roomCardNumChanged>0){
+						dbService.updateUserInfoById(userInfo);
+						
+						RoomCartChange roomCartChange = new RoomCartChange();
+						roomCartChange.setChangeNum(roomCardNumChanged);
+						roomCartChange.setChangeTime(new Date());
+						roomCartChange.setChangecause("充值");
+						roomCartChange.setManageName(opemanageUser.getNickName());
+						roomCartChange.setManageUserId(opemanageUser.getId());
+						
+						roomCartChange.setUserId(userInfo.getId());
+						roomCartChange.setUserName(userInfo.getNickName());
+						
+						dbService.insertRoomCartChange(roomCartChange);
+					}
 				}
 			}
 		}

@@ -29,7 +29,7 @@
 <meta name="keywords" content="后台管理系统模版">
 <meta name="description" content="麻将网站后台">
 </head>
-<body>
+<body style="height:1000px;">
 <header class="Hui-header cl"> <a class="Hui-logo l" title="麻将后台管理系统" href="/">麻将后台管理系统</a> <a class="Hui-logo-m l" href="/" title="H-ui.admin">H-ui</a> <span class="Hui-subtitle l">V1.0</span>
 	<nav class="mainnav cl" id="Hui-nav">
 		<ul>
@@ -64,7 +64,7 @@
 		</li>
 	</ul>
 	<a aria-hidden="false" class="Hui-nav-toggle" href="#"></a> </header>
-<aside class="Hui-aside"  style="height: 800;">
+<aside class="Hui-aside"  style="height: 100%;">
 	<input runat="server" id="divScrollValue" type="hidden" value="" />
 	<div class="menu_dropdown bk_2" style="margin-top: 5%;">
 	
@@ -110,7 +110,7 @@
 	</div>
 </aside>
 <div class="dislpayArrow"><a class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a></div>
-<section class="Hui-article-box" style="height: 800;">
+<section class="Hui-article-box" style="height: 100%;">
 	<div id="Hui-tabNav" class="Hui-tabNav">
 		<div class="Hui-tabNav-wp">
 			<ul id="min_title_list" class="acrossTab cl">

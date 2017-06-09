@@ -182,6 +182,10 @@ public class ManageUserController {
 		if(toedit.equals("1")){
 			manageUser.setId(Integer.parseInt(userId));
 			dbService.updateManageUserByID(manageUser);
+			ManageUser opemanageUser = ManageUserSessionUtil.getManegeSession(userId);
+			if(opemanageUser!=null){
+				opemanageUser = manageUser;
+			}
 		}else{
 			dbService.insertManageUser(manageUser);
 		}
@@ -254,6 +258,11 @@ public class ManageUserController {
 		manageUser.setCardHold(Integer.parseInt(roomcartEditNum));
 		
 		dbService.updateManageUserByID(manageUser);
+		
+		ManageUser opemanageUserOp = ManageUserSessionUtil.getManegeSession(uid);
+		if(opemanageUserOp!=null){
+			opemanageUserOp.setCardHold(Integer.parseInt(roomcartEditNum));
+		}
 		
 		Integer changeNum = (Integer.parseInt(roomcartEditNum) - (muser.getCardHold()==null?0:muser.getCardHold()));
 		
