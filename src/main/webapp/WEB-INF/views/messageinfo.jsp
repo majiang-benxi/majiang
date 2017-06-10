@@ -104,7 +104,7 @@ var changeItemPage = function(curPageP){
 	
 	 $.ajax({
 			type: "get",
-			url : "/mvc/message/getMessageInfoList?msgPosition="+msgPosition+"&datemin="+datemin+"&datemax="+datemax+"&mesgstate="+mesgstate+"&eachPageCount="+eachPageCount+"&curPage="+curPage,
+			url : "/mvc/message/getMessageInfoList?msgPosition="+msgPosition+"&datemin="+datemin+"&datemax="+datemax+"&mesgstate="+mesgstate+"&eachPageCount="+eachPageCount+"&curPage="+curPage+"&t="+new Date(),
 			dataType:'html',
 			data: '', 
 			async:true,

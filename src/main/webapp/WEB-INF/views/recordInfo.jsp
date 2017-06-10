@@ -87,7 +87,7 @@ var changeItemPage = function(curPageP){
 	
 	 $.ajax({
 			type: "get",
-			url : "/mvc/frontuser/getUserPlayRecordInfoList?uid="+uid+"&roomnum="+roomnum+"&datemin="+datemin+"&datemax="+datemax+"&eachPageCount="+eachPageCount+"&curPage="+curPage,
+			url : "/mvc/frontuser/getUserPlayRecordInfoList?uid="+uid+"&roomnum="+roomnum+"&datemin="+datemin+"&datemax="+datemax+"&eachPageCount="+eachPageCount+"&curPage="+curPage+"&t="+new Date(),
 			dataType:'html',
 			data: '', 
 			async:true,

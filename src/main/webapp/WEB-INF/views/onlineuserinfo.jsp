@@ -82,7 +82,7 @@ var changeItemPage = function(curPageP){
 	
 	 $.ajax({
 			type: "get",
-			url : "/mvc/statistics/getOnLineUserList?userId="+userId+"&datemin="+datemin+"&datemax="+datemax+"&eachPageCount="+eachPageCount+"&curPage="+curPage,
+			url : "/mvc/statistics/getOnLineUserList?userId="+userId+"&datemin="+datemin+"&datemax="+datemax+"&eachPageCount="+eachPageCount+"&curPage="+curPage+"&t="+new Date(),
 			dataType:'html',
 			data: '', 
 			async:true,
