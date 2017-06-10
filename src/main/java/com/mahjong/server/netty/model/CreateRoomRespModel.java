@@ -3,6 +3,9 @@ package com.mahjong.server.netty.model;
 import com.mahjong.server.game.context.RoomContext;
 
 public class CreateRoomRespModel extends RoomRespModel {
+	
+	private int roomState;
+	
 	public CreateRoomRespModel() {
 
 	}
@@ -15,7 +18,12 @@ public class CreateRoomRespModel extends RoomRespModel {
 			this.setResult(result);
 			this.setMsg("创建房间失败！");
 		}
-		
-		
 	}
+	public int getRoomState() {
+		return roomState;
+	}
+	public void setRoomState(int roomState) {
+		this.roomState = roomState;
+	}
+	
 }
