@@ -22,6 +22,7 @@ import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.netty.model.CreateRoomReqModel;
 import com.mahjong.server.netty.model.CreateRoomRespModel;
+import com.mahjong.server.netty.model.EnterRoomRespModel;
 import com.mahjong.server.netty.model.ProtocolModel;
 import com.mahjong.server.netty.session.ClientSession;
 import com.mahjong.server.service.DBService;
@@ -150,7 +151,14 @@ public class CreateRoomHandler extends SimpleChannelInboundHandler<ProtocolModel
 					}else{
 						
 						logger.error("用户已经在房间中，weixinId="+weixinId+",房间号："+roomContex.getRoomNum());
-						createRoomRespModel = new CreateRoomRespModel(weixinId, true,roomContex);
+						EnterRoomRespModel enterRoomRespModel = new EnterRoomRespModel(weixinId, true, "重新加入房间", roomContex);
+						logger.info("重新加入房间,weixinId="+weixinId);
+						protocolModel.setCommandId(EventEnum.ROOM_ENTER_RESP.getValue());
+						protocolModel.setBody(JSON.toJSONString(enterRoomRespModel));
+						ctx.writeAndFlush(protocolModel);
+						
+						logger.error("进入房间返回数据："+JSONObject.toJSONString(protocolModel));
+						return;
 						
 					}
 					
