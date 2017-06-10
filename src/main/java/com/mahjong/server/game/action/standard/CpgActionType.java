@@ -116,6 +116,7 @@ public class CpgActionType extends AbstractActionType {
 					location.getRelationOf(context.getLastActionLocation()),
 					Tile.addTile(tile, gotTile));
 			playerInfo.getTileGroups().add(group);
+			context.getTable().getPlayerByLocation(location.getLocationOf(location.getRelationOf(context.getLastActionLocation()))).getDiscardedTiles().removeAll(gotTile);//移除被操作者中打出的牌集合中当前打出来的牌
 			playerInfo.setDiscardAuth(true);
 			context.getLocalDoneActions().add(new ActionAndLocation(new Action(CHI, Tile.addTile(tile, gotTile)), location));// 存吃和碰这里没啥区别
 		}

@@ -223,8 +223,6 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 							
 							updateUserRoomRecordInfo(zhuangWinPlayerInfo.getUserRoomRecordInfoID(),1,1,null);
 							
-							//TODO 庄家天胡谁输了，以及计分
-							
 							winActionType.doAction(roomContex.getGameContext(),	roomContex.getGameContext().getZhuangLocation(), new Action(WIN));
 							ProtocolModel winProtocolModel = new ProtocolModel();
 							winProtocolModel.setCommandId(EventEnum.WIN_TILE_RESP.getValue());

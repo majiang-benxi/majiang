@@ -130,5 +130,8 @@ public class MajiangPlayView {
 		majiangPlayView.setHui2(hui2);
 		majiangPlayView.setCurUserLocation(2);
 		System.out.println(JSON.toJSONString(majiangPlayView));
+		System.out.println(JSON.toJSONString(playerInfo1));
+		System.out.println(JSON.toJSONString(playerInfo2));
+
 	}
 }
