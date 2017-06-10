@@ -87,7 +87,7 @@ var changeItemPage = function(curPageP){
 	
 	 $.ajax({
 			type: "get",
-			url : "/mvc/frontuser/getUserInfoList?uid="+uid+"&datemin="+datemin+"&datemax="+datemax+"&searchUname="+searchUname+"&eachPageCount="+eachPageCount+"&curPage="+curPage+"&t="+new Date(),
+			url : "/mvc/frontuser/getUserInfoList?uid="+uid+"&datemin="+datemin+"&datemax="+datemax+"&searchUname="+searchUname+"&eachPageCount="+eachPageCount+"&curPage="+curPage+"&t="+new Date().getTime(),
 			dataType:'html',
 			data: '', 
 			async:true,

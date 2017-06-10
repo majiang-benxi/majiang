@@ -93,7 +93,7 @@ var changeItemPage = function(curPageP){
 	
 	 $.ajax({
 			type: "get",
-			url : "/mvc/statistics/getRoomCardCahngeInfoList?userid="+userid+"&changeType="+changeType+"&datemin="+datemin+"&datemax="+datemax+"&eachPageCount="+eachPageCount+"&curPage="+curPage+"&t="+new Date(),
+			url : "/mvc/statistics/getRoomCardCahngeInfoList?userid="+userid+"&changeType="+changeType+"&datemin="+datemin+"&datemax="+datemax+"&eachPageCount="+eachPageCount+"&curPage="+curPage+"&t="+new Date().getTime(),
 			dataType:'html',
 			data: '', 
 			async:true,
