@@ -26,11 +26,14 @@ public interface ManageUserMapper {
 
     int updateByExampleSelective(@Param("record") ManageUser record,@Param("example")  ManageUserExample example);
 
-    int updateByExample(@Param("record")ManageUser record, @Param("example") ManageUserExample example);
-
     int updateByPrimaryKeySelective(ManageUser record);
 
-    int updateByPrimaryKey(ManageUser record);
+    int updateUserSate(@Param("id")Integer id, @Param("state") Integer state);
 
 	ManageUser selectManageUserByUname(@Param("userName")String userName);
+
+	List<ManageUser> selectAllManageUserLimit(@Param("datemin")String datemin,@Param("datemax")String datemax,@Param("searchUname")String searchUname,@Param("start")Integer start,@Param("count") Integer count);
+
+	int selectAllManageUserCount(@Param("datemin")String datemin,@Param("datemax")String datemax,@Param("searchUname")String searchUname);
+	
 }

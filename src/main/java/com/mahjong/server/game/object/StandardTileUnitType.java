@@ -41,7 +41,11 @@ public enum StandardTileUnitType implements TileUnitType {
 		protected boolean isLegalTilesWithCorrectSize(Tile tile) {
 			List<Integer> list = new ArrayList<Integer>();
 			for (byte pai : tile.getPai()) {
-				list.add((int) pai);
+				int paiInt=(int) pai;
+				if(paiInt>48){//东西南北中发白不能构成顺子
+					return false;
+				}
+				list.add(paiInt);
 			}
 			Collections.sort(list);
 			if ((list.get(0) + 1 == list.get(1)) && (list.get(1) == list.get(2) - 1)) {

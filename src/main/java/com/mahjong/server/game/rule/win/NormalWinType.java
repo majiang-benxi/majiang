@@ -219,10 +219,14 @@ public class NormalWinType implements WinType {
 		pais = new byte[] { 0x11, 0x11, 0x11, 0x02, 0x02, 0x02, 0x28, 0x28, 0x28, 0x17, 0x17, 0x17, 0x16, 0x16 };// 飘穷true
 		pais = new byte[] { 0x27, 0x27, 0x14, 0x32, 0x33, 0x15, 0x12, 0x13, 0x14, 0x12, 0x13, 0x14, 0x36, 0x36 };// 普通胡带会带枪false
 		pais = new byte[] { 0x11, 0x11, 0x11, 0x07, 0x08, 0x09, 0x33, 0x33, 0x33, 0x34, 0x34, 0x34, 0x21, 0x21 };// 穷胡true
-		Tile tile = new Tile(pais);
+ 		//int[] qianduanPai=new int[]{1, 3 ,7 ,20 ,21,25 ,33, 35, 38 ,39 ,51, 52, 53, 53};
+ 		//qianduanPai=new int[]{5, 5, 8 ,9 ,19, 23, 25 ,25 ,25, 33 ,37, 40, 50,52};
+ 		//Tile tile=new Tile();
+		//tile.setQianduanPai(qianduanPai);
+ 		Tile tile = new Tile(pais);
 		PlayerTiles playerTiles=new PlayerTiles();
 		playerTiles.setAliveTiles(tile);
-		WinInfo winInfo= WinInfo.fromPlayerTiles(playerTiles,(byte)0x14,false);
+		WinInfo winInfo= WinInfo.fromPlayerTiles(playerTiles,(byte)0x04,false);
 		RuleInfo ruleInfo = new RuleInfo();
 		ruleInfo.setPlayRules(RuleInfo.parseRuleFromBitString("01111"));
 		ruleInfo.setFangKa(FangKa.ONE_SIXTEEN);

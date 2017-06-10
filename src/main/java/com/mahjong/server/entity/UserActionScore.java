@@ -1,11 +1,19 @@
 package com.mahjong.server.entity;
 
+import java.util.Date;
+
 public class UserActionScore {
     private Integer id;
 
-    private Integer userRoomRecordId;
+    private Integer userId;
 
-    private Integer actionType;
+    private Integer roomRecordId;
+
+    private Integer roundNum;
+
+    private String winActionTypes;
+
+    private Date createTime;
 
     private Integer actionScore;
 
@@ -17,20 +25,44 @@ public class UserActionScore {
         this.id = id;
     }
 
-    public Integer getUserRoomRecordId() {
-        return userRoomRecordId;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setUserRoomRecordId(Integer userRoomRecordId) {
-        this.userRoomRecordId = userRoomRecordId;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
-    public Integer getActionType() {
-        return actionType;
+    public Integer getRoomRecordId() {
+        return roomRecordId;
     }
 
-    public void setActionType(Integer actionType) {
-        this.actionType = actionType;
+    public void setRoomRecordId(Integer roomRecordId) {
+        this.roomRecordId = roomRecordId;
+    }
+
+    public Integer getRoundNum() {
+        return roundNum;
+    }
+
+    public void setRoundNum(Integer roundNum) {
+        this.roundNum = roundNum;
+    }
+
+    public String getWinActionTypes() {
+        return winActionTypes;
+    }
+
+    public void setWinActionTypes(String winActionTypes) {
+        this.winActionTypes = winActionTypes == null ? null : winActionTypes.trim();
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
     public Integer getActionScore() {

@@ -1,6 +1,7 @@
 package com.mahjong.server.service;
 
 import java.util.List;
+import java.util.Set;
 
 import com.mahjong.server.entity.ManageUser;
 import com.mahjong.server.entity.MessageInfo;
@@ -11,6 +12,7 @@ import com.mahjong.server.entity.UserActionScore;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.entity.UserRoomRecord;
 import com.mahjong.server.vo.UserLatestPlayRecord;
+import com.mahjong.server.vo.UserRecordScoreVO;
 
 public interface DBService {
 	
@@ -126,7 +128,7 @@ public interface DBService {
 	 * @param queryRecord 房间记录信息
 	 * @return 成功如否
 	 */
-	boolean updateUserRoomRecordInfoPrimaryKey(UserRoomRecord userRoomRecord);
+	//boolean updateUserRoomRecordInfoPrimaryKey(UserRoomRecord userRoomRecord);
 
 	/**
 	 * 删除房间记录信息
@@ -220,6 +222,13 @@ public interface DBService {
 	 * @return 管理员用户
 	 */
 	ManageUser selectManageUserByUname(String userName);
+	
+	/**
+	 * 根据用户名查管理员用户
+	 * @param userName 用户名
+	 * @return 管理员用户
+	 */
+	List<ManageUser> selectAllManageUserLimit(String datemin,String datemax,String searchUname,Integer start,Integer count);
 
 	/**
 	 * 更新管理员用户
@@ -249,16 +258,6 @@ public interface DBService {
 	 */
 	boolean insertRoomCartChange(RoomCartChange roomCartChange);
 
-	/**
-	 * 为用户冲房卡
-	 * @param userId 用户ID
-	 * @param userName 用户名
-	 * @param cartNum 冲卡数
-	 * @param manageUser 管理员用户
-	 * @return 充值是否成功
-	 */
-	boolean insertRoomCart(Integer userId, String userName, Integer cartNum, ManageUser manageUser);
-	
 
 	/**
 	 * 查询更新下载信息
@@ -280,6 +279,189 @@ public interface DBService {
 	 * @return 更新是否成功
 	 */
 	boolean updateUpdateInfoById(UpdateInfo updateInfo);
+
+	
+	/**
+	 *  更新管理员信息
+	 * @param uid 用户ID
+	 * @param tostate 状态
+	 */
+	public void updateAdminUserSate(Integer uid, Integer tostate);
+
+	/**
+	 * 查询管理员信息
+	 * @param uid 用户ID
+	 * @return 管理员信息
+	 */
+	ManageUser selectManageUserByID(Integer uid);
+
+	/**
+	 *管理员总数
+	 * @param datemin
+	 * @param datemax
+	 * @param searchUname
+	 * @return
+	 */
+	int selectAllManageUserCount(String datemin, String datemax, String searchUname);
+
+	/**
+	 * 获取前台用户列表
+	 * @param uid
+	 * @param datemin
+	 * @param datemax
+	 * @param searchUname
+	 * @return
+	 */
+	public int selectAllUserCount(String uid, String datemin, String datemax, String searchUname);
+
+	/**
+	 * 获取用户列表
+	 * @param datemin
+	 * @param datemax
+	 * @param searchUname
+	 * @param startIndex
+	 * @param eachCount
+	 * @return
+	 */
+	List<UserInfo> selectAllUserLimit(String uid, String datemin, String datemax, String searchUname, Integer startIndex,
+			Integer eachCount);
+
+	/**
+	 * 用户进出房间记录
+	 * @param uid
+	 * @param roomNum
+	 * @param datemin
+	 * @param datemax
+	 * @return
+	 */
+	public int getUserPlayRecordInfoCount(String uid, String roomNum, String datemin, String datemax);
+
+	/**
+	 * 用户进出房间记录
+	 * @param uid
+	 * @param roomNum
+	 * @param datemin
+	 * @param datemax
+	 * @param i
+	 * @param eachCount
+	 * @return
+	 */
+	public List<UserRoomRecord> getUserPlayRecordInfoLimit(String uid, String roomNum, String datemin, String datemax,
+			Integer i, Integer eachCount);
+
+	/**
+	 *获取房间记录信息
+	 * @param recordIdList
+	 * @return
+	 */
+	public List<RoomRecord> selectRoomRecordInfoList(Set<Integer> recordIdList);
+
+	/**
+	 *批量获取积分
+	 * @param userRoomRecordIdList
+	 * @return
+	 */
+	public List<UserActionScore> selectUserActionScoreInfos(Set<Integer> userRoomRecordIdList);
+
+	/**
+	 * 用户得分记录总数
+	 * @param uid
+	 * @param roomNum
+	 * @param datemin
+	 * @param datemax
+	 * @return
+	 */
+	public int getUserScoreInfoInfoCount(String uid, String roomNum, String datemin, String datemax);
+
+	/**
+	 * 分页获取用户得分记录总数
+	 * @param uid
+	 * @param roomNum
+	 * @param datemin
+	 * @param datemax
+	 * @param i
+	 * @param eachCount
+	 * @return
+	 */
+	public List<UserRecordScoreVO> getUserScoreInfoInfoListLimit(String uid, String roomNum, String datemin, String datemax, Integer i, Integer eachCount);
+
+	/**
+	 * 房间总数
+	 * @param roomNum
+	 * @param datemin
+	 * @param datemax
+	 * @return
+	 */
+	public int selectRoomRecordInfoCount(String roomNum, String datemin, String datemax);
+
+	/**
+	 * 房间分页查询
+	 * @param roomNum
+	 * @param datemin
+	 * @param datemax
+	 * @param i
+	 * @param eachCount
+	 * @return
+	 */
+	public List<RoomRecord> selectRoomRecordInfoLimit(String roomNum, String datemin, String datemax, Integer i,
+			Integer eachCount);
+
+	/**
+	 * 房间里边用户
+	 * @param id
+	 * @return
+	 */
+	public List<UserRoomRecord> selectUserRoomRecordInfoByRoomId(Integer id);
+
+	/**
+	 * 获取消息总条数
+	 * @param mesgstate
+	 * @param datemin
+	 * @param datemax
+	 * @return
+	 */
+	public int selectMessageInfoCount(Integer msgPositionnum,Integer mesgstate, String datemin, String datemax);
+
+	/**
+	 * 分页获取消息
+	 * @param mesgstate
+	 * @param datemin
+	 * @param datemax
+	 * @param i
+	 * @param eachCount
+	 * @return
+	 */
+	public List<MessageInfo> selectMessageInfoLimit(Integer msgPositionnum,Integer mesgstate, String datemin, String datemax, Integer start,
+			Integer eachCount);
+
+	/**
+	 * 用户房卡数目变化明细条数
+	 * @param userID
+	 * @param datemin
+	 * @param datemax
+	 * @return
+	 */
+	public int selectRoomCardChangeInfoCount(Integer userID,Integer changeTypeNum, String datemin, String datemax);
+
+	/**
+	 *  用户房卡数目变化明细
+	 * @param userID
+	 * @param datemin
+	 * @param datemax
+	 * @param start
+	 * @param eachCount
+	 * @return
+	 */
+	public List<RoomCartChange> selectRoomCardChangeInfoLimit(Integer userID,Integer changeTypeNum, String datemin, String datemax, int start,Integer eachCount);
+
+	/**
+	 * 查用户房间记录
+	 * @param userRoomRecordInfoID
+	 * @return
+	 */
+	public UserRoomRecord selectUserRoomRecordInfoByID(Integer userRoomRecordInfoID);
+
+	public void updateUserRoomRecordInfoPrimaryKey(UserRoomRecord winuserRoomRecForUpdate);
 	
 
 }

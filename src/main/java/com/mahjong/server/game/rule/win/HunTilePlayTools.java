@@ -108,15 +108,14 @@ public class HunTilePlayTools {
 			boolean res = false;
 			byte b1 = ck.uncheckedTile.getPai()[0];
 			// 第一张和另外两张构成一个组合
-			int uncheckLength = ck.uncheckedTile.getPai().length;
-			for (int i = 1; i < uncheckLength; i++) {
+			for (int i = 1; i <  ck.uncheckedTile.getPai().length; i++) {
 				byte b2 = ck.uncheckedTile.getPai()[i];
 				if (b2 - b1 > 1) {// 13444 134不可能连一起
 					b1 = b2;
 					continue;
 				}
 
-				if (i + 1 < uncheckLength) {
+				if (i + 1 < ck.uncheckedTile.getPai().length) {
 					if (b1 != b2 && ck.uncheckedTile.getPai()[i + 1] == b2) {
 						continue;
 					}
@@ -148,7 +147,7 @@ public class HunTilePlayTools {
 			// 第一个和第二个一铺
 			b1 = ck.uncheckedTile.getPai()[0];
 
-			for (int i = 1; i < uncheckLength; i++) {
+			for (int i = 1; i < ck.uncheckedTile.getPai().length; i++) {
 				byte b2 = ck.uncheckedTile.getPai()[i];
 				if (b2 - b1 > 2) {// 13444 134不可能连一起
 					b1 = b2;
@@ -168,7 +167,7 @@ public class HunTilePlayTools {
 							return true;
 						}
 					}
-					else if (uncheckLength <= 5) {// 最后这张剩下55777但没有混牌的时候
+					else if (ck.uncheckedTile.getPai().length <= 5) {// 最后这张剩下55777但没有混牌的时候
 						ck.tileUnitInfos.add((new TileUnitInfo(JIANG, new Tile(new byte[] { b1, b2 }))));
 						ck.uncheckedTile.removeAll(new Tile(new byte[] { b1, b2 }));
 						ck.duiZiNum++;

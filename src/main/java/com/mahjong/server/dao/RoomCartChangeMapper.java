@@ -26,9 +26,10 @@ public interface RoomCartChangeMapper {
 
     int updateByExampleSelective(@Param("record") RoomCartChange record, @Param("example") RoomCartChangeExample example);
 
-    int updateByExample(@Param("record") RoomCartChange record, @Param("example") RoomCartChangeExample example);
-
     int updateByPrimaryKeySelective(RoomCartChange record);
 
-    int updateByPrimaryKey(RoomCartChange record);
+	int selectRoomCardChangeInfoCount(@Param("userID")Integer userID,@Param("changeTypeNum")Integer changeTypeNum, @Param("datemin")String datemin, @Param("datemax")String datemax);
+
+	List<RoomCartChange> selectRoomCardChangeInfoLimit(@Param("userID")Integer userID,@Param("changeTypeNum")Integer changeTypeNum, @Param("datemin")String datemin, @Param("datemax")String datemax, @Param("start") Integer startIndex,@Param("count")Integer eachCount);
+
 }

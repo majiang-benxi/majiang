@@ -1,6 +1,8 @@
 package com.mahjong.server.game.context;
+import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.game.enums.PlayerLocation;
@@ -16,7 +18,19 @@ public class HouseContext {
 	public static ConcurrentHashMap<Integer, RoomContext> rommList = new ConcurrentHashMap<Integer, RoomContext>();
 	
 	public static ConcurrentHashMap<String, RoomContext> weixinIdToRoom = new ConcurrentHashMap<String, RoomContext>();
-
+	
+	public static ConcurrentHashMap<String, UserInfo> weixinIdToUserInfo = new ConcurrentHashMap<String, UserInfo>();
+	
+	
+	public static AtomicInteger onlineRoomNum = new AtomicInteger(0);
+	public static AtomicInteger playRoomNum = new AtomicInteger(0);
+	public static AtomicInteger waitRoomNum = new AtomicInteger(0);
+	
+	public static AtomicInteger onlineUserNum = new AtomicInteger(0);
+	public static AtomicInteger playUserNum = new AtomicInteger(0);
+	public static AtomicInteger waitUserNum = new AtomicInteger(0);
+	
+	
 	public RoomContext getRoomByNum(Integer roomNum) {
 		return rommList.get(roomNum);
 	}
@@ -55,7 +69,8 @@ public class HouseContext {
 	    GameContext gameContext = new GameContext(table, gameStrategy);
 		gameContext.setZhuangLocation(PlayerLocation.EAST);// 创建房间的人为庄
 	    roomContext.setGameContext(gameContext);
-	    roomContext.setRoomStatus(RoomStatus.WAIT_FOR_READY);
+	    roomContext.setRoomStatus(RoomStatus.WAIT_USERS);
+	    roomContext.setCreateTime(new Date());
 	   
 		return roomContext;
 
@@ -64,11 +79,18 @@ public class HouseContext {
 	private static int getRoomNum(){
 		String roomNum = "";
 		for(int i=0;i<6;i++){
+			
 			Random random = new Random();
 			int eachNum = random.nextInt(10);
+			
+			if(i==0){
+				while(eachNum==0){
+					eachNum = random.nextInt(10);
+				}
+			}
 			roomNum += eachNum;
 		}
 		return Integer.parseInt(roomNum);
 	}
-
+	
 }

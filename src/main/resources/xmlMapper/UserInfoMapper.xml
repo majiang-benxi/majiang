@@ -9,9 +9,11 @@
     <result column="head_imgurl" property="headImgurl" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="room_cart_num" property="roomCartNum" jdbcType="INTEGER" />
+    <result column="room_cart_num_used" property="roomCartNumUsed" jdbcType="INTEGER" />
     <result column="score_num" property="scoreNum" jdbcType="INTEGER" />
     <result column="last_login_ip" property="lastLoginIp" jdbcType="VARCHAR" />
     <result column="last_login_time" property="lastLoginTime" jdbcType="TIMESTAMP" />
+    <result column="login_times" property="loginTimes" jdbcType="INTEGER" />
     <result column="curr_room" property="currRoom" jdbcType="INTEGER" />
     <result column="state" property="state" jdbcType="TINYINT" />
   </resultMap>
@@ -74,8 +76,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, nick_name, weixin_mark, sex, head_imgurl, create_time, room_cart_num, score_num, 
-    last_login_ip, last_login_time, curr_room, state
+    id, nick_name, weixin_mark, sex, head_imgurl, create_time, room_cart_num, room_cart_num_used, 
+    score_num, last_login_ip, last_login_time, login_times, curr_room, state
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.mahjong.server.entity.UserInfoExample" >
     select
@@ -120,6 +122,9 @@
       <if test="roomCartNum != null" >
         and room_cart_num = #{roomCartNum,jdbcType=INTEGER}
       </if>
+      <if test="roomCartNumUsed != null" >
+        and room_cart_num_used = #{roomCartNumUsed,jdbcType=INTEGER}
+      </if>
       <if test="scoreNum != null" >
         and score_num = #{scoreNum,jdbcType=INTEGER}
       </if>
@@ -128,6 +133,9 @@
       </if>
       <if test="lastLoginTime != null" >
         and last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="loginTimes != null" >
+        and login_times = #{loginTimes,jdbcType=INTEGER}
       </if>
       <if test="currRoom != null" >
         and curr_room = #{currRoom,jdbcType=INTEGER}
@@ -148,18 +156,24 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.mahjong.server.entity.UserInfo" >
+     	<selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
+		SELECT LAST_INSERT_ID()
+	</selectKey>
     insert into user_info (id, nick_name, weixin_mark, 
       sex, head_imgurl, create_time, 
-      room_cart_num, score_num, last_login_ip, 
-      last_login_time, curr_room, state
-      )
+      room_cart_num, room_cart_num_used, score_num, 
+      last_login_ip, last_login_time, login_times, 
+      curr_room, state)
     values (#{id,jdbcType=INTEGER}, #{nickName,jdbcType=VARCHAR}, #{weixinMark,jdbcType=VARCHAR}, 
       #{sex,jdbcType=TINYINT}, #{headImgurl,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{roomCartNum,jdbcType=INTEGER}, #{scoreNum,jdbcType=INTEGER}, #{lastLoginIp,jdbcType=VARCHAR}, 
-      #{lastLoginTime,jdbcType=TIMESTAMP}, #{currRoom,jdbcType=INTEGER}, #{state,jdbcType=TINYINT}
-      )
+      #{roomCartNum,jdbcType=INTEGER}, #{roomCartNumUsed,jdbcType=INTEGER}, #{scoreNum,jdbcType=INTEGER}, 
+      #{lastLoginIp,jdbcType=VARCHAR}, #{lastLoginTime,jdbcType=TIMESTAMP}, #{loginTimes,jdbcType=INTEGER}, 
+      #{currRoom,jdbcType=INTEGER}, #{state,jdbcType=TINYINT})
   </insert>
   <insert id="insertSelective" parameterType="com.mahjong.server.entity.UserInfo" >
+  <selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
+		SELECT LAST_INSERT_ID()
+	</selectKey>
     insert into user_info
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -183,6 +197,9 @@
       <if test="roomCartNum != null" >
         room_cart_num,
       </if>
+      <if test="roomCartNumUsed != null" >
+        room_cart_num_used,
+      </if>
       <if test="scoreNum != null" >
         score_num,
       </if>
@@ -191,6 +208,9 @@
       </if>
       <if test="lastLoginTime != null" >
         last_login_time,
+      </if>
+      <if test="loginTimes != null" >
+        login_times,
       </if>
       <if test="currRoom != null" >
         curr_room,
@@ -221,6 +241,9 @@
       <if test="roomCartNum != null" >
         #{roomCartNum,jdbcType=INTEGER},
       </if>
+      <if test="roomCartNumUsed != null" >
+        #{roomCartNumUsed,jdbcType=INTEGER},
+      </if>
       <if test="scoreNum != null" >
         #{scoreNum,jdbcType=INTEGER},
       </if>
@@ -229,6 +252,9 @@
       </if>
       <if test="lastLoginTime != null" >
         #{lastLoginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="loginTimes != null" >
+        #{loginTimes,jdbcType=INTEGER},
       </if>
       <if test="currRoom != null" >
         #{currRoom,jdbcType=INTEGER},
@@ -268,6 +294,9 @@
       <if test="record.roomCartNum != null" >
         room_cart_num = #{record.roomCartNum,jdbcType=INTEGER},
       </if>
+      <if test="record.roomCartNumUsed != null" >
+        room_cart_num_used = #{record.roomCartNumUsed,jdbcType=INTEGER},
+      </if>
       <if test="record.scoreNum != null" >
         score_num = #{record.scoreNum,jdbcType=INTEGER},
       </if>
@@ -277,6 +306,9 @@
       <if test="record.lastLoginTime != null" >
         last_login_time = #{record.lastLoginTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.loginTimes != null" >
+        login_times = #{record.loginTimes,jdbcType=INTEGER},
+      </if>
       <if test="record.currRoom != null" >
         curr_room = #{record.currRoom,jdbcType=INTEGER},
       </if>
@@ -284,24 +316,6 @@
         state = #{record.state,jdbcType=TINYINT},
       </if>
     </set>
-    <if test="_parameter != null" >
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByExample" parameterType="map" >
-    update user_info
-    set id = #{record.id,jdbcType=INTEGER},
-      nick_name = #{record.nickName,jdbcType=VARCHAR},
-      weixin_mark = #{record.weixinMark,jdbcType=VARCHAR},
-      sex = #{record.sex,jdbcType=TINYINT},
-      head_imgurl = #{record.headImgurl,jdbcType=VARCHAR},
-      create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      room_cart_num = #{record.roomCartNum,jdbcType=INTEGER},
-      score_num = #{record.scoreNum,jdbcType=INTEGER},
-      last_login_ip = #{record.lastLoginIp,jdbcType=VARCHAR},
-      last_login_time = #{record.lastLoginTime,jdbcType=TIMESTAMP},
-      curr_room = #{record.currRoom,jdbcType=INTEGER},
-      state = #{record.state,jdbcType=TINYINT}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -327,6 +341,9 @@
       <if test="roomCartNum != null" >
         room_cart_num = #{roomCartNum,jdbcType=INTEGER},
       </if>
+      <if test="roomCartNumUsed != null" >
+        room_cart_num_used = #{roomCartNumUsed,jdbcType=INTEGER},
+      </if>
       <if test="scoreNum != null" >
         score_num = #{scoreNum,jdbcType=INTEGER},
       </if>
@@ -335,6 +352,9 @@
       </if>
       <if test="lastLoginTime != null" >
         last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="loginTimes != null" >
+        login_times = #{loginTimes,jdbcType=INTEGER},
       </if>
       <if test="currRoom != null" >
         curr_room = #{currRoom,jdbcType=INTEGER},
@@ -345,24 +365,6 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.mahjong.server.entity.UserInfo" >
-    update user_info
-    set nick_name = #{nickName,jdbcType=VARCHAR},
-      weixin_mark = #{weixinMark,jdbcType=VARCHAR},
-      sex = #{sex,jdbcType=TINYINT},
-      head_imgurl = #{headImgurl,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      room_cart_num = #{roomCartNum,jdbcType=INTEGER},
-      score_num = #{scoreNum,jdbcType=INTEGER},
-      last_login_ip = #{lastLoginIp,jdbcType=VARCHAR},
-      last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
-      curr_room = #{currRoom,jdbcType=INTEGER},
-      state = #{state,jdbcType=TINYINT}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  
-  
-  
   
   <select id="selectUserInfoByWeiXinMark" resultMap="BaseResultMap" parameterType="string" >
     select 
@@ -388,6 +390,50 @@
     set	room_cart_num = room_cart_num + #{cartNum}
     where id = #{userId} AND room_cart_num + #{cartNum} >= 0 
   </update>
+  
+  <select id="selectAllUserCount" resultType="int" parameterType="map" >
+    select 
+   		count(1)
+    from user_info
+      where 1=1
+	     <if test="userId != null" >
+	     	and id = #{userId,jdbcType=INTEGER}
+	     </if>
+	     <if test="datemin != null" >
+	     	and create_time <![CDATA[>= ]]>  #{datemin}
+	     </if>
+	     <if test="datemax != null" >
+	     	and create_time  <![CDATA[<= ]]>#{datemax}
+	     </if>
+	     <if test="searchUname != null" >
+	     	and nick_name like CONCAT('%',#{searchUname},'%')
+	     </if>
+    
+  </select>
+  
+  
+   <select id="selectAllUserLimit" resultMap="BaseResultMap" parameterType="map" >
+	    select 
+	    <include refid="Base_Column_List" />
+	    from user_info
+	    where 1=1
+		   	<if test="userId != null" >
+		     	and id = #{userId,jdbcType=INTEGER}
+		     </if>
+		     <if test="datemin != null" >
+		     	and create_time <![CDATA[>= ]]>  #{datemin}
+		     </if>
+		     <if test="datemax != null" >
+		     	and create_time  <![CDATA[<= ]]>#{datemax}
+		     </if>
+		     <if test="searchUname != null" >
+		     	and nick_name like CONCAT('%',#{searchUname},'%')
+		     </if>
+		     <if test="start != null" >
+		     	limit #{start,jdbcType=INTEGER},#{count,jdbcType=INTEGER}
+		     </if>
+  </select>
+  
   
   
   

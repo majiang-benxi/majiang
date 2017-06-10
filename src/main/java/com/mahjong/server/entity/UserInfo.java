@@ -15,17 +15,25 @@ public class UserInfo implements Cloneable {
 
     private Date createTime;
 
-	private int roomCartNum;
+    private Integer roomCartNum;
 
-	private int scoreNum;
+    private Integer roomCartNumUsed;
+
+    private Integer scoreNum;
 
     private String lastLoginIp;
 
     private Date lastLoginTime;
 
-	private Integer currRoom;// 保留包装类型，如果当前没有加入房间为空
+    private Integer loginTimes;
+
+    private Integer currRoom;
 
     private Byte state;
+    
+    private String createTimeStr;
+    
+    private String lastLoginTimeStr;
 
     public Integer getId() {
         return id;
@@ -75,19 +83,27 @@ public class UserInfo implements Cloneable {
         this.createTime = createTime;
     }
 
-	public int getRoomCartNum() {
+    public Integer getRoomCartNum() {
         return roomCartNum;
     }
 
-	public void setRoomCartNum(int roomCartNum) {
+    public void setRoomCartNum(Integer roomCartNum) {
         this.roomCartNum = roomCartNum;
     }
 
-	public int getScoreNum() {
+    public Integer getRoomCartNumUsed() {
+        return roomCartNumUsed;
+    }
+
+    public void setRoomCartNumUsed(Integer roomCartNumUsed) {
+        this.roomCartNumUsed = roomCartNumUsed;
+    }
+
+    public Integer getScoreNum() {
         return scoreNum;
     }
 
-	public void setScoreNum(int scoreNum) {
+    public void setScoreNum(Integer scoreNum) {
         this.scoreNum = scoreNum;
     }
 
@@ -107,6 +123,14 @@ public class UserInfo implements Cloneable {
         this.lastLoginTime = lastLoginTime;
     }
 
+    public Integer getLoginTimes() {
+        return loginTimes;
+    }
+
+    public void setLoginTimes(Integer loginTimes) {
+        this.loginTimes = loginTimes;
+    }
+
     public Integer getCurrRoom() {
         return currRoom;
     }
@@ -123,6 +147,22 @@ public class UserInfo implements Cloneable {
         this.state = state;
     }
 
+	public String getCreateTimeStr() {
+		return createTimeStr;
+	}
+
+	public void setCreateTimeStr(String createTimeStr) {
+		this.createTimeStr = createTimeStr;
+	}
+
+	public String getLastLoginTimeStr() {
+		return lastLoginTimeStr;
+	}
+
+	public void setLastLoginTimeStr(String lastLoginTimeStr) {
+		this.lastLoginTimeStr = lastLoginTimeStr;
+	}
+	
 	@Override
 	public UserInfo clone() {
 		try {

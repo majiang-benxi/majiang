@@ -13,9 +13,21 @@ public class UserRoomRecord {
 
     private Byte userDirection;
 
-    private Date joinTime;
+    private Date operateTime;
 
-    private Integer lastScore;
+    private Byte operateType;
+
+    private String userIp;
+
+    private String operateCause;
+
+    private Integer winTimes;
+
+    private Integer loseTimes;
+
+    private Integer huTimes;
+    
+    private String operateTimeStr;
 
     public Integer getId() {
         return id;
@@ -57,19 +69,68 @@ public class UserRoomRecord {
         this.userDirection = userDirection;
     }
 
-    public Date getJoinTime() {
-        return joinTime;
+    public Date getOperateTime() {
+        return operateTime;
     }
 
-    public void setJoinTime(Date joinTime) {
-        this.joinTime = joinTime;
+    public void setOperateTime(Date operateTime) {
+        this.operateTime = operateTime;
     }
 
-    public Integer getLastScore() {
-        return lastScore;
+    public Byte getOperateType() {
+        return operateType;
     }
 
-    public void setLastScore(Integer lastScore) {
-        this.lastScore = lastScore;
+    public void setOperateType(Byte operateType) {
+        this.operateType = operateType;
     }
+
+    public String getUserIp() {
+        return userIp;
+    }
+
+    public void setUserIp(String userIp) {
+        this.userIp = userIp == null ? null : userIp.trim();
+    }
+
+    public String getOperateCause() {
+        return operateCause;
+    }
+
+    public void setOperateCause(String operateCause) {
+        this.operateCause = operateCause;
+    }
+
+    public Integer getWinTimes() {
+        return winTimes;
+    }
+
+    public void setWinTimes(Integer winTimes) {
+        this.winTimes = winTimes;
+    }
+
+    public Integer getLoseTimes() {
+        return loseTimes;
+    }
+
+    public void setLoseTimes(Integer loseTimes) {
+        this.loseTimes = loseTimes;
+    }
+
+    public Integer getHuTimes() {
+        return huTimes;
+    }
+
+    public void setHuTimes(Integer huTimes) {
+        this.huTimes = huTimes;
+    }
+
+	public String getOperateTimeStr() {
+		return operateTimeStr;
+	}
+
+	public void setOperateTimeStr(String operateTimeStr) {
+		this.operateTimeStr = operateTimeStr;
+	}
+
 }

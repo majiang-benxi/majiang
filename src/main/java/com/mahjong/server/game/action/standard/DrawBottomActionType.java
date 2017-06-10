@@ -36,11 +36,13 @@ public class DrawBottomActionType extends DrawActionType {
 	protected void doLegalAction(GameContext context, PlayerLocation location, Tile tile) {
 		Tile drawBottomTile = context.getTable().drawBottom(1);
 		PlayerInfo playerInfo = context.getTable().getPlayerByLocation(location);
-		playerInfo.setDiscardAuth(true);
-		playerInfo._getSortAliveTiles().addTile(drawBottomTile);
-		playerInfo.setLastDrawedTile(drawBottomTile);
-		context.getTable().resetPlayersLastTile(location);
-		context.getLocalDoneActions().add(new ActionAndLocation(new Action(DRAW_BOTTOM, drawBottomTile), location));
+		if(playerInfo!=null){
+			playerInfo.setDiscardAuth(true);
+			playerInfo._getSortAliveTiles().addTile(drawBottomTile);
+			playerInfo.setLastDrawedTile(drawBottomTile);
+			context.getTable().resetPlayersLastTile(location);
+			context.getLocalDoneActions().add(new ActionAndLocation(new Action(DRAW_BOTTOM, drawBottomTile), location));
+		}
 
 	}
 

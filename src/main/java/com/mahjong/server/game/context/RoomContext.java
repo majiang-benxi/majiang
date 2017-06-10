@@ -1,14 +1,20 @@
 package com.mahjong.server.game.context;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.game.enums.RoomStatus;
+import com.mahjong.server.game.object.PlayerInfo;
 
 public class RoomContext {
 	
+	/**
+	 * 房间号
+	 */
+	private Integer roomRecordID;
 	/**
 	 * 房间号
 	 */
@@ -18,6 +24,8 @@ public class RoomContext {
 	 * 房间状态
 	 */
 	private RoomStatus roomStatus;
+	
+	private Date createTime;
 
 	/**
 	 * 游戏上下文
@@ -60,7 +68,7 @@ public class RoomContext {
 		this.gameContext = gameContext;
 	}
 
-	public boolean joinRoom(UserInfo userInfo) {
+	public PlayerInfo joinRoom(UserInfo userInfo) {
 		return this.gameContext.joinRoom( userInfo);
 	}
 
@@ -86,6 +94,22 @@ public class RoomContext {
 
 	public void setDisagreeUserNames(List<String> disagreeUserNames) {
 		this.disagreeUserNames = disagreeUserNames;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public Integer getRoomRecordID() {
+		return roomRecordID;
+	}
+
+	public void setRoomRecordID(Integer roomID) {
+		this.roomRecordID = roomID;
 	}
 
 }

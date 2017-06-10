@@ -89,12 +89,9 @@
 		<appender-ref ref="WARN" />
 		<appender-ref ref="ERROR" />
 	</logger>	
-	<root>
-		<priority value="INFO" />
-		<appender-ref ref="DEBUG" />
-		<appender-ref ref="INFO" />
-		<appender-ref ref="WARN" />
-		<appender-ref ref="ERROR" />
+	
+	<root  level="INFO">
+		<appender-ref ref="STDOUT" />
 	</root>
 
 </log4j:configuration>

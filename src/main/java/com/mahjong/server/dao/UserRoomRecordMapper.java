@@ -26,14 +26,18 @@ public interface UserRoomRecordMapper {
 
     int updateByExampleSelective(@Param("record") UserRoomRecord record, @Param("example") UserRoomRecordExample example);
 
-    int updateByExample(@Param("record") UserRoomRecord record, @Param("example") UserRoomRecordExample example);
-
     int updateByPrimaryKeySelective(UserRoomRecord record);
 
-    int updateByPrimaryKey(UserRoomRecord record);
 
 	List<UserRoomRecord> selectUserRoomRecordInfoByUserID(Integer userId);
 
 	List<UserRoomRecord> selectLatestUserRoomRecordInfo(@Param("userId")Integer userId,@Param("topNum") Integer topNum);
+
+	int getUserPlayRecordInfoCount(@Param("userId")String uid, @Param("roomNum")String roomNum, @Param("datemin")String datemin, @Param("datemax")String datemax);
+
+	List<UserRoomRecord> getUserPlayRecordInfoLimit(@Param("userId")String uid, @Param("roomNum")String roomNum, @Param("datemin")String datemin, @Param("datemax")String datemax,
+			 @Param("start") Integer startIndex,@Param("count")Integer eachCount);
+
+	List<UserRoomRecord> selectUserRoomRecordInfoByRoomId(@Param("roomid")Integer roomid);
 
 }

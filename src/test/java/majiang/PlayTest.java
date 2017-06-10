@@ -16,11 +16,13 @@ import com.mahjong.server.game.action.standard.DrawActionType;
 import com.mahjong.server.game.action.standard.WinActionType;
 import com.mahjong.server.game.context.HouseContext;
 import com.mahjong.server.game.context.RoomContext;
+import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.enums.PlayerLocation.Relation;
 import com.mahjong.server.game.object.DisCardActionAndLocation;
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.netty.handler.HandlerHelper;
 import com.mahjong.server.netty.model.EnterRoomRespModel;
+import com.mahjong.server.netty.model.RoomRespModel;
 
 public class PlayTest {
 	public static void main(String[] args) throws IllegalActionException {
@@ -38,6 +40,8 @@ public class PlayTest {
 		roomContex.getGameContext().joinRoom(userInfo4);
 		DealActionType dealActionType = new DealActionType();
 		dealActionType.doAction(roomContex.getGameContext(), roomContex.getGameContext().getZhuangLocation(), null);
+		roomContex.getGameContext().getTable().printAllPlayTiles();
+
 		EnterRoomRespModel enterRoomRespModel = new EnterRoomRespModel("user1", true, "发牌", roomContex,
 				roomContex.getGameContext().getZhuangLocation());
 		System.out.println("zhuang  enterRoomRespModel:" + JSON.toJSONString(enterRoomRespModel));
@@ -51,6 +55,11 @@ public class PlayTest {
 								.getPlayerByLocation(roomContex.getGameContext().getZhuangLocation())
 								.getLastDrawedTile()));
 		roomContex.getGameContext().getTable().printAllPlayTiles();
+		for (PlayerLocation playerLocation : roomContex.getGameContext().getTable().getPlayerInfos().keySet()) {
+			RoomRespModel roomRespModel=new RoomRespModel(roomContex,playerLocation);
+			System.out.println(JSON.toJSONString(roomRespModel));
+
+		}
 		System.out.println("zhuang last tile :");
 		roomContex.getGameContext().getTable().getPlayerByLocation(roomContex.getGameContext().getZhuangLocation())
 				.getLastDrawedTile().printTile();
@@ -59,26 +68,26 @@ public class PlayTest {
 		byte lastTileByte_1 = (byte) (lastTileByte + 1);
 		byte lastTileByte_2 = (byte) (lastTileByte + 2);
 
-		roomContex.getGameContext().getTable()
-				.getPlayerByLocation(
-						roomContex.getGameContext().getZhuangLocation()
-								.getLocationOf(
-										Relation.OPPOSITE))
-
-				.setAliveTiles(new Tile(new byte[] { lastTileByte, lastTileByte,
-						lastTileByte, 0x14, 0x15, 0x16, 0x15, 0x15, 0x22, 0x23, 0x24, 0x25, 0x26 }));
-		roomContex.getGameContext().getTable().printAllPlayTiles();
-
-		List<DisCardActionAndLocation> res = HandlerHelper.getActionAfterDiscardTile(roomContex,
-				roomContex.getGameContext().getTable()
-				.getPlayerByLocation(roomContex.getGameContext().getZhuangLocation())
-				.getLastDrawedTile(), roomContex.getGameContext().getZhuangLocation());
-		System.out.println("zhuang.DisCardActionAndLocation last tile :" + JSON.toJSONString(res));
-
-		DrawActionType drawActionType = new DrawActionType();
-		drawActionType.doAction(roomContex.getGameContext(),
-				roomContex.getGameContext().getZhuangLocation().getLocationOf(Relation.NEXT),
-				new Action(DRAW));
+//		roomContex.getGameContext().getTable()
+//				.getPlayerByLocation(
+//						roomContex.getGameContext().getZhuangLocation()
+//								.getLocationOf(
+//										Relation.OPPOSITE))
+//
+//				.setAliveTiles(new Tile(new byte[] { lastTileByte, lastTileByte,
+//						lastTileByte, 0x14, 0x15, 0x16, 0x15, 0x15, 0x22, 0x23, 0x24, 0x25, 0x26 }));
+//		roomContex.getGameContext().getTable().printAllPlayTiles();
+//
+//		List<DisCardActionAndLocation> res = HandlerHelper.getActionAfterDiscardTile(roomContex,
+//				roomContex.getGameContext().getTable()
+//				.getPlayerByLocation(roomContex.getGameContext().getZhuangLocation())
+//				.getLastDrawedTile(), roomContex.getGameContext().getZhuangLocation());
+//		System.out.println("zhuang.DisCardActionAndLocation last tile :" + JSON.toJSONString(res));
+//
+//		DrawActionType drawActionType = new DrawActionType();
+//		drawActionType.doAction(roomContex.getGameContext(),
+//				roomContex.getGameContext().getZhuangLocation().getLocationOf(Relation.NEXT),
+//				new Action(DRAW));
 
 		roomContex.getGameContext().getTable().printAllPlayTiles();
 		WinActionType winActionType = new WinActionType();

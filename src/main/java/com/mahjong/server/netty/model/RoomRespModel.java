@@ -38,24 +38,29 @@ public class RoomRespModel extends MajiangPlayView {
 
 	// 创建房间的时候调用此构造函数，其余请调用上一个构造。此函数不会隐藏其他玩家信息。
 	public RoomRespModel(String weixinId, RoomContext roomContex) {
-		GameContext gameContext = roomContex.getGameContext();
-		this.setFangKaStrategy(gameContext.getGameStrategy().getRuleInfo().getFangKa().getCode());
-		this.setRoomId(roomContex.getRoomNum());
-		this.setRuleStrategy(gameContext.getGameStrategy().getRuleInfo().getMysqlRule());
-		List<PlayerInfo> players = new ArrayList<PlayerInfo>();
-		for (Entry<PlayerLocation, PlayerInfo> entry : gameContext.getTable().getPlayerInfos().entrySet()) {
-			if (weixinId.equals(entry.getValue().getUserInfo().getWeixinMark())) {
-				this.setCurUserLocation(entry.getValue().getUserLocation());
-				break;
+		
+		if(roomContex!=null){
+			GameContext gameContext = roomContex.getGameContext();
+			this.setFangKaStrategy(gameContext.getGameStrategy().getRuleInfo().getFangKa().getCode());
+			this.setRoomId(roomContex.getRoomNum());
+			this.setRuleStrategy(gameContext.getGameStrategy().getRuleInfo().getMysqlRule());
+			List<PlayerInfo> players = new ArrayList<PlayerInfo>();
+			for (Entry<PlayerLocation, PlayerInfo> entry : gameContext.getTable().getPlayerInfos().entrySet()) {
+				if (weixinId.equals(entry.getValue().getUserInfo().getWeixinMark())) {
+					this.setCurUserLocation(entry.getValue().getUserLocation());
+					break;
+				}
+			}
+			players.addAll(gameContext.getTable().getPlayerInfos().values());
+			this.setPlayers(players);
+			if (gameContext.getTable().getFanhui() != 0) {
+				Tile tile = Tile.getHuiPai(gameContext.getTable().getFanhui());
+				this.setHui1(tile.getPai()[0]);
+				this.setHui2(tile.getPai()[1]);
 			}
 		}
-		players.addAll(gameContext.getTable().getPlayerInfos().values());
-		this.setPlayers(players);
-		if (gameContext.getTable().getFanhui() != 0) {
-			Tile tile = Tile.getHuiPai(gameContext.getTable().getFanhui());
-			this.setHui1(tile.getPai()[0]);
-			this.setHui2(tile.getPai()[1]);
-		}
+		
+		
 	}
 	public boolean isResult() {
 		return result;

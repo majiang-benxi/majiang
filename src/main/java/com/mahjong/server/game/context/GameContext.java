@@ -99,7 +99,7 @@ public class GameContext {
 		this.localDoneActions = doneActions;
 	}
 	
-	public boolean joinRoom( UserInfo userInfo) {
+	public PlayerInfo joinRoom( UserInfo userInfo) {
 		
 		PlayerInfo nowPlayer = new PlayerInfo();
 		nowPlayer.setUserInfo(userInfo);
@@ -115,13 +115,10 @@ public class GameContext {
 			getTable().setPlayer(PlayerLocation.SOUTH, nowPlayer);
 			nowPlayer.setUserLocation(PlayerLocation.SOUTH.getCode());
 		} else {
-			return false;
+			return null;
 		}
 		
-		if(this.table.getPlayerInfos().size()==4){
-			//TODO init 
-		}
-		return true;
+		return nowPlayer;
 	}
 
 	public List<ActionAndLocation> getLocalDoneActions() {

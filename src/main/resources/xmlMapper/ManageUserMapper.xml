@@ -6,7 +6,10 @@
     <result column="uname" property="uname" jdbcType="VARCHAR" />
     <result column="upasswd" property="upasswd" jdbcType="VARCHAR" />
     <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
+    <result column="mobile" property="mobile" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="user_level" property="userLevel" jdbcType="TINYINT" />
+    <result column="card_hold" property="cardHold" jdbcType="INTEGER" />
     <result column="state" property="state" jdbcType="TINYINT" />
   </resultMap>
   <sql id="Example_Where_Clause" >
@@ -68,7 +71,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, uname, upasswd, nick_name, create_time, state
+    id, uname, upasswd, nick_name, mobile, create_time, user_level, card_hold, state
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.mahjong.server.entity.ManageUserExample" >
     select
@@ -104,8 +107,17 @@
       <if test="nickName != null" >
         and nick_name = #{nickName,jdbcType=VARCHAR}
       </if>
+      <if test="mobile != null" >
+        and mobile = #{mobile,jdbcType=VARCHAR}
+      </if>
       <if test="createTime != null" >
         and create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="userLevel != null" >
+        and user_level = #{userLevel,jdbcType=TINYINT}
+      </if>
+      <if test="cardHold != null" >
+        and card_hold = #{cardHold,jdbcType=INTEGER}
       </if>
       <if test="state != null" >
         and state = #{state,jdbcType=TINYINT}
@@ -123,14 +135,22 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.mahjong.server.entity.ManageUser" >
+     	<selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
+		SELECT LAST_INSERT_ID()
+	</selectKey>
     insert into manage_user (id, uname, upasswd, 
-      nick_name, create_time, state
+      nick_name, mobile, create_time, 
+      user_level, card_hold, state
       )
     values (#{id,jdbcType=INTEGER}, #{uname,jdbcType=VARCHAR}, #{upasswd,jdbcType=VARCHAR}, 
-      #{nickName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{state,jdbcType=TINYINT}
+      #{nickName,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{userLevel,jdbcType=TINYINT}, #{cardHold,jdbcType=INTEGER}, #{state,jdbcType=TINYINT}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.mahjong.server.entity.ManageUser" >
+  <selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
+		SELECT LAST_INSERT_ID()
+	</selectKey>
     insert into manage_user
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -145,8 +165,17 @@
       <if test="nickName != null" >
         nick_name,
       </if>
+      <if test="mobile != null" >
+        mobile,
+      </if>
       <if test="createTime != null" >
         create_time,
+      </if>
+      <if test="userLevel != null" >
+        user_level,
+      </if>
+      <if test="cardHold != null" >
+        card_hold,
       </if>
       <if test="state != null" >
         state,
@@ -165,8 +194,17 @@
       <if test="nickName != null" >
         #{nickName,jdbcType=VARCHAR},
       </if>
+      <if test="mobile != null" >
+        #{mobile,jdbcType=VARCHAR},
+      </if>
       <if test="createTime != null" >
         #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userLevel != null" >
+        #{userLevel,jdbcType=TINYINT},
+      </if>
+      <if test="cardHold != null" >
+        #{cardHold,jdbcType=INTEGER},
       </if>
       <if test="state != null" >
         #{state,jdbcType=TINYINT},
@@ -194,8 +232,17 @@
       <if test="record.nickName != null" >
         nick_name = #{record.nickName,jdbcType=VARCHAR},
       </if>
+      <if test="record.mobile != null" >
+        mobile = #{record.mobile,jdbcType=VARCHAR},
+      </if>
       <if test="record.createTime != null" >
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.userLevel != null" >
+        user_level = #{record.userLevel,jdbcType=TINYINT},
+      </if>
+      <if test="record.cardHold != null" >
+        card_hold = #{record.cardHold,jdbcType=INTEGER},
       </if>
       <if test="record.state != null" >
         state = #{record.state,jdbcType=TINYINT},
@@ -205,18 +252,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByExample" parameterType="map" >
-    update manage_user
-    set id = #{record.id,jdbcType=INTEGER},
-      uname = #{record.uname,jdbcType=VARCHAR},
-      upasswd = #{record.upasswd,jdbcType=VARCHAR},
-      nick_name = #{record.nickName,jdbcType=VARCHAR},
-      create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      state = #{record.state,jdbcType=TINYINT}
-    <if test="_parameter != null" >
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.mahjong.server.entity.ManageUser" >
     update manage_user
     <set >
@@ -229,8 +265,17 @@
       <if test="nickName != null" >
         nick_name = #{nickName,jdbcType=VARCHAR},
       </if>
+      <if test="mobile != null" >
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userLevel != null" >
+        user_level = #{userLevel,jdbcType=TINYINT},
+      </if>
+      <if test="cardHold != null" >
+        card_hold = #{cardHold,jdbcType=INTEGER},
       </if>
       <if test="state != null" >
         state = #{state,jdbcType=TINYINT},
@@ -238,16 +283,13 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.mahjong.server.entity.ManageUser" >
+
+  <update id="updateUserSate" parameterType="map" >
     update manage_user
-    set uname = #{uname,jdbcType=VARCHAR},
-      upasswd = #{upasswd,jdbcType=VARCHAR},
-      nick_name = #{nickName,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
+    set 
       state = #{state,jdbcType=TINYINT}
     where id = #{id,jdbcType=INTEGER}
   </update>
-  
   
   <select id="selectManageUserByUname" resultMap="BaseResultMap" parameterType="String" >
     select 
@@ -256,8 +298,39 @@
     where uname = #{userName,jdbcType=VARCHAR}
   </select>
   
+  <select id="selectAllManageUserLimit" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List" />
+    from manage_user
+    where 1=1
+     <if test="datemin != null" >
+     	and create_time <![CDATA[>= ]]> #{datemin}
+     </if>
+     <if test="datemax != null" >
+     	and create_time  <![CDATA[<= ]]>#{datemax}
+     </if>
+     <if test="searchUname != null" >
+     	and uname like CONCAT('%',#{searchUname},'%')
+     </if>
+     <if test="start != null" >
+     	limit #{start,jdbcType=INTEGER},#{count,jdbcType=INTEGER}
+     </if>
+  </select>
   
-  
-  
+  <select id="selectAllManageUserCount" resultType="int" parameterType="map" >
+    select 
+   		count(1)
+    from manage_user
+     where 1=1
+     <if test="datemin != null" >
+     	and create_time <![CDATA[>= ]]>  #{datemin}
+     </if>
+     <if test="datemax != null" >
+     	and create_time  <![CDATA[<= ]]>#{datemax}
+     </if>
+     <if test="searchUname != null" >
+     	and uname like CONCAT('%',#{searchUname},'%')
+     </if>
+  </select>
   
 </mapper>

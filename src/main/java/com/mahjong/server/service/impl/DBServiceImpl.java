@@ -1,8 +1,10 @@
 package com.mahjong.server.service.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,8 @@ import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.entity.UserRoomRecord;
 import com.mahjong.server.service.DBService;
 import com.mahjong.server.vo.UserLatestPlayRecord;
+import com.mahjong.server.vo.UserRecordScoreVO;
+import com.mahjong.server.vo.UserRoomActScore;
 
 @Service
 public class DBServiceImpl implements DBService {
@@ -63,7 +67,7 @@ public class DBServiceImpl implements DBService {
 	}
 	@Override
 	public boolean updateUserInfoById(UserInfo userInfo) {
-		return userInfoMapper.updateByPrimaryKey(userInfo)>0;
+		return userInfoMapper.updateByPrimaryKeySelective(userInfo)>0;
 	}
 	@Override
 	public boolean deleteUserInfoByID(Integer userId) {
@@ -104,7 +108,7 @@ public class DBServiceImpl implements DBService {
 	}
 	@Override
 	public boolean updateRoomRecordInfoByPrimaryKey(RoomRecord queryRecord) {
-		return roomRecordMapper.updateByPrimaryKey(queryRecord)>0;
+		return roomRecordMapper.updateByPrimaryKeySelective(queryRecord)>0;
 	}
 	@Override
 	public boolean deleteRoomRecordInfoByID(Integer recordId) {
@@ -127,10 +131,10 @@ public class DBServiceImpl implements DBService {
 		}
 		return userRoomRecordMapper.selectLatestUserRoomRecordInfo(userId,topNum);
 	}
-	@Override
+/*	@Override
 	public boolean updateUserRoomRecordInfoPrimaryKey(UserRoomRecord userRoomRecord) {
-		return userRoomRecordMapper.updateByPrimaryKey(userRoomRecord)>0;
-	}
+		return userRoomRecordMapper.updateByPrimaryKeySelective(userRoomRecord)>0;
+	}*/
 	@Override
 	public boolean deleteUserRoomRecordInfoByID(Integer recordId) {
 		return userRoomRecordMapper.deleteByPrimaryKey(recordId)>0;
@@ -148,7 +152,7 @@ public class DBServiceImpl implements DBService {
 	}
 	@Override
 	public boolean updateUserActionScoreInfoPrimaryKey(UserActionScore userActionScore) {
-		return userActionScoreMapper.updateByPrimaryKey(userActionScore)>0;
+		return userActionScoreMapper.updateByPrimaryKeySelective(userActionScore)>0;
 	}
 	@Override
 	public boolean deleteUserActionScoreInfoByID(Integer recordId) {
@@ -159,21 +163,49 @@ public class DBServiceImpl implements DBService {
 	/****************查询用户top10战绩*******************/
 	@Override
 	public List<UserLatestPlayRecord> selectUserLatestPlayRecord(Integer userId,Integer topNum){
+		
 		List<UserLatestPlayRecord> returnRecordList = new ArrayList<UserLatestPlayRecord>();
-		List<UserRoomRecord> latestRecords = selectLatestUserRoomRecordInfo(userId,topNum);
+		
+		List<UserActionScore> latestRecords = selectLatestUserRoomRecordScoreInfo(userId,topNum);
+		
+		
+		Map<Integer,RoomRecord> roomRecordMap = new HashMap<Integer, RoomRecord>();
+		
 		if(CollectionUtils.isNotEmpty(latestRecords)){
-			for(UserRoomRecord userRoomRecord : latestRecords){
+			for(UserActionScore userRoomScore : latestRecords){
+				
+				Integer roomRecordId = userRoomScore.getRoomRecordId();
+				
+				RoomRecord roomRecord = null;
+				if(roomRecordMap.containsKey(roomRecordId)){
+					roomRecord = roomRecordMap.get(roomRecordId);
+				}else{
+					roomRecord = selectRoomRecordInfoByID(roomRecordId);
+					roomRecordMap.put(roomRecordId, roomRecord);
+				}
+				
 				UserLatestPlayRecord userLatestPlayRecord = new UserLatestPlayRecord();
-				List<UserActionScore>  actionRecordList = selectUserActionScoreInfoByRecorId(userRoomRecord.getId());
-				RoomRecord roomRecord = selectRoomRecordInfoByID(userRoomRecord.getRoomRecordId());
 				userLatestPlayRecord.setRoomRecord(roomRecord);
-				userLatestPlayRecord.setUserRoomRecord(userRoomRecord);
-				userLatestPlayRecord.setUserActionScoreList(actionRecordList);
+				
+				UserRoomActScore userRoomActScore = new UserRoomActScore();
+				userRoomActScore.setActionScore(userRoomScore.getActionScore());
+				userRoomActScore.setWinActionTypes(userRoomScore.getWinActionTypes());
 				
 				returnRecordList.add(userLatestPlayRecord);
+					
 			}
+			
 		}
+		
 		return returnRecordList;
+	}
+	
+	
+	private List<Integer> selectLatestRoomRecordIds(Integer userId, Integer topNum) {
+		return userActionScoreMapper.selectLatestRoomRecordIds( userId,  topNum);
+	}
+	private List<UserActionScore> selectLatestUserRoomRecordScoreInfo(Integer userId, Integer topNum) {
+		return userActionScoreMapper.selectLatestUserRoomRecordScoreInfo(userId,topNum);
 	}
 	/****************查询用户top10战绩*******************/
 	
@@ -207,7 +239,7 @@ public class DBServiceImpl implements DBService {
 	
 	@Override
 	public boolean updateMessageInfoById(MessageInfo messageInfo){
-		return messageInfoMapper.updateByPrimaryKey(messageInfo)>0;
+		return messageInfoMapper.updateByPrimaryKeySelective(messageInfo)>0;
 	}
 	
 	@Override
@@ -224,8 +256,13 @@ public class DBServiceImpl implements DBService {
 	}
 	
 	@Override
+	public ManageUser selectManageUserByID(Integer uid){
+		return manageUserMapper.selectByPrimaryKey(uid);
+	}
+	
+	@Override
 	public boolean updateManageUserByID(ManageUser manageUser){
-		return manageUserMapper.updateByPrimaryKey(manageUser)>0;
+		return manageUserMapper.updateByPrimaryKeySelective(manageUser)>0;
 	}
 	
 	
@@ -241,10 +278,7 @@ public class DBServiceImpl implements DBService {
 		
 	@Override
 	public boolean deleteManageUserByID(Integer manageUserID){
-		ManageUser manageUser = new ManageUser();
-		manageUser.setId(manageUserID);
-		manageUser.setState((byte) 0);
-		return manageUserMapper.updateByPrimaryKey(manageUser)>0;
+		return manageUserMapper.updateUserSate(manageUserID,0)>0;
 	}
 	
 	/************************充值记录**********************/
@@ -258,24 +292,7 @@ public class DBServiceImpl implements DBService {
 	/************************充值房卡**********************/
 	
 
-	@Override
-	public boolean insertRoomCart(Integer userId,String userName,Integer cartNum,ManageUser manageUser){
-		
-		Integer rest = userInfoMapper.updateUserRoomCard(userId,cartNum);
-		
-		RoomCartChange roomCartChange = new RoomCartChange();
-		roomCartChange.setChangeNum(cartNum);
-		roomCartChange.setChangeTime(new Date());
-		roomCartChange.setIsSuccess((byte)(rest>0?1:0));
-		roomCartChange.setManageName(manageUser.getNickName());
-		roomCartChange.setManageUserId(roomCartChange.getId());
-		roomCartChange.setUserId(userId);
-		roomCartChange.setUserName(userName);
-		
-		roomCartChangeMapper.insert(roomCartChange);
-		
-		return rest>0;
-	}
+	
 	@Override
 	public UpdateInfo selectUpdateInfoByDeviceType(Integer deviceType,float version ) {
 		List<UpdateInfo> updateInfos =  updateInfoMapper.selectUpdateInfoByDeviceType(deviceType,version);
@@ -290,7 +307,95 @@ public class DBServiceImpl implements DBService {
 	}
 	@Override
 	public boolean updateUpdateInfoById(UpdateInfo updateInfo) {
-		return updateInfoMapper.updateByPrimaryKey(updateInfo)>0;
+		return updateInfoMapper.updateByPrimaryKeySelective(updateInfo)>0;
+	}
+	
+	@Override
+	public List<ManageUser> selectAllManageUserLimit(String datemin,String datemax,String searchUname,Integer start,Integer count) {
+		return manageUserMapper.selectAllManageUserLimit(datemin,datemax,searchUname,start, count);	
+	}
+	@Override
+	public int selectAllManageUserCount(String datemin,String datemax,String searchUname) {
+		return manageUserMapper.selectAllManageUserCount(datemin,datemax,searchUname);	
+	}
+	@Override
+	public void updateAdminUserSate(Integer uid, Integer tostate) {
+		manageUserMapper.updateUserSate(uid, tostate);
+	}
+	@Override
+	public int selectAllUserCount(String uid, String datemin, String datemax, String searchUname) {
+		return userInfoMapper.selectAllUserCount(uid, datemin, datemax, searchUname);
+	}
+	@Override
+	public List<UserInfo> selectAllUserLimit(String uid,String datemin, String datemax, String searchUname, Integer startIndex,	Integer eachCount) {
+		return userInfoMapper.selectAllUserLimit(uid, datemin, datemax, searchUname, startIndex, eachCount);
+	}
+	@Override
+	public int getUserPlayRecordInfoCount(String uid, String roomNum, String datemin, String datemax) {
+		return userRoomRecordMapper.getUserPlayRecordInfoCount( uid,  roomNum,  datemin,  datemax);
+	}
+	@Override
+	public List<UserRoomRecord> getUserPlayRecordInfoLimit(String uid, String roomNum, String datemin, String datemax, Integer startIndex, Integer eachCount) {
+		return userRoomRecordMapper.getUserPlayRecordInfoLimit( uid,roomNum, datemin, datemax,  startIndex, eachCount);
+	}
+	@Override
+	public List<RoomRecord> selectRoomRecordInfoList(Set<Integer> recordIdList) {
+		return roomRecordMapper.selectRoomRecordInfoList(recordIdList);
+	}
+	@Override
+	public List<UserActionScore> selectUserActionScoreInfos(Set<Integer> userRoomRecordIdList) {
+		return userActionScoreMapper.selectUserActionScoreInfos(userRoomRecordIdList);
+	}
+	@Override
+	public int getUserScoreInfoInfoCount(String uid, String roomNum, String datemin, String datemax) {
+		return userActionScoreMapper.getUserPlayRecordInfoCount( uid,  roomNum,  datemin,  datemax);
+	}
+	
+	@Override
+	public List<UserRecordScoreVO> getUserScoreInfoInfoListLimit(String uid, String roomNum, String datemin,
+			String datemax, Integer startIndex, Integer eachCount) {
+		return userActionScoreMapper.getUserPlayRecordInfoLimit( uid,roomNum, datemin, datemax,  startIndex, eachCount);
+	}
+	@Override
+	public int selectRoomRecordInfoCount(String roomNum, String datemin, String datemax) {
+		return roomRecordMapper.selectRoomRecordInfoCount( roomNum,  datemin,  datemax);
+	}
+	@Override
+	public List<RoomRecord> selectRoomRecordInfoLimit(String roomNum, String datemin, String datemax, Integer start,
+			Integer eachCount) {
+		return roomRecordMapper.selectRoomRecordInfoLimit( roomNum,  datemin,  datemax, start, eachCount);
+	}
+	@Override
+	public List<UserRoomRecord> selectUserRoomRecordInfoByRoomId(Integer roomid) {
+		return userRoomRecordMapper.selectUserRoomRecordInfoByRoomId(roomid);
+	}
+	@Override
+	public int selectMessageInfoCount(Integer msgPositionnum,Integer mesgstate, String datemin, String datemax) {
+		return messageInfoMapper.selectMessageInfoCount(msgPositionnum, mesgstate,  datemin,  datemax);
+	}
+	@Override
+	public List<MessageInfo> selectMessageInfoLimit(Integer msgPositionnum,Integer mesgstate, String datemin, String datemax, Integer start,
+			Integer eachCount) {
+		return messageInfoMapper.selectMessageInfoLimit(msgPositionnum, mesgstate,  datemin,  datemax, start, eachCount);
+	}
+	
+	
+	@Override
+	public int selectRoomCardChangeInfoCount(Integer userID,Integer changeTypeNum, String datemin, String datemax) {
+		return roomCartChangeMapper.selectRoomCardChangeInfoCount( userID,changeTypeNum,  datemin,  datemax);
+	}
+	@Override
+	public List<RoomCartChange> selectRoomCardChangeInfoLimit(Integer userID,Integer changeTypeNum, String datemin, String datemax, int start,
+			Integer eachCount) {
+		return roomCartChangeMapper.selectRoomCardChangeInfoLimit( userID,changeTypeNum,  datemin,  datemax, start, eachCount);
+	}
+	@Override
+	public UserRoomRecord selectUserRoomRecordInfoByID(Integer userRoomRecordInfoID) {
+		return userRoomRecordMapper.selectByPrimaryKey(userRoomRecordInfoID);
+	}
+	@Override
+	public void updateUserRoomRecordInfoPrimaryKey(UserRoomRecord winuserRoomRecForUpdate) {
+		userRoomRecordMapper.updateByPrimaryKeySelective(winuserRoomRecForUpdate);
 	}
 	
 	

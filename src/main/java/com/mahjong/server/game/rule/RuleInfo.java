@@ -31,12 +31,12 @@ public class RuleInfo {
 		if (CollectionUtils.isEmpty(playRules)) {
 			return StringUtils.EMPTY;
 		}
-		BitSet bitSet = new BitSet();
+		BitSet bitSet = new BitSet(PlayRule.values().length);
 		for (PlayRule playRule : playRules) {
-			bitSet.set(playRule.id);
+			bitSet.set(playRule.id-1);
 		}
 		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < bitSet.length(); i++) {
+		for (int i = 0; i < PlayRule.values().length; i++) {
 			boolean flag = bitSet.get(i);
 			if (flag) {
 				sb.append("1");

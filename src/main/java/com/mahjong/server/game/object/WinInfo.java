@@ -31,8 +31,10 @@ public class WinInfo extends PlayerInfo {
 		winInfo.huiTile = Tile.getOwnHuiPai(allWinTile, fanhui);
 		allWinTile.removeAll(winInfo.huiTile);// 剔除会牌
 		winInfo.winTile = allWinTile;
-		playerTiles._getSortAliveTiles().removeAll(winInfo.getHuiTile());// 把会牌移走
-		winInfo.aliveTile = playerTiles._getSortAliveTiles();
+		Tile winALiveTile=playerTiles.getAliveTiles().clone();
+		winALiveTile.removeAll(winInfo.getHuiTile());// 把会牌移走
+		winALiveTile.sort();
+		winInfo.aliveTile =winALiveTile;
 		winInfo.tileGroups = playerTiles.getTileGroups();
 		winInfo.ziMo = ziMo;
 		return winInfo;

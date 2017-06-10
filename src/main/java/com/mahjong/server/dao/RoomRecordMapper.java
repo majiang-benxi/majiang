@@ -1,6 +1,7 @@
 package com.mahjong.server.dao;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -26,11 +27,15 @@ public interface RoomRecordMapper {
 
     int updateByExampleSelective(@Param("record") RoomRecord record, @Param("example") RoomRecordExample example);
 
-    int updateByExample(@Param("record") RoomRecord record, @Param("example") RoomRecordExample example);
-
     int updateByPrimaryKeySelective(RoomRecord record);
 
-    int updateByPrimaryKey(RoomRecord record);
 
 	int deleteRoomRecordInfoByID(@Param("recordId")Integer recordId);
+
+	List<RoomRecord> selectRoomRecordInfoList(@Param("recordIdList")Set<Integer> recordIdList);
+
+	int selectRoomRecordInfoCount(@Param("roomNum")String roomNum, @Param("datemin")String datemin, @Param("datemax")String datemax);
+
+	List<RoomRecord> selectRoomRecordInfoLimit( @Param("roomNum")String roomNum, @Param("datemin")String datemin, @Param("datemax")String datemax,
+			 @Param("start") Integer startIndex,@Param("count")Integer eachCount);
 }

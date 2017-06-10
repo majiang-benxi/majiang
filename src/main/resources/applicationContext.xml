@@ -12,10 +12,9 @@
        http://www.springframework.org/schema/aop/spring-aop.xsd
        http://www.springframework.org/schema/mvc 
        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
-   <import resource="classpath:mysql-datasource.xml"/>
-    <context:annotation-config/>
-    <context:component-scan base-package="com.mahjong.server"/>
-    <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+       
+       
+           
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
@@ -23,12 +22,20 @@
             </list>
         </property>
     </bean>
+       
+  	<import resource="classpath:mysql-datasource.xml"/>
+  	
+    <context:annotation-config/>
+    <context:component-scan base-package="com.mahjong.server"/>
+    
+    <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+
 	<bean id="handlerExceptionResolver" class="com.mahjong.server.handler.ApiJsonHandlerExceptionResolver">
 	        <property name="order" value="-1"/>
 	</bean>
      <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/views/" />
-        <property name="suffix" value="htm" />
+        <property name="suffix" value=".jsp" />
     </bean>
   <!-- 使用fastjson完成请求和注解POJO的映射 -->
     <mvc:annotation-driven>
@@ -59,4 +66,3 @@
      </mvc:annotation-driven>   
      <mvc:resources location="/WEB-INF/" mapping="/static/**"/>
 </beans>
-

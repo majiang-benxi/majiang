@@ -132,6 +132,9 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.mahjong.server.entity.MessageInfo" >
+     <selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
+		SELECT LAST_INSERT_ID()
+	</selectKey>
     insert into message_info (id, mes_type, mes_position, 
       mes_title, message_content, create_time, 
       interval_time, state)
@@ -140,6 +143,9 @@
       #{intervalTime,jdbcType=INTEGER}, #{state,jdbcType=TINYINT})
   </insert>
   <insert id="insertSelective" parameterType="com.mahjong.server.entity.MessageInfo" >
+  <selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
+		SELECT LAST_INSERT_ID()
+	</selectKey>
     insert into message_info
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -232,20 +238,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByExample" parameterType="map" >
-    update message_info
-    set id = #{record.id,jdbcType=INTEGER},
-      mes_type = #{record.mesType,jdbcType=TINYINT},
-      mes_position = #{record.mesPosition,jdbcType=TINYINT},
-      mes_title = #{record.mesTitle,jdbcType=VARCHAR},
-      message_content = #{record.messageContent,jdbcType=VARCHAR},
-      create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      interval_time = #{record.intervalTime,jdbcType=INTEGER},
-      state = #{record.state,jdbcType=TINYINT}
-    <if test="_parameter != null" >
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.mahjong.server.entity.MessageInfo" >
     update message_info
     <set >
@@ -273,21 +266,62 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.mahjong.server.entity.MessageInfo" >
-    update message_info
-    set mes_type = #{mesType,jdbcType=TINYINT},
-      mes_position = #{mesPosition,jdbcType=TINYINT},
-      mes_title = #{mesTitle,jdbcType=VARCHAR},
-      message_content = #{messageContent,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      interval_time = #{intervalTime,jdbcType=INTEGER},
-      state = #{state,jdbcType=TINYINT}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+
   <update id="deleteMessageInfoById" parameterType="int" >
     update message_info
     set 
       state = 2
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  
+  
+  
+    <select id="selectMessageInfoCount" resultType="int" parameterType="map" >
+    select 
+   		count(1)
+    from message_info
+      where 1=1
+	    
+	     <if test="msgPositionnum != null" >
+	     	and  mes_position = #{msgPositionnum,jdbcType=INTEGER}
+	     </if>
+	     <if test="mesgstate != null" >
+	     	and  state = #{mesgstate,jdbcType=INTEGER}
+	     </if>
+	     <if test="datemin != null" >
+	     	and create_time <![CDATA[>= ]]>  #{datemin}
+	     </if>
+	     <if test="datemax != null" >
+	     	and create_time  <![CDATA[<= ]]>#{datemax}
+	     </if>
+    
+  </select>
+  
+  
+   <select id="selectMessageInfoLimit" resultMap="BaseResultMap" parameterType="map" >
+	    select 
+	    <include refid="Base_Column_List" />
+	    from message_info
+	    where 1=1
+		  <if test="msgPositionnum != null" >
+	     	and  mes_position = #{msgPositionnum,jdbcType=INTEGER}
+	     </if>
+		  <if test="mesgstate != null" >
+	     	and  state = #{mesgstate,jdbcType=INTEGER}
+	     </if>
+	     <if test="datemin != null" >
+	     	and create_time <![CDATA[>= ]]>  #{datemin}
+	     </if>
+	     <if test="datemax != null" >
+	     	and create_time  <![CDATA[<= ]]>#{datemax}
+	     </if>
+	    <if test="start != null" >
+	     	limit #{start,jdbcType=INTEGER},#{count,jdbcType=INTEGER}
+	     </if>
+	</select>
+  
+  
+  
+  
 </mapper>

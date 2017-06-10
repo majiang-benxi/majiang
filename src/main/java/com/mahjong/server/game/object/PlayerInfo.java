@@ -1,6 +1,7 @@
 package com.mahjong.server.game.object;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.game.enums.PlayerLocation;
@@ -14,6 +15,8 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	 * 玩家。
 	 */
 	private UserInfo userInfo;
+	
+	private Integer userRoomRecordInfoID;
 	
 	private PlayerLocation userLocation;
 
@@ -39,6 +42,9 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	private boolean zhuang=false;
 	private boolean offline=false;
 	private boolean discardAuth=false;//默认都没有打牌权限，只有吃碰杠和摸牌之后才可以
+	
+	List<GetScoreType> gatherScoreTypes = new ArrayList<GetScoreType>();
+	
 	public UserInfo getUserInfo() {
 		return userInfo;
 	}
@@ -179,6 +185,20 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 		playerInfo.clone();
 	}
 
-	
+	public Integer getUserRoomRecordInfoID() {
+		return userRoomRecordInfoID;
+	}
+
+	public void setUserRoomRecordInfoID(Integer userRoomRecordInfo) {
+		this.userRoomRecordInfoID = userRoomRecordInfo;
+	}
+
+	public List<GetScoreType> getGatherScoreTypes() {
+		return gatherScoreTypes;
+	}
+
+	public void setGatherScoreTypes(List<GetScoreType> gatherScoreTypes) {
+		this.gatherScoreTypes = gatherScoreTypes;
+	}
 	
 }

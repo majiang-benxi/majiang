@@ -17,8 +17,11 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.mahjong.server.entity.UserInfo;
@@ -35,6 +38,7 @@ import com.mahjong.server.game.enums.EventEnum;
 import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.enums.PlayerLocation.Relation;
 import com.mahjong.server.game.object.DisCardActionAndLocation;
+import com.mahjong.server.game.object.GetScoreType;
 import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.TileGroupType;
@@ -48,10 +52,12 @@ import com.mahjong.server.netty.session.ClientSession;
 import io.netty.channel.ChannelHandlerContext;
 
 public class HandlerHelper {
+	
+	private static final Logger logger = LoggerFactory.getLogger(HandlerHelper.class);
 	/**
 	 * 将消息周知给所有玩家
 	 * 
-	 * @param roomContex
+	 * @param roomContexs
 	 * @param ignoreWinXinId,需要忽略的玩家id
 	 * @param protocolModel
 	 */
@@ -65,6 +71,7 @@ public class HandlerHelper {
 					String weixinId = user.getWeixinMark();
 					ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinId);
 					userCtx.writeAndFlush(protocolModel);
+					logger.error("返回数据：weixinId="+weixinId+",数据："+JSONObject.toJSONString(protocolModel));
 				}
 			}
 		}
@@ -149,6 +156,7 @@ public class HandlerHelper {
 					.getUserInfo().getWeixinMark();
 			ChannelHandlerContext ctx = ClientSession.sessionMap.get(weixinMarkId);
 			ctx.writeAndFlush(canDoProtocolModel);
+			logger.error("返回数据："+JSONObject.toJSONString(canDoProtocolModel));
 		}
 	}
 
@@ -312,6 +320,23 @@ public class HandlerHelper {
 			HandlerHelper.drawTile2Player(roomContext,
 					lastActionAndLocation.getLocation().getLocationOf(Relation.NEXT));
 		}
+	}
+	
+	
+	public static String getScoreTypesStr(List<GetScoreType> gatherScoreTypes){
+		
+		int[] types = new int[13];
+		for(GetScoreType getScoreType : gatherScoreTypes){
+			types[getScoreType.ordinal()] = 1;
+		}
+		
+		String returnStr = "";
+		for(int i=0;i<types.length;i++)  {
+			returnStr += types[i];
+		}
+		
+		return returnStr;
+		
 	}
 
 }

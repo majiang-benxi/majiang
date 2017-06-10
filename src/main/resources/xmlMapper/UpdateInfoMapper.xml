@@ -115,12 +115,18 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.mahjong.server.entity.UpdateInfo" >
+     	<selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
+		SELECT LAST_INSERT_ID()
+	</selectKey>
     insert into update_info (id, device_type, app_version, 
       down_url)
     values (#{id,jdbcType=INTEGER}, #{deviceType,jdbcType=TINYINT}, #{appVersion,jdbcType=REAL}, 
       #{downUrl,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.mahjong.server.entity.UpdateInfo" >
+  <selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
+		SELECT LAST_INSERT_ID()
+	</selectKey>
     insert into update_info
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -177,16 +183,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByExample" parameterType="map" >
-    update update_info
-    set id = #{record.id,jdbcType=INTEGER},
-      device_type = #{record.deviceType,jdbcType=TINYINT},
-      app_version = #{record.appVersion,jdbcType=REAL},
-      down_url = #{record.downUrl,jdbcType=VARCHAR}
-    <if test="_parameter != null" >
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
+  
   <update id="updateByPrimaryKeySelective" parameterType="com.mahjong.server.entity.UpdateInfo" >
     update update_info
     <set >
@@ -202,13 +199,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.mahjong.server.entity.UpdateInfo" >
-    update update_info
-    set device_type = #{deviceType,jdbcType=TINYINT},
-      app_version = #{appVersion,jdbcType=REAL},
-      down_url = #{downUrl,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+  
   
   
   <select id="selectUpdateInfoByDeviceType" resultMap="BaseResultMap" parameterType="com.mahjong.server.entity.UpdateInfo" >

@@ -53,29 +53,32 @@ public class WinActionType extends AbstractActionType {
 		Tile lastTile = lastAction.getTile();
 		boolean ziMo = !DISCARD.matchBy(context.getLastAction().getType());
 		PlayerInfo playerInfo = context.getTable().getPlayerByLocation(playerLocation);
-		if (!ziMo) {
-			playerInfo._getSortAliveTiles().addTile(lastTile);// 非自摸情况，把别人的牌加进来判断，自摸的时候牌已经在自摸的动作中添加了
-		}
-		WinInfo winInfo = WinInfo.fromPlayerTiles(playerInfo, context.getTable().getFanhui(), ziMo);
-		HuType huType = chooseBestWinType(winInfo, context.getGameStrategy().getRuleInfo());
-		if (huType == null) {
-			throw new IllegalActionException(context, playerLocation, new Action(this));
-		} else {
-			winInfo.setHuType(huType);
-			GameResult result = new GameResult(context.getTable().getPlayerInfos(), context.getZhuangLocation(),
-					context.getGameStrategy().getRuleInfo());
-			result.setWinnerLocation(playerLocation);
-			result.setWinTile(winInfo.getWinTile());
-			result.setWinInfo(winInfo);
+		if(playerInfo!=null){
 			if (!ziMo) {
-				result.setPaoerLocation(context.getLastActionAndLocation().getLocation());
+				playerInfo._getSortAliveTiles().addTile(lastTile);// 非自摸情况，把别人的牌加进来判断，自摸的时候牌已经在自摸的动作中添加了
 			}
-			if (!ziMo) {
-				result.setPaoerLocation(context.getLastActionLocation());
+			WinInfo winInfo = WinInfo.fromPlayerTiles(playerInfo, context.getTable().getFanhui(), ziMo);
+			HuType huType = chooseBestWinType(winInfo, context.getGameStrategy().getRuleInfo());
+			if (huType == null) {
+				throw new IllegalActionException(context, playerLocation, new Action(this));
+			} else {
+				winInfo.setHuType(huType);
+				GameResult result = new GameResult(context.getTable().getPlayerInfos(), context.getZhuangLocation(),
+						context.getGameStrategy().getRuleInfo());
+				result.setWinnerLocation(playerLocation);
+				result.setWinTile(winInfo.getWinTile());
+				result.setWinInfo(winInfo);
+				if (!ziMo) {
+					result.setPaoerLocation(context.getLastActionAndLocation().getLocation());
+				}
+				if (!ziMo) {
+					result.setPaoerLocation(context.getLastActionLocation());
+				}
+				result.caclulateScore();// 计算分数
+				context.setGameResult(result);
 			}
-			result.caclulateScore();// 计算分数
-			context.setGameResult(result);
 		}
+		
 
 
 	}
@@ -87,19 +90,22 @@ public class WinActionType extends AbstractActionType {
 		Tile lastTile = lastAction.getTile();
 		boolean ziMo = !DISCARD.matchBy(context.getLastAction().getType());
 		PlayerInfo playerInfo = context.getTable().getPlayerByLocation(playerLocation);
-		if (!ziMo) {
-			playerInfo._getSortAliveTiles().addTile(lastTile);// 非自摸情况，把别人的牌加进来判断，自摸的时候牌已经在自摸的动作中添加了
+		if(playerInfo!=null){
+			if (!ziMo) {
+				playerInfo._getSortAliveTiles().addTile(lastTile);// 非自摸情况，把别人的牌加进来判断，自摸的时候牌已经在自摸的动作中添加了
+			}
+			WinInfo winInfo = WinInfo.fromPlayerTiles(playerInfo, context.getTable().getFanhui(), ziMo);
+			HuType huType = chooseBestWinType(winInfo, context.getGameStrategy().getRuleInfo());
+			if (!ziMo) {
+				playerInfo._getSortAliveTiles().removeAll(lastTile);// 把之前加入判断的牌给去掉。
+			}
+			if (huType == null) {
+				return false;
+			} else {
+				return true;
+			}
 		}
-		WinInfo winInfo = WinInfo.fromPlayerTiles(playerInfo, context.getTable().getFanhui(), ziMo);
-		HuType huType = chooseBestWinType(winInfo, context.getGameStrategy().getRuleInfo());
-		if (!ziMo) {
-			playerInfo._getSortAliveTiles().removeAll(lastTile);// 把之前加入判断的牌给去掉。
-		}
-		if (huType == null) {
-			return false;
-		} else {
-			return true;
-		}
+		return false;
 	}
 
 	// TODO 此处顺序需要在做处理

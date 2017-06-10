@@ -18,6 +18,8 @@ public class MessageInfo {
     private Integer intervalTime;
 
     private Byte state;
+    
+    private String createTimeStr;
 
     public Integer getId() {
         return id;
@@ -82,4 +84,12 @@ public class MessageInfo {
     public void setState(Byte state) {
         this.state = state;
     }
+
+	public String getCreateTimeStr() {
+		return createTimeStr;
+	}
+
+	public void setCreateTimeStr(String createTimeStr) {
+		this.createTimeStr = createTimeStr;
+	}
 }

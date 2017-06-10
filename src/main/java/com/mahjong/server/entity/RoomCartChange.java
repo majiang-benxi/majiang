@@ -16,8 +16,12 @@ public class RoomCartChange {
     private Integer changeNum;
 
     private Date changeTime;
+    
+    private String changeTimeStr;
 
-    private Byte isSuccess;
+    private String changecause;
+    
+    private Integer changeTypeNum;
 
     public Integer getId() {
         return id;
@@ -75,11 +79,27 @@ public class RoomCartChange {
         this.changeTime = changeTime;
     }
 
-    public Byte getIsSuccess() {
-        return isSuccess;
+    public String getChangecause() {
+        return changecause;
     }
 
-    public void setIsSuccess(Byte isSuccess) {
-        this.isSuccess = isSuccess;
+    public void setChangecause(String changecause) {
+        this.changecause = changecause == null ? null : changecause.trim();
     }
+
+	public String getChangeTimeStr() {
+		return changeTimeStr;
+	}
+
+	public void setChangeTimeStr(String changeTimeStr) {
+		this.changeTimeStr = changeTimeStr;
+	}
+
+	public Integer getChangeTypeNum() {
+		return changeTypeNum;
+	}
+
+	public void setChangeTypeNum(Integer changeTypeNum) {
+		this.changeTypeNum = changeTypeNum;
+	}
 }
