@@ -2,12 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.mahjong.server.dao.UserActionScoreMapper" >
 
-  <resultMap id="BaseResultMap" type="com.mahjong.server.entity.UserActionScore" >
-     <id column="id" property="id" jdbcType="INTEGER" />
+  <resultMap id="BaseResultMap" type="com.mahjong.server.entity.UserActionScore" >  
+  	<id column="id" property="id" jdbcType="INTEGER" />
     <result column="user_id" property="userId" jdbcType="INTEGER" />
     <result column="room_record_id" property="roomRecordId" jdbcType="INTEGER" />
     <result column="round_num" property="roundNum" jdbcType="INTEGER" />
-    <result column="action_type" property="actionType" jdbcType="INTEGER" />
+    <result column="win_action_types" property="winActionTypes" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="action_score" property="actionScore" jdbcType="INTEGER" />
   </resultMap>
@@ -70,7 +70,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, user_id, room_record_id, round_num, action_type, create_time, action_score
+    id, user_id, room_record_id, round_num, win_action_types, create_time, action_score
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.mahjong.server.entity.UserActionScoreExample" >
     select
@@ -106,8 +106,8 @@
       <if test="roundNum != null" >
         and round_num = #{roundNum,jdbcType=INTEGER}
       </if>
-      <if test="actionType != null" >
-        and action_type = #{actionType,jdbcType=INTEGER}
+      <if test="winActionTypes != null" >
+        and win_action_types = #{winActionTypes,jdbcType=VARCHAR}
       </if>
       <if test="createTime != null" >
         and create_time = #{createTime,jdbcType=TIMESTAMP}
@@ -128,20 +128,14 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.mahjong.server.entity.UserActionScore" >
-     	<selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
-		SELECT LAST_INSERT_ID()
-	</selectKey>
     insert into user_action_score (id, user_id, room_record_id, 
-      round_num, action_type, create_time, 
+      round_num, win_action_types, create_time, 
       action_score)
     values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{roomRecordId,jdbcType=INTEGER}, 
-      #{roundNum,jdbcType=INTEGER}, #{actionType,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{roundNum,jdbcType=INTEGER}, #{winActionTypes,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{actionScore,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.mahjong.server.entity.UserActionScore" >
-  <selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
-		SELECT LAST_INSERT_ID()
-	</selectKey>
     insert into user_action_score
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -156,8 +150,8 @@
       <if test="roundNum != null" >
         round_num,
       </if>
-      <if test="actionType != null" >
-        action_type,
+      <if test="winActionTypes != null" >
+        win_action_types,
       </if>
       <if test="createTime != null" >
         create_time,
@@ -179,8 +173,8 @@
       <if test="roundNum != null" >
         #{roundNum,jdbcType=INTEGER},
       </if>
-      <if test="actionType != null" >
-        #{actionType,jdbcType=INTEGER},
+      <if test="winActionTypes != null" >
+        #{winActionTypes,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null" >
         #{createTime,jdbcType=TIMESTAMP},
@@ -211,8 +205,8 @@
       <if test="record.roundNum != null" >
         round_num = #{record.roundNum,jdbcType=INTEGER},
       </if>
-      <if test="record.actionType != null" >
-        action_type = #{record.actionType,jdbcType=INTEGER},
+      <if test="record.winActionTypes != null" >
+        win_action_types = #{record.winActionTypes,jdbcType=VARCHAR},
       </if>
       <if test="record.createTime != null" >
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -225,7 +219,6 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-
   <update id="updateByPrimaryKeySelective" parameterType="com.mahjong.server.entity.UserActionScore" >
     update user_action_score
     <set >
@@ -238,8 +231,8 @@
       <if test="roundNum != null" >
         round_num = #{roundNum,jdbcType=INTEGER},
       </if>
-      <if test="actionType != null" >
-        action_type = #{actionType,jdbcType=INTEGER},
+      <if test="winActionTypes != null" >
+        win_action_types = #{winActionTypes,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -336,10 +329,8 @@
 			user_action_score AS uas
 		WHERE
 			uas.user_id = #{userId}
-		AND uas.room_record_id IN 
-		<foreach collection="latestRoomRecordIds" item="item" index="index" open="(" separator="," close=")">
-			#{item}
-		</foreach>
+		ORDER BY uas.create_time DESC
+		LIMIT  0,#{topNum} 
   </select>
   
   

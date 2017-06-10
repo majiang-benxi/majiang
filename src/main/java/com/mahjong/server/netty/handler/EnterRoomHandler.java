@@ -80,94 +80,88 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 					
 				} else {
 					
-					
 					if (roomContex == null) {
-						if(userInfo.getRoomCartNum()<=0){
-							enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "您的房卡数目不够，无法加入房间，请充值！", null);
-							logger.info("房卡数目不够，无法加入房间，weixinId="+weixinId);
-						}else{
 							
-							if ((roomContex = HouseContext.rommList.get(roomId)) != null) {
+						if ((roomContex = HouseContext.rommList.get(roomId)) != null) {
+								
+							if(roomContex.getRoomStatus().getCode()!=RoomStatus.WAIT_USERS.getCode()){
+								enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "房间人数已满或已结束，无法加入房间！", null);
+								logger.info("房间人数已满，无法加入房间，weixinId="+weixinId);
+							}else{
+								
+								playerInfo = roomContex.joinRoom(userInfo);
+								
+								if (playerInfo!=null) {
 									
-								if(roomContex.getRoomStatus().getCode()!=RoomStatus.WAIT_USERS.getCode()){
-									enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "房间人数已满或已结束，无法加入房间！", null);
-									logger.info("房间人数已满，无法加入房间，weixinId="+weixinId);
-								}else{
+									HouseContext.waitUserNum.incrementAndGet();
+									HouseContext.weixinIdToRoom.put(weixinId, roomContex);
 									
-									playerInfo = roomContex.joinRoom(userInfo);
 									
-									if (playerInfo!=null) {
+									UserRoomRecord userRoomRecord = new UserRoomRecord();
+									
+									roomRecord.setId(roomContex.getRoomRecordID());
+									
+									if(playerInfo.getUserLocation().intValue() == PlayerLocation.NORTH.getCode()){
+										roomRecord.setNorthUid(userInfo.getId());
+										userRoomRecord.setUserDirection((byte) 4);
 										
-										HouseContext.waitUserNum.incrementAndGet();
-										HouseContext.weixinIdToRoom.put(weixinId, roomContex);
+									}else if(playerInfo.getUserLocation().intValue() == PlayerLocation.WEST.getCode()){
+										roomRecord.setWestUid(userInfo.getId());
+										userRoomRecord.setUserDirection((byte) 3);
 										
+									}else if(playerInfo.getUserLocation().intValue() == PlayerLocation.SOUTH.getCode()){
+										roomRecord.setSouthUid(userInfo.getId());
+										userRoomRecord.setUserDirection((byte) 2);
 										
-										UserRoomRecord userRoomRecord = new UserRoomRecord();
-										
-										roomRecord.setId(roomContex.getRoomRecordID());
-										
-										if(playerInfo.getUserLocation().intValue() == PlayerLocation.NORTH.getCode()){
-											roomRecord.setNorthUid(userInfo.getId());
-											userRoomRecord.setUserDirection((byte) 4);
-											
-										}else if(playerInfo.getUserLocation().intValue() == PlayerLocation.WEST.getCode()){
-											roomRecord.setWestUid(userInfo.getId());
-											userRoomRecord.setUserDirection((byte) 3);
-											
-										}else if(playerInfo.getUserLocation().intValue() == PlayerLocation.SOUTH.getCode()){
-											roomRecord.setSouthUid(userInfo.getId());
-											userRoomRecord.setUserDirection((byte) 2);
-											
-										}
-										
-										
-										Date now = new Date();
-										
-										InetSocketAddress socketAddr = (InetSocketAddress) ctx.channel().remoteAddress();
-										
-										userRoomRecord.setHuTimes(0);
-										userRoomRecord.setLoseTimes(0);
-										userRoomRecord.setOperateCause("加入房间");
-										userRoomRecord.setOperateType((byte) 1);
-										userRoomRecord.setOperateTime(now);
-										
-										userRoomRecord.setRoomNum(roomContex.getRoomNum());
-										
-										userRoomRecord.setRoomRecordId(roomContex.getRoomRecordID());
-										
-										userRoomRecord.setUserId(userInfo.getId());
-										userRoomRecord.setUserIp(socketAddr.getAddress().getHostAddress());
-										userRoomRecord.setWinTimes(0);
-										
-										Integer userRoomRecordId = dbService.insertUserRoomRecordInfo(userRoomRecord);
-										
-										playerInfo.setUserRoomRecordInfoID(userRoomRecordId);
-										
-										roomContex.setRoomStatus(RoomStatus.WAIT_USERS);
-										
-										// 通知其他三家
-										ProtocolModel enterRoomProtocolModel = new ProtocolModel();
-										enterRoomProtocolModel.setCommandId(EventEnum.NEW_ENTER_RESP.getValue());
-										EnterRoomRespModel newEnterRoomRespModel = new EnterRoomRespModel(weixinId, true, "新人加入", roomContex);
-										enterRoomProtocolModel.setBody(JSON.toJSONString(newEnterRoomRespModel));
-										HandlerHelper.noticeMsg2Players(roomContex, weixinId, enterRoomProtocolModel);
-										
-										flag = true;
-										
-										enterRoomRespModel = new EnterRoomRespModel(weixinId, true, "加入成功", roomContex);
-										
-									} else {
-										enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "加入房间失败，房间已满！", null);
 									}
+									
+									
+									Date now = new Date();
+									
+									InetSocketAddress socketAddr = (InetSocketAddress) ctx.channel().remoteAddress();
+									
+									userRoomRecord.setHuTimes(0);
+									userRoomRecord.setLoseTimes(0);
+									userRoomRecord.setOperateCause("加入房间");
+									userRoomRecord.setOperateType((byte) 1);
+									userRoomRecord.setOperateTime(now);
+									
+									userRoomRecord.setRoomNum(roomContex.getRoomNum());
+									
+									userRoomRecord.setRoomRecordId(roomContex.getRoomRecordID());
+									
+									userRoomRecord.setUserId(userInfo.getId());
+									userRoomRecord.setUserIp(socketAddr.getAddress().getHostAddress());
+									userRoomRecord.setWinTimes(0);
+									
+									Integer userRoomRecordId = dbService.insertUserRoomRecordInfo(userRoomRecord);
+									
+									playerInfo.setUserRoomRecordInfoID(userRoomRecordId);
+									
+									roomContex.setRoomStatus(RoomStatus.WAIT_USERS);
+									
+									// 通知其他三家
+									ProtocolModel enterRoomProtocolModel = new ProtocolModel();
+									enterRoomProtocolModel.setCommandId(EventEnum.NEW_ENTER_RESP.getValue());
+									EnterRoomRespModel newEnterRoomRespModel = new EnterRoomRespModel(weixinId, true, "新人加入", roomContex);
+									enterRoomProtocolModel.setBody(JSON.toJSONString(newEnterRoomRespModel));
+									HandlerHelper.noticeMsg2Players(roomContex, weixinId, enterRoomProtocolModel);
+									
+									flag = true;
+									
+									enterRoomRespModel = new EnterRoomRespModel(weixinId, true, "加入成功", roomContex);
+									
+								} else {
+									enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "加入房间失败，房间已满！", null);
 								}
-								
-							} else {
-								
-								enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "加入房间失败，房间不存在！", null);
-								
 							}
+							
+						} else {
+							
+							enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "加入房间失败，房间不存在！", null);
+							
 						}
-
+	
 					} else {
 						
 						enterRoomRespModel = new EnterRoomRespModel(weixinId, true, "重新加入房间", roomContex);

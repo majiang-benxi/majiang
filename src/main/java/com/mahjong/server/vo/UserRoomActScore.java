@@ -2,17 +2,9 @@ package com.mahjong.server.vo;
 
 public class UserRoomActScore {
 	
-	private Integer actionType;
+	private String winActionTypes;
 	
 	private Integer actionScore;
-
-	public Integer getActionType() {
-		return actionType;
-	}
-
-	public void setActionType(Integer actionType) {
-		this.actionType = actionType;
-	}
 
 	public Integer getActionScore() {
 		return actionScore;
@@ -22,8 +14,12 @@ public class UserRoomActScore {
 		this.actionScore = actionScore;
 	}
 	
-	
-	
-	
+	public String getWinActionTypes() {
+		return winActionTypes;
+	}
+
+	public void setWinActionTypes(String winActionTypes) {
+		this.winActionTypes = winActionTypes;
+	}
 
 }
