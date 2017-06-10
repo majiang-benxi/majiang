@@ -57,7 +57,8 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 						break;
 					}
 				}
-				
+				roomContext.getGameContext().getTable().printAllPlayTiles();
+
 				try {
 					if (discardReqModel.getTileGroupType() == TileGroupType.ONE_GROUP.getCode()) {
 						// 剩余玩家吃碰杠胡检测,如果其他玩家可以吃碰杠胡的时候，按照优先级逐个通知处理

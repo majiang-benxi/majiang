@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.primitives.Bytes;
+import com.mahjong.server.game.enums.PlayerLocation;
+import com.mahjong.server.game.object.MahjongTable;
 import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.Tile;
 
@@ -113,6 +115,9 @@ public class MajiangPlayView {
 	}
 
 	public static void main(String[] args) {
+		  
+	    MahjongTable table = new MahjongTable();
+	    table.init();
 		MajiangPlayView majiangPlayView = new MajiangPlayView();
 		List<PlayerInfo> players = new ArrayList<PlayerInfo>();
 		PlayerInfo playerInfo1 = new PlayerInfo();
@@ -123,8 +128,16 @@ public class MajiangPlayView {
 		playerInfo2.setAliveTiles(new Tile(new byte[] { 1, 2, 3, 5, 7, 8 }));
 		playerInfo2.setUserLocation(2);
 		players.add(playerInfo2);
-		majiangPlayView.setPlayers(players);
+		PlayerInfo playerInfo3=playerInfo2.clone();
+		playerInfo3.setAliveTiles(new Tile(new byte[] { 1, 2, 3, 5, 7, 8 ,8,5,7}));
+		players.add(playerInfo3);
+		table.setPlayer(PlayerLocation.EAST, playerInfo1);
+		table.setPlayer(PlayerLocation.NORTH, playerInfo2);
+		table.setPlayer(PlayerLocation.SOUTH, playerInfo3);
+
+		majiangPlayView.setPlayers(new ArrayList<PlayerInfo>(table.getPlayerInfos().values()));
 		byte hui1 = 5;
+
 		byte hui2 = 6;
 		majiangPlayView.setHui1(hui1);
 		majiangPlayView.setHui2(hui2);
@@ -132,6 +145,8 @@ public class MajiangPlayView {
 		System.out.println(JSON.toJSONString(majiangPlayView));
 		System.out.println(JSON.toJSONString(playerInfo1));
 		System.out.println(JSON.toJSONString(playerInfo2));
+		System.out.println(JSON.toJSONString(playerInfo3));
+		System.out.println(JSON.toJSONString(table.getPlayerInfos().values()));
 
 	}
 }

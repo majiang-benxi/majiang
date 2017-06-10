@@ -207,6 +207,7 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 							userCtx.writeAndFlush(dealTileProtocolModel);
 							logger.error("hashDealTile返回数据："+JSONObject.toJSONString(dealTileProtocolModel));
 						}
+						roomContex.getGameContext().getTable().printAllPlayTiles();
 
 						WinActionType winActionType = new WinActionType();
 						boolean winFirst = winActionType.isLegalAction(roomContex.getGameContext(),	roomContex.getGameContext().getZhuangLocation(), new Action(WIN));
