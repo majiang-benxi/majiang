@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +22,8 @@ import com.mahjong.server.game.context.HouseContext;
 import com.mahjong.server.game.context.RoomContext;
 import com.mahjong.server.game.enums.EventEnum;
 import com.mahjong.server.game.enums.PlayerLocation;
+import com.mahjong.server.game.object.GameResult;
 import com.mahjong.server.game.object.PlayerInfo;
-import com.mahjong.server.game.object.TileGroup;
 import com.mahjong.server.game.object.TileGroupType;
 import com.mahjong.server.netty.model.CurrentRecordRespModel;
 import com.mahjong.server.netty.model.DiscardReqModel;
@@ -70,41 +69,33 @@ public class ToWinHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 						
 						List<ScoreRecordVO> playScordRecords = new ArrayList<ScoreRecordVO>();
 						
-						for(Entry<PlayerLocation, PlayerInfo> playerInfoEnt : playingRoom.getGameContext().getTable().getPlayerInfos().entrySet()){
+						GameResult gameResult = playingRoom.getGameContext().getGameResult();
+						
+						for(Entry<PlayerLocation, PlayerInfo> playerInfoEnt : gameResult.getPlayerInfos().entrySet()){
 							
 							PlayerInfo playerInfo = playerInfoEnt.getValue();
 							
-							String eachWeiXinId  = playerInfo.getUserInfo().getWeixinMark();
+							String  getScoreTypes = HandlerHelper.getScoreTypesStr(playerInfo.getGatherScoreTypes());
 							
-							UserRoomRecord userRoomRecord = null;
-							List<UserRoomRecord> userRoomRecordLists = dbService.selectLatestUserRoomRecordInfo(userInfo.getId(),1);
-							if(CollectionUtils.isNotEmpty(userRoomRecordLists)){
-								userRoomRecord = userRoomRecordLists.get(0);
-							}
+							UserActionScore userActionScore = new UserActionScore();
+							userActionScore.setActionScore(playerInfo.getCurScore());
+							userActionScore.setWinActionTypes(getScoreTypes);
+							userActionScore.setRoomRecordId(playingRoom.getRoomRecordID());
+							userActionScore.setCreateTime(new Date());
+							userActionScore.setRoundNum(playingRoom.getRoomNum());
+							userActionScore.setUserId(playerInfo.getUserInfo().getId());
 							
-							List<UserActionScore> userActionScores = new ArrayList<UserActionScore>();
-							
-							for(TileGroup tileGroup :	playerInfo.getTileGroups()){
-								UserActionScore userActionScore = new UserActionScore();
-								userActionScore.setActionScore(tileGroup.getTileGroupTypeScore());
-								userActionScore.setActionType(tileGroup.getType().getCode());
-								userActionScore.setRoomRecordId(userRoomRecord.getRoomRecordId());
-								dbService.insertUserActionScoreInfo(userActionScore);
-								userActionScores.add(userActionScore);
-							}
-							
+							dbService.insertUserActionScoreInfo(userActionScore);
 							
 							ScoreRecordVO scoreRecordVO = new ScoreRecordVO();
-							scoreRecordVO.setNickName(playerInfoEnt.getValue().getUserInfo().getNickName());
-							scoreRecordVO.setTotalScore(playerInfoEnt.getValue().getCurScore());
-							
-							scoreRecordVO.setUserActionScores(userActionScores);
+							scoreRecordVO.setNickName(playerInfo.getUserInfo().getNickName());
+							scoreRecordVO.setTotalScore(playerInfo.getCurScore());
+							scoreRecordVO.setWinActionTypes(getScoreTypes);
 							
 							playScordRecords.add(scoreRecordVO);
 							
-							
-							
 						}
+						
 						currentRecordRespModel.setPlayScordRecords(playScordRecords);
 						
 						
@@ -161,10 +152,8 @@ public class ToWinHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 						roomRecord.setEndTime(new Date());
 						boolean flg = dbService.updateRoomRecordInfoByPrimaryKey(roomRecord);
 						
-						
-						//TODO
-						
 						for(Entry<PlayerLocation, PlayerInfo> playerInfoEnt : playingRoom.getGameContext().getTable().getPlayerInfos().entrySet()){
+							
 							String eachWeiXinId  = playerInfoEnt.getValue().getUserInfo().getWeixinMark();
 							ChannelHandlerContext eachctx = ClientSession.sessionMap.get(eachWeiXinId);
 							// 回写ACK

@@ -304,10 +304,10 @@
     from manage_user
     where 1=1
      <if test="datemin != null" >
-     	and createTime <![CDATA[>= ]]> #{datemin}
+     	and create_time <![CDATA[>= ]]> #{datemin}
      </if>
      <if test="datemax != null" >
-     	and createTime  <![CDATA[<= ]]>#{datemax}
+     	and create_time  <![CDATA[<= ]]>#{datemax}
      </if>
      <if test="searchUname != null" >
      	and uname like CONCAT('%',#{searchUname},'%')
@@ -323,10 +323,10 @@
     from manage_user
      where 1=1
      <if test="datemin != null" >
-     	and createTime <![CDATA[>= ]]>  #{datemin}
+     	and create_time <![CDATA[>= ]]>  #{datemin}
      </if>
      <if test="datemax != null" >
-     	and createTime  <![CDATA[<= ]]>#{datemax}
+     	and create_time  <![CDATA[<= ]]>#{datemax}
      </if>
      <if test="searchUname != null" >
      	and uname like CONCAT('%',#{searchUname},'%')

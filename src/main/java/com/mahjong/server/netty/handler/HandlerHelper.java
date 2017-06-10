@@ -38,6 +38,7 @@ import com.mahjong.server.game.enums.EventEnum;
 import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.enums.PlayerLocation.Relation;
 import com.mahjong.server.game.object.DisCardActionAndLocation;
+import com.mahjong.server.game.object.GetScoreType;
 import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.TileGroupType;
@@ -56,7 +57,7 @@ public class HandlerHelper {
 	/**
 	 * 将消息周知给所有玩家
 	 * 
-	 * @param roomContex
+	 * @param roomContexs
 	 * @param ignoreWinXinId,需要忽略的玩家id
 	 * @param protocolModel
 	 */
@@ -319,6 +320,23 @@ public class HandlerHelper {
 			HandlerHelper.drawTile2Player(roomContext,
 					lastActionAndLocation.getLocation().getLocationOf(Relation.NEXT));
 		}
+	}
+	
+	
+	public static String getScoreTypesStr(List<GetScoreType> gatherScoreTypes){
+		
+		int[] types = new int[13];
+		for(GetScoreType getScoreType : gatherScoreTypes){
+			types[getScoreType.ordinal()] = 1;
+		}
+		
+		String returnStr = "";
+		for(int i=0;i<types.length;i++)  {
+			returnStr += types[i];
+		}
+		
+		return returnStr;
+		
 	}
 
 }

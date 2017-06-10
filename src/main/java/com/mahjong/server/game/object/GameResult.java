@@ -1,6 +1,8 @@
 package com.mahjong.server.game.object;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -80,15 +82,19 @@ public class GameResult implements Serializable {
 	public void caclulateScore() {
 		for ( Entry<PlayerLocation, PlayerInfo> entry : playerInfos.entrySet()) {
 			boolean isZhuang=entry.getKey().getCode()==zhuangLocation.getCode();
+			
+			List<GetScoreType> typeScore = new ArrayList<GetScoreType>();
+			
 			int score = 0;
 			if(entry.getKey()==winnerLocation){
-				score = ScoreHelper.getWinerScore(winInfo, ruleInfo, isZhuang);
+				score = ScoreHelper.getWinerScore(winInfo, ruleInfo, isZhuang,typeScore);
 			}else if(entry.getKey()==paoerLocation){
-				score = ScoreHelper.getPaoerScore(winInfo, ruleInfo, isZhuang);
+				score = ScoreHelper.getPaoerScore(winInfo, ruleInfo, isZhuang,typeScore);
 			} else {
-				score = ScoreHelper.getXianScore(winInfo, ruleInfo, isZhuang);
+				score = ScoreHelper.getXianScore(winInfo, ruleInfo, isZhuang,typeScore);
 			}
 			entry.getValue().setCurScore(entry.getValue().getCurScore() + score);
+			entry.getValue().setGatherScoreTypes(typeScore);
 		}
 	}
 

@@ -11,7 +11,7 @@ public class UserActionScore {
 
     private Integer roundNum;
 
-    private Integer actionType;
+    private String winActionTypes;
 
     private Date createTime;
 
@@ -49,12 +49,12 @@ public class UserActionScore {
         this.roundNum = roundNum;
     }
 
-    public Integer getActionType() {
-        return actionType;
+    public String getWinActionTypes() {
+        return winActionTypes;
     }
 
-    public void setActionType(Integer actionType) {
-        this.actionType = actionType;
+    public void setWinActionTypes(String winActionTypes) {
+        this.winActionTypes = winActionTypes == null ? null : winActionTypes.trim();
     }
 
     public Date getCreateTime() {

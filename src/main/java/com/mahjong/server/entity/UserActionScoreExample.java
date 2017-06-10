@@ -345,63 +345,73 @@ public class UserActionScoreExample {
             return (Criteria) this;
         }
 
-        public Criteria andActionTypeIsNull() {
-            addCriterion("action_type is null");
+        public Criteria andWinActionTypesIsNull() {
+            addCriterion("win_action_types is null");
             return (Criteria) this;
         }
 
-        public Criteria andActionTypeIsNotNull() {
-            addCriterion("action_type is not null");
+        public Criteria andWinActionTypesIsNotNull() {
+            addCriterion("win_action_types is not null");
             return (Criteria) this;
         }
 
-        public Criteria andActionTypeEqualTo(Integer value) {
-            addCriterion("action_type =", value, "actionType");
+        public Criteria andWinActionTypesEqualTo(String value) {
+            addCriterion("win_action_types =", value, "winActionTypes");
             return (Criteria) this;
         }
 
-        public Criteria andActionTypeNotEqualTo(Integer value) {
-            addCriterion("action_type <>", value, "actionType");
+        public Criteria andWinActionTypesNotEqualTo(String value) {
+            addCriterion("win_action_types <>", value, "winActionTypes");
             return (Criteria) this;
         }
 
-        public Criteria andActionTypeGreaterThan(Integer value) {
-            addCriterion("action_type >", value, "actionType");
+        public Criteria andWinActionTypesGreaterThan(String value) {
+            addCriterion("win_action_types >", value, "winActionTypes");
             return (Criteria) this;
         }
 
-        public Criteria andActionTypeGreaterThanOrEqualTo(Integer value) {
-            addCriterion("action_type >=", value, "actionType");
+        public Criteria andWinActionTypesGreaterThanOrEqualTo(String value) {
+            addCriterion("win_action_types >=", value, "winActionTypes");
             return (Criteria) this;
         }
 
-        public Criteria andActionTypeLessThan(Integer value) {
-            addCriterion("action_type <", value, "actionType");
+        public Criteria andWinActionTypesLessThan(String value) {
+            addCriterion("win_action_types <", value, "winActionTypes");
             return (Criteria) this;
         }
 
-        public Criteria andActionTypeLessThanOrEqualTo(Integer value) {
-            addCriterion("action_type <=", value, "actionType");
+        public Criteria andWinActionTypesLessThanOrEqualTo(String value) {
+            addCriterion("win_action_types <=", value, "winActionTypes");
             return (Criteria) this;
         }
 
-        public Criteria andActionTypeIn(List<Integer> values) {
-            addCriterion("action_type in", values, "actionType");
+        public Criteria andWinActionTypesLike(String value) {
+            addCriterion("win_action_types like", value, "winActionTypes");
             return (Criteria) this;
         }
 
-        public Criteria andActionTypeNotIn(List<Integer> values) {
-            addCriterion("action_type not in", values, "actionType");
+        public Criteria andWinActionTypesNotLike(String value) {
+            addCriterion("win_action_types not like", value, "winActionTypes");
             return (Criteria) this;
         }
 
-        public Criteria andActionTypeBetween(Integer value1, Integer value2) {
-            addCriterion("action_type between", value1, value2, "actionType");
+        public Criteria andWinActionTypesIn(List<String> values) {
+            addCriterion("win_action_types in", values, "winActionTypes");
             return (Criteria) this;
         }
 
-        public Criteria andActionTypeNotBetween(Integer value1, Integer value2) {
-            addCriterion("action_type not between", value1, value2, "actionType");
+        public Criteria andWinActionTypesNotIn(List<String> values) {
+            addCriterion("win_action_types not in", values, "winActionTypes");
+            return (Criteria) this;
+        }
+
+        public Criteria andWinActionTypesBetween(String value1, String value2) {
+            addCriterion("win_action_types between", value1, value2, "winActionTypes");
+            return (Criteria) this;
+        }
+
+        public Criteria andWinActionTypesNotBetween(String value1, String value2) {
+            addCriterion("win_action_types not between", value1, value2, "winActionTypes");
             return (Criteria) this;
         }
 

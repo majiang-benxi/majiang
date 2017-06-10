@@ -8,6 +8,7 @@ import com.mahjong.server.vo.ScoreRecordVO;
  * 本局战绩
  */
 public class CurrentRecordRespModel {
+	
 	private List<ScoreRecordVO> playScordRecords;
 
 	public List<ScoreRecordVO> getPlayScordRecords() {
