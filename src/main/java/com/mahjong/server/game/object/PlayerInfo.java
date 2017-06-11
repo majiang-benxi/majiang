@@ -105,7 +105,7 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 		c.discardedTiles = this.discardedTiles == null ? new Tile() : this.discardedTiles.clone();
 		c.userInfo = userInfo == null ? null : userInfo.clone();
 		c.tileGroups = new ArrayList<TileGroup>(tileGroups);
-
+		c.lastDiscardTile=this.lastDiscardTile == null ? new Tile() : this.lastDiscardTile.clone();
 		return c;
 	}
 
