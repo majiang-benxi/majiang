@@ -58,6 +58,7 @@
                         <value>WriteNullBooleanAsFalse</value>
                         <value>SkipTransientField</value>
                         <value>WriteEnumUsingToString</value>
+                        <value>DisableCircularReferenceDetect</value>
                     </list>
                 </property>
             </bean>
