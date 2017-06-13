@@ -41,7 +41,7 @@ public class TileGroup implements Serializable {
 		this.type = type;
 		this.gotTile = gotTile;
 		this.fromRelation = fromRelation;
-		this.tile = new Tile();
+		this.tile = tile;
 	}
 
 	/**
