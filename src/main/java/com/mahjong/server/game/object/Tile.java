@@ -122,10 +122,10 @@ public class Tile {
 		if (this.pai == null) {
 			return null;
 		}
-		byte[] destPai = new byte[this.pai.length];
-		System.arraycopy(this.pai, 0, destPai, 0, this.pai.length);
+		int[] destPai = new int[this.pai.length];
+		System.arraycopy(this.getQianduanPai(), 0, destPai, 0, this.pai.length);
 		Tile tile = new Tile();
-		tile.setPai(destPai);
+		tile.setQianduanPai(destPai);
 		return tile;
 	}
 

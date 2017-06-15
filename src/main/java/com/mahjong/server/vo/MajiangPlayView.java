@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.google.common.primitives.Bytes;
 import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.object.MahjongTable;
@@ -19,6 +20,9 @@ public class MajiangPlayView {
 	private int curUserLocation;
 	private int hui1;
 	private int hui2;
+	@JSONField(serialize=false)
+	protected boolean currentWinView=false;
+
 	public String getRuleStrategy() {
 		return ruleStrategy;
 	}
@@ -55,7 +59,9 @@ public class MajiangPlayView {
 				result.add(playerInfo);
 
 			} else {
-				playerInfo = playerInfo._getOtherPlayerInfoView();
+				if(!currentWinView){
+					playerInfo = playerInfo._getOtherPlayerInfoView();
+				} 
 				result.add(playerInfo);
 			}
 		}

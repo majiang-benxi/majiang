@@ -308,7 +308,7 @@ public class HandlerHelper {
 					new Action(WIN, disCardActionAndLocation.getActionAndLocation().getAction().getTile()));
 			ProtocolModel winProtocolModel = new ProtocolModel();
 			DiscardRespModel discardRespModel = new DiscardRespModel(roomContext,
-					disCardActionAndLocation.getActionAndLocation().getLocation());
+					disCardActionAndLocation.getActionAndLocation().getLocation(),true);
 			winProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
 			winProtocolModel.setBody(JSON.toJSONString(discardRespModel));
 			HandlerHelper.noticeMsg2Players(roomContext, null, winProtocolModel);
