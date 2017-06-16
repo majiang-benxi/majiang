@@ -309,7 +309,7 @@ public class HandlerHelper {
 			ProtocolModel winProtocolModel = new ProtocolModel();
 			DiscardRespModel discardRespModel = new DiscardRespModel(roomContext,
 					disCardActionAndLocation.getActionAndLocation().getLocation(),true);
-			winProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
+			winProtocolModel.setCommandId(EventEnum.WIN_ONE_TIME_RESP.getValue());
 			winProtocolModel.setBody(JSON.toJSONString(discardRespModel));
 			HandlerHelper.noticeMsg2Players(roomContext, null, winProtocolModel);
 			// TODO 战绩

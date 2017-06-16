@@ -220,7 +220,7 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 							
 							winActionType.doAction(roomContex.getGameContext(),	roomContex.getGameContext().getZhuangLocation(), new Action(WIN));
 							ProtocolModel winProtocolModel = new ProtocolModel();
-							winProtocolModel.setCommandId(EventEnum.WIN_TILE_RESP.getValue());
+							winProtocolModel.setCommandId(EventEnum.WIN_ONE_TIME_RESP.getValue());
 							roomContex.setRoomStatus(RoomStatus.PLAYING);
 							EnterRoomRespModel winTileRoomRespModel = new EnterRoomRespModel(null, true, "庄家天胡", roomContex);
 							winProtocolModel.setBody(JSON.toJSONString(winTileRoomRespModel));

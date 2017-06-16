@@ -98,11 +98,13 @@ public class ScoreHelper {
 	public static int getWinerScore(WinInfo winInfo, RuleInfo ruleInfo, boolean isZhuang,List<GetScoreType> typeScore) {
 		int baseScore=getBaseScore(winInfo, ruleInfo, isZhuang,typeScore);
 		if (winInfo.isZiMo()) {//这个需要在所有base项目统计完毕之后计算。表示其他向其他3个玩家收分。
+			typeScore.add(GetScoreType.zimo);
 			baseScore *= 3;
 		}
 		return getTotalScore(baseScore,winInfo,ruleInfo,true,typeScore);
 	}
 	public static int getPaoerScore(WinInfo winInfo, RuleInfo ruleInfo, boolean isZhuang,List<GetScoreType> typeScore) {
+		typeScore.add(GetScoreType.dianpao);
 		int baseScore=getBaseScore(winInfo, ruleInfo, isZhuang,new ArrayList<GetScoreType>())*(-1);
 		if(isZhuang){
 			baseScore*=2;

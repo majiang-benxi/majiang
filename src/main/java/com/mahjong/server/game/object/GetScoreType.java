@@ -14,8 +14,9 @@ public enum GetScoreType {
 	qiangpai(10,"枪牌"),
 	bugang(11,"补杠"),
 	angang(12,"暗杠"),
-	xuanfenggang(13,"旋风杠");
-	
+	xuanfenggang(13,"旋风杠"),
+	zimo(14,"自摸"),
+	dianpao(15,"点炮");
 	private int code;
 	private String name;
 	
