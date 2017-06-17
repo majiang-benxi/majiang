@@ -6,6 +6,7 @@ import static com.mahjong.server.game.action.standard.StandardActionType.DISCARD
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -100,8 +101,17 @@ public class CpgActionType extends AbstractActionType {
 	protected boolean isLegalActionWithPreconition(GameContext context,PlayerLocation location,
 			Tile tile) {
 		Tile testTiles = Tile.addTile(tile, context.getLastAction().getTile());
+		Set<Byte> huiSets = Tile.tile2Set(Tile.getHuiPai(context.getTable().getFanhui()));
 		boolean legal = groupType.isLegalTile(testTiles);
-		return legal;
+		if (!legal) {
+			return false;
+		}
+		for (Byte test : testTiles.getPai()) {
+			if (huiSets.contains(test)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
@@ -112,13 +122,15 @@ public class CpgActionType extends AbstractActionType {
 			playerInfo._getSortAliveTiles().removeAll(tile);
 			
 			Tile gotTile = context.getLastAction().getTile();
+			Tile tileGroupTile=Tile.addTile(tile, gotTile);
+			tileGroupTile.sort();
 			TileGroup group = new TileGroup(groupType, gotTile,
 					location.getRelationOf(context.getLastActionLocation()),
-					Tile.addTile(tile, gotTile));
+					tileGroupTile);
 			playerInfo.getTileGroups().add(group);
 			context.getTable().getPlayerByLocation(location.getLocationOf(location.getRelationOf(context.getLastActionLocation()))).getDiscardedTiles().removeAll(gotTile);//移除被操作者中打出的牌集合中当前打出来的牌
 			playerInfo.setDiscardAuth(true);
-			context.getLocalDoneActions().add(new ActionAndLocation(new Action(CHI, Tile.addTile(tile, gotTile)), location));// 存吃和碰这里没啥区别
+			context.getLocalDoneActions().add(new ActionAndLocation(new Action(CHI, tileGroupTile), location));// 存吃和碰这里没啥区别
 		}
 
 

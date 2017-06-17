@@ -66,6 +66,7 @@ public class DealActionType implements ActionType {
 		context.getTable().getPlayerByLocation(zhuangLocation).setLastDrawedTile(zhuangFirstTile);
 		context.getTable().resetPlayersLastTile(zhuangLocation);
 		context.getTable().setFanhui(table.drawBottom(1).getPai()[0]);// 系统翻出一张会牌
+	    context.getTable().getRemainderTileNum().addAndGet(-54);
 		context.getTable().printAllPlayTiles();
 		context.getLocalDoneActions().add(new ActionAndLocation(new Action(DEAL, zhuangFirstTile), zhuangLocation));
 	}

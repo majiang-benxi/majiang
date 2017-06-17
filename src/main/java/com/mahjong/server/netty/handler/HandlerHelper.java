@@ -50,6 +50,7 @@ import com.mahjong.server.netty.model.ProtocolModel;
 import com.mahjong.server.netty.session.ClientSession;
 
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.multipart.HttpPostRequestEncoder.EncoderMode;
 
 public class HandlerHelper {
 	
@@ -172,6 +173,19 @@ public class HandlerHelper {
 
 	public static void drawTile2Player(RoomContext roomContext, PlayerLocation playerLocation)
 			throws IllegalActionException {
+		int remainTileNum=roomContext.getGameContext().getTable().getRemainderTileNum().get();
+		if(remainTileNum== roomContext.getGameContext().getHuangZhuangtTileNum()){
+			for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext()
+					.getTable().getPlayerInfos()
+					.entrySet()) {
+			ProtocolModel huangZhuangProtocolModel = new ProtocolModel();
+			DiscardRespModel hzdiscardRespModel = new DiscardRespModel(roomContext,entry.getKey(),true);
+			huangZhuangProtocolModel.setBody(JSON.toJSONString(hzdiscardRespModel));
+			huangZhuangProtocolModel.setCommandId(EventEnum.HUANG_ZHUANG.getValue());
+			HandlerHelper.noticeMsg2Player(roomContext,entry.getValue(),huangZhuangProtocolModel);
+			}
+			//TODO 本局结束，执行清理操作
+		}
 		DrawActionType drawActionType = new DrawActionType();
 		drawActionType.doAction(roomContext.getGameContext(), playerLocation, new Action(drawActionType));
 		for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext()
@@ -308,8 +322,8 @@ public class HandlerHelper {
 					new Action(WIN, disCardActionAndLocation.getActionAndLocation().getAction().getTile()));
 			ProtocolModel winProtocolModel = new ProtocolModel();
 			DiscardRespModel discardRespModel = new DiscardRespModel(roomContext,
-					disCardActionAndLocation.getActionAndLocation().getLocation());
-			winProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
+					disCardActionAndLocation.getActionAndLocation().getLocation(),true);
+			winProtocolModel.setCommandId(EventEnum.WIN_ONE_TIME_RESP.getValue());
 			winProtocolModel.setBody(JSON.toJSONString(discardRespModel));
 			HandlerHelper.noticeMsg2Players(roomContext, null, winProtocolModel);
 			// TODO 战绩

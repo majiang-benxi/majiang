@@ -149,8 +149,12 @@ public class CreateRoomHandler extends SimpleChannelInboundHandler<ProtocolModel
 						
 					}else{
 						
+						
 						logger.error("用户已经在房间中，weixinId="+weixinId+",房间号："+roomContex.getRoomNum());
 						createRoomRespModel = new CreateRoomRespModel(weixinId, true,roomContex);
+						if(roomContex.getRoomStatus().getCode()==2){
+							createRoomRespModel.setRoomState(2);
+						}
 						
 					}
 					

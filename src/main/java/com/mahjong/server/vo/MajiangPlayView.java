@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.google.common.primitives.Bytes;
 import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.object.MahjongTable;
@@ -19,6 +20,10 @@ public class MajiangPlayView {
 	private int curUserLocation;
 	private int hui1;
 	private int hui2;
+	@JSONField(serialize=false)
+	protected boolean currentWinView=false;
+	private int remainderTileNum=136;
+
 	public String getRuleStrategy() {
 		return ruleStrategy;
 	}
@@ -43,6 +48,14 @@ public class MajiangPlayView {
 		this.roomId = roomId;
 	}
 
+	public int getRemainderTileNum() {
+		return remainderTileNum;
+	}
+
+	public void setRemainderTileNum(int remainderTileNum) {
+		this.remainderTileNum = remainderTileNum;
+	}
+
 	// 序列化的时候使用的get方法，此方法根据访问隐藏掉其他玩家中的活牌。
 	public List<PlayerInfo> getPlayers() {
 		if (players == null) {
@@ -55,7 +68,9 @@ public class MajiangPlayView {
 				result.add(playerInfo);
 
 			} else {
-				playerInfo = playerInfo._getOtherPlayerInfoView();
+				if(!currentWinView){
+					playerInfo = playerInfo._getOtherPlayerInfoView();
+				} 
 				result.add(playerInfo);
 			}
 		}

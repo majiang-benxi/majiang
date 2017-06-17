@@ -18,10 +18,14 @@ public class RoomRespModel extends MajiangPlayView {
 	public RoomRespModel() {
 
 	}
-
 	// 此函数会隐藏其他玩家信息。
 	public RoomRespModel(RoomContext roomContex, PlayerLocation playerLocation) {
+		this(roomContex,playerLocation,false);
+	}
+
+	public RoomRespModel(RoomContext roomContex, PlayerLocation playerLocation,boolean hideChoose) {
 		GameContext gameContext = roomContex.getGameContext();
+		this.currentWinView=hideChoose;
 		this.setCurUserLocation(playerLocation.getCode());
 		this.setFangKaStrategy(gameContext.getGameStrategy().getRuleInfo().getFangKa().getCode());
 		this.setRoomId(roomContex.getRoomNum());
@@ -33,6 +37,7 @@ public class RoomRespModel extends MajiangPlayView {
 		Tile tile = Tile.getHuiPai(gameContext.getTable().getFanhui());
 		this.setHui1(tile.getPai()[0]);
 		this.setHui2(tile.getPai()[1]);
+		this.setRemainderTileNum(roomContex.getGameContext().getTable().getRemainderTileNum().get());
 		}
 	}
 
@@ -58,6 +63,7 @@ public class RoomRespModel extends MajiangPlayView {
 				this.setHui1(tile.getPai()[0]);
 				this.setHui2(tile.getPai()[1]);
 			}
+			this.setRemainderTileNum(roomContex.getGameContext().getTable().getRemainderTileNum().get());
 		}
 		
 		

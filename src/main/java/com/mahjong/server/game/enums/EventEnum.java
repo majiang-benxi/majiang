@@ -52,7 +52,7 @@ public enum EventEnum {
 	SEND_MESG_RESP(19),
 	/** 就绪之后的发牌响应 */
 	DEAL_TILE_RESP(20),
-	/** 赢牌响应**/
+	/** 赢牌响应,暂时没用了**/
 	WIN_TILE_RESP(21),
 	/**
 	 * 发牌响应
@@ -65,7 +65,16 @@ public enum EventEnum {
 	/**
 	 * 非法动作响应信息
 	 */
-	ILLEGAL_ACTION_RESP(24);
+	ILLEGAL_ACTION_RESP(24),
+	/**
+	 * 一次胡牌
+	 */
+	WIN_ONE_TIME_RESP(25),
+	/**
+	 * 一个房卡结束的胡牌
+	 */
+	WIN_LAST_TIME_RESP(26),
+	HUANG_ZHUANG(27);
 	private int value;
 
 	public int getValue() {

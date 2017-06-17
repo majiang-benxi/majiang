@@ -54,10 +54,10 @@ public class RuleInfo {
 		}
 		char[] ruleStates = bitRule.toCharArray();
 		StringBuilder sb = new StringBuilder();
-		for (int i = 1; i < ruleStates.length; i++) {
+		for (int i = 0; i < ruleStates.length; i++) {
 			char ruleState = ruleStates[i];
 			if (ruleState == '1') {
-				PlayRule playRule = PlayRule.findPlayRuleById(i);
+				PlayRule playRule = PlayRule.findPlayRuleById(i+1);
 				if (playRule != null) {
 					set.add(playRule);
 				}

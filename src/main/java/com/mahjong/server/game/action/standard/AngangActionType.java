@@ -44,6 +44,7 @@ public class AngangActionType extends AbstractActionType {
 		if(playerInfo!=null){
 			playerInfo._getSortAliveTiles().removeAll(tile);
 			playerInfo.getTileGroups().add(new TileGroup(ANGANG_GROUP, tile));
+			playerInfo.setDiscardAuth(true);
 			context.getLocalDoneActions().add(new ActionAndLocation(new Action(ANGANG, tile), location));
 		}
 	}
