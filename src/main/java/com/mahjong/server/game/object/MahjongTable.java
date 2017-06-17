@@ -77,7 +77,7 @@ public class MahjongTable {
 		return playerInfos;
 	}
 
-	protected void setPlayerInfos(Map<PlayerLocation, PlayerInfo> playerInfos) {
+	public void setPlayerInfos(Map<PlayerLocation, PlayerInfo> playerInfos) {
 		this.playerInfos = playerInfos;
 	}
 

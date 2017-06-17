@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,11 +19,15 @@ import com.mahjong.server.entity.RoomRecord;
 import com.mahjong.server.entity.UserActionScore;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.entity.UserRoomRecord;
+import com.mahjong.server.game.action.ActionAndLocation;
+import com.mahjong.server.game.context.GameContext;
 import com.mahjong.server.game.context.HouseContext;
 import com.mahjong.server.game.context.RoomContext;
 import com.mahjong.server.game.enums.EventEnum;
 import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.object.GameResult;
+import com.mahjong.server.game.object.GetScoreType;
+import com.mahjong.server.game.object.MahjongTable;
 import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.TileGroupType;
 import com.mahjong.server.netty.model.CurrentRecordRespModel;
@@ -71,11 +76,44 @@ public class ToWinHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 						
 						GameResult gameResult = playingRoom.getGameContext().getGameResult();
 						
+						PlayerInfo winPlayerInfo = null; 
+						
+						
 						for(Entry<PlayerLocation, PlayerInfo> playerInfoEnt : gameResult.getPlayerInfos().entrySet()){
 							
 							PlayerInfo playerInfo = playerInfoEnt.getValue();
 							
+							UserRoomRecord winuserRoomRec = dbService.selectUserRoomRecordInfoByID(playerInfo.getUserRoomRecordInfoID());
+							
+							ScoreRecordVO scoreRecordVO = new ScoreRecordVO();
+							scoreRecordVO.setNickName(playerInfo.getUserInfo().getNickName());
+							scoreRecordVO.setTotalScore(playerInfo.getCurScore()-1000);
+							
+							if(playerInfo.getUserInfo().getWeixinMark().equals(weixinId)){
+								
+								winPlayerInfo = playerInfo;
+								updateUserRoomRecordInfo(winuserRoomRec,1,1,null);
+								scoreRecordVO.setHuTimes(winuserRoomRec.getHuTimes()+1);
+								scoreRecordVO.setLocation(playerInfo.getUserLocation());
+								scoreRecordVO.setLoseTimes(winuserRoomRec.getLoseTimes());
+								scoreRecordVO.setWinTimes(scoreRecordVO.getWinTimes()+1);
+								scoreRecordVO.setWeixinId(playerInfo.getUserInfo().getWeixinMark());
+								
+							}else{
+								if(playerInfo.getGatherScoreTypes().contains(GetScoreType.dianpao)){
+									
+									updateUserRoomRecordInfo(winuserRoomRec,0,0,-1);
+									scoreRecordVO.setHuTimes(winuserRoomRec.getHuTimes());
+									scoreRecordVO.setLocation(playerInfo.getUserLocation());
+									scoreRecordVO.setLoseTimes(winuserRoomRec.getLoseTimes()+1);
+									scoreRecordVO.setWinTimes(scoreRecordVO.getWinTimes());
+									scoreRecordVO.setWeixinId(playerInfo.getUserInfo().getWeixinMark());
+								}
+							}
+							
+							
 							String  getScoreTypes = HandlerHelper.getScoreTypesStr(playerInfo.getGatherScoreTypes());
+							scoreRecordVO.setWinActionTypes(getScoreTypes);
 							
 							UserActionScore userActionScore = new UserActionScore();
 							userActionScore.setActionScore(playerInfo.getCurScore());
@@ -87,70 +125,95 @@ public class ToWinHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 							
 							dbService.insertUserActionScoreInfo(userActionScore);
 							
-							ScoreRecordVO scoreRecordVO = new ScoreRecordVO();
-							scoreRecordVO.setNickName(playerInfo.getUserInfo().getNickName());
-							scoreRecordVO.setTotalScore(playerInfo.getCurScore());
-							scoreRecordVO.setWinActionTypes(getScoreTypes);
-							
 							playScordRecords.add(scoreRecordVO);
 							
 						}
 						
 						currentRecordRespModel.setPlayScordRecords(playScordRecords);
 						
+						//赢牌不是庄，剩余局数减一
+						if(gameResult.getZhuangLocation().getCode()!=winPlayerInfo.getUserLocation()){
+							playingRoom.getRemaiRound().decrementAndGet();
+						}
 						
-						RoomContext roomContex = HouseContext.weixinIdToRoom.get(weixinId);
-						
-						HouseContext.rommList.remove(roomContex.getRoomNum());
-						
-						HouseContext.playRoomNum.decrementAndGet();
-						HouseContext.playUserNum.addAndGet(-4);
-						
-						for(Entry<PlayerLocation, PlayerInfo>  ent : roomContex.getGameContext().getTable().getPlayerInfos().entrySet()){
+						if(playingRoom.getRemaiRound().get()==0){
 							
-							PlayerInfo playerInfo = ent.getValue();
-							HouseContext.weixinIdToRoom.remove(playerInfo.getUserInfo().getWeixinMark());
+							RoomContext roomContex = HouseContext.weixinIdToRoom.get(weixinId);
 							
-							UserRoomRecord userRoomRecord = new UserRoomRecord();
+							HouseContext.rommList.remove(roomContex.getRoomNum());
 							
-							if(playerInfo.getUserLocation().intValue() == PlayerLocation.NORTH.getCode()){
-								userRoomRecord.setUserDirection((byte) 4);
+							HouseContext.playRoomNum.decrementAndGet();
+							HouseContext.playUserNum.addAndGet(-4);
+							
+							for(Entry<PlayerLocation, PlayerInfo>  ent : roomContex.getGameContext().getTable().getPlayerInfos().entrySet()){
 								
-							}else if(playerInfo.getUserLocation().intValue() == PlayerLocation.WEST.getCode()){
-								userRoomRecord.setUserDirection((byte) 3);
+								PlayerInfo playerInfo = ent.getValue();
+								HouseContext.weixinIdToRoom.remove(playerInfo.getUserInfo().getWeixinMark());
 								
-							}else if(playerInfo.getUserLocation().intValue() == PlayerLocation.SOUTH.getCode()){
-								userRoomRecord.setUserDirection((byte) 2);
+								UserRoomRecord userRoomRecord = new UserRoomRecord();
+								
+								if(playerInfo.getUserLocation().intValue() == PlayerLocation.NORTH.getCode()){
+									userRoomRecord.setUserDirection((byte) 4);
+									
+								}else if(playerInfo.getUserLocation().intValue() == PlayerLocation.WEST.getCode()){
+									userRoomRecord.setUserDirection((byte) 3);
+									
+								}else if(playerInfo.getUserLocation().intValue() == PlayerLocation.SOUTH.getCode()){
+									userRoomRecord.setUserDirection((byte) 2);
+									
+								}
+								
+								Date now = new Date();
+								
+								InetSocketAddress socketAddr = (InetSocketAddress) ctx.channel().remoteAddress();
+								
+								userRoomRecord.setHuTimes(0);
+								userRoomRecord.setLoseTimes(0);
+								userRoomRecord.setOperateCause("游戏结束，离开");
+								userRoomRecord.setOperateType((byte) 2);
+								userRoomRecord.setOperateTime(now);
+								
+								userRoomRecord.setRoomNum(roomContex.getRoomNum());
+								
+								userRoomRecord.setRoomRecordId(roomContex.getRoomRecordID());
+								
+								userRoomRecord.setUserId(playerInfo.getUserInfo().getId());
+								userRoomRecord.setUserIp(socketAddr.getAddress().getHostAddress());
+								userRoomRecord.setWinTimes(0);
+								
+								Integer userRoomRecordId = dbService.insertUserRoomRecordInfo(userRoomRecord);
 								
 							}
 							
-							Date now = new Date();
+							RoomRecord roomRecord = new RoomRecord();
+							roomRecord.setId(roomContex.getRoomRecordID());
+							roomRecord.setRoomState((byte) 4);
+							roomRecord.setEndTime(new Date());
+							boolean flg = dbService.updateRoomRecordInfoByPrimaryKey(roomRecord);
 							
-							InetSocketAddress socketAddr = (InetSocketAddress) ctx.channel().remoteAddress();
+						}else{
 							
-							userRoomRecord.setHuTimes(0);
-							userRoomRecord.setLoseTimes(0);
-							userRoomRecord.setOperateCause("游戏结束，离开");
-							userRoomRecord.setOperateType((byte) 2);
-							userRoomRecord.setOperateTime(now);
+							RoomContext roomContex = HouseContext.weixinIdToRoom.get(weixinId);
+							GameContext gameContext = roomContex.getGameContext();
 							
-							userRoomRecord.setRoomNum(roomContex.getRoomNum());
+							gameContext.setDiscardContext(null);
+							gameContext.setGameResult(null);
+							gameContext.setHuangzhuang(false);
+							gameContext.setLocalDoneActions(new ArrayList<ActionAndLocation>());
+							gameContext.setZhuangLocation(PlayerLocation.fromCode(winPlayerInfo.getUserLocation()));
 							
-							userRoomRecord.setRoomRecordId(roomContex.getRoomRecordID());
+							MahjongTable table = new MahjongTable();
+							table.init();
 							
-							userRoomRecord.setUserId(playerInfo.getUserInfo().getId());
-							userRoomRecord.setUserIp(socketAddr.getAddress().getHostAddress());
-							userRoomRecord.setWinTimes(0);
+							MahjongTable mahjongTable = gameContext.getTable();
+							table.setPlayerInfos(mahjongTable.getPlayerInfos());
 							
-							Integer userRoomRecordId = dbService.insertUserRoomRecordInfo(userRoomRecord);
+							gameContext.setTable(table);
+							
+							roomContex.setAgreeNextRoundNum(new AtomicInteger(0));
+							
 							
 						}
-						
-						RoomRecord roomRecord = new RoomRecord();
-						roomRecord.setId(roomContex.getRoomRecordID());
-						roomRecord.setRoomState((byte) 4);
-						roomRecord.setEndTime(new Date());
-						boolean flg = dbService.updateRoomRecordInfoByPrimaryKey(roomRecord);
 						
 						for(Entry<PlayerLocation, PlayerInfo> playerInfoEnt : playingRoom.getGameContext().getTable().getPlayerInfos().entrySet()){
 							
@@ -174,11 +237,10 @@ public class ToWinHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 	}
 	
 	
-	private boolean updateUserRoomRecordInfo(Integer userRoomRecordId, Integer huNum ,Integer winNum ,Integer loseNum){
-		UserRoomRecord winuserRoomRec = dbService.selectUserRoomRecordInfoByID(userRoomRecordId);
+	private boolean updateUserRoomRecordInfo(UserRoomRecord winuserRoomRec, Integer huNum ,Integer winNum ,Integer loseNum){
 		
 		UserRoomRecord winuserRoomRecForUpdate = new UserRoomRecord();
-		winuserRoomRecForUpdate.setId(userRoomRecordId);
+		winuserRoomRecForUpdate.setId(winuserRoomRec.getId());
 		
 		if(huNum != null && huNum>0){
 			winuserRoomRecForUpdate.setHuTimes(winuserRoomRec.getHuTimes()+huNum);

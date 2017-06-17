@@ -174,28 +174,31 @@ public class HandlerHelper {
 	public static void drawTile2Player(RoomContext roomContext, PlayerLocation playerLocation)
 			throws IllegalActionException {
 		int remainTileNum=roomContext.getGameContext().getTable().getRemainderTileNum().get();
+		
 		if(remainTileNum== roomContext.getGameContext().getHuangZhuangtTileNum()){
 			for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext()
 					.getTable().getPlayerInfos()
 					.entrySet()) {
-			ProtocolModel huangZhuangProtocolModel = new ProtocolModel();
-			DiscardRespModel hzdiscardRespModel = new DiscardRespModel(roomContext,entry.getKey(),true);
-			huangZhuangProtocolModel.setBody(JSON.toJSONString(hzdiscardRespModel));
-			huangZhuangProtocolModel.setCommandId(EventEnum.HUANG_ZHUANG.getValue());
-			HandlerHelper.noticeMsg2Player(roomContext,entry.getValue(),huangZhuangProtocolModel);
+				ProtocolModel huangZhuangProtocolModel = new ProtocolModel();
+				DiscardRespModel hzdiscardRespModel = new DiscardRespModel(roomContext,entry.getKey(),true);
+				huangZhuangProtocolModel.setBody(JSON.toJSONString(hzdiscardRespModel));
+				huangZhuangProtocolModel.setCommandId(EventEnum.HUANG_ZHUANG.getValue());
+				HandlerHelper.noticeMsg2Player(roomContext,entry.getValue(),huangZhuangProtocolModel);
 			}
-			//TODO 本局结束，执行清理操作
-		}
-		DrawActionType drawActionType = new DrawActionType();
-		drawActionType.doAction(roomContext.getGameContext(), playerLocation, new Action(drawActionType));
-		for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext()
-				.getTable().getPlayerInfos()
-				.entrySet()) {
-			ProtocolModel drawTileProtocolModel = new ProtocolModel();
-			DrawCardRespModel drawCardRespModel = new DrawCardRespModel(roomContext, entry.getKey());
-			drawTileProtocolModel.setCommandId(EventEnum.DRAW_TILE_RESP.getValue());
-			drawTileProtocolModel.setBody(JSON.toJSONString(drawCardRespModel));
-			HandlerHelper.noticeMsg2Player(roomContext,entry.getValue(),drawTileProtocolModel);
+			roomContext.getGameContext().setHuangzhuang(true);
+			// 本局结束，执行清理操作
+		}else{
+			DrawActionType drawActionType = new DrawActionType();
+			drawActionType.doAction(roomContext.getGameContext(), playerLocation, new Action(drawActionType));
+			for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext()
+					.getTable().getPlayerInfos()
+					.entrySet()) {
+				ProtocolModel drawTileProtocolModel = new ProtocolModel();
+				DrawCardRespModel drawCardRespModel = new DrawCardRespModel(roomContext, entry.getKey());
+				drawTileProtocolModel.setCommandId(EventEnum.DRAW_TILE_RESP.getValue());
+				drawTileProtocolModel.setBody(JSON.toJSONString(drawCardRespModel));
+				HandlerHelper.noticeMsg2Player(roomContext,entry.getValue(),drawTileProtocolModel);
+			}
 		}
 	}
 

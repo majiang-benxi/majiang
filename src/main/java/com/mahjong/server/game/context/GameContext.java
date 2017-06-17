@@ -36,6 +36,8 @@ public class GameContext {
 	@JSONField(serialize=false)
 	private final int huangZhuangtTileNum=14;
 	
+	private boolean isHuangzhuang = false;
+	
 	public GameContext(MahjongTable table, GameStrategy gameStrategy) {
 		this.table = table;
 		this.gameStrategy = gameStrategy;
@@ -158,8 +160,11 @@ public class GameContext {
 	public void setDiscardContext(DiscardContext discardContext) {
 		this.discardContext = discardContext;
 	}
-
-
-
+	public boolean isHuangzhuang() {
+		return isHuangzhuang;
+	}
+	public void setHuangzhuang(boolean isHuangzhuang) {
+		this.isHuangzhuang = isHuangzhuang;
+	}
 
 }

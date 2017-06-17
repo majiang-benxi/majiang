@@ -74,7 +74,17 @@ public enum EventEnum {
 	 * 一个房卡结束的胡牌
 	 */
 	WIN_LAST_TIME_RESP(26),
-	HUANG_ZHUANG(27);
+	
+	/**
+	 * 黄庄
+	 */
+	HUANG_ZHUANG(27),
+	
+	/**
+	 * 开始下一局
+	 */
+	BEGIN_NEXT_REQ(28);
+	
 	private int value;
 
 	public int getValue() {
