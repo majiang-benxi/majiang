@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.mahjong.server.game.enums.PlayerLocation;
 
@@ -23,7 +24,7 @@ public class MahjongTable {
 	 */
 	private Map<PlayerLocation, PlayerInfo> playerInfos;
 	private byte fanhui;
-	
+	private AtomicInteger  remainderTileNum=new AtomicInteger(136);
 	public void init() {
 		tileWall = new Tile(Tile.getOneBoxMahjong());
 		playerInfos = new EnumMap<PlayerLocation, PlayerInfo>(PlayerLocation.class);
@@ -113,6 +114,15 @@ public class MahjongTable {
 			}
 		}
 	}
+	
+	public AtomicInteger getRemainderTileNum() {
+		return remainderTileNum;
+	}
+
+	public void setRemainderTileNum(AtomicInteger remainderTileNum) {
+		this.remainderTileNum = remainderTileNum;
+	}
+
 	public void printAllPlayTiles() {
 		try {
 		for (Entry<PlayerLocation, PlayerInfo> entry : playerInfos.entrySet()) {
@@ -126,4 +136,5 @@ public class MahjongTable {
 			e.printStackTrace();
 		}
 	}
+	
 }

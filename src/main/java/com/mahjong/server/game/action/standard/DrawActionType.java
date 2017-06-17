@@ -43,7 +43,7 @@ public class DrawActionType extends AbstractActionType {
 	protected boolean isLegalActionWithPreconition(GameContext context,PlayerLocation location,
 			Tile tiles) {
 		// 牌墙中必须有超过14张牌才能摸，否则就算黄庄
-		return context.getTable().getTileWallSize() > 14;
+		return context.getTable().getTileWallSize() > context.getHuangZhuangtTileNum();
 	}
 
 	@Override
@@ -51,6 +51,7 @@ public class DrawActionType extends AbstractActionType {
 		Tile drawTile = context.getTable().draw(1);
 		PlayerInfo playerInfo=context.getTable().getPlayerByLocation(location);
 		if(playerInfo!=null){
+		    context.getTable().getRemainderTileNum().addAndGet(-1);
 			playerInfo._getSortAliveTiles().addTile(drawTile);
 			playerInfo.setLastDrawedTile(drawTile);
 			playerInfo.setDiscardAuth(true);

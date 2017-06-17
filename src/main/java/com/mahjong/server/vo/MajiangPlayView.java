@@ -22,6 +22,7 @@ public class MajiangPlayView {
 	private int hui2;
 	@JSONField(serialize=false)
 	protected boolean currentWinView=false;
+	private int remainderTileNum=136;
 
 	public String getRuleStrategy() {
 		return ruleStrategy;
@@ -45,6 +46,14 @@ public class MajiangPlayView {
 
 	public void setRoomId(int roomId) {
 		this.roomId = roomId;
+	}
+
+	public int getRemainderTileNum() {
+		return remainderTileNum;
+	}
+
+	public void setRemainderTileNum(int remainderTileNum) {
+		this.remainderTileNum = remainderTileNum;
 	}
 
 	// 序列化的时候使用的get方法，此方法根据访问隐藏掉其他玩家中的活牌。

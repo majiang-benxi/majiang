@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.ActionAndLocation;
@@ -32,7 +33,9 @@ public class GameContext {
 	private List<ActionAndLocation> localDoneActions = new ArrayList<ActionAndLocation>();
 	private GameResult gameResult;
 	private DiscardContext discardContext;
-
+	@JSONField(serialize=false)
+	private final int huangZhuangtTileNum=14;
+	
 	public GameContext(MahjongTable table, GameStrategy gameStrategy) {
 		this.table = table;
 		this.gameStrategy = gameStrategy;
@@ -149,6 +152,9 @@ public class GameContext {
 		return discardContext;
 	}
 
+	public int getHuangZhuangtTileNum() {
+		return huangZhuangtTileNum;
+	}
 	public void setDiscardContext(DiscardContext discardContext) {
 		this.discardContext = discardContext;
 	}
