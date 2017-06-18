@@ -175,10 +175,12 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	public void setDiscardAuth(boolean discardAuth) {
 		this.discardAuth = discardAuth;
 	}
-	public void resetLastTile() {
-		this.lastDiscardTile=new Tile();
-		this.lastDrawedTile=new Tile();
+	public void resetDiscardTile() {
+		this.lastDiscardTile=new Tile();		
+	}
 
+	public void resetLastDrawTile() {
+		this.lastDrawedTile=new Tile();		
 	}
 	public static void main(String[] args) {
 		PlayerInfo playerInfo = new PlayerInfo();

@@ -246,7 +246,14 @@ public class HandlerHelper {
 			DisCardActionAndLocation actionAndLocation = needPassOrDoActions.get(0);
 			if (actionAndLocation.getActionAndLocation().getLocation() == discardPlayLocation) {
 				if (multimap.keys().size() == 1) {
-					doDiscardResp(roomContext, discardReqModel.getTile());
+					if(discardReqModel.getTileGroupType()==TileGroupType.PASS_GROUP.getCode()){
+						roomContext.getGameContext().getDiscardContext().clear();
+						// 执行发牌
+						HandlerHelper.drawTile2Player(roomContext,
+								actionAndLocation.getActionAndLocation().getLocation().getLocationOf(Relation.NEXT));
+					}else{
+						doDiscardResp(roomContext, discardReqModel.getTile());
+					}
 				} else {
 					if (actionAndLocation.getTileGroupType() == discardReqModel.getTileGroupType()) {
 						doDiscardResp(roomContext, discardReqModel.getTile());

@@ -41,7 +41,7 @@ public class DrawBottomActionType extends DrawActionType {
 			playerInfo.setDiscardAuth(true);
 			playerInfo._getSortAliveTiles().addTile(drawBottomTile);
 			playerInfo.setLastDrawedTile(drawBottomTile);
-			context.getTable().resetPlayersLastTile(location);
+			context.getTable().resetPlayersLastDrawTile(location);
 			context.getLocalDoneActions().add(new ActionAndLocation(new Action(DRAW_BOTTOM, drawBottomTile), location));
 		}
 

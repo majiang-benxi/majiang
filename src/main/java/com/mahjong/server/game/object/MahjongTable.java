@@ -105,16 +105,24 @@ public class MahjongTable {
 	public void setFanhui(byte fanhui) {
 		this.fanhui = fanhui;
 	}
-	public void resetPlayersLastTile(PlayerLocation excludePlayerLocation){
+	public void resetPlayersLastDiscardTile(PlayerLocation excludePlayerLocation){
 		for (PlayerInfo playerInfo : playerInfos.values()) {
 			if(playerInfo.getUserLocation()==excludePlayerLocation.getCode()){
 				continue;
 			}else{
-				playerInfo.resetLastTile();
+				playerInfo.resetDiscardTile();
 			}
 		}
 	}
-	
+	public void resetPlayersLastDrawTile(PlayerLocation excludePlayerLocation){
+		for (PlayerInfo playerInfo : playerInfos.values()) {
+			if(playerInfo.getUserLocation()==excludePlayerLocation.getCode()){
+				continue;
+			}else{
+				playerInfo.resetLastDrawTile();
+			}
+		}
+	}
 	public AtomicInteger getRemainderTileNum() {
 		return remainderTileNum;
 	}
