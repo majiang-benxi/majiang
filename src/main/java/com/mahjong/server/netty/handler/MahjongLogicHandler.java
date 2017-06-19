@@ -93,7 +93,7 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 							int remainVoter = HandlerHelper.groupByActionByLocation(disCardActionAndLocations).keys()
 									.size();
 							roomContext.getGameContext()
-									.setDiscardContext(new DiscardContext(disCardActionAndLocations, remainVoter));
+									.setDiscardContext(new DiscardContext(disCardActionAndLocations, remainVoter,discardPlayLocation));
 							HandlerHelper.askChoice2Player(roomContext, disCardActionAndLocations);
 						}
 					} else {

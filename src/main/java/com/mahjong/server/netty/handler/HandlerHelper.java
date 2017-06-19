@@ -338,11 +338,10 @@ public class HandlerHelper {
 			HandlerHelper.noticeMsg2Players(roomContext, null, winProtocolModel);
 			// TODO 战绩
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.PASS_GROUP.getCode()) {
-			ActionAndLocation lastActionAndLocation = roomContext.getGameContext().getLastActionAndLocation();
-			roomContext.getGameContext().getDiscardContext().clear();
 			// 执行发牌
 			HandlerHelper.drawTile2Player(roomContext,
-					lastActionAndLocation.getLocation().getLocationOf(Relation.NEXT));
+					roomContext.getGameContext().getDiscardContext().getDiscardPlayLocation().getLocationOf(Relation.NEXT));
+			roomContext.getGameContext().getDiscardContext().clear();
 		}
 	}
 	

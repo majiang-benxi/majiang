@@ -43,6 +43,7 @@ public class DrawBottomActionType extends DrawActionType {
 			playerInfo.setLastDrawedTile(drawBottomTile);
 			context.getTable().resetPlayersLastDrawTile(location);
 			context.getLocalDoneActions().add(new ActionAndLocation(new Action(DRAW_BOTTOM, drawBottomTile), location));
+			context.getTable().printAllPlayTiles();
 		}
 
 	}

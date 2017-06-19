@@ -135,7 +135,7 @@ public class MahjongTable {
 		try {
 		for (Entry<PlayerLocation, PlayerInfo> entry : playerInfos.entrySet()) {
 				System.out.print(
-					"方位:" + entry.getKey().getCode() + " aliveTile: ");
+					"方位:" + entry.getKey().getCode() +"用户weixinId="+entry.getValue().getUserInfo().getWeixinMark()+ " aliveTile: ");
 				entry.getValue()._getSortAliveTiles().printTile();
 		}
 			System.out.print("会牌:");

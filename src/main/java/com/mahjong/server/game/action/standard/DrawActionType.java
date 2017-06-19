@@ -60,6 +60,7 @@ public class DrawActionType extends AbstractActionType {
 			playerInfo.setDiscardAuth(true);
 			context.getTable().resetPlayersLastDrawTile(location);
 			context.getLocalDoneActions().add(new ActionAndLocation(new Action(DRAW, drawTile), location));
+			context.getTable().printAllPlayTiles();
 		}
 	}
 
