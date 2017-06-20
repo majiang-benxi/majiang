@@ -37,6 +37,7 @@ import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.TileGroupType;
 import com.mahjong.server.netty.model.CurrentRecordRespModel;
 import com.mahjong.server.netty.model.DiscardReqModel;
+import com.mahjong.server.netty.model.DiscardRespModel;
 import com.mahjong.server.netty.model.ProtocolModel;
 import com.mahjong.server.netty.session.ClientSession;
 import com.mahjong.server.service.DBService;
@@ -84,7 +85,16 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 						DiscardActionType discardActionType = new DiscardActionType();
 						discardActionType.doAction(roomContext.getGameContext(), discardPlayLocation,
 								new Action(discardActionType, discardReqModel.getTile()));
-						List<DisCardActionAndLocation> disCardActionAndLocations = HandlerHelper
+ 						for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext()
+								.getTable().getPlayerInfos()
+								.entrySet()) {
+							ProtocolModel discardProtocolModel = new ProtocolModel();
+							DiscardRespModel discardRespModel = new DiscardRespModel(roomContext,entry.getKey(),false);
+							discardProtocolModel.setBody(JSON.toJSONString(discardRespModel));
+							discardProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
+							HandlerHelper.noticeMsg2Player(roomContext,null,discardProtocolModel);
+						}
+ 						List<DisCardActionAndLocation> disCardActionAndLocations = HandlerHelper
 								.getActionAfterDiscardTile(roomContext, discardReqModel.getTile(), discardPlayLocation);
 						if (disCardActionAndLocations.isEmpty()) {// 所有下家对这个打的牌没有可以操作的动作后就继续给下家发牌
 							HandlerHelper.drawTile2Player(roomContext,
