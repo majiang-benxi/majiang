@@ -247,10 +247,10 @@ public class HandlerHelper {
 			if (actionAndLocation.getActionAndLocation().getLocation() == discardPlayLocation) {
 				if (multimap.keys().size() == 1) {
 					if(discardReqModel.getTileGroupType()==TileGroupType.PASS_GROUP.getCode()){
-						roomContext.getGameContext().getDiscardContext().clear();
 						// 执行发牌
 						HandlerHelper.drawTile2Player(roomContext,
-								actionAndLocation.getActionAndLocation().getLocation().getLocationOf(Relation.NEXT));
+								roomContext.getGameContext().getDiscardContext().getDiscardPlayLocation().getLocationOf(Relation.NEXT));
+						roomContext.getGameContext().getDiscardContext().clear();
 					}else{
 						doDiscardResp(roomContext, discardReqModel.getTile());
 					}
