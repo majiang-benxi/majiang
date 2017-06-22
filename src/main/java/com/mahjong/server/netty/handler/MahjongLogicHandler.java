@@ -92,7 +92,7 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 							DiscardRespModel discardRespModel = new DiscardRespModel(roomContext,entry.getKey(),false);
 							discardProtocolModel.setBody(JSON.toJSONString(discardRespModel));
 							discardProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
-							HandlerHelper.noticeMsg2Player(roomContext,null,discardProtocolModel);
+							HandlerHelper.noticeMsg2Player(roomContext,entry.getValue(),discardProtocolModel);
 						}
  						List<DisCardActionAndLocation> disCardActionAndLocations = HandlerHelper
 								.getActionAfterDiscardTile(roomContext, discardReqModel.getTile(), discardPlayLocation);
