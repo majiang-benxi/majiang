@@ -232,6 +232,12 @@ public class DBServiceImpl implements DBService {
 		
 	}
 	
+	
+	@Override
+	public MessageInfo selectMessageInfoById(Integer mesId){
+		return messageInfoMapper.selectByPrimaryKey(mesId);
+	}
+	
 	@Override
 	public Integer inserMessageInfo(MessageInfo messageInfo){
 		return messageInfoMapper.insert(messageInfo);

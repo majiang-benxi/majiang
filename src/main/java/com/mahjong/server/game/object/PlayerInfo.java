@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.game.enums.PlayerLocation;
+import com.mahjong.server.vo.ScoreRecordVO;
 
 /**
  * 麻将桌上一个玩家的信息，包括玩家对象、牌，以及其他信息。
@@ -19,6 +20,11 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	private Integer userRoomRecordInfoID;
 	
 	private PlayerLocation userLocation;
+	
+	/**
+	 * 用户每局分数信息
+	 */
+	private ScoreRecordVO curScoreRecord;
 
 	/**
 	 * 最后摸的牌。
@@ -32,7 +38,7 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	 * 最后打的一张牌
 	 */
 	private Tile lastDiscardTile= new Tile();//上一个玩家打的牌
-
+	private int lastTileGroupAction=0;//当前执行的动作,执行通知结束之后会清空
 	/**
 	 * 是否胡牌。
 	 */
@@ -41,8 +47,54 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	private int curScore;// 分数
 	private boolean zhuang=false;
 	private boolean offline=false;
+	
 	private boolean discardAuth=false;//默认都没有打牌权限，只有吃碰杠和摸牌之后才可以
 	
+	private Integer totalscore = 0;
+	
+    private Integer huTimes = 0;
+    
+    private Integer zhuangTimes = 0;
+    
+    private Integer dianpaotimes = 0;
+    /**
+     * 清空玩家的牌，回到初始状态。
+     */
+    public void clear() {
+    	curScoreRecord = null;
+    	aliveTiles.setPai(null);
+    	tileGroups.clear();
+    	lastDrawedTile = null;
+    	discardedTiles.setPai(null);
+    	lastDiscardTile= new Tile();
+    	isHu = false;
+    	curScore = 0;
+    }
+	
+	public Integer getHuTimes() {
+		return huTimes;
+	}
+
+	public void setHuTimes(Integer huTimes) {
+		this.huTimes = huTimes;
+	}
+
+	public Integer getZhuangTimes() {
+		return zhuangTimes;
+	}
+
+	public void setZhuangTimes(Integer zhuangTimes) {
+		this.zhuangTimes = zhuangTimes;
+	}
+
+	public Integer getDianpaotimes() {
+		return dianpaotimes;
+	}
+
+	public void setDianpaotimes(Integer dianpaotimes) {
+		this.dianpaotimes = dianpaotimes;
+	}
+
 	List<GetScoreType> gatherScoreTypes = new ArrayList<GetScoreType>();
 	
 	public UserInfo getUserInfo() {
@@ -82,16 +134,6 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 		this.userLocation = userLocation;
 	}
 
-	/**
-	 * 清空玩家的牌，回到初始状态。
-	 */
-	public void clear() {
-		aliveTiles.setPai(null);
-		lastDrawedTile = null;
-		discardedTiles.setPai(null);
-		tileGroups.clear();
-		isHu = false;
-	}
 
 	public PlayerInfo clone() {
 		PlayerInfo c;
@@ -190,6 +232,20 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	public Integer getUserRoomRecordInfoID() {
 		return userRoomRecordInfoID;
 	}
+	
+
+	public int getLastTileGroupAction() {
+		return lastTileGroupAction;
+	}
+
+	public void setLastTileGroupAction(int lastTileGroupAction) {
+		this.lastTileGroupAction = lastTileGroupAction;
+	}
+	
+	public void resetLastTileGroupAction(){
+		this.lastTileGroupAction=0;
+	}
+	
 
 	public void setUserRoomRecordInfoID(Integer userRoomRecordInfo) {
 		this.userRoomRecordInfoID = userRoomRecordInfo;
@@ -201,6 +257,22 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 
 	public void setGatherScoreTypes(List<GetScoreType> gatherScoreTypes) {
 		this.gatherScoreTypes = gatherScoreTypes;
+	}
+
+	public ScoreRecordVO getCurScoreRecord() {
+		return curScoreRecord;
+	}
+
+	public void setCurScoreRecord(ScoreRecordVO curScoreRecordVO) {
+		this.curScoreRecord = curScoreRecordVO;
+	}
+
+	public Integer getTotalscore() {
+		return totalscore;
+	}
+
+	public void setTotalscore(Integer totalscore) {
+		this.totalscore = totalscore;
 	}
 	
 }

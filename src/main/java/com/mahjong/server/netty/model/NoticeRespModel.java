@@ -2,7 +2,11 @@ package com.mahjong.server.netty.model;
 
 public class NoticeRespModel {
 	
+	private Integer mesID;//消息id
+	
 	private Byte mesType;//消息类型，1：公告，2：广播
+	
+	private Integer mesState;
 
 	private Byte mesPosition;//广播消息发放位置：1：大厅，2：房间，3：大厅房间同时(广播才有）
 
@@ -50,6 +54,22 @@ public class NoticeRespModel {
 
 	public void setIntervalTime(Integer intervalTime) {
 		this.intervalTime = intervalTime;
+	}
+
+	public Integer getMesID() {
+		return mesID;
+	}
+
+	public void setMesID(Integer mesID) {
+		this.mesID = mesID;
+	}
+
+	public Integer getMesState() {
+		return mesState;
+	}
+
+	public void setMesState(Integer mesState) {
+		this.mesState = mesState;
 	}
 	
 }

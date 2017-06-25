@@ -51,6 +51,8 @@ public class HouseContext {
 		}
 		rommList.put(roomNum, roomContext);
 	    roomContext.setRoomNum(roomNum);
+	    
+	    roomContext.setCreatorWeiXinId(creator.getWeixinMark());
 	   
 	    MahjongTable table = new MahjongTable();
 	    table.init();

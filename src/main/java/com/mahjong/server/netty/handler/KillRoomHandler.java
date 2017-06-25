@@ -21,7 +21,9 @@ import com.mahjong.server.game.context.HouseContext;
 import com.mahjong.server.game.context.RoomContext;
 import com.mahjong.server.game.enums.EventEnum;
 import com.mahjong.server.game.enums.PlayerLocation;
+import com.mahjong.server.game.enums.RoomStatus;
 import com.mahjong.server.game.object.PlayerInfo;
+import com.mahjong.server.netty.model.EnterRoomRespModel;
 import com.mahjong.server.netty.model.KillRoomNoticeRespModel;
 import com.mahjong.server.netty.model.KillRoomReqModel;
 import com.mahjong.server.netty.model.KillRoomRespModel;
@@ -62,6 +64,62 @@ public class KillRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> 
 				if (userInfo != null && ctx!=null) {
 					
 					RoomContext roomContex = HouseContext.weixinIdToRoom.get(weixinId);
+					
+					if(roomContex.getRoomStatus().getCode() == RoomStatus.WAIT_USERS.getCode()){
+						if(roomContex.getCreatorWeiXinId().equals(weixinId)){
+							roomContex.setAgreeKillRoomNum(new AtomicInteger(3));
+						}else{
+							
+							roomContex.getGameContext().getTable().removePlayerInfos(weixinId);
+							
+							// 通知其他三家
+							ProtocolModel enterRoomProtocolModel = new ProtocolModel();
+							enterRoomProtocolModel.setCommandId(EventEnum.NEW_ENTER_RESP.getValue());
+							EnterRoomRespModel newEnterRoomRespModel = new EnterRoomRespModel(weixinId, true, "新人加入", roomContex);
+							enterRoomProtocolModel.setBody(JSON.toJSONString(newEnterRoomRespModel));
+							HandlerHelper.noticeMsg2Players(roomContex, weixinId, enterRoomProtocolModel);
+							
+							UserRoomRecord userRoomRecord = new UserRoomRecord();
+							
+							PlayerInfo playerInfo = roomContex.getGameContext().getTable().getPlayerInfosByWeixinId(weixinId);
+							
+							if(playerInfo.getUserLocation().intValue() == PlayerLocation.NORTH.getCode()){
+								userRoomRecord.setUserDirection((byte) 4);
+								
+							}else if(playerInfo.getUserLocation().intValue() == PlayerLocation.WEST.getCode()){
+								userRoomRecord.setUserDirection((byte) 3);
+								
+							}else if(playerInfo.getUserLocation().intValue() == PlayerLocation.SOUTH.getCode()){
+								userRoomRecord.setUserDirection((byte) 2);
+								
+							}
+							
+							Date now = new Date();
+							
+							ChannelHandlerContext userCtx = ClientSession.sessionMap.get(playerInfo.getUserInfo().getWeixinMark());
+							
+							InetSocketAddress socketAddr = (InetSocketAddress) userCtx.channel().remoteAddress();
+							
+							userRoomRecord.setHuTimes(0);
+							userRoomRecord.setLoseTimes(0);
+							userRoomRecord.setOperateCause("解散房间，离开");
+							userRoomRecord.setOperateType((byte) 2);
+							userRoomRecord.setOperateTime(now);
+							
+							userRoomRecord.setRoomNum(roomContex.getRoomNum());
+							
+							userRoomRecord.setRoomRecordId(roomContex.getRoomRecordID());
+							
+							userRoomRecord.setUserId(playerInfo.getUserInfo().getId());
+							userRoomRecord.setUserIp(socketAddr.getAddress().getHostAddress());
+							userRoomRecord.setWinTimes(0);
+							
+							Integer userRoomRecordId = dbService.insertUserRoomRecordInfo(userRoomRecord);
+							
+							
+						}
+						
+					}
 					
 					if(roomContex.getAgreeKillRoomNum().intValue()==0){
 						// 通知其他三家

@@ -12,7 +12,6 @@ import com.mahjong.server.netty.handler.HistoryRecordHandler;
 import com.mahjong.server.netty.handler.KillRoomHandler;
 import com.mahjong.server.netty.handler.MahjongLogicHandler;
 import com.mahjong.server.netty.handler.SendMessageHandler;
-import com.mahjong.server.netty.handler.ToWinHandler;
 import com.mahjong.server.netty.handler.UpdateHandler;
 
 import io.netty.channel.ChannelHandler.Sharable;
@@ -45,8 +44,6 @@ public class WebSocketChannelInitializer extends ChannelInitializer<NioSocketCha
 	@Autowired
 	private SendMessageHandler sendMessageHandler;
 	@Autowired
-	private ToWinHandler toWinHandler;
-	@Autowired
 	private UpdateHandler updateHandler;
 	@Autowired
 	private KillRoomHandler killRoomHandler;
@@ -70,7 +67,6 @@ public class WebSocketChannelInitializer extends ChannelInitializer<NioSocketCha
 		pipeline.addLast(enterRoomHandler);
 		pipeline.addLast(killRoomHandler);
 		pipeline.addLast(sendMessageHandler);
-		pipeline.addLast(toWinHandler);
 		pipeline.addLast(updateHandler);
 		pipeline.addLast(historyRecordHandler);
 		// pipeline.addLast(new ReadTimeoutHandler(10));// 控制读取数据的时候的超时，10秒超时

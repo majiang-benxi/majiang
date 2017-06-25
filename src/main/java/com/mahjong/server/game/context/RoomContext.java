@@ -52,6 +52,19 @@ public class RoomContext {
 	 * 同意开始下一局人数
 	 */
 	private AtomicInteger agreeNextRoundNum = new AtomicInteger(0);
+	
+	/**
+	 * 房间创建者
+	 */
+	private String creatorWeiXinId;
+
+	public String getCreatorWeiXinId() {
+		return creatorWeiXinId;
+	}
+
+	public void setCreatorWeiXinId(String creatorWeiXinId) {
+		this.creatorWeiXinId = creatorWeiXinId;
+	}
 
 	public AtomicInteger getAgreeNextRoundNum() {
 		return agreeNextRoundNum;

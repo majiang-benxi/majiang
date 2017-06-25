@@ -62,7 +62,6 @@ public class BeginNextRoundHandler extends SimpleChannelInboundHandler<ProtocolM
 						});
 
 				String weixinId = enterRoomReqModel.getWeiXinId();
-				Integer roomId = enterRoomReqModel.getRoomId();
 				UserInfo userInfo = HouseContext.weixinIdToUserInfo.get(weixinId);
 				
 				RoomContext roomContex = HouseContext.weixinIdToRoom.get(weixinId);
@@ -75,10 +74,7 @@ public class BeginNextRoundHandler extends SimpleChannelInboundHandler<ProtocolM
 				} else {
 					
 					if (roomContex != null) {
-							
-						if ((roomContex = HouseContext.rommList.get(roomId)) != null) {
-							roomContex.getAgreeNextRoundNum().incrementAndGet();
-						} 
+						roomContex.getAgreeNextRoundNum().incrementAndGet();
 					} else {
 						logger.info("房间信息有误,weixinId="+weixinId);
 					}

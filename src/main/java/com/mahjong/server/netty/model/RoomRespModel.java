@@ -64,6 +64,7 @@ public class RoomRespModel extends MajiangPlayView {
 				this.setHui1(tile.getPai()[0]);
 				this.setHui2(tile.getPai()[1]);
 			}
+			this.setRemaiRound(roomContex.getRemaiRound().get());
 			this.setRemainderTileNum(roomContex.getGameContext().getTable().getRemainderTileNum().get());
 		}
 		

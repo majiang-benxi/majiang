@@ -50,6 +50,7 @@ public enum EventEnum {
 	SEND_MESG_REQ(18),
 	/** 一次发消息响应 */
 	SEND_MESG_RESP(19),
+	
 	/** 就绪之后的发牌响应 */
 	DEAL_TILE_RESP(20),
 	/** 赢牌响应,暂时没用了**/
@@ -83,7 +84,13 @@ public enum EventEnum {
 	/**
 	 * 开始下一局
 	 */
-	BEGIN_NEXT_REQ(28);
+	BEGIN_NEXT_REQ(28),
+	
+	/** 房间或者大厅通知消息 */
+	NOTICE_RESP(29),
+	
+	/** 房间或者大厅通知消息改变 */
+	NOTICE_CHANGE_RESP(30);
 	
 	private int value;
 

@@ -3,6 +3,7 @@ package com.mahjong.server.game.object;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -80,6 +81,39 @@ public class MahjongTable {
 	public void setPlayerInfos(Map<PlayerLocation, PlayerInfo> playerInfos) {
 		this.playerInfos = playerInfos;
 	}
+	
+	public boolean removePlayerInfos(String weixinId) {
+		
+	    Map<PlayerLocation, PlayerInfo> playerInfos = new HashMap<>();
+		
+		for(PlayerInfo playerInfo : playerInfos.values()){
+			if(playerInfo!=null && playerInfo.getUserInfo()!=null ){
+				if(playerInfo.getUserInfo().getWeixinMark().equals(weixinId)){
+					continue;
+				}else{
+					playerInfos.put(PlayerLocation.fromCode(playerInfo.getUserLocation()) , playerInfo);
+				}
+			}
+			
+		}
+		this.playerInfos = playerInfos;
+		return true;
+	}
+	
+	public PlayerInfo getPlayerInfosByWeixinId(String weixinId) {
+		
+		Map<PlayerLocation, PlayerInfo> playerInfos = new HashMap<>();
+		
+		for(PlayerInfo playerInfo : playerInfos.values()){
+			if(playerInfo!=null && playerInfo.getUserInfo()!=null ){
+				if(playerInfo.getUserInfo().getWeixinMark().equals(weixinId)){
+					return playerInfo;
+				}
+			}
+			
+		}
+		return null;
+	}
 
 	public PlayerInfo getPlayerByLocation(PlayerLocation location) {
 		PlayerInfo info = playerInfos.get(location);
@@ -106,8 +140,12 @@ public class MahjongTable {
 		this.fanhui = fanhui;
 	}
 	public void resetPlayersLastDiscardTile(PlayerLocation excludePlayerLocation){
+		_resetPlayersLastDiscardTile(excludePlayerLocation);
+		_resetPlayersLastDrawTile(null);
+	}
+	private void _resetPlayersLastDiscardTile(PlayerLocation excludePlayerLocation){
 		for (PlayerInfo playerInfo : playerInfos.values()) {
-			if(playerInfo.getUserLocation()==excludePlayerLocation.getCode()){
+			if(excludePlayerLocation!=null&&playerInfo.getUserLocation()==excludePlayerLocation.getCode()){
 				continue;
 			}else{
 				playerInfo.resetDiscardTile();
@@ -115,14 +153,24 @@ public class MahjongTable {
 		}
 	}
 	public void resetPlayersLastDrawTile(PlayerLocation excludePlayerLocation){
+		_resetPlayersLastDrawTile(excludePlayerLocation);
+		_resetPlayersLastDiscardTile(null);
+	}
+	private void _resetPlayersLastDrawTile(PlayerLocation excludePlayerLocation){
 		for (PlayerInfo playerInfo : playerInfos.values()) {
-			if(playerInfo.getUserLocation()==excludePlayerLocation.getCode()){
+			if(excludePlayerLocation!=null&&playerInfo.getUserLocation()==excludePlayerLocation.getCode()){
 				continue;
 			}else{
 				playerInfo.resetLastDrawTile();
 			}
 		}
 	}
+	public void resetPlayersLastTileGroupAction(){
+		for (PlayerInfo playerInfo : playerInfos.values()) {
+			playerInfo.resetLastTileGroupAction();
+		}
+	}
+	
 	public AtomicInteger getRemainderTileNum() {
 		return remainderTileNum;
 	}
