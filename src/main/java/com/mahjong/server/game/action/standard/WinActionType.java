@@ -34,6 +34,18 @@ public class WinActionType extends AbstractActionType {
 	protected int getActionTilesSize() {
 		return 0;
 	}
+	
+	/**
+	 * 返回合法动作中相关牌的可选范围。<br>
+	 * 默认实现为指定玩家的aliveTiles。
+	 */
+	@Override
+	public Tile getActionTilesRange(PlayerInfo playerInfo ) {
+		if(playerInfo==null){
+			return null;
+		}
+		return playerInfo._getSortAliveTiles();
+	}
 
 	@Override
 	protected boolean checkLastActionCondition(ActionAndLocation al, PlayerLocation playerLocation) {
