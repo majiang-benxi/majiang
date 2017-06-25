@@ -418,8 +418,12 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 						UserInfo user = entry.getUserInfo();
 						if (user != null) {
 							
+							if(entry.getUserLocation() == winPlayerInfo.getUserLocation().intValue()){
+								entry.setLastTileGroupAction(TileGroupType.HU_GROUP.getCode());//把当前的动作告诉所有玩家
+							}
+							
 							ProtocolModel winProtocolModel = new ProtocolModel();
-							DiscardRespModel discardRespModel = new DiscardRespModel(playingRoom, PlayerLocation.fromCode(entry.getUserLocation()),true);
+							DiscardRespModel discardRespModel = new DiscardRespModel(playingRoom, PlayerLocation.fromCode(entry.getUserLocation()), true);
 							winProtocolModel.setCommandId(EventEnum.WIN_LAST_TIME_RESP.getValue());
 							winProtocolModel.setBody(JSON.toJSONString(discardRespModel));
 							
@@ -487,16 +491,13 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 							eplayerInfo.setZhuang(false);
 						}
 						
-						
 					}
-					
 					
 					table.setPlayerInfos(mahjongTable.getPlayerInfos());
 					
 					gameContext.setTable(table);
 					
 					roomContex.setAgreeNextRoundNum(new AtomicInteger(0));
-					
 					
 				}
 										

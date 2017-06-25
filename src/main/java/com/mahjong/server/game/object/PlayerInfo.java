@@ -67,6 +67,7 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
     	lastDrawedTile = null;
     	discardedTiles.setPai(null);
     	lastDiscardTile= new Tile();
+    	lastTileGroupAction=0;
     	isHu = false;
     	curScore = 0;
     }
