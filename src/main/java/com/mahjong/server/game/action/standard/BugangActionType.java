@@ -14,7 +14,11 @@ import com.mahjong.server.game.object.TileGroupType;
  * 动作类型“补杠”。
  * @author warter
  */
-public class BugangActionType extends AbstractActionType {
+public class BugangActionType extends CpgActionType {
+
+	public BugangActionType(TileGroupType groupType) {
+		super(groupType);
+	}
 
 	@Override
 	public boolean canPass(GameContext context, PlayerLocation location) {

@@ -3,7 +3,6 @@ package com.mahjong.server.game.action.standard;
 import static com.mahjong.server.game.action.standard.StandardActionType.ANGANG;
 import static com.mahjong.server.game.object.TileGroupType.ANGANG_GROUP;
 
-import com.mahjong.server.game.action.AbstractActionType;
 import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.ActionAndLocation;
 import com.mahjong.server.game.context.GameContext;
@@ -11,12 +10,17 @@ import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.TileGroup;
+import com.mahjong.server.game.object.TileGroupType;
 /**
  * 动作类型“暗杠”。
  * 
  * @author warter
  */
-public class AngangActionType extends AbstractActionType {
+public class AngangActionType extends CpgActionType  {
+
+	public AngangActionType(TileGroupType groupType) {
+		super(groupType);
+	}
 
 	@Override
 	public boolean canPass(GameContext context, com.mahjong.server.game.enums.PlayerLocation location) {
