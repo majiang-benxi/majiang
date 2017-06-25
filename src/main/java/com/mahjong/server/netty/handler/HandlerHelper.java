@@ -252,17 +252,10 @@ public class HandlerHelper {
 		for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext().getTable().getPlayerInfos()
 				.entrySet()) {
 			if(entry.getKey()==discardPlayLocation){
-				entry.getValue().setLastTileGroupAction(huGroup.getCode());//把当前的动作告诉所有玩家
+				entry.getValue().setLastWinTile(action.getTile());	
 			}
-		entry.getValue().setLastWinTile(action.getTile());	
-		ProtocolModel winProtocolModel = new ProtocolModel();
-		DiscardRespModel discardRespModel = new DiscardRespModel(roomContext,
-				discardPlayLocation, true);
-		winProtocolModel.setCommandId(EventEnum.WIN_ONE_TIME_RESP.getValue());
-		winProtocolModel.setBody(JSON.toJSONString(discardRespModel));
-		HandlerHelper.noticeMsg2Player(roomContext, entry.getValue(), winProtocolModel);
 		}
-		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空当前的动作
+
 	}
 
 	public static void processDiscardResp(RoomContext roomContext, PlayerLocation discardPlayLocation,
