@@ -50,7 +50,6 @@ import com.mahjong.server.netty.model.ProtocolModel;
 import com.mahjong.server.netty.session.ClientSession;
 
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.multipart.HttpPostRequestEncoder.EncoderMode;
 
 public class HandlerHelper {
 
@@ -364,3 +363,4 @@ public class HandlerHelper {
 	}
 
 }
+
