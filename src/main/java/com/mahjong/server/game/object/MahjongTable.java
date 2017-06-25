@@ -84,7 +84,7 @@ public class MahjongTable {
 	
 	public boolean removePlayerInfos(String weixinId) {
 		
-	    Map<PlayerLocation, PlayerInfo> playerInfos = new HashMap<>();
+	    Map<PlayerLocation, PlayerInfo> playerInfos = new HashMap<PlayerLocation, PlayerInfo>();
 		
 		for(PlayerInfo playerInfo : playerInfos.values()){
 			if(playerInfo!=null && playerInfo.getUserInfo()!=null ){
@@ -102,7 +102,7 @@ public class MahjongTable {
 	
 	public PlayerInfo getPlayerInfosByWeixinId(String weixinId) {
 		
-		Map<PlayerLocation, PlayerInfo> playerInfos = new HashMap<>();
+		Map<PlayerLocation, PlayerInfo> playerInfos = new HashMap<PlayerLocation, PlayerInfo>();
 		
 		for(PlayerInfo playerInfo : playerInfos.values()){
 			if(playerInfo!=null && playerInfo.getUserInfo()!=null ){
