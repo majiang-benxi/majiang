@@ -6,7 +6,6 @@ import java.util.List;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.vo.ScoreRecordVO;
-import com.sun.org.apache.xml.internal.security.keys.keyresolver.implementations.PrivateKeyResolver;
 
 /**
  * 麻将桌上一个玩家的信息，包括玩家对象、牌，以及其他信息。
