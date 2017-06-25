@@ -32,6 +32,7 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	 * 最后打的一张牌
 	 */
 	private Tile lastDiscardTile= new Tile();//上一个玩家打的牌
+	private int lastTileGroupAction=0;//当前执行的动作,执行通知结束之后会清空
 
 	/**
 	 * 是否胡牌。
@@ -106,6 +107,7 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 		c.userInfo = userInfo == null ? null : userInfo.clone();
 		c.tileGroups = new ArrayList<TileGroup>(tileGroups);
 		c.lastDiscardTile=this.lastDiscardTile == null ? new Tile() : this.lastDiscardTile.clone();
+		c.lastTileGroupAction=this.lastTileGroupAction;
 		return c;
 	}
 
@@ -179,9 +181,22 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 		this.lastDiscardTile=new Tile();		
 	}
 
+	public int getLastTileGroupAction() {
+		return lastTileGroupAction;
+	}
+
+	public void setLastTileGroupAction(int lastTileGroupAction) {
+		this.lastTileGroupAction = lastTileGroupAction;
+	}
+
 	public void resetLastDrawTile() {
 		this.lastDrawedTile=new Tile();		
 	}
+	
+	public void resetLastTileGroupAction(){
+		this.lastTileGroupAction=0;
+	}
+	
 	public static void main(String[] args) {
 		PlayerInfo playerInfo = new PlayerInfo();
 		playerInfo.clone();

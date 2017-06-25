@@ -1,5 +1,7 @@
 package com.mahjong.server.netty.model;
 
+import com.alibaba.fastjson.JSON;
+
 /**
  * 发消息
  */
@@ -23,6 +25,5 @@ public class SendMsgReqModel  extends RequestBaseMode{
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
-
 
 }
