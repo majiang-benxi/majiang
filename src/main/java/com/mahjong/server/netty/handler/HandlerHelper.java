@@ -254,6 +254,7 @@ public class HandlerHelper {
 			if(entry.getKey()==discardPlayLocation){
 				entry.getValue().setLastTileGroupAction(huGroup.getCode());//把当前的动作告诉所有玩家
 			}
+		entry.getValue().setLastWinTile(action.getTile());	
 		ProtocolModel winProtocolModel = new ProtocolModel();
 		DiscardRespModel discardRespModel = new DiscardRespModel(roomContext,
 				discardPlayLocation, true);
@@ -289,7 +290,9 @@ public class HandlerHelper {
 			if (roomContext.getGameContext().getDiscardContext().getRemainVoter().get() == 0) {// 此时所有玩家都表决了，但是可能玩家表决的不是自己优先级最高的操作【最高的操作已经被清理了】。
 				if (needPassOrDoActions!=null&&needPassOrDoActions.size() != 0) {
 					doDiscardResp(roomContext, discardReqModel.getTile());
-				} 
+				}else{
+					HandlerHelper.drawTile2Player(roomContext, roomContext.getGameContext().getDiscardContext().getDiscardPlayLocation().getLocationOf(Relation.NEXT));
+				}
 			}
 		} else {
 			HandlerHelper.drawTile2Player(roomContext, discardPlayLocation.getLocationOf(Relation.NEXT));

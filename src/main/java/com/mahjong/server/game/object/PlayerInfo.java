@@ -6,6 +6,7 @@ import java.util.List;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.vo.ScoreRecordVO;
+import com.sun.org.apache.xml.internal.security.keys.keyresolver.implementations.PrivateKeyResolver;
 
 /**
  * 麻将桌上一个玩家的信息，包括玩家对象、牌，以及其他信息。
@@ -34,6 +35,7 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	 * 已经打出的牌。
 	 */
 	private Tile discardedTiles = new Tile();
+	private Tile lastWinTile=new Tile();
 	/**
 	 * 最后打的一张牌
 	 */
@@ -67,10 +69,19 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
     	lastDrawedTile = null;
     	discardedTiles.setPai(null);
     	lastDiscardTile= new Tile();
+    	lastWinTile= new Tile();
     	isHu = false;
     	curScore = 0;
     }
 	
+	public Tile getLastWinTile() {
+		return lastWinTile;
+	}
+
+	public void setLastWinTile(Tile lastWinTile) {
+		this.lastWinTile = lastWinTile;
+	}
+
 	public Integer getHuTimes() {
 		return huTimes;
 	}
@@ -148,6 +159,7 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 		c.userInfo = userInfo == null ? null : userInfo.clone();
 		c.tileGroups = new ArrayList<TileGroup>(tileGroups);
 		c.lastDiscardTile=this.lastDiscardTile == null ? new Tile() : this.lastDiscardTile.clone();
+		c.lastWinTile=this.lastWinTile == null ? new Tile() : this.lastWinTile.clone();
 		return c;
 	}
 
