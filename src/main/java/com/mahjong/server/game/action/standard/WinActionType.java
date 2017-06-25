@@ -41,10 +41,7 @@ public class WinActionType extends AbstractActionType {
 	 */
 	@Override
 	public Tile getActionTilesRange(PlayerInfo playerInfo ) {
-		if(playerInfo==null){
-			return null;
-		}
-		return playerInfo._getSortAliveTiles();
+		return null;
 	}
 
 	@Override
