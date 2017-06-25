@@ -23,7 +23,18 @@ public class MajiangPlayView {
 	@JSONField(serialize=false)
 	protected boolean currentWinView=false;
 	private int remainderTileNum=136;
+	/**
+	 * 剩余局数
+	 */
+	private int remaiRound = 0 ;
 
+	public int getRemaiRound() {
+		return remaiRound;
+	}
+	
+	public void setRemaiRound(int remaiRound) {
+		this.remaiRound = remaiRound;
+	}
 	public String getRuleStrategy() {
 		return ruleStrategy;
 	}

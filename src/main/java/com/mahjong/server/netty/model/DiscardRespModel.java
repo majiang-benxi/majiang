@@ -12,8 +12,8 @@ public class DiscardRespModel  extends RoomRespModel{
 		super(roomContext, playerLocation);
 	}
 
-	public DiscardRespModel(RoomContext roomContext, PlayerLocation playerLocation,boolean hide) {
-		super(roomContext, playerLocation,hide);
+	public DiscardRespModel(RoomContext roomContext, PlayerLocation playerLocation,boolean isWinView) {
+		super(roomContext, playerLocation,isWinView);
 
 	}
 

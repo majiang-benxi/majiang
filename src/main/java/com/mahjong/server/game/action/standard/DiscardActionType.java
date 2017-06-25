@@ -52,7 +52,7 @@ public class DiscardActionType extends AbstractActionType {
 		if(playerInfo!=null){
 			playerInfo._getSortAliveTiles().removeAll(tile);		
 			playerInfo.getDiscardedTiles().addTile(tile);
-			context.getTable().resetPlayersLastTile(location);
+			context.getTable().resetPlayersLastDiscardTile(location);
 			playerInfo.setLastDiscardTile(tile);
 			playerInfo.setDiscardAuth(false);
 			context.getLocalDoneActions().add(new ActionAndLocation(new Action(DISCARD, tile), location));

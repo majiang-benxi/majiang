@@ -1,5 +1,7 @@
 package com.mahjong.server.netty.model;
 
+import com.alibaba.fastjson.JSON;
+
 /**
  * 解散房间请求
  */
@@ -13,5 +15,4 @@ public class KillRoomReqModel  extends RequestBaseMode{
 	public void setAggree(boolean aggree) {
 		this.aggree = aggree;
 	}
-
 }

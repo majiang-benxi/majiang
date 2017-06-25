@@ -19,6 +19,11 @@ public class RoomContext {
 	 * 房间号
 	 */
 	private Integer roomNum;
+	
+	/**
+	 * 剩余局数
+	 */
+	private AtomicInteger remaiRound;
 
 	/**
 	 * 房间状态
@@ -42,7 +47,19 @@ public class RoomContext {
 	private AtomicInteger disAgreeKillRoomNum = new AtomicInteger(0);
 	
 	private List<String> disagreeUserNames = new ArrayList<String>();
+	
+	/**
+	 * 同意开始下一局人数
+	 */
+	private AtomicInteger agreeNextRoundNum = new AtomicInteger(0);
 
+	public AtomicInteger getAgreeNextRoundNum() {
+		return agreeNextRoundNum;
+	}
+
+	public void setAgreeNextRoundNum(AtomicInteger agreeNextRoundNum) {
+		this.agreeNextRoundNum = agreeNextRoundNum;
+	}
 
 	public Integer getRoomNum() {
 		return roomNum;
@@ -110,6 +127,14 @@ public class RoomContext {
 
 	public void setRoomRecordID(Integer roomID) {
 		this.roomRecordID = roomID;
+	}
+
+	public AtomicInteger getRemaiRound() {
+		return remaiRound;
+	}
+
+	public void setRemaiRound(AtomicInteger remaiRound) {
+		this.remaiRound = remaiRound;
 	}
 
 }

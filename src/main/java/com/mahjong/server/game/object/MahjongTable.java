@@ -77,7 +77,7 @@ public class MahjongTable {
 		return playerInfos;
 	}
 
-	protected void setPlayerInfos(Map<PlayerLocation, PlayerInfo> playerInfos) {
+	public void setPlayerInfos(Map<PlayerLocation, PlayerInfo> playerInfos) {
 		this.playerInfos = playerInfos;
 	}
 
@@ -105,13 +105,35 @@ public class MahjongTable {
 	public void setFanhui(byte fanhui) {
 		this.fanhui = fanhui;
 	}
-	public void resetPlayersLastTile(PlayerLocation excludePlayerLocation){
+	public void resetPlayersLastDiscardTile(PlayerLocation excludePlayerLocation){
+		_resetPlayersLastDiscardTile(excludePlayerLocation);
+		_resetPlayersLastDrawTile(null);
+	}
+	private void _resetPlayersLastDiscardTile(PlayerLocation excludePlayerLocation){
 		for (PlayerInfo playerInfo : playerInfos.values()) {
-			if(playerInfo.getUserLocation()==excludePlayerLocation.getCode()){
+			if(excludePlayerLocation!=null&&playerInfo.getUserLocation()==excludePlayerLocation.getCode()){
 				continue;
 			}else{
-				playerInfo.resetLastTile();
+				playerInfo.resetDiscardTile();
 			}
+		}
+	}
+	public void resetPlayersLastDrawTile(PlayerLocation excludePlayerLocation){
+		_resetPlayersLastDrawTile(excludePlayerLocation);
+		_resetPlayersLastDiscardTile(null);
+	}
+	private void _resetPlayersLastDrawTile(PlayerLocation excludePlayerLocation){
+		for (PlayerInfo playerInfo : playerInfos.values()) {
+			if(excludePlayerLocation!=null&&playerInfo.getUserLocation()==excludePlayerLocation.getCode()){
+				continue;
+			}else{
+				playerInfo.resetLastDrawTile();
+			}
+		}
+	}
+	public void resetPlayersLastTileGroupAction(){
+		for (PlayerInfo playerInfo : playerInfos.values()) {
+			playerInfo.resetLastTileGroupAction();
 		}
 	}
 	
@@ -127,7 +149,7 @@ public class MahjongTable {
 		try {
 		for (Entry<PlayerLocation, PlayerInfo> entry : playerInfos.entrySet()) {
 				System.out.print(
-					"方位:" + entry.getKey().getCode() + " aliveTile: ");
+					"方位:" + entry.getKey() +"用户weixinId="+entry.getValue().getUserInfo().getWeixinMark()+ " aliveTile: ");
 				entry.getValue()._getSortAliveTiles().printTile();
 		}
 			System.out.print("会牌:");

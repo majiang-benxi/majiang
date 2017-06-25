@@ -53,8 +53,9 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.multipart.HttpPostRequestEncoder.EncoderMode;
 
 public class HandlerHelper {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(HandlerHelper.class);
+
 	/**
 	 * 将消息周知给所有玩家
 	 * 
@@ -72,19 +73,21 @@ public class HandlerHelper {
 					String weixinId = user.getWeixinMark();
 					ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinId);
 					userCtx.writeAndFlush(protocolModel);
-					logger.error("返回数据：weixinId="+weixinId+",数据："+JSONObject.toJSONString(protocolModel));
+					logger.error("返回数据：weixinId=" + weixinId + ",数据：" + JSONObject.toJSONString(protocolModel));
 				}
 			}
 		}
 	}
+
 	public static void noticeMsg2Player(RoomContext roomContex, PlayerInfo playerInfo, ProtocolModel protocolModel) {
-			UserInfo user = playerInfo.getUserInfo();
-			if (user != null) {
-					String weixinId = user.getWeixinMark();
-					ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinId);
-					userCtx.writeAndFlush(protocolModel);
+		UserInfo user = playerInfo.getUserInfo();
+		if (user != null) {
+			String weixinId = user.getWeixinMark();
+			ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinId);
+			userCtx.writeAndFlush(protocolModel);
 		}
 	}
+
 	/**
 	 * 获取打出一张牌之后其他玩家可以做的操作
 	 * 
@@ -157,7 +160,7 @@ public class HandlerHelper {
 					.getUserInfo().getWeixinMark();
 			ChannelHandlerContext ctx = ClientSession.sessionMap.get(weixinMarkId);
 			ctx.writeAndFlush(canDoProtocolModel);
-			logger.error("返回数据："+JSONObject.toJSONString(canDoProtocolModel));
+			logger.error("返回数据：" + JSONObject.toJSONString(canDoProtocolModel));
 		}
 	}
 
@@ -173,29 +176,30 @@ public class HandlerHelper {
 
 	public static void drawTile2Player(RoomContext roomContext, PlayerLocation playerLocation)
 			throws IllegalActionException {
-		int remainTileNum=roomContext.getGameContext().getTable().getRemainderTileNum().get();
-		if(remainTileNum== roomContext.getGameContext().getHuangZhuangtTileNum()){
-			for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext()
-					.getTable().getPlayerInfos()
+		int remainTileNum = roomContext.getGameContext().getTable().getRemainderTileNum().get();
+
+		if (remainTileNum == roomContext.getGameContext().getHuangZhuangtTileNum()) {
+			for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext().getTable().getPlayerInfos()
 					.entrySet()) {
-			ProtocolModel huangZhuangProtocolModel = new ProtocolModel();
-			DiscardRespModel hzdiscardRespModel = new DiscardRespModel(roomContext,entry.getKey(),true);
-			huangZhuangProtocolModel.setBody(JSON.toJSONString(hzdiscardRespModel));
-			huangZhuangProtocolModel.setCommandId(EventEnum.HUANG_ZHUANG.getValue());
-			HandlerHelper.noticeMsg2Player(roomContext,entry.getValue(),huangZhuangProtocolModel);
+				ProtocolModel huangZhuangProtocolModel = new ProtocolModel();
+				DiscardRespModel hzdiscardRespModel = new DiscardRespModel(roomContext, entry.getKey(), true);
+				huangZhuangProtocolModel.setBody(JSON.toJSONString(hzdiscardRespModel));
+				huangZhuangProtocolModel.setCommandId(EventEnum.HUANG_ZHUANG.getValue());
+				HandlerHelper.noticeMsg2Player(roomContext, entry.getValue(), huangZhuangProtocolModel);
 			}
-			//TODO 本局结束，执行清理操作
-		}
-		DrawActionType drawActionType = new DrawActionType();
-		drawActionType.doAction(roomContext.getGameContext(), playerLocation, new Action(drawActionType));
-		for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext()
-				.getTable().getPlayerInfos()
-				.entrySet()) {
-			ProtocolModel drawTileProtocolModel = new ProtocolModel();
-			DrawCardRespModel drawCardRespModel = new DrawCardRespModel(roomContext, entry.getKey());
-			drawTileProtocolModel.setCommandId(EventEnum.DRAW_TILE_RESP.getValue());
-			drawTileProtocolModel.setBody(JSON.toJSONString(drawCardRespModel));
-			HandlerHelper.noticeMsg2Player(roomContext,entry.getValue(),drawTileProtocolModel);
+			roomContext.getGameContext().setHuangzhuang(true);
+			// 本局结束，执行清理操作
+		} else {
+			DrawActionType drawActionType = new DrawActionType();
+			drawActionType.doAction(roomContext.getGameContext(), playerLocation, new Action(drawActionType));
+			for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext().getTable().getPlayerInfos()
+					.entrySet()) {
+				ProtocolModel drawTileProtocolModel = new ProtocolModel();
+				DrawCardRespModel drawCardRespModel = new DrawCardRespModel(roomContext, entry.getKey());
+				drawTileProtocolModel.setCommandId(EventEnum.DRAW_TILE_RESP.getValue());
+				drawTileProtocolModel.setBody(JSON.toJSONString(drawCardRespModel));
+				HandlerHelper.noticeMsg2Player(roomContext, entry.getValue(), drawTileProtocolModel);
+			}
 		}
 	}
 
@@ -207,15 +211,18 @@ public class HandlerHelper {
 			DrawBottomActionType drawBottomActionType = new DrawBottomActionType();
 			drawBottomActionType.doAction(roomContext.getGameContext(), discardPlayLocation, new Action(BUGANG));
 		}
-		for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext()
-				.getTable().getPlayerInfos()
+		for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext().getTable().getPlayerInfos()
 				.entrySet()) {
+			if(entry.getKey()==discardPlayLocation){
+				entry.getValue().setLastTileGroupAction(tileGroupType.getCode());//把当前的动作告诉所有玩家
+			}
 			ProtocolModel cpgProtocolModel = new ProtocolModel();
 			DiscardRespModel discardRespModel = new DiscardRespModel(roomContext, entry.getKey());
 			cpgProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
 			cpgProtocolModel.setBody(JSON.toJSONString(discardRespModel));
-			HandlerHelper.noticeMsg2Player(roomContext,entry.getValue(),cpgProtocolModel);
+			HandlerHelper.noticeMsg2Player(roomContext, entry.getValue(), cpgProtocolModel);
 		}
+		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空当前的动作
 	}
 
 	public static void xfgProcess2Players(RoomContext roomContext, TileGroupType xuanFengGangGroup, Action action,
@@ -226,12 +233,36 @@ public class HandlerHelper {
 			DrawBottomActionType drawBottomActionType = new DrawBottomActionType();
 			drawBottomActionType.doAction(roomContext.getGameContext(), discardPlayLocation, new Action(BUGANG));
 		}
+		for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext().getTable().getPlayerInfos()
+				.entrySet()) {
+			if(entry.getKey()==discardPlayLocation){
+				entry.getValue().setLastTileGroupAction(xuanFengGangGroup.getCode());//把当前的动作告诉所有玩家
+			}
 		ProtocolModel xfgProtocolModel = new ProtocolModel();
 		DiscardRespModel discardRespModel = new DiscardRespModel(roomContext, discardPlayLocation);
 		xfgProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
 		xfgProtocolModel.setBody(JSON.toJSONString(discardRespModel));
-		HandlerHelper.noticeMsg2Players(roomContext, null, xfgProtocolModel);
-
+		HandlerHelper.noticeMsg2Player(roomContext, entry.getValue(), xfgProtocolModel);
+		}
+		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空当前的动作
+	}
+	public static void huProcess2Players(RoomContext roomContext, TileGroupType huGroup, Action action,
+			PlayerLocation discardPlayLocation) throws IllegalActionException {
+		WinActionType winActionType = new WinActionType();
+		winActionType.doAction(roomContext.getGameContext(),discardPlayLocation,action);
+		for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext().getTable().getPlayerInfos()
+				.entrySet()) {
+			if(entry.getKey()==discardPlayLocation){
+				entry.getValue().setLastTileGroupAction(huGroup.getCode());//把当前的动作告诉所有玩家
+			}
+		ProtocolModel winProtocolModel = new ProtocolModel();
+		DiscardRespModel discardRespModel = new DiscardRespModel(roomContext,
+				discardPlayLocation, true);
+		winProtocolModel.setCommandId(EventEnum.WIN_ONE_TIME_RESP.getValue());
+		winProtocolModel.setBody(JSON.toJSONString(discardRespModel));
+		HandlerHelper.noticeMsg2Player(roomContext, entry.getValue(), winProtocolModel);
+		}
+		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空当前的动作
 	}
 
 	public static void processDiscardResp(RoomContext roomContext, PlayerLocation discardPlayLocation,
@@ -239,25 +270,27 @@ public class HandlerHelper {
 		List<DisCardActionAndLocation> needPassOrDoActions = roomContext.getGameContext().getDiscardContext()
 				.getNeedPassOrDoAction();
 		if (!needPassOrDoActions.isEmpty()) {
-			Multimap<PlayerLocation, Action> multimap = groupByActionByLocation(needPassOrDoActions);
+			//Multimap<PlayerLocation, Action> multimap = groupByActionByLocation(needPassOrDoActions);
 			DisCardActionAndLocation actionAndLocation = needPassOrDoActions.get(0);
-			if (actionAndLocation.getActionAndLocation().getLocation() == discardPlayLocation) {
-				if (multimap.keys().size() == 1) {
-					doDiscardResp(roomContext, discardReqModel.getTile());
-				} else {
-					if (actionAndLocation.getTileGroupType() == discardReqModel.getTileGroupType()) {
-						doDiscardResp(roomContext, discardReqModel.getTile());
-					} else {
-						removeNotChooseButHighLevelAction(needPassOrDoActions, new DisCardActionAndLocation(
-								new ActionAndLocation(null, discardPlayLocation), discardReqModel.getTileGroupType()));
-					}
+			if (actionAndLocation.getActionAndLocation().getLocation() == discardPlayLocation) {// 刚好是第一位
+				if (actionAndLocation.getTileGroupType() == discardReqModel.getTileGroupType()) {// 刚好是当前用户选择的，可以直接执行完，然后清理掉context
+					doDiscardResp(roomContext, discardReqModel.getTile());//TODO 执行完毕后要发牌
+					return;
+				} else {// 同时是可以碰和吃，但是玩家选了吃.或者选了过
+					removeNotChooseButHighLevelAction(needPassOrDoActions, new DisCardActionAndLocation(
+							new ActionAndLocation(null, discardPlayLocation), discardReqModel.getTileGroupType())); // 清理掉这个用户的优先级比当前出牌动作高的牌选项
+					roomContext.getGameContext().getDiscardContext().releaseRemainVoter();
 				}
 			} else {
-				removeNotChooseButHighLevelAction(needPassOrDoActions, actionAndLocation);
+				removeNotChooseButHighLevelAction(needPassOrDoActions, new DisCardActionAndLocation(
+						new ActionAndLocation(null, discardPlayLocation), discardReqModel.getTileGroupType()));// 清理掉比用户选择的优先级高的选项
+				roomContext.getGameContext().getDiscardContext().releaseRemainVoter();
 			}
-			roomContext.getGameContext().getDiscardContext().releaseRemainVoter();
-			if (roomContext.getGameContext().getDiscardContext().getRemainVoter() == 0) {
-				doDiscardResp(roomContext, discardReqModel.getTile());
+
+			if (roomContext.getGameContext().getDiscardContext().getRemainVoter().get() == 0) {// 此时所有玩家都表决了，但是可能玩家表决的不是自己优先级最高的操作【最高的操作已经被清理了】。
+				if (needPassOrDoActions!=null&&needPassOrDoActions.size() != 0) {
+					doDiscardResp(roomContext, discardReqModel.getTile());
+				} 
 			}
 		} else {
 			HandlerHelper.drawTile2Player(roomContext, discardPlayLocation.getLocationOf(Relation.NEXT));
@@ -276,7 +309,7 @@ public class HandlerHelper {
 				if (needPassOrDoActions.get(i).getTileGroupType() == actionAndLocation.getTileGroupType()) {
 					currentIndex = i;
 				} else {
-					if (i < currentIndex) {
+					if (i <= currentIndex) {
 						needPassOrDoActions.remove(i);// 移除优先级高的，用户却没有选择的
 					}
 				}
@@ -290,67 +323,44 @@ public class HandlerHelper {
 				.getNeedPassOrDoAction();
 		DisCardActionAndLocation disCardActionAndLocation = needPassOrDoActions.get(0);
 		if (disCardActionAndLocation.getTileGroupType() == TileGroupType.CHI_GROUP.getCode()) {
-			HandlerHelper.cpgProcess2Players(roomContext, CHI_GROUP,
-					new Action(CHI,
-							tile),
+			HandlerHelper.cpgProcess2Players(roomContext, CHI_GROUP, new Action(CHI, tile),
 					disCardActionAndLocation.getActionAndLocation().getLocation());
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.PENG_GROUP.getCode()) {
-			HandlerHelper.cpgProcess2Players(roomContext, PENG_GROUP,
-					new Action(PENG,
-							tile),
+			HandlerHelper.cpgProcess2Players(roomContext, PENG_GROUP, new Action(PENG, tile),
 					disCardActionAndLocation.getActionAndLocation().getLocation());
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.BUGANG_GROUP.getCode()) {
-			HandlerHelper.cpgProcess2Players(roomContext, BUGANG_GROUP,
-					new Action(BUGANG,
-							tile),
+			HandlerHelper.cpgProcess2Players(roomContext, BUGANG_GROUP, new Action(BUGANG, tile),
 					disCardActionAndLocation.getActionAndLocation().getLocation());
+			
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.XUAN_FENG_GANG_ZFB_GROUP.getCode()) {
-			HandlerHelper.xfgProcess2Players(roomContext, XUAN_FENG_GANG_ZFB_GROUP,
-					new Action(ZIPAI,
-							tile),
+			HandlerHelper.xfgProcess2Players(roomContext, XUAN_FENG_GANG_ZFB_GROUP, new Action(ZIPAI, tile),
 					disCardActionAndLocation.getActionAndLocation().getLocation());
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.XUAN_FENG_GANG_DNXB_GROUP.getCode()) {
-			HandlerHelper.xfgProcess2Players(roomContext, XUAN_FENG_GANG_DNXB_GROUP,
-					new Action(ZIPAI,
-							tile),
+			HandlerHelper.xfgProcess2Players(roomContext, XUAN_FENG_GANG_DNXB_GROUP, new Action(ZIPAI, tile),
 					disCardActionAndLocation.getActionAndLocation().getLocation());
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.HU_GROUP.getCode()) {
+			HandlerHelper.huProcess2Players(roomContext, HU_GROUP,  new Action(WIN, disCardActionAndLocation.getActionAndLocation().getAction().getTile()),disCardActionAndLocation.getActionAndLocation().getLocation());
 			roomContext.getGameContext().getDiscardContext().clear();
-			WinActionType winActionType = new WinActionType();
-			winActionType.doAction(roomContext.getGameContext(),
-					disCardActionAndLocation.getActionAndLocation().getLocation(),
-					new Action(WIN, disCardActionAndLocation.getActionAndLocation().getAction().getTile()));
-			ProtocolModel winProtocolModel = new ProtocolModel();
-			DiscardRespModel discardRespModel = new DiscardRespModel(roomContext,
-					disCardActionAndLocation.getActionAndLocation().getLocation(),true);
-			winProtocolModel.setCommandId(EventEnum.WIN_ONE_TIME_RESP.getValue());
-			winProtocolModel.setBody(JSON.toJSONString(discardRespModel));
-			HandlerHelper.noticeMsg2Players(roomContext, null, winProtocolModel);
+			return;
 			// TODO 战绩
-		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.PASS_GROUP.getCode()) {
-			ActionAndLocation lastActionAndLocation = roomContext.getGameContext().getLastActionAndLocation();
-			roomContext.getGameContext().getDiscardContext().clear();
-			// 执行发牌
-			HandlerHelper.drawTile2Player(roomContext,
-					lastActionAndLocation.getLocation().getLocationOf(Relation.NEXT));
 		}
+		roomContext.getGameContext().getDiscardContext().clear();
 	}
-	
-	
-	public static String getScoreTypesStr(List<GetScoreType> gatherScoreTypes){
-		
+
+	public static String getScoreTypesStr(List<GetScoreType> gatherScoreTypes) {
+
 		int[] types = new int[13];
-		for(GetScoreType getScoreType : gatherScoreTypes){
+		for (GetScoreType getScoreType : gatherScoreTypes) {
 			types[getScoreType.ordinal()] = 1;
 		}
-		
+
 		String returnStr = "";
-		for(int i=0;i<types.length;i++)  {
+		for (int i = 0; i < types.length; i++) {
 			returnStr += types[i];
 		}
-		
+
 		return returnStr;
-		
+
 	}
 
 }

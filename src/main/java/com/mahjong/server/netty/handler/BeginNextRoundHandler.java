@@ -2,8 +2,6 @@ package com.mahjong.server.netty.handler;
 
 import static com.mahjong.server.game.action.standard.StandardActionType.WIN;
 
-import java.net.InetSocketAddress;
-import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -44,9 +42,9 @@ import io.netty.channel.SimpleChannelInboundHandler;
  */
 @Sharable
 @Component
-public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> {
+public class BeginNextRoundHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 	
-	private static final Logger logger = LoggerFactory.getLogger(EnterRoomHandler.class);
+	private static final Logger logger = LoggerFactory.getLogger(BeginNextRoundHandler.class);
 	
 	@Autowired
 	private DBService dbService;
@@ -54,128 +52,40 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 	@Override
 	public void channelRead0(ChannelHandlerContext ctx, ProtocolModel protocolModel) throws Exception {
 		
-		if (protocolModel.getCommandId() == EventEnum.ROOM_ENTER_REQ.getValue()) {
+		if (protocolModel.getCommandId() == EventEnum.BEGIN_NEXT_REQ.getValue()) {
 			if (protocolModel.getBody() == null) {
 				ctx.close();
 			} else {
+				
 				EnterRoomReqModel enterRoomReqModel = JSON.parseObject(protocolModel.getBody(),
 						new TypeReference<EnterRoomReqModel>() {
 						});
 
 				String weixinId = enterRoomReqModel.getWeiXinId();
 				Integer roomId = enterRoomReqModel.getRoomId();
-				EnterRoomRespModel enterRoomRespModel = null;
 				UserInfo userInfo = HouseContext.weixinIdToUserInfo.get(weixinId);
-				PlayerInfo playerInfo = null;
 				
 				RoomContext roomContex = HouseContext.weixinIdToRoom.get(weixinId);
 				RoomRecord roomRecord = new RoomRecord();
 				
-				boolean flag = false;
-				
 				if (userInfo == null) {
 					
-					enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "您未注册或者未在线，无法加入房间，请注册！", null);
 					logger.info("未注册或者未在线，无法加入房间,weixinId="+weixinId);
 					
 				} else {
 					
-					if (roomContex == null) {
+					if (roomContex != null) {
 							
 						if ((roomContex = HouseContext.rommList.get(roomId)) != null) {
-								
-							if(roomContex.getRoomStatus().getCode()!=RoomStatus.WAIT_USERS.getCode()){
-								enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "房间人数已满或已结束，无法加入房间！", null);
-								logger.info("房间人数已满，无法加入房间，weixinId="+weixinId);
-							}else{
-								
-								playerInfo = roomContex.joinRoom(userInfo);
-								
-								if (playerInfo!=null) {
-									
-									HouseContext.waitUserNum.incrementAndGet();
-									HouseContext.weixinIdToRoom.put(weixinId, roomContex);
-									
-									
-									UserRoomRecord userRoomRecord = new UserRoomRecord();
-									
-									roomRecord.setId(roomContex.getRoomRecordID());
-									
-									if(playerInfo.getUserLocation().intValue() == PlayerLocation.NORTH.getCode()){
-										roomRecord.setNorthUid(userInfo.getId());
-										userRoomRecord.setUserDirection((byte) 4);
-										
-									}else if(playerInfo.getUserLocation().intValue() == PlayerLocation.WEST.getCode()){
-										roomRecord.setWestUid(userInfo.getId());
-										userRoomRecord.setUserDirection((byte) 3);
-										
-									}else if(playerInfo.getUserLocation().intValue() == PlayerLocation.SOUTH.getCode()){
-										roomRecord.setSouthUid(userInfo.getId());
-										userRoomRecord.setUserDirection((byte) 2);
-										
-									}
-									
-									
-									Date now = new Date();
-									
-									InetSocketAddress socketAddr = (InetSocketAddress) ctx.channel().remoteAddress();
-									
-									userRoomRecord.setHuTimes(0);
-									userRoomRecord.setLoseTimes(0);
-									userRoomRecord.setOperateCause("加入房间");
-									userRoomRecord.setOperateType((byte) 1);
-									userRoomRecord.setOperateTime(now);
-									
-									userRoomRecord.setRoomNum(roomContex.getRoomNum());
-									
-									userRoomRecord.setRoomRecordId(roomContex.getRoomRecordID());
-									
-									userRoomRecord.setUserId(userInfo.getId());
-									userRoomRecord.setUserIp(socketAddr.getAddress().getHostAddress());
-									userRoomRecord.setWinTimes(0);
-									
-									Integer userRoomRecordId = dbService.insertUserRoomRecordInfo(userRoomRecord);
-									
-									playerInfo.setUserRoomRecordInfoID(userRoomRecordId);
-									
-									roomContex.setRoomStatus(RoomStatus.WAIT_USERS);
-									
-									// 通知其他三家
-									ProtocolModel enterRoomProtocolModel = new ProtocolModel();
-									enterRoomProtocolModel.setCommandId(EventEnum.NEW_ENTER_RESP.getValue());
-									EnterRoomRespModel newEnterRoomRespModel = new EnterRoomRespModel(weixinId, true, "新人加入", roomContex);
-									enterRoomProtocolModel.setBody(JSON.toJSONString(newEnterRoomRespModel));
-									HandlerHelper.noticeMsg2Players(roomContex, weixinId, enterRoomProtocolModel);
-									
-									flag = true;
-									
-									enterRoomRespModel = new EnterRoomRespModel(weixinId, true, "加入成功", roomContex);
-									
-								} else {
-									enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "加入房间失败，房间已满！", null);
-								}
-							}
-							
-						} else {
-							
-							enterRoomRespModel = new EnterRoomRespModel(weixinId, false, "加入房间失败，房间不存在！", null);
-							
-						}
-	
+							roomContex.getAgreeNextRoundNum().incrementAndGet();
+						} 
 					} else {
-						
-						enterRoomRespModel = new EnterRoomRespModel(weixinId, true, "重新加入房间", roomContex);
-						logger.info("重新加入房间,weixinId="+weixinId);
-						
+						logger.info("房间信息有误,weixinId="+weixinId);
 					}
 				}
-				protocolModel.setCommandId(EventEnum.ROOM_ENTER_RESP.getValue());
-				protocolModel.setBody(JSON.toJSONString(enterRoomRespModel));
-				ctx.writeAndFlush(protocolModel);
 				
-				logger.error("进入房间返回数据："+JSONObject.toJSONString(protocolModel));
-				
-				if(flag){
+				if(roomContex.getAgreeNextRoundNum().get()==4){
+					
 					boolean hashDealTile = dealTile2AllPlayersCheck(roomContex);
 					if (hashDealTile) {// 通知所有玩家已经发牌
 						
@@ -191,9 +101,9 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 						HouseContext.playUserNum.addAndGet(4);
 						HouseContext.waitUserNum.addAndGet(-4);
 						
-						roomContex.getRemaiRound().decrementAndGet();
-						
 						roomContex.setRoomStatus(RoomStatus.PLAYING);
+						
+						roomContex.getRemaiRound().decrementAndGet();
 						
 						for (Entry<PlayerLocation, PlayerInfo> entry : roomContex.getGameContext().getTable().getPlayerInfos().entrySet()) {
 							

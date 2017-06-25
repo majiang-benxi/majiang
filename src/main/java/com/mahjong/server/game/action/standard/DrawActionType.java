@@ -27,8 +27,11 @@ public class DrawActionType extends AbstractActionType {
 	@Override
 	protected boolean checkLastActionCondition(ActionAndLocation al, PlayerLocation playerLocation) {
 		// 必须是上家打牌后
-		if (DISCARD.matchBy(al.getActionType())
-				&& playerLocation.getRelationOf(al.getLocation()) == Relation.PREVIOUS) {
+//		if (DISCARD.matchBy(al.getActionType())
+//				&& playerLocation.getRelationOf(al.getLocation()) == Relation.PREVIOUS) {
+//			return true;
+//		}
+		if (DISCARD.matchBy(al.getActionType())) {
 			return true;
 		}
 		return false;
@@ -55,8 +58,9 @@ public class DrawActionType extends AbstractActionType {
 			playerInfo._getSortAliveTiles().addTile(drawTile);
 			playerInfo.setLastDrawedTile(drawTile);
 			playerInfo.setDiscardAuth(true);
-			context.getTable().resetPlayersLastTile(location);
+			context.getTable().resetPlayersLastDrawTile(location);
 			context.getLocalDoneActions().add(new ActionAndLocation(new Action(DRAW, drawTile), location));
+			context.getTable().printAllPlayTiles();
 		}
 	}
 

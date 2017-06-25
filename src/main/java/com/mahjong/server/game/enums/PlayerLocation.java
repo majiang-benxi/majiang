@@ -86,7 +86,9 @@ public enum PlayerLocation {
 	}
 
 	public static void main(String[] args) {
-		PlayerLocation playerLocation = PlayerLocation.EAST;
-		System.out.println(playerLocation.getOrderedNextLocations());
+		PlayerLocation playerLocation = PlayerLocation.NORTH;
+		//System.out.println(playerLocation.getOrderedNextLocations());
+		System.out.println(playerLocation.getLocationOf(Relation.NEXT));
+
 	}
 }
