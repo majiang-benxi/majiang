@@ -13,6 +13,7 @@ import static com.mahjong.server.game.object.TileGroupType.XUAN_FENG_GANG_DNXB_G
 import static com.mahjong.server.game.object.TileGroupType.XUAN_FENG_GANG_ZFB_GROUP;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -344,9 +345,9 @@ public class HandlerHelper {
 
 	public static String getScoreTypesStr(List<GetScoreType> gatherScoreTypes) {
 
-		int[] types = new int[13];
+		int[] types = new int[15];
 		for (GetScoreType getScoreType : gatherScoreTypes) {
-			types[getScoreType.ordinal()] = 1;
+			types[getScoreType.ordinal()-1] = 1;
 		}
 
 		String returnStr = "";
@@ -357,6 +358,5 @@ public class HandlerHelper {
 		return returnStr;
 
 	}
-
 }
 
