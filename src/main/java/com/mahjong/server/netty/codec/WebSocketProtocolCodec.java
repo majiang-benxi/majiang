@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.mahjong.server.netty.model.ProtocolModel;
 
 import io.netty.channel.ChannelHandler;
@@ -21,7 +22,7 @@ public class WebSocketProtocolCodec extends MessageToMessageCodec<TextWebSocketF
 	@Override
 	protected void encode(ChannelHandlerContext channelHandlerContext, ProtocolModel protocolModel, List<Object> out)
 			throws Exception {
-		String msg = JSON.toJSONString(protocolModel);
+		String msg = JSON.toJSONString(protocolModel,SerializerFeature.DisableCircularReferenceDetect);
 		System.out.println("encode=" + msg);
 		out.add(new TextWebSocketFrame(msg));
 	}
