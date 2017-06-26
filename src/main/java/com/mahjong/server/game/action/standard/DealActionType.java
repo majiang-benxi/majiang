@@ -2,7 +2,9 @@ package com.mahjong.server.game.action.standard;
 
 import static com.mahjong.server.game.action.standard.StandardActionType.DEAL;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import com.mahjong.server.exception.IllegalActionException;
 import com.mahjong.server.game.action.Action;
@@ -14,6 +16,8 @@ import com.mahjong.server.game.enums.PlayerLocation.Relation;
 import com.mahjong.server.game.object.MahjongTable;
 import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.Tile;
+import com.mahjong.server.game.object.TileGroup;
+import com.mahjong.server.game.object.TileGroupType;
 
 /**
  * 动作类型“发牌”。<br>
@@ -67,6 +71,21 @@ public class DealActionType implements ActionType {
 		context.getTable().resetPlayersLastDrawTile(zhuangLocation);
 		context.getTable().setFanhui(table.drawBottom(1).getPai()[0]);// 系统翻出一张会牌
 	    context.getTable().getRemainderTileNum().addAndGet(-54);
+	    //test------------begin---
+//		PlayerInfo playerInfo=	context.getTable().getPlayerByLocation(zhuangLocation);
+//
+//	    playerInfo.setAliveTiles(new Tile(new byte[]{0x13,0x13,0x15,0x08}));
+//		List<TileGroup> tileGroups=new ArrayList<TileGroup>();
+//		tileGroups.add(new TileGroup(TileGroupType.CHI_GROUP, new Tile(new byte[]{0x01, 0x02, 0x03})));
+//		tileGroups.add(new TileGroup(TileGroupType.PENG_GROUP, new Tile(new byte[]{0x28,0x28,0x28})));
+//		tileGroups.add(new TileGroup(TileGroupType.PENG_GROUP, new Tile(new byte[]{0x37,0x37,0x37})));
+//
+//		playerInfo.setTileGroups(tileGroups);
+//		context.getTable().getPlayerByLocation(zhuangLocation)._getSortAliveTiles()
+//		.addTile(zhuangFirstTile).sort();
+//		context.getTable().setFanhui((byte)0x12);
+		
+	    //test--------------end----
 		context.getTable().printAllPlayTiles();
 		context.getLocalDoneActions().add(new ActionAndLocation(new Action(DEAL, zhuangFirstTile), zhuangLocation));
 	}

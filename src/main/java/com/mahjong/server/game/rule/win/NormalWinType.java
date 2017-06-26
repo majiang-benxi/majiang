@@ -75,15 +75,15 @@ public class NormalWinType implements WinType {
 		}
 		// 检测到这里表明至少用了癞子后每个花色都可以凑成对应的一句或者多句话。
 		int totalDuizi = wanRes.duiZiNum + tiaoRes.duiZiNum + bingRes.duiZiNum + ziRes.duiZiNum;
-		int totalHunAll = wanRes.huiUsedNum + tiaoRes.huiUsedNum + bingRes.huiUsedNum + ziRes.huiUsedNum;
+		int totalHunUsed = wanRes.huiUsedNum + tiaoRes.huiUsedNum + bingRes.huiUsedNum + ziRes.huiUsedNum;
 		if (totalDuizi == 0) {// 没有将的情况
-			if (totalHunAll + 2 == huiNum) {// 还有两个会牌的话，可以胡牌
+			if (totalHunUsed + 2 == huiNum) {// 还有两个会牌的话，可以胡牌
 				return true;
 			}else{
 			return false;
 			}
 		}else{
-			if ((totalDuizi - 1) + totalHunAll == huiNum) {// 把会牌跟多余的将牌凑成一句话。
+			if ((totalDuizi - 1) + totalHunUsed == huiNum) {// 把会牌跟多余的将牌凑成一句话。
 				return true;
 			} else {
 				return false;
@@ -219,14 +219,17 @@ public class NormalWinType implements WinType {
 		pais = new byte[] { 0x11, 0x11, 0x11, 0x02, 0x02, 0x02, 0x28, 0x28, 0x28, 0x17, 0x17, 0x17, 0x16, 0x16 };// 飘穷true
 		pais = new byte[] { 0x27, 0x27, 0x14, 0x32, 0x33, 0x15, 0x12, 0x13, 0x14, 0x12, 0x13, 0x14, 0x36, 0x36 };// 普通胡带会带枪false
 		pais = new byte[] { 0x01, 0x01, 0x01, 0x17, 0x17, 0x17, 0x28, 0x28, 0x28, 0x12, 0x13, 0x14, 0x05, 0x05 };// 穷胡true
- 		//int[] qianduanPai=new int[]{1, 3 ,7 ,20 ,21,25 ,33, 35, 38 ,39 ,51, 52, 53, 53};
+ 		pais=new byte[]{0x28,0x28,0x28,0x37,0x37,0x37,0x01, 0x02, 0x03,0x13,0x13,0x15,0x08,0x15};
+ 		
+		//int[] qianduanPai=new int[]{1, 3 ,7 ,20 ,21,25 ,33, 35, 38 ,39 ,51, 52, 53, 53};
  		//qianduanPai=new int[]{5, 5, 8 ,9 ,19, 23, 25 ,25 ,25, 33 ,37, 40, 50,52};
  		//Tile tile=new Tile();
 		//tile.setQianduanPai(qianduanPai);
- 		Tile tile = new Tile(pais);
+ 		Tile tile = new Tile(pais);tile.sort();
+ 		int[] qianduanPai=tile.getQianduanPai();
 		PlayerTiles playerTiles=new PlayerTiles();
 		playerTiles.setAliveTiles(tile);
-		WinInfo winInfo= WinInfo.fromPlayerTiles(playerTiles,(byte)0x04,false);
+		WinInfo winInfo= WinInfo.fromPlayerTiles(playerTiles,(byte)0x12,false);
 		RuleInfo ruleInfo = new RuleInfo();
 		ruleInfo.setPlayRules(RuleInfo.parseRuleFromBitString("01111"));
 		ruleInfo.setFangKa(FangKa.ONE_SIXTEEN);

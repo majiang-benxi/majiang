@@ -127,7 +127,11 @@ public abstract class AbstractActionType implements ActionType {
 			}
 			return false;
 		} else {
-			return false;
+			if(isLegalActionTiles(context, location, null)){//胡牌的特例
+				return true;
+			}else{
+				return false;	
+			}
 		}
 
 	}
