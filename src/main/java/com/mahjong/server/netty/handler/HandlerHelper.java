@@ -336,7 +336,7 @@ public class HandlerHelper {
 					disCardActionAndLocation.getActionAndLocation().getLocation());
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.HU_GROUP.getCode()) {
 			HandlerHelper.huProcess2Players(roomContext, HU_GROUP,  new Action(WIN, disCardActionAndLocation.getActionAndLocation().getAction().getTile()),disCardActionAndLocation.getActionAndLocation().getLocation());
-			roomContext.getGameContext().getDiscardContext().clear();
+			
 			return;
 			// TODO 战绩
 		}
