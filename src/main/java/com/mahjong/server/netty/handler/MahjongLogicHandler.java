@@ -512,15 +512,20 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 		winuserRoomRecForUpdate.setId(winuserRoomRec.getId());
 		
 		if(huNum != null && huNum>0){
-			winuserRoomRecForUpdate.setHuTimes(winuserRoomRec.getHuTimes()+huNum);
+			
+			int temp = winuserRoomRec.getHuTimes()==null?0:winuserRoomRec.getHuTimes();
+			
+			winuserRoomRecForUpdate.setHuTimes(temp+huNum);
 		}
 		
 		if(winNum != null && winNum>0){
-			winuserRoomRecForUpdate.setWinTimes(winuserRoomRec.getWinTimes()+winNum);
+			int temp = winuserRoomRec.getWinTimes()==null?0:winuserRoomRec.getWinTimes();
+			winuserRoomRecForUpdate.setWinTimes(temp+winNum);
 		}
 		
 		if(loseNum != null && loseNum>0){
-			winuserRoomRecForUpdate.setLoseTimes(winuserRoomRec.getLoseTimes()+loseNum);
+			int temp = winuserRoomRec.getLoseTimes()==null?0:winuserRoomRec.getLoseTimes();
+			winuserRoomRecForUpdate.setLoseTimes(temp+loseNum);
 		}
 		
 		dbService.updateUserRoomRecordInfoPrimaryKey(winuserRoomRecForUpdate);

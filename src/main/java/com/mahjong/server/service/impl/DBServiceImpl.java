@@ -401,7 +401,7 @@ public class DBServiceImpl implements DBService {
 	}
 	@Override
 	public void updateUserRoomRecordInfoPrimaryKey(UserRoomRecord winuserRoomRecForUpdate) {
-		//userRoomRecordMapper.updateByPrimaryKeySelective(winuserRoomRecForUpdate);此处有问题先注释
+		userRoomRecordMapper.updateByPrimaryKeySelective(winuserRoomRecForUpdate);
 	}
 	
 	
