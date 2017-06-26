@@ -347,7 +347,7 @@ public class HandlerHelper {
 
 		int[] types = new int[15];
 		for (GetScoreType getScoreType : gatherScoreTypes) {
-			types[getScoreType.ordinal()-1] = 1;
+			types[getScoreType.ordinal()] = 1;
 		}
 
 		String returnStr = "";
