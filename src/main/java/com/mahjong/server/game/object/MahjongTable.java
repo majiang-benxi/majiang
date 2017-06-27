@@ -84,25 +84,16 @@ public class MahjongTable {
 	
 	public boolean removePlayerInfos(String weixinId) {
 		
-	    Map<PlayerLocation, PlayerInfo> playerInfos = new HashMap<PlayerLocation, PlayerInfo>();
-		
 		for(PlayerInfo playerInfo : playerInfos.values()){
-			if(playerInfo!=null && playerInfo.getUserInfo()!=null ){
-				if(playerInfo.getUserInfo().getWeixinMark().equals(weixinId)){
-					continue;
-				}else{
-					playerInfos.put(PlayerLocation.fromCode(playerInfo.getUserLocation()) , playerInfo);
-				}
+			if(playerInfo!=null && playerInfo.getUserInfo()!=null && playerInfo.getUserInfo().getWeixinMark().equals(weixinId)){
+				playerInfos.put(PlayerLocation.fromCode(playerInfo.getUserLocation()) ,  new PlayerInfo());
 			}
-			
 		}
-		this.playerInfos = playerInfos;
+		
 		return true;
 	}
 	
 	public PlayerInfo getPlayerInfosByWeixinId(String weixinId) {
-		
-		Map<PlayerLocation, PlayerInfo> playerInfos = new HashMap<PlayerLocation, PlayerInfo>();
 		
 		for(PlayerInfo playerInfo : playerInfos.values()){
 			if(playerInfo!=null && playerInfo.getUserInfo()!=null ){
