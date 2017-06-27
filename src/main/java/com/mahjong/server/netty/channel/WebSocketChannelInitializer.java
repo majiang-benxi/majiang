@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.mahjong.server.netty.codec.WebSocketProtocolCodec;
 import com.mahjong.server.netty.handler.AuthHandler;
+import com.mahjong.server.netty.handler.BeginNextRoundHandler;
 import com.mahjong.server.netty.handler.CreateRoomHandler;
 import com.mahjong.server.netty.handler.EnterRoomHandler;
 import com.mahjong.server.netty.handler.HeartBeatHandler;
@@ -43,6 +44,8 @@ public class WebSocketChannelInitializer extends ChannelInitializer<NioSocketCha
 	private HistoryRecordHandler historyRecordHandler;
 	@Autowired
 	private SendMessageHandler sendMessageHandler;
+	@Autowired 
+	private BeginNextRoundHandler beginNextRoundHandler;
 	@Autowired
 	private UpdateHandler updateHandler;
 	@Autowired
@@ -66,6 +69,7 @@ public class WebSocketChannelInitializer extends ChannelInitializer<NioSocketCha
 		pipeline.addLast(createRoomHandler);
 		pipeline.addLast(enterRoomHandler);
 		pipeline.addLast(killRoomHandler);
+		pipeline.addLast(beginNextRoundHandler);
 		pipeline.addLast(sendMessageHandler);
 		pipeline.addLast(updateHandler);
 		pipeline.addLast(historyRecordHandler);
