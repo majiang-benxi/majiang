@@ -149,7 +149,7 @@ public class HunTilePlayTools {
 
 			for (int i = 1; i < ck.uncheckedTile.getPai().length; i++) {
 				byte b2 = ck.uncheckedTile.getPai()[i];
-				if (b2 - b1 > 2) {// 13444 134不可能连一起
+				if (b2 - b1 > 1) {// 13444 134不可能连一起
 					b1 = b2;
 					continue;
 				}
