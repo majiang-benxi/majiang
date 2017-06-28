@@ -13,8 +13,8 @@ import static com.mahjong.server.game.object.TileGroupType.XUAN_FENG_GANG_DNXB_G
 import static com.mahjong.server.game.object.TileGroupType.XUAN_FENG_GANG_ZFB_GROUP;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
@@ -25,19 +25,24 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import com.mahjong.server.entity.RoomRecord;
 import com.mahjong.server.entity.UserInfo;
+import com.mahjong.server.entity.UserRoomRecord;
 import com.mahjong.server.exception.IllegalActionException;
 import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.ActionAndLocation;
 import com.mahjong.server.game.action.standard.CpgActionType;
+import com.mahjong.server.game.action.standard.DealActionType;
 import com.mahjong.server.game.action.standard.DrawActionType;
 import com.mahjong.server.game.action.standard.DrawBottomActionType;
 import com.mahjong.server.game.action.standard.WinActionType;
 import com.mahjong.server.game.action.standard.ZiPaiActionType;
+import com.mahjong.server.game.context.HouseContext;
 import com.mahjong.server.game.context.RoomContext;
 import com.mahjong.server.game.enums.EventEnum;
 import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.enums.PlayerLocation.Relation;
+import com.mahjong.server.game.enums.RoomStatus;
 import com.mahjong.server.game.object.DisCardActionAndLocation;
 import com.mahjong.server.game.object.GetScoreType;
 import com.mahjong.server.game.object.PlayerInfo;
@@ -47,8 +52,10 @@ import com.mahjong.server.netty.model.AskChoiceRespModel;
 import com.mahjong.server.netty.model.DiscardReqModel;
 import com.mahjong.server.netty.model.DiscardRespModel;
 import com.mahjong.server.netty.model.DrawCardRespModel;
+import com.mahjong.server.netty.model.EnterRoomRespModel;
 import com.mahjong.server.netty.model.ProtocolModel;
 import com.mahjong.server.netty.session.ClientSession;
+import com.mahjong.server.service.DBService;
 
 import io.netty.channel.ChannelHandlerContext;
 
@@ -357,6 +364,115 @@ public class HandlerHelper {
 
 		return returnStr;
 
+	}
+	
+	private static boolean dealTile2AllPlayersCheck(RoomContext roomContex) {
+		Map<PlayerLocation, PlayerInfo> playerInfos = roomContex.getGameContext().getTable().getPlayerInfos();
+		boolean fourUserNumReady = true;
+		for (PlayerInfo playerInfo : playerInfos.values()) {
+			if (playerInfo.getUserInfo() == null) {
+				fourUserNumReady = false;
+				return false;
+			}
+		}
+		if (fourUserNumReady) {
+			roomContex.getGameContext().getTable().readyForGame();
+			DealActionType dealActionType = new DealActionType();
+			try {
+				dealActionType.doAction(roomContex.getGameContext(), PlayerLocation.EAST, null);
+			} catch (IllegalActionException e) {
+				e.printStackTrace();
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	public static void dealTile2AllPlayers(RoomContext roomContex, DBService dbService) throws IllegalActionException{
+		boolean hashDealTile = HandlerHelper.dealTile2AllPlayersCheck(roomContex);
+		if (hashDealTile) {// 通知所有玩家已经发牌
+			RoomRecord roomRecord = new RoomRecord();
+
+			roomRecord.setRoomState((byte) 2);
+			
+			boolean flg = dbService.updateRoomRecordInfoByPrimaryKey(roomRecord);
+			
+			logger.error("更新房间信息，flg="+flg+",roomRecord="+JSONObject.toJSONString(roomRecord));
+			
+			HouseContext.playRoomNum.incrementAndGet();
+			HouseContext.waitRoomNum.decrementAndGet();
+			
+			HouseContext.playUserNum.addAndGet(4);
+			HouseContext.waitUserNum.addAndGet(-4);
+			
+			roomContex.setRoomStatus(RoomStatus.PLAYING);
+			
+			roomContex.getRemaiRound().decrementAndGet();
+			
+			for (Entry<PlayerLocation, PlayerInfo> entry : roomContex.getGameContext().getTable().getPlayerInfos().entrySet()) {
+				
+				ProtocolModel dealTileProtocolModel = new ProtocolModel();
+				dealTileProtocolModel.setCommandId(EventEnum.DEAL_TILE_RESP.getValue());
+				
+				String playWinXinId = entry.getValue().getUserInfo().getWeixinMark();
+				EnterRoomRespModel dealTileRoomRespModel = new EnterRoomRespModel(playWinXinId,	true, "发牌", roomContex, entry.getKey());// 创建每个方位的牌响应信息
+				dealTileProtocolModel.setBody(JSON.toJSONString(dealTileRoomRespModel));
+				
+				ChannelHandlerContext userCtx = ClientSession.sessionMap.get(playWinXinId);
+				
+				userCtx.writeAndFlush(dealTileProtocolModel);
+				logger.error("hashDealTile返回数据："+JSONObject.toJSONString(dealTileProtocolModel));
+			}
+			roomContex.getGameContext().getTable().printAllPlayTiles();
+
+			WinActionType winActionType = new WinActionType();
+			boolean winFirst = winActionType.isLegalAction(roomContex.getGameContext(),	roomContex.getGameContext().getZhuangLocation(), new Action(WIN));
+			
+			if (winFirst) {
+				
+				PlayerInfo zhuangWinPlayerInfo = roomContex.getGameContext().getTable().getPlayerByLocation(roomContex.getGameContext().getZhuangLocation());
+				
+				updateUserRoomRecordInfo(dbService,zhuangWinPlayerInfo.getUserRoomRecordInfoID(),1,1,null);
+				
+				winActionType.doAction(roomContex.getGameContext(),	roomContex.getGameContext().getZhuangLocation(), new Action(WIN));
+				ProtocolModel winProtocolModel = new ProtocolModel();
+				winProtocolModel.setCommandId(EventEnum.WIN_ONE_TIME_RESP.getValue());
+				roomContex.setRoomStatus(RoomStatus.PLAYING);
+				EnterRoomRespModel winTileRoomRespModel = new EnterRoomRespModel(null, true, "庄家天胡", roomContex);
+				winProtocolModel.setBody(JSON.toJSONString(winTileRoomRespModel));
+				
+				HandlerHelper.noticeMsg2Players(roomContex, null, winProtocolModel);
+				
+			}
+			
+		}
+		
+	}
+	private static boolean updateUserRoomRecordInfo(DBService dbService,Integer userRoomRecordId, Integer huNum ,Integer winNum ,Integer loseNum){
+		UserRoomRecord winuserRoomRec = dbService.selectUserRoomRecordInfoByID(userRoomRecordId);
+		
+		UserRoomRecord winuserRoomRecForUpdate = new UserRoomRecord();
+		winuserRoomRecForUpdate.setId(userRoomRecordId);
+		
+		if(huNum != null && huNum>0){
+			
+			int temp = winuserRoomRec.getHuTimes()==null?0:winuserRoomRec.getHuTimes();
+			
+			winuserRoomRecForUpdate.setHuTimes(temp+huNum);
+		}
+		
+		if(winNum != null && winNum>0){
+			int temp = winuserRoomRec.getWinTimes()==null?0:winuserRoomRec.getWinTimes();
+			winuserRoomRecForUpdate.setWinTimes(temp+winNum);
+		}
+		
+		if(loseNum != null && loseNum>0){
+			int temp = winuserRoomRec.getLoseTimes()==null?0:winuserRoomRec.getLoseTimes();
+			winuserRoomRecForUpdate.setLoseTimes(temp+loseNum);
+		}
+		
+		dbService.updateUserRoomRecordInfoPrimaryKey(winuserRoomRecForUpdate);
+		return true;
 	}
 }
 

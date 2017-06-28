@@ -176,63 +176,7 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 				logger.error("进入房间返回数据："+JSONObject.toJSONString(protocolModel));
 				
 				if(flag){
-					boolean hashDealTile = dealTile2AllPlayersCheck(roomContex);
-					if (hashDealTile) {// 通知所有玩家已经发牌
-						
-						roomRecord.setRoomState((byte) 2);
-						
-						boolean flg = dbService.updateRoomRecordInfoByPrimaryKey(roomRecord);
-						
-						logger.error("更新房间信息，flg="+flg+",roomRecord="+JSONObject.toJSONString(roomRecord));
-						
-						HouseContext.playRoomNum.incrementAndGet();
-						HouseContext.waitRoomNum.decrementAndGet();
-						
-						HouseContext.playUserNum.addAndGet(4);
-						HouseContext.waitUserNum.addAndGet(-4);
-						
-						roomContex.getRemaiRound().decrementAndGet();
-						
-						roomContex.setRoomStatus(RoomStatus.PLAYING);
-						
-						for (Entry<PlayerLocation, PlayerInfo> entry : roomContex.getGameContext().getTable().getPlayerInfos().entrySet()) {
-							
-							ProtocolModel dealTileProtocolModel = new ProtocolModel();
-							dealTileProtocolModel.setCommandId(EventEnum.DEAL_TILE_RESP.getValue());
-							
-							String playWinXinId = entry.getValue().getUserInfo().getWeixinMark();
-							EnterRoomRespModel dealTileRoomRespModel = new EnterRoomRespModel(playWinXinId,	true, "发牌", roomContex, entry.getKey());// 创建每个方位的牌响应信息
-							dealTileProtocolModel.setBody(JSON.toJSONString(dealTileRoomRespModel));
-							
-							ChannelHandlerContext userCtx = ClientSession.sessionMap.get(playWinXinId);
-							
-							userCtx.writeAndFlush(dealTileProtocolModel);
-							logger.error("hashDealTile返回数据："+JSONObject.toJSONString(dealTileProtocolModel));
-						}
-						roomContex.getGameContext().getTable().printAllPlayTiles();
-
-						WinActionType winActionType = new WinActionType();
-						boolean winFirst = winActionType.isLegalAction(roomContex.getGameContext(),	roomContex.getGameContext().getZhuangLocation(), new Action(WIN));
-						
-						if (winFirst) {
-							
-							PlayerInfo zhuangWinPlayerInfo = roomContex.getGameContext().getTable().getPlayerByLocation(roomContex.getGameContext().getZhuangLocation());
-							
-							updateUserRoomRecordInfo(zhuangWinPlayerInfo.getUserRoomRecordInfoID(),1,1,null);
-							
-							winActionType.doAction(roomContex.getGameContext(),	roomContex.getGameContext().getZhuangLocation(), new Action(WIN));
-							ProtocolModel winProtocolModel = new ProtocolModel();
-							winProtocolModel.setCommandId(EventEnum.WIN_ONE_TIME_RESP.getValue());
-							roomContex.setRoomStatus(RoomStatus.PLAYING);
-							EnterRoomRespModel winTileRoomRespModel = new EnterRoomRespModel(zhuangWinPlayerInfo.getUserInfo().getWeixinMark(), true, "庄家天胡", roomContex);
-							winProtocolModel.setBody(JSON.toJSONString(winTileRoomRespModel));
-							
-							HandlerHelper.noticeMsg2Players(roomContex, null, winProtocolModel);
-							
-						}
-						
-					}
-					
+					HandlerHelper.dealTile2AllPlayers(roomContex,dbService);		
 				}
 			}
 				
@@ -241,27 +185,7 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 		}
 	}
 
-	private boolean dealTile2AllPlayersCheck(RoomContext roomContex) {
-		Map<PlayerLocation, PlayerInfo> playerInfos = roomContex.getGameContext().getTable().getPlayerInfos();
-		boolean fourUserNumReady = true;
-		for (PlayerInfo playerInfo : playerInfos.values()) {
-			if (playerInfo.getUserInfo() == null) {
-				fourUserNumReady = false;
-				return false;
-			}
-		}
-		if (fourUserNumReady) {
-			roomContex.getGameContext().getTable().readyForGame();
-			DealActionType dealActionType = new DealActionType();
-			try {
-				dealActionType.doAction(roomContex.getGameContext(), PlayerLocation.EAST, null);
-			} catch (IllegalActionException e) {
-				e.printStackTrace();
-			}
-			return true;
-		}
-		return false;
-	}
+	
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
