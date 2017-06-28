@@ -154,6 +154,7 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 			// 不可能，因为PlayerInfo已经实现了Cloneable
 			throw new RuntimeException(e);
 		}
+		c.curScore = this.curScore;
 		c.aliveTiles = this.aliveTiles == null ? new Tile() : this.aliveTiles.clone();
 		c.discardedTiles = this.discardedTiles == null ? new Tile() : this.discardedTiles.clone();
 		c.userInfo = userInfo == null ? null : userInfo.clone();
