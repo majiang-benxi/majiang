@@ -140,6 +140,10 @@ public class MajiangPlayView {
 		this.hui2 = hui2;
 	}
 
+	public void setCurrentWinView(boolean currentWinView) {
+		this.currentWinView = currentWinView;
+	}
+
 	public static void main(String[] args) {
 		  
 	    MahjongTable table = new MahjongTable();

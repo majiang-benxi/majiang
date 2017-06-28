@@ -440,6 +440,7 @@ public class HandlerHelper {
 				winProtocolModel.setCommandId(EventEnum.WIN_ONE_TIME_RESP.getValue());
 				roomContex.setRoomStatus(RoomStatus.PLAYING);
 				EnterRoomRespModel winTileRoomRespModel = new EnterRoomRespModel(zhuangWinPlayerInfo.getUserInfo().getWeixinMark(), true, "庄家天胡", roomContex);
+				winTileRoomRespModel.setCurrentWinView(true);
 				winProtocolModel.setBody(JSON.toJSONString(winTileRoomRespModel,SerializerFeature.DisableCircularReferenceDetect));
 				
 				HandlerHelper.noticeMsg2Players(roomContex, null, winProtocolModel);
