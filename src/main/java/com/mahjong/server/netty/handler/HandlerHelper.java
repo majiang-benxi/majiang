@@ -476,4 +476,3 @@ public class HandlerHelper {
 		return true;
 	}
 }
-

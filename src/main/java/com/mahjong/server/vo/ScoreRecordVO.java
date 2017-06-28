@@ -4,7 +4,7 @@ public class ScoreRecordVO {
 	
 	private String winActionTypes;
 	
-	private int totalScore;
+	private int roundScore;
 	
 	public String getWinActionTypes() {
 		return winActionTypes;
@@ -14,13 +14,14 @@ public class ScoreRecordVO {
 		this.winActionTypes = winActionTypes;
 	}
 
-	public int getTotalScore() {
-		return totalScore;
+	public int getRoundScore() {
+		return roundScore;
 	}
 
-	public void setTotalScore(int totalScore) {
-		this.totalScore = totalScore;
+	public void setRoundScore(int roundScore) {
+		this.roundScore = roundScore;
 	}
+
 
 
 }

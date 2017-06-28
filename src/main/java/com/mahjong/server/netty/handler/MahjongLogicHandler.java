@@ -144,7 +144,7 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 								dbService.insertUserActionScoreInfo(userActionScore);
 								
 								ScoreRecordVO scoreRecordVO = new ScoreRecordVO();
-								scoreRecordVO.setTotalScore(playerInfo.getCurScore()-1000);
+								scoreRecordVO.setRoundScore(playerInfo.getCurScore()-1000);
 								scoreRecordVO.setWinActionTypes(getScoreTypes);
 								
 								playerInfo.setCurScoreRecord(scoreRecordVO);
@@ -333,7 +333,7 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 					}
 					
 					ScoreRecordVO scoreRecordVO = new ScoreRecordVO();
-					scoreRecordVO.setTotalScore(playerInfo.getCurScore()-1000);
+					scoreRecordVO.setRoundScore(playerInfo.getCurScore()-1000);
 					
 					String  getScoreTypes = HandlerHelper.getScoreTypesStr(playerInfo.getGatherScoreTypes());
 					scoreRecordVO.setWinActionTypes(getScoreTypes);
