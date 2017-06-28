@@ -45,6 +45,7 @@ import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.enums.PlayerLocation.Relation;
 import com.mahjong.server.game.enums.RoomStatus;
 import com.mahjong.server.game.object.DisCardActionAndLocation;
+import com.mahjong.server.game.object.GameResult;
 import com.mahjong.server.game.object.GetScoreType;
 import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.Tile;
@@ -57,6 +58,7 @@ import com.mahjong.server.netty.model.EnterRoomRespModel;
 import com.mahjong.server.netty.model.ProtocolModel;
 import com.mahjong.server.netty.session.ClientSession;
 import com.mahjong.server.service.DBService;
+import com.mahjong.server.vo.ScoreRecordVO;
 
 import io.netty.channel.ChannelHandlerContext;
 
@@ -436,6 +438,24 @@ public class HandlerHelper {
 				updateUserRoomRecordInfo(dbService,zhuangWinPlayerInfo.getUserRoomRecordInfoID(),1,1,null);
 				
 				winActionType.doAction(roomContex.getGameContext(),	roomContex.getGameContext().getZhuangLocation(), new Action(WIN));
+				
+				
+				GameResult gameResult = roomContex.getGameContext().getGameResult();
+				
+				for(Entry<PlayerLocation, PlayerInfo> playerInfoEnt : gameResult.getPlayerInfos().entrySet()){
+					
+					PlayerInfo playerInfo = playerInfoEnt.getValue();
+					
+					ScoreRecordVO scoreRecordVO = new ScoreRecordVO();
+					scoreRecordVO.setRoundScore(playerInfo.getCurScore()-1000);
+					
+					String  getScoreTypes = HandlerHelper.getScoreTypesStr(playerInfo.getGatherScoreTypes());
+					scoreRecordVO.setWinActionTypes(getScoreTypes);
+					
+					playerInfo.setCurScoreRecord(scoreRecordVO);
+				}
+				
+				
 				ProtocolModel winProtocolModel = new ProtocolModel();
 				winProtocolModel.setCommandId(EventEnum.WIN_ONE_TIME_RESP.getValue());
 				roomContex.setRoomStatus(RoomStatus.PLAYING);
