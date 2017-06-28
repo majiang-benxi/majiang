@@ -160,6 +160,7 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 		c.tileGroups = new ArrayList<TileGroup>(tileGroups);
 		c.lastDiscardTile=this.lastDiscardTile == null ? new Tile() : this.lastDiscardTile.clone();
 		c.lastWinTile=this.lastWinTile == null ? new Tile() : this.lastWinTile.clone();
+		c.lastTileGroupAction=this.lastTileGroupAction;
 		return c;
 	}
 
