@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.game.context.HouseContext;
 import com.mahjong.server.game.enums.EventEnum;
@@ -66,7 +67,7 @@ public class HistoryRecordHandler extends SimpleChannelInboundHandler<ProtocolMo
 				}
 				
 				protocolModel.setCommandId(EventEnum.HISTORY_RECORD_REQ.getValue());
-				protocolModel.setBody(JSON.toJSONString(historyRecordRespModel));
+				protocolModel.setBody(JSON.toJSONString(historyRecordRespModel,SerializerFeature.DisableCircularReferenceDetect));
 				ctx.writeAndFlush(protocolModel);
 				
 				logger.error("历史记录返回数据："+JSONObject.toJSONString(protocolModel));

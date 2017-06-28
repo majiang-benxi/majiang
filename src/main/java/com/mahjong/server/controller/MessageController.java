@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.mahjong.server.entity.MessageInfo;
 import com.mahjong.server.game.enums.EventEnum;
 import com.mahjong.server.netty.model.NoticeRespModel;
@@ -168,7 +169,7 @@ public class MessageController {
 					for(ChannelHandlerContext ctx : sessionMap.values()){
 						
 						protocolModel.setCommandId(EventEnum.NOTICE_CHANGE_RESP.getValue());
-						protocolModel.setBody(JSON.toJSONString(noticeRespModel));
+						protocolModel.setBody(JSON.toJSONString(noticeRespModel,SerializerFeature.DisableCircularReferenceDetect));
 						
 						ctx.writeAndFlush(protocolModel);
 						
@@ -229,7 +230,7 @@ public class MessageController {
 		for(ChannelHandlerContext ctx : sessionMap.values()){
 			
 			protocolModel.setCommandId(EventEnum.NOTICE_RESP.getValue());
-			protocolModel.setBody(JSON.toJSONString(noticeRespModel));
+			protocolModel.setBody(JSON.toJSONString(noticeRespModel,SerializerFeature.DisableCircularReferenceDetect));
 			
 			ctx.writeAndFlush(protocolModel);
 			

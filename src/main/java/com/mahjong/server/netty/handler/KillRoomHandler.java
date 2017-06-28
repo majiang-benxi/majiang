@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.mahjong.server.entity.RoomRecord;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.entity.UserRoomRecord;
@@ -119,14 +120,14 @@ public class KillRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> 
 							ProtocolModel enterRoomProtocolModel = new ProtocolModel();
 							enterRoomProtocolModel.setCommandId(EventEnum.NEW_ENTER_RESP.getValue());
 							EnterRoomRespModel newEnterRoomRespModel = new EnterRoomRespModel(weixinId, true, "玩家离开", roomContex);
-							enterRoomProtocolModel.setBody(JSON.toJSONString(newEnterRoomRespModel));
+							enterRoomProtocolModel.setBody(JSON.toJSONString(newEnterRoomRespModel,SerializerFeature.DisableCircularReferenceDetect));
 							HandlerHelper.noticeMsg2Players(roomContex, weixinId, enterRoomProtocolModel);
 							
 							KillRoomRespModel killRoomRespModel = new KillRoomRespModel();
 							killRoomRespModel.setResult(true);
 							killRoomRespModel.setMsg("退出成功！");
 							protocolModel.setCommandId(EventEnum.KILL_ROOM_RESP.getValue());
-							protocolModel.setBody(JSON.toJSONString(killRoomRespModel));
+							protocolModel.setBody(JSON.toJSONString(killRoomRespModel,SerializerFeature.DisableCircularReferenceDetect));
 							userCtx.writeAndFlush(protocolModel);
 							
 						}
@@ -149,7 +150,7 @@ public class KillRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> 
 									KillRoomNoticeRespModel killRoomNoticeRespModel = new KillRoomNoticeRespModel();
 									killRoomNoticeRespModel.setNickName(userInfo.getNickName());
 									
-									newProtocolModel.setBody(JSON.toJSONString(killRoomNoticeRespModel));
+									newProtocolModel.setBody(JSON.toJSONString(killRoomNoticeRespModel,SerializerFeature.DisableCircularReferenceDetect));
 									
 									ChannelHandlerContext userCtx = ClientSession.sessionMap.get(playerIn.getUserInfo().getWeixinMark());
 									userCtx.writeAndFlush(newProtocolModel);
@@ -184,7 +185,7 @@ public class KillRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> 
 								}
 								
 								protocolModel.setCommandId(EventEnum.KILL_ROOM_RESP.getValue());
-								protocolModel.setBody(JSON.toJSONString(killRoomRespModel));
+								protocolModel.setBody(JSON.toJSONString(killRoomRespModel,SerializerFeature.DisableCircularReferenceDetect));
 								
 								for(Entry<PlayerLocation, PlayerInfo>  ent : roomContex.getGameContext().getTable().getPlayerInfos().entrySet()){
 									
@@ -286,7 +287,7 @@ public class KillRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> 
 						killRoomRespModel.setMsg("当前用户不存在，没有权限解散！");
 						
 						protocolModel.setCommandId(EventEnum.KILL_ROOM_RESP.getValue());
-						protocolModel.setBody(JSON.toJSONString(killRoomRespModel));
+						protocolModel.setBody(JSON.toJSONString(killRoomRespModel,SerializerFeature.DisableCircularReferenceDetect));
 						
 						ctx.writeAndFlush(protocolModel);
 						

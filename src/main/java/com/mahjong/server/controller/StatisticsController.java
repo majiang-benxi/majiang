@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.mahjong.server.entity.RoomCartChange;
 import com.mahjong.server.entity.RoomRecord;
 import com.mahjong.server.entity.UserInfo;
@@ -361,7 +362,7 @@ public class StatisticsController {
 			killRoomRespModel.setMsg("管理员强制解散成功！");
 			
 			protocolModel.setCommandId(EventEnum.KILL_ROOM_RESP.getValue());
-			protocolModel.setBody(JSON.toJSONString(killRoomRespModel));
+			protocolModel.setBody(JSON.toJSONString(killRoomRespModel,SerializerFeature.DisableCircularReferenceDetect));
 			
 			for (PlayerInfo entry : roomContext.getGameContext().getTable().getPlayerInfos().values()) {
 				String weixinmark = entry.getUserInfo().getWeixinMark();
