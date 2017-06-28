@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.mahjong.server.entity.RoomRecord;
 import com.mahjong.server.entity.UserActionScore;
 import com.mahjong.server.entity.UserInfo;
@@ -91,7 +92,7 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 								.entrySet()) {
 							ProtocolModel discardProtocolModel = new ProtocolModel();
 							DiscardRespModel discardRespModel = new DiscardRespModel(roomContext,entry.getKey(),false);
-							discardProtocolModel.setBody(JSON.toJSONString(discardRespModel));
+							discardProtocolModel.setBody(JSON.toJSONString(discardRespModel,SerializerFeature.DisableCircularReferenceDetect));
 							discardProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
 							HandlerHelper.noticeMsg2Player(roomContext,entry.getValue(),discardProtocolModel);
 						}
@@ -143,7 +144,7 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 								dbService.insertUserActionScoreInfo(userActionScore);
 								
 								ScoreRecordVO scoreRecordVO = new ScoreRecordVO();
-								scoreRecordVO.setTotalScore(playerInfo.getCurScore()-1000);
+								scoreRecordVO.setRoundScore(playerInfo.getCurScore()-1000);
 								scoreRecordVO.setWinActionTypes(getScoreTypes);
 								
 								playerInfo.setCurScoreRecord(scoreRecordVO);
@@ -222,7 +223,7 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 										ProtocolModel winProtocolModel = new ProtocolModel();
 										DiscardRespModel discardRespModel = new DiscardRespModel(playingRoom, PlayerLocation.fromCode(eplayerInfo.getUserLocation()),true);
 										winProtocolModel.setCommandId(EventEnum.HUANG_ZHUANG.getValue());
-										winProtocolModel.setBody(JSON.toJSONString(discardRespModel));
+										winProtocolModel.setBody(JSON.toJSONString(discardRespModel,SerializerFeature.DisableCircularReferenceDetect));
 										
 										String weixinIde = user.getWeixinMark();
 										ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinIde);
@@ -244,7 +245,7 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 										ProtocolModel winProtocolModel = new ProtocolModel();
 										DiscardRespModel discardRespModel = new DiscardRespModel(playingRoom, PlayerLocation.fromCode(entry.getUserLocation()),true);
 										winProtocolModel.setCommandId(EventEnum.WIN_LAST_TIME_RESP.getValue());
-										winProtocolModel.setBody(JSON.toJSONString(discardRespModel));
+										winProtocolModel.setBody(JSON.toJSONString(discardRespModel,SerializerFeature.DisableCircularReferenceDetect));
 										
 										String weixinIde = user.getWeixinMark();
 										ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinIde);
@@ -332,7 +333,7 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 					}
 					
 					ScoreRecordVO scoreRecordVO = new ScoreRecordVO();
-					scoreRecordVO.setTotalScore(playerInfo.getCurScore()-1000);
+					scoreRecordVO.setRoundScore(playerInfo.getCurScore()-1000);
 					
 					String  getScoreTypes = HandlerHelper.getScoreTypesStr(playerInfo.getGatherScoreTypes());
 					scoreRecordVO.setWinActionTypes(getScoreTypes);
@@ -425,7 +426,7 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 							ProtocolModel winProtocolModel = new ProtocolModel();
 							DiscardRespModel discardRespModel = new DiscardRespModel(playingRoom, PlayerLocation.fromCode(entry.getUserLocation()), true);
 							winProtocolModel.setCommandId(EventEnum.WIN_LAST_TIME_RESP.getValue());
-							winProtocolModel.setBody(JSON.toJSONString(discardRespModel));
+							winProtocolModel.setBody(JSON.toJSONString(discardRespModel,SerializerFeature.DisableCircularReferenceDetect));
 							
 							String weixinIde = user.getWeixinMark();
 							ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinIde);
@@ -453,7 +454,7 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 							ProtocolModel winProtocolModel = new ProtocolModel();
 							DiscardRespModel discardRespModel = new DiscardRespModel(playingRoom, PlayerLocation.fromCode(eplayerInfo.getUserLocation()),true);
 							winProtocolModel.setCommandId(EventEnum.WIN_ONE_TIME_RESP.getValue());
-							winProtocolModel.setBody(JSON.toJSONString(discardRespModel));
+							winProtocolModel.setBody(JSON.toJSONString(discardRespModel,SerializerFeature.DisableCircularReferenceDetect));
 							
 							String weixinIde = user.getWeixinMark();
 							ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinIde);
