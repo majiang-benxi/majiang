@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.mahjong.server.entity.RoomRecord;
@@ -162,7 +163,7 @@ public class HandlerHelper {
 			AskChoiceRespModel askChoiceRespModel = new AskChoiceRespModel(
 					new ArrayList<Action>(multiMap.get(playerLocation)));
 			canDoProtocolModel.setCommandId(EventEnum.ASK_CHOICE_RESP.getValue());
-			canDoProtocolModel.setBody(JSON.toJSONString(askChoiceRespModel));
+			canDoProtocolModel.setBody(JSON.toJSONString(askChoiceRespModel,SerializerFeature.DisableCircularReferenceDetect));
 			String weixinMarkId = roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation)
 					.getUserInfo().getWeixinMark();
 			ChannelHandlerContext ctx = ClientSession.sessionMap.get(weixinMarkId);
@@ -190,7 +191,7 @@ public class HandlerHelper {
 					.entrySet()) {
 				ProtocolModel huangZhuangProtocolModel = new ProtocolModel();
 				DiscardRespModel hzdiscardRespModel = new DiscardRespModel(roomContext, entry.getKey(), true);
-				huangZhuangProtocolModel.setBody(JSON.toJSONString(hzdiscardRespModel));
+				huangZhuangProtocolModel.setBody(JSON.toJSONString(hzdiscardRespModel,SerializerFeature.DisableCircularReferenceDetect));
 				huangZhuangProtocolModel.setCommandId(EventEnum.HUANG_ZHUANG.getValue());
 				HandlerHelper.noticeMsg2Player(roomContext, entry.getValue(), huangZhuangProtocolModel);
 			}
@@ -204,7 +205,7 @@ public class HandlerHelper {
 				ProtocolModel drawTileProtocolModel = new ProtocolModel();
 				DrawCardRespModel drawCardRespModel = new DrawCardRespModel(roomContext, entry.getKey());
 				drawTileProtocolModel.setCommandId(EventEnum.DRAW_TILE_RESP.getValue());
-				drawTileProtocolModel.setBody(JSON.toJSONString(drawCardRespModel));
+				drawTileProtocolModel.setBody(JSON.toJSONString(drawCardRespModel,SerializerFeature.DisableCircularReferenceDetect));
 				HandlerHelper.noticeMsg2Player(roomContext, entry.getValue(), drawTileProtocolModel);
 			}
 		}
@@ -226,7 +227,7 @@ public class HandlerHelper {
 			ProtocolModel cpgProtocolModel = new ProtocolModel();
 			DiscardRespModel discardRespModel = new DiscardRespModel(roomContext, entry.getKey());
 			cpgProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
-			cpgProtocolModel.setBody(JSON.toJSONString(discardRespModel));
+			cpgProtocolModel.setBody(JSON.toJSONString(discardRespModel,SerializerFeature.DisableCircularReferenceDetect));
 			HandlerHelper.noticeMsg2Player(roomContext, entry.getValue(), cpgProtocolModel);
 		}
 		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空当前的动作
@@ -248,7 +249,7 @@ public class HandlerHelper {
 		ProtocolModel xfgProtocolModel = new ProtocolModel();
 		DiscardRespModel discardRespModel = new DiscardRespModel(roomContext, discardPlayLocation);
 		xfgProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
-		xfgProtocolModel.setBody(JSON.toJSONString(discardRespModel));
+		xfgProtocolModel.setBody(JSON.toJSONString(discardRespModel,SerializerFeature.DisableCircularReferenceDetect));
 		HandlerHelper.noticeMsg2Player(roomContext, entry.getValue(), xfgProtocolModel);
 		}
 		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空当前的动作
@@ -416,7 +417,7 @@ public class HandlerHelper {
 				
 				String playWinXinId = entry.getValue().getUserInfo().getWeixinMark();
 				EnterRoomRespModel dealTileRoomRespModel = new EnterRoomRespModel(playWinXinId,	true, "发牌", roomContex, entry.getKey());// 创建每个方位的牌响应信息
-				dealTileProtocolModel.setBody(JSON.toJSONString(dealTileRoomRespModel));
+				dealTileProtocolModel.setBody(JSON.toJSONString(dealTileRoomRespModel,SerializerFeature.DisableCircularReferenceDetect));
 				
 				ChannelHandlerContext userCtx = ClientSession.sessionMap.get(playWinXinId);
 				
@@ -439,7 +440,7 @@ public class HandlerHelper {
 				winProtocolModel.setCommandId(EventEnum.WIN_ONE_TIME_RESP.getValue());
 				roomContex.setRoomStatus(RoomStatus.PLAYING);
 				EnterRoomRespModel winTileRoomRespModel = new EnterRoomRespModel(null, true, "庄家天胡", roomContex);
-				winProtocolModel.setBody(JSON.toJSONString(winTileRoomRespModel));
+				winProtocolModel.setBody(JSON.toJSONString(winTileRoomRespModel,SerializerFeature.DisableCircularReferenceDetect));
 				
 				HandlerHelper.noticeMsg2Players(roomContex, null, winProtocolModel);
 				
