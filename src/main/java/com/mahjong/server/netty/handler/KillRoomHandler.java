@@ -61,10 +61,10 @@ public class KillRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> 
 				String weixinId = killRoomReqModel.getWeiXinId();
 				Boolean isAggree = killRoomReqModel.isAggree();
 				UserInfo userInfo = HouseContext.weixinIdToUserInfo.get(weixinId);
+				RoomContext roomContex = HouseContext.weixinIdToRoom.get(weixinId);
 				
-				if (userInfo != null && ctx!=null) {
+				if (userInfo != null && ctx!=null && roomContex!=null) {
 					
-					RoomContext roomContex = HouseContext.weixinIdToRoom.get(weixinId);
 					
 					if(roomContex.getRoomStatus().getCode() == RoomStatus.WAIT_USERS.getCode()){
 						if(roomContex.getCreatorWeiXinId().equals(weixinId)){
@@ -130,152 +130,153 @@ public class KillRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> 
 							protocolModel.setBody(JSON.toJSONString(killRoomRespModel,SerializerFeature.DisableCircularReferenceDetect));
 							userCtx.writeAndFlush(protocolModel);
 							
+							return ;
+							
 						}
 						
+					}
+						
+					if(roomContex.getAgreeKillRoomNum().intValue()==0){
+							// 通知其他三家
+						for(Entry<PlayerLocation, PlayerInfo>  ent : roomContex.getGameContext().getTable().getPlayerInfos().entrySet()){
+							
+							PlayerInfo playerIn = ent.getValue();
+							
+							if(playerIn.getUserInfo().getWeixinMark().equals(weixinId)){
+								continue;
+							}
+							
+							ProtocolModel newProtocolModel = new ProtocolModel();
+							newProtocolModel.setCommandId(EventEnum.KILL_ROOM_NOTICE_RESP.getValue());
+							
+							KillRoomNoticeRespModel killRoomNoticeRespModel = new KillRoomNoticeRespModel();
+							killRoomNoticeRespModel.setNickName(userInfo.getNickName());
+							
+							newProtocolModel.setBody(JSON.toJSONString(killRoomNoticeRespModel,SerializerFeature.DisableCircularReferenceDetect));
+							
+							ChannelHandlerContext userCtx = ClientSession.sessionMap.get(playerIn.getUserInfo().getWeixinMark());
+							userCtx.writeAndFlush(newProtocolModel);
+							
+							logger.error("解散房间返回数据：weixinId="+playerIn.getUserInfo().getWeixinMark()+"，数据："+JSONObject.toJSONString(protocolModel));
+							
+						}
+							
+					}
+					if(isAggree){
+						roomContex.getAgreeKillRoomNum().incrementAndGet();
 					}else{
-						
-						if(roomContex.getAgreeKillRoomNum().intValue()==0){
-								// 通知其他三家
-								for(Entry<PlayerLocation, PlayerInfo>  ent : roomContex.getGameContext().getTable().getPlayerInfos().entrySet()){
-									
+						roomContex.getDisagreeUserNames().add(userInfo.getNickName());
+						roomContex.getDisAgreeKillRoomNum().incrementAndGet();
+					}
+					
+					if((roomContex.getAgreeKillRoomNum().intValue()+roomContex.getDisAgreeKillRoomNum().intValue()) == 4){
+							
+							KillRoomRespModel killRoomRespModel = new KillRoomRespModel();
+							
+							if(roomContex.getDisAgreeKillRoomNum().intValue()==0){
+								
+								killRoomRespModel.setResult(true);
+								killRoomRespModel.setMsg("解散成功！");
+								
+							}else{
+								
+								killRoomRespModel.setResult(false);
+								killRoomRespModel.setMsg("解散失败！");
+								killRoomRespModel.setUnAgreeNickNames(roomContex.getDisagreeUserNames());
+								
+							}
+							
+							protocolModel.setCommandId(EventEnum.KILL_ROOM_RESP.getValue());
+							protocolModel.setBody(JSON.toJSONString(killRoomRespModel,SerializerFeature.DisableCircularReferenceDetect));
+							
+							for(Entry<PlayerLocation, PlayerInfo>  ent : roomContex.getGameContext().getTable().getPlayerInfos().entrySet()){
+								
+								if(ent!=null){
+								
 									PlayerInfo playerIn = ent.getValue();
-									
-									if(playerIn.getUserInfo().getWeixinMark().equals(weixinId)){
-										continue;
+									if(playerIn!=null && playerIn.getUserInfo()!=null){
+										ChannelHandlerContext userCtx = ClientSession.sessionMap.get(playerIn.getUserInfo().getWeixinMark());
+										userCtx.writeAndFlush(protocolModel);
+										
+										logger.error("解散房间返回数据："+JSONObject.toJSONString(protocolModel));
 									}
 									
-									ProtocolModel newProtocolModel = new ProtocolModel();
-									newProtocolModel.setCommandId(EventEnum.KILL_ROOM_NOTICE_RESP.getValue());
-									
-									KillRoomNoticeRespModel killRoomNoticeRespModel = new KillRoomNoticeRespModel();
-									killRoomNoticeRespModel.setNickName(userInfo.getNickName());
-									
-									newProtocolModel.setBody(JSON.toJSONString(killRoomNoticeRespModel,SerializerFeature.DisableCircularReferenceDetect));
-									
-									ChannelHandlerContext userCtx = ClientSession.sessionMap.get(playerIn.getUserInfo().getWeixinMark());
-									userCtx.writeAndFlush(newProtocolModel);
-									
-									logger.error("解散房间返回数据：weixinId="+playerIn.getUserInfo().getWeixinMark()+"，数据："+JSONObject.toJSONString(protocolModel));
 									
 								}
+							}
+							
+							
+							if(roomContex.getDisAgreeKillRoomNum().intValue()==0){
 								
-						}
-						if(isAggree){
-							roomContex.getAgreeKillRoomNum().incrementAndGet();
-						}else{
-							roomContex.getDisagreeUserNames().add(userInfo.getNickName());
-							roomContex.getDisAgreeKillRoomNum().incrementAndGet();
-						}
-						
-						if((roomContex.getAgreeKillRoomNum().intValue()+roomContex.getDisAgreeKillRoomNum().intValue()) == 4){
+								HouseContext.rommList.remove(roomContex.getRoomNum());
 								
-								KillRoomRespModel killRoomRespModel = new KillRoomRespModel();
+								HouseContext.playRoomNum.decrementAndGet();
 								
-								if(roomContex.getDisAgreeKillRoomNum().intValue()==0){
-									
-									killRoomRespModel.setResult(true);
-									killRoomRespModel.setMsg("解散成功！");
-									
-								}else{
-									
-									killRoomRespModel.setResult(false);
-									killRoomRespModel.setMsg("解散失败！");
-									killRoomRespModel.setUnAgreeNickNames(roomContex.getDisagreeUserNames());
-									
-								}
-								
-								protocolModel.setCommandId(EventEnum.KILL_ROOM_RESP.getValue());
-								protocolModel.setBody(JSON.toJSONString(killRoomRespModel,SerializerFeature.DisableCircularReferenceDetect));
 								
 								for(Entry<PlayerLocation, PlayerInfo>  ent : roomContex.getGameContext().getTable().getPlayerInfos().entrySet()){
+									PlayerInfo playerInfo = ent.getValue();
 									
-									if(ent!=null){
-									
-										PlayerInfo playerIn = ent.getValue();
-										if(playerIn!=null && playerIn.getUserInfo()!=null){
-											ChannelHandlerContext userCtx = ClientSession.sessionMap.get(playerIn.getUserInfo().getWeixinMark());
-											userCtx.writeAndFlush(protocolModel);
-											
-											logger.error("解散房间返回数据："+JSONObject.toJSONString(protocolModel));
-										}
+									if(playerInfo!=null && playerInfo.getUserInfo()!=null){
 										
-										
-									}
-								}
-								
-								
-								if(roomContex.getDisAgreeKillRoomNum().intValue()==0){
+										HouseContext.playUserNum.decrementAndGet();
 									
-									HouseContext.rommList.remove(roomContex.getRoomNum());
-									
-									HouseContext.playRoomNum.decrementAndGet();
-									
-									
-									for(Entry<PlayerLocation, PlayerInfo>  ent : roomContex.getGameContext().getTable().getPlayerInfos().entrySet()){
-										PlayerInfo playerInfo = ent.getValue();
+										HouseContext.weixinIdToRoom.remove(playerInfo.getUserInfo().getWeixinMark());
 										
-										if(playerInfo!=null && playerInfo.getUserInfo()!=null){
-											
-											HouseContext.playUserNum.decrementAndGet();
+										UserRoomRecord userRoomRecord = new UserRoomRecord();
 										
-											HouseContext.weixinIdToRoom.remove(playerInfo.getUserInfo().getWeixinMark());
+										if(playerInfo.getUserLocation().intValue() == PlayerLocation.NORTH.getCode()){
+											userRoomRecord.setUserDirection((byte) 4);
 											
-											UserRoomRecord userRoomRecord = new UserRoomRecord();
+										}else if(playerInfo.getUserLocation().intValue() == PlayerLocation.WEST.getCode()){
+											userRoomRecord.setUserDirection((byte) 3);
 											
-											if(playerInfo.getUserLocation().intValue() == PlayerLocation.NORTH.getCode()){
-												userRoomRecord.setUserDirection((byte) 4);
-												
-											}else if(playerInfo.getUserLocation().intValue() == PlayerLocation.WEST.getCode()){
-												userRoomRecord.setUserDirection((byte) 3);
-												
-											}else if(playerInfo.getUserLocation().intValue() == PlayerLocation.SOUTH.getCode()){
-												userRoomRecord.setUserDirection((byte) 2);
-												
-											}
-										
-											Date now = new Date();
-											
-											
-											ChannelHandlerContext userCtx = ClientSession.sessionMap.get(playerInfo.getUserInfo().getWeixinMark());
-											
-											InetSocketAddress socketAddr = (InetSocketAddress) userCtx.channel().remoteAddress();
-											
-											userRoomRecord.setHuTimes(0);
-											userRoomRecord.setLoseTimes(0);
-											userRoomRecord.setOperateCause("解散房间，离开");
-											userRoomRecord.setOperateType((byte) 2);
-											userRoomRecord.setOperateTime(now);
-											
-											userRoomRecord.setRoomNum(roomContex.getRoomNum());
-											
-											userRoomRecord.setRoomRecordId(roomContex.getRoomRecordID());
-											
-											userRoomRecord.setUserId(playerInfo.getUserInfo().getId());
-											userRoomRecord.setUserIp(socketAddr.getAddress().getHostAddress());
-											userRoomRecord.setWinTimes(0);
-											
-											Integer userRoomRecordId = dbService.insertUserRoomRecordInfo(userRoomRecord);
+										}else if(playerInfo.getUserLocation().intValue() == PlayerLocation.SOUTH.getCode()){
+											userRoomRecord.setUserDirection((byte) 2);
 											
 										}
+									
+										Date now = new Date();
+										
+										
+										ChannelHandlerContext userCtx = ClientSession.sessionMap.get(playerInfo.getUserInfo().getWeixinMark());
+										
+										InetSocketAddress socketAddr = (InetSocketAddress) userCtx.channel().remoteAddress();
+										
+										userRoomRecord.setHuTimes(0);
+										userRoomRecord.setLoseTimes(0);
+										userRoomRecord.setOperateCause("解散房间，离开");
+										userRoomRecord.setOperateType((byte) 2);
+										userRoomRecord.setOperateTime(now);
+										
+										userRoomRecord.setRoomNum(roomContex.getRoomNum());
+										
+										userRoomRecord.setRoomRecordId(roomContex.getRoomRecordID());
+										
+										userRoomRecord.setUserId(playerInfo.getUserInfo().getId());
+										userRoomRecord.setUserIp(socketAddr.getAddress().getHostAddress());
+										userRoomRecord.setWinTimes(0);
+										
+										Integer userRoomRecordId = dbService.insertUserRoomRecordInfo(userRoomRecord);
 										
 									}
 									
-									RoomRecord roomRecord = new RoomRecord();
-									roomRecord.setId(roomContex.getRoomRecordID());
-									roomRecord.setRoomState((byte) 3);
-									boolean flg = dbService.updateRoomRecordInfoByPrimaryKey(roomRecord);
-									
-								}else{
-									
-									/**
-									 * 清空本次记录
-									 */
-									roomContex.setAgreeKillRoomNum(new AtomicInteger(0));
-									roomContex.setDisAgreeKillRoomNum(new AtomicInteger(0));
-									roomContex.setDisagreeUserNames(new ArrayList<String>());
 								}
 								
-						}
+								RoomRecord roomRecord = new RoomRecord();
+								roomRecord.setId(roomContex.getRoomRecordID());
+								roomRecord.setRoomState((byte) 3);
+								boolean flg = dbService.updateRoomRecordInfoByPrimaryKey(roomRecord);
+								
+							}else{
+								
+								/**
+								 * 清空本次记录
+								 */
+								roomContex.setAgreeKillRoomNum(new AtomicInteger(0));
+								roomContex.setDisAgreeKillRoomNum(new AtomicInteger(0));
+								roomContex.setDisagreeUserNames(new ArrayList<String>());
+							}
+							
 					}
 							
 				}else{
