@@ -16,8 +16,6 @@ public interface UserActionScoreMapper {
 
     int deleteByPrimaryKey(Integer id);
 
-    int insert(UserActionScore record);
-
     int insertSelective(UserActionScore record);
 
     List<UserActionScore> selectByExample(UserActionScoreExample example);

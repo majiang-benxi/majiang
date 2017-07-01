@@ -15,8 +15,6 @@ public interface RoomRecordMapper {
 
     int deleteByPrimaryKey(Integer id);
 
-    int insert(RoomRecord record);
-
     int insertSelective(RoomRecord record);
 
     List<RoomRecord> selectByExample(RoomRecordExample example);

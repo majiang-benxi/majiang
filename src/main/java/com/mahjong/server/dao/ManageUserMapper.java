@@ -14,8 +14,6 @@ public interface ManageUserMapper {
 
     int deleteByPrimaryKey(Integer id);
 
-    int insert(ManageUser record);
-
     int insertSelective(ManageUser record);
 
     List<ManageUser> selectByExample(ManageUserExample example);

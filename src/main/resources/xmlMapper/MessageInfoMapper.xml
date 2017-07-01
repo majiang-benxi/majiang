@@ -131,17 +131,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.mahjong.server.entity.MessageInfo" >
-     <selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
-		SELECT LAST_INSERT_ID()
-	</selectKey>
-    insert into message_info (id, mes_type, mes_position, 
-      mes_title, message_content, create_time, 
-      interval_time, state)
-    values (#{id,jdbcType=INTEGER}, #{mesType,jdbcType=TINYINT}, #{mesPosition,jdbcType=TINYINT}, 
-      #{mesTitle,jdbcType=VARCHAR}, #{messageContent,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{intervalTime,jdbcType=INTEGER}, #{state,jdbcType=TINYINT})
-  </insert>
+
   <insert id="insertSelective" parameterType="com.mahjong.server.entity.MessageInfo" >
   <selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
 		SELECT LAST_INSERT_ID()

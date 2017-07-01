@@ -14,8 +14,6 @@ public interface RoomCartChangeMapper {
 
     int deleteByPrimaryKey(Integer id);
 
-    int insert(RoomCartChange record);
-
     int insertSelective(RoomCartChange record);
 
     List<RoomCartChange> selectByExample(RoomCartChangeExample example);

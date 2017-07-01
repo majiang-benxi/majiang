@@ -134,19 +134,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.mahjong.server.entity.ManageUser" >
-     	<selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
-		SELECT LAST_INSERT_ID()
-	</selectKey>
-    insert into manage_user (id, uname, upasswd, 
-      nick_name, mobile, create_time, 
-      user_level, card_hold, state
-      )
-    values (#{id,jdbcType=INTEGER}, #{uname,jdbcType=VARCHAR}, #{upasswd,jdbcType=VARCHAR}, 
-      #{nickName,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{userLevel,jdbcType=TINYINT}, #{cardHold,jdbcType=INTEGER}, #{state,jdbcType=TINYINT}
-      )
-  </insert>
+  
   <insert id="insertSelective" parameterType="com.mahjong.server.entity.ManageUser" >
   <selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
 		SELECT LAST_INSERT_ID()

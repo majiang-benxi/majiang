@@ -127,14 +127,6 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.mahjong.server.entity.UserActionScore" >
-    insert into user_action_score (id, user_id, room_record_id, 
-      round_num, win_action_types, create_time, 
-      action_score)
-    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{roomRecordId,jdbcType=INTEGER}, 
-      #{roundNum,jdbcType=INTEGER}, #{winActionTypes,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{actionScore,jdbcType=INTEGER})
-  </insert>
   <insert id="insertSelective" parameterType="com.mahjong.server.entity.UserActionScore" >
     insert into user_action_score
     <trim prefix="(" suffix=")" suffixOverrides="," >

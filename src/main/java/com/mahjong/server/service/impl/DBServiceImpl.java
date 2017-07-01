@@ -55,7 +55,8 @@ public class DBServiceImpl implements DBService {
 	
 	@Override
 	public Integer insertUserInfo(UserInfo userInfo) {
-		return userInfoMapper.insert(userInfo);
+		 userInfoMapper.insertSelective(userInfo);
+		return userInfo.getId();
 	}
 	@Override
 	public UserInfo selectUserInfoByID(Integer userId) {
@@ -82,7 +83,8 @@ public class DBServiceImpl implements DBService {
 	/********房间**********/
 	@Override
 	public Integer insertRoomRecordInfo(RoomRecord queryRecord) {
-		return roomRecordMapper.insert(queryRecord);
+		roomRecordMapper.insertSelective(queryRecord);
+		return queryRecord.getId();
 	}
 	@Override
 	public RoomRecord selectRoomRecordInfoByID(Integer id) {
@@ -118,7 +120,8 @@ public class DBServiceImpl implements DBService {
 	/********用户房间记录**********/
 	@Override
 	public Integer insertUserRoomRecordInfo(UserRoomRecord userRoomRecord) {
-		return userRoomRecordMapper.insert(userRoomRecord);
+		 userRoomRecordMapper.insertSelective(userRoomRecord);
+		return userRoomRecord.getId();
 	}
 	@Override
 	public List<UserRoomRecord> selectUserRoomRecordInfoByUserID(Integer userId) {
@@ -144,7 +147,8 @@ public class DBServiceImpl implements DBService {
 	/********用户房间得分记录**********/
 	@Override
 	public Integer insertUserActionScoreInfo(UserActionScore userActionScore) {
-		return userActionScoreMapper.insert(userActionScore);
+		 userActionScoreMapper.insertSelective(userActionScore);
+		return userActionScore.getId();
 	}
 	@Override
 	public List<UserActionScore> selectUserActionScoreInfoByRecorId(Integer userId) {
@@ -240,7 +244,8 @@ public class DBServiceImpl implements DBService {
 	
 	@Override
 	public Integer inserMessageInfo(MessageInfo messageInfo){
-		return messageInfoMapper.insert(messageInfo);
+		 messageInfoMapper.insertSelective(messageInfo);
+		return messageInfo.getId();
 	}
 	
 	@Override
@@ -278,7 +283,7 @@ public class DBServiceImpl implements DBService {
 		if(existManageUser!=null&&existManageUser.getState()!=0){
 			return false;
 		}else{
-			return manageUserMapper.insert(manageUser)>0;
+			return manageUserMapper.insertSelective(manageUser)>0;
 		}
 	}
 		
@@ -291,7 +296,7 @@ public class DBServiceImpl implements DBService {
 	
 	@Override
 	public boolean insertRoomCartChange(RoomCartChange roomCartChange){
-		return roomCartChangeMapper.insert(roomCartChange)>0;
+		return roomCartChangeMapper.insertSelective(roomCartChange)>0;
 	}
 	
 	
@@ -309,7 +314,8 @@ public class DBServiceImpl implements DBService {
 	}
 	@Override
 	public Integer inserUpdateInfo(UpdateInfo updateInfo) {
-		return updateInfoMapper.insertSelective(updateInfo);
+		 updateInfoMapper.insertSelective(updateInfo);
+		return updateInfo.getId();
 	}
 	@Override
 	public boolean updateUpdateInfoById(UpdateInfo updateInfo) {

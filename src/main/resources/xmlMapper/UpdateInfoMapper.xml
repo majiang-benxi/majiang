@@ -114,15 +114,6 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.mahjong.server.entity.UpdateInfo" >
-     	<selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
-		SELECT LAST_INSERT_ID()
-	</selectKey>
-    insert into update_info (id, device_type, app_version, 
-      down_url)
-    values (#{id,jdbcType=INTEGER}, #{deviceType,jdbcType=TINYINT}, #{appVersion,jdbcType=REAL}, 
-      #{downUrl,jdbcType=VARCHAR})
-  </insert>
   <insert id="insertSelective" parameterType="com.mahjong.server.entity.UpdateInfo" >
   <selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
 		SELECT LAST_INSERT_ID()
