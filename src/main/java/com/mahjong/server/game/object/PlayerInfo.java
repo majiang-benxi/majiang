@@ -21,6 +21,8 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	
 	private PlayerLocation userLocation;
 	
+	
+	
 	/**
 	 * 用户每局分数信息
 	 */
@@ -40,6 +42,10 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	 */
 	private Tile lastDiscardTile= new Tile();//上一个玩家打的牌
 	private int lastTileGroupAction=0;//当前执行的动作,执行通知结束之后会清空
+	/**
+	 * 是否同意开始下一局
+	 */
+	private boolean agreeNextRound=false;
 	/**
 	 * 是否胡牌。
 	 */
@@ -287,6 +293,14 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 
 	public void setTotalscore(Integer totalscore) {
 		this.totalscore = totalscore;
+	}
+
+	public boolean isAgreeNextRound() {
+		return agreeNextRound;
+	}
+
+	public void setAgreeNextRound(boolean agreeNextRound) {
+		this.agreeNextRound = agreeNextRound;
 	}
 	
 }

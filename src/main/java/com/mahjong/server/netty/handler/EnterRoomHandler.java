@@ -1,11 +1,7 @@
 package com.mahjong.server.netty.handler;
 
-import static com.mahjong.server.game.action.standard.StandardActionType.WIN;
-
 import java.net.InetSocketAddress;
 import java.util.Date;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,10 +15,6 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.mahjong.server.entity.RoomRecord;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.entity.UserRoomRecord;
-import com.mahjong.server.exception.IllegalActionException;
-import com.mahjong.server.game.action.Action;
-import com.mahjong.server.game.action.standard.DealActionType;
-import com.mahjong.server.game.action.standard.WinActionType;
 import com.mahjong.server.game.context.HouseContext;
 import com.mahjong.server.game.context.RoomContext;
 import com.mahjong.server.game.enums.EventEnum;
@@ -32,7 +24,6 @@ import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.netty.model.EnterRoomReqModel;
 import com.mahjong.server.netty.model.EnterRoomRespModel;
 import com.mahjong.server.netty.model.ProtocolModel;
-import com.mahjong.server.netty.session.ClientSession;
 import com.mahjong.server.service.DBService;
 
 import io.netty.channel.ChannelHandler.Sharable;

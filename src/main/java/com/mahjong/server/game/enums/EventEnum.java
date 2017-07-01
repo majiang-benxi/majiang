@@ -90,7 +90,12 @@ public enum EventEnum {
 	NOTICE_RESP(29),
 	
 	/** 房间或者大厅通知消息改变 */
-	NOTICE_CHANGE_RESP(30);
+	NOTICE_CHANGE_RESP(30),
+	/**
+	 * 开始下一局
+	 */
+	BEGIN_NEXT_NOTICE_RESP(31)
+	;
 	
 	private int value;
 
