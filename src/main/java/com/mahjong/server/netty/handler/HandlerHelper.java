@@ -53,6 +53,7 @@ import com.mahjong.server.game.object.GetScoreType;
 import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.TileGroupType;
+import com.mahjong.server.game.rule.PlayRule;
 import com.mahjong.server.netty.model.AskChoiceRespModel;
 import com.mahjong.server.netty.model.DiscardReqModel;
 import com.mahjong.server.netty.model.DiscardRespModel;
@@ -164,7 +165,7 @@ public class HandlerHelper {
 	public static void askChoice2Player(RoomContext roomContext, List<DisCardActionAndLocation> actionAndLocations) {
 		ProtocolModel canDoProtocolModel = new ProtocolModel();
 		Multimap<PlayerLocation, Action> multiMap = groupByActionByLocation(actionAndLocations);
-		for (PlayerLocation playerLocation : multiMap.keys()) {
+		for (PlayerLocation playerLocation : multiMap.keySet()) {
 			AskChoiceRespModel askChoiceRespModel = new AskChoiceRespModel(
 					new ArrayList<Action>(multiMap.get(playerLocation)));
 			canDoProtocolModel.setCommandId(EventEnum.ASK_CHOICE_RESP.getValue());
@@ -431,6 +432,7 @@ public class HandlerHelper {
 
 			WinActionType winActionType = new WinActionType();
 			boolean winFirst = winActionType.isLegalAction(roomContex.getGameContext(),	roomContex.getGameContext().getZhuangLocation(), new Action(WIN));			
+			
 			if (winFirst) {
 				List<DisCardActionAndLocation> needPassOrDoAction=new ArrayList<DisCardActionAndLocation>();
 				PlayerLocation zhuangLocation=roomContex.getGameContext().getZhuangLocation();
