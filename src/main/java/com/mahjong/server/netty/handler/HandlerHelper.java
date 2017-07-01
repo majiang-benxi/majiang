@@ -237,6 +237,7 @@ public class HandlerHelper {
 			cpgProtocolModel.setBody(JSON.toJSONString(discardRespModel,SerializerFeature.DisableCircularReferenceDetect));
 			HandlerHelper.noticeMsg2Player(roomContext, entry.getValue(), cpgProtocolModel);
 		}
+		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空动作
 	}
 
 	public static void xfgProcess2Players(RoomContext roomContext, TileGroupType xuanFengGangGroup, Action action,
@@ -258,6 +259,7 @@ public class HandlerHelper {
 		xfgProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
 		xfgProtocolModel.setBody(JSON.toJSONString(discardRespModel,SerializerFeature.DisableCircularReferenceDetect));
 		HandlerHelper.noticeMsg2Player(roomContext, entry.getValue(), xfgProtocolModel);
+		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空动作
 		}
 	}
 	public static void huProcess2Players(RoomContext roomContext, TileGroupType huGroup, Action action,
