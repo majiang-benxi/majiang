@@ -6,6 +6,13 @@ import com.mahjong.server.game.enums.PlayerLocation;
 public class DiscardRespModel  extends RoomRespModel{
 	
 	private int roomState;
+	public int getRoomState() {
+		return roomState;
+	}
+	
+	public void setRoomState(int roomState) {
+		this.roomState = roomState;
+	}
 	
 	public DiscardRespModel() {
 		super();
@@ -21,13 +28,6 @@ public class DiscardRespModel  extends RoomRespModel{
 
 	}
 
-	public int getRoomState() {
-		return roomState;
-	}
-
-	public void setRoomState(int roomState) {
-		this.roomState = roomState;
-	}
 
 
 }
