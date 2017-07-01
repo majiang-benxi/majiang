@@ -62,7 +62,7 @@ public class PlayTest {
 //								.getLastDrawedTile()));
 //		roomContex.getGameContext().getTable().printAllPlayTiles();
 	PlayerInfo playerInfo=	roomContex.getGameContext().getTable().getPlayerByLocation(PlayerLocation.EAST);
-	playerInfo.setAliveTiles(new Tile(new byte[]{0x13,0x13,0x15,0x08}));
+	playerInfo.setAliveTiles(new Tile(new byte[]{0x13,0x13,0x15,0x28,0x12}));
 	List<TileGroup> tileGroups=new ArrayList<TileGroup>();
 	tileGroups.add(new TileGroup(TileGroupType.CHI_GROUP, new Tile(new byte[]{0x01, 0x02, 0x03})));
 	tileGroups.add(new TileGroup(TileGroupType.PENG_GROUP, new Tile(new byte[]{0x28,0x28,0x28})));

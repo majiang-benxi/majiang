@@ -221,6 +221,8 @@ public class HandlerHelper {
 			DrawBottomActionType drawBottomActionType = new DrawBottomActionType();
 			drawBottomActionType.doAction(roomContext.getGameContext(), discardPlayLocation, new Action(BUGANG));
 		}
+		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空当前的动作
+
 		for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext().getTable().getPlayerInfos()
 				.entrySet()) {
 			if(entry.getKey()==discardPlayLocation){
@@ -232,7 +234,6 @@ public class HandlerHelper {
 			cpgProtocolModel.setBody(JSON.toJSONString(discardRespModel,SerializerFeature.DisableCircularReferenceDetect));
 			HandlerHelper.noticeMsg2Player(roomContext, entry.getValue(), cpgProtocolModel);
 		}
-		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空当前的动作
 	}
 
 	public static void xfgProcess2Players(RoomContext roomContext, TileGroupType xuanFengGangGroup, Action action,
@@ -243,6 +244,7 @@ public class HandlerHelper {
 			DrawBottomActionType drawBottomActionType = new DrawBottomActionType();
 			drawBottomActionType.doAction(roomContext.getGameContext(), discardPlayLocation, new Action(BUGANG));
 		}
+		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空当前的动作
 		for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext().getTable().getPlayerInfos()
 				.entrySet()) {
 			if(entry.getKey()==discardPlayLocation){
@@ -254,7 +256,6 @@ public class HandlerHelper {
 		xfgProtocolModel.setBody(JSON.toJSONString(discardRespModel,SerializerFeature.DisableCircularReferenceDetect));
 		HandlerHelper.noticeMsg2Player(roomContext, entry.getValue(), xfgProtocolModel);
 		}
-		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空当前的动作
 	}
 	public static void huProcess2Players(RoomContext roomContext, TileGroupType huGroup, Action action,
 			PlayerLocation discardPlayLocation) throws IllegalActionException {
