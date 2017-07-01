@@ -173,7 +173,7 @@ public class HandlerHelper {
 					.getUserInfo().getWeixinMark();
 			ChannelHandlerContext ctx = ClientSession.sessionMap.get(weixinMarkId);
 			ctx.writeAndFlush(canDoProtocolModel);
-			logger.error("返回数据：" + JSONObject.toJSONString(canDoProtocolModel));
+			logger.info("返回数据：" + JSONObject.toJSONString(canDoProtocolModel));
 		}
 	}
 
@@ -225,12 +225,9 @@ public class HandlerHelper {
 			drawBottomActionType.doAction(roomContext.getGameContext(), discardPlayLocation, new Action(BUGANG));
 		}
 		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空当前的动作
-
+		roomContext.getGameContext().getTable().getPlayerByLocation(discardPlayLocation).setLastTileGroupAction(tileGroupType.getCode());//把当前的动作告诉所有玩家
 		for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext().getTable().getPlayerInfos()
 				.entrySet()) {
-			if(entry.getKey()==discardPlayLocation){
-				entry.getValue().setLastTileGroupAction(tileGroupType.getCode());//把当前的动作告诉所有玩家
-			}
 			ProtocolModel cpgProtocolModel = new ProtocolModel();
 			DiscardRespModel discardRespModel = new DiscardRespModel(roomContext, entry.getKey());
 			cpgProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
@@ -249,11 +246,9 @@ public class HandlerHelper {
 			drawBottomActionType.doAction(roomContext.getGameContext(), discardPlayLocation, new Action(BUGANG));
 		}
 		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空当前的动作
+		roomContext.getGameContext().getTable().getPlayerByLocation(discardPlayLocation).setLastTileGroupAction(xuanFengGangGroup.getCode());//把当前的动作告诉所有玩家
 		for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext().getTable().getPlayerInfos()
 				.entrySet()) {
-			if(entry.getKey()==discardPlayLocation){
-				entry.getValue().setLastTileGroupAction(xuanFengGangGroup.getCode());//把当前的动作告诉所有玩家
-			}
 		ProtocolModel xfgProtocolModel = new ProtocolModel();
 		DiscardRespModel discardRespModel = new DiscardRespModel(roomContext, discardPlayLocation);
 		xfgProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
