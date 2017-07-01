@@ -16,10 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.request.NativeWebRequest;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -45,6 +47,7 @@ import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.enums.PlayerLocation.Relation;
 import com.mahjong.server.game.enums.RoomStatus;
 import com.mahjong.server.game.object.DisCardActionAndLocation;
+import com.mahjong.server.game.object.DiscardContext;
 import com.mahjong.server.game.object.GameResult;
 import com.mahjong.server.game.object.GetScoreType;
 import com.mahjong.server.game.object.PlayerInfo;
@@ -430,71 +433,14 @@ public class HandlerHelper {
 			roomContex.getGameContext().getTable().printAllPlayTiles();
 
 			WinActionType winActionType = new WinActionType();
-			boolean winFirst = winActionType.isLegalAction(roomContex.getGameContext(),	roomContex.getGameContext().getZhuangLocation(), new Action(WIN));
-			
+			boolean winFirst = winActionType.isLegalAction(roomContex.getGameContext(),	roomContex.getGameContext().getZhuangLocation(), new Action(WIN));			
 			if (winFirst) {
-				
-				PlayerInfo zhuangWinPlayerInfo = roomContex.getGameContext().getTable().getPlayerByLocation(roomContex.getGameContext().getZhuangLocation());
-				
-				updateUserRoomRecordInfo(dbService,zhuangWinPlayerInfo.getUserRoomRecordInfoID(),1,1,null);
-				
-				winActionType.doAction(roomContex.getGameContext(),	roomContex.getGameContext().getZhuangLocation(), new Action(WIN));
-				
-				
-				GameResult gameResult = roomContex.getGameContext().getGameResult();
-				
-				for(Entry<PlayerLocation, PlayerInfo> playerInfoEnt : gameResult.getPlayerInfos().entrySet()){
-					
-					PlayerInfo playerInfo = playerInfoEnt.getValue();
-					
-					ScoreRecordVO scoreRecordVO = new ScoreRecordVO();
-					scoreRecordVO.setRoundScore(playerInfo.getCurScore()-1000);
-					
-					String  getScoreTypes = HandlerHelper.getScoreTypesStr(playerInfo.getGatherScoreTypes());
-					scoreRecordVO.setWinActionTypes(getScoreTypes);
-					
-					playerInfo.setCurScoreRecord(scoreRecordVO);
-				}
-				
-				
-				ProtocolModel winProtocolModel = new ProtocolModel();
-				winProtocolModel.setCommandId(EventEnum.WIN_ONE_TIME_RESP.getValue());
-				roomContex.setRoomStatus(RoomStatus.PLAYING);
-				EnterRoomRespModel winTileRoomRespModel = new EnterRoomRespModel(zhuangWinPlayerInfo.getUserInfo().getWeixinMark(), true, "庄家天胡", roomContex);
-				winTileRoomRespModel.setCurrentWinView(true);
-				winProtocolModel.setBody(JSON.toJSONString(winTileRoomRespModel,SerializerFeature.DisableCircularReferenceDetect));
-				
-				HandlerHelper.noticeMsg2Players(roomContex, null, winProtocolModel);
-				
-			}
-			
+				List<DisCardActionAndLocation> needPassOrDoAction=new ArrayList<DisCardActionAndLocation>();
+				PlayerLocation zhuangLocation=roomContex.getGameContext().getZhuangLocation();
+				needPassOrDoAction.add(new DisCardActionAndLocation(new ActionAndLocation( new Action(WIN), zhuangLocation),  HU_GROUP.getCode()));
+				roomContex.getGameContext().setDiscardContext(new DiscardContext(needPassOrDoAction,  new AtomicInteger(1),zhuangLocation));
+				HandlerHelper.askChoice2Player(roomContex, needPassOrDoAction);
+			}			
 		}
-		
-	}
-	private static boolean updateUserRoomRecordInfo(DBService dbService,Integer userRoomRecordId, Integer huNum ,Integer winNum ,Integer loseNum){
-		UserRoomRecord winuserRoomRec = dbService.selectUserRoomRecordInfoByID(userRoomRecordId);
-		
-		UserRoomRecord winuserRoomRecForUpdate = new UserRoomRecord();
-		winuserRoomRecForUpdate.setId(userRoomRecordId);
-		
-		if(huNum != null && huNum>0){
-			
-			int temp = winuserRoomRec.getHuTimes()==null?0:winuserRoomRec.getHuTimes();
-			
-			winuserRoomRecForUpdate.setHuTimes(temp+huNum);
-		}
-		
-		if(winNum != null && winNum>0){
-			int temp = winuserRoomRec.getWinTimes()==null?0:winuserRoomRec.getWinTimes();
-			winuserRoomRecForUpdate.setWinTimes(temp+winNum);
-		}
-		
-		if(loseNum != null && loseNum>0){
-			int temp = winuserRoomRec.getLoseTimes()==null?0:winuserRoomRec.getLoseTimes();
-			winuserRoomRecForUpdate.setLoseTimes(temp+loseNum);
-		}
-		
-		dbService.updateUserRoomRecordInfoPrimaryKey(winuserRoomRecForUpdate);
-		return true;
 	}
 }
