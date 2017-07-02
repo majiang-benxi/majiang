@@ -11,6 +11,7 @@ import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.enums.PlayerLocation.Relation;
 import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.Tile;
+import com.mahjong.server.game.object.TileGroupType;
 
 /**
  * 动作类型“摸牌”。
@@ -18,7 +19,7 @@ import com.mahjong.server.game.object.Tile;
  * @author warter
   */
 public class DrawActionType extends AbstractActionType {
-
+	
 	@Override
 	public boolean canPass(GameContext context, PlayerLocation location) {
 		return false;

@@ -3,6 +3,7 @@ package com.mahjong.server.netty.handler;
 import static com.mahjong.server.game.action.standard.StandardActionType.ANGANG;
 import static com.mahjong.server.game.action.standard.StandardActionType.BUGANG;
 import static com.mahjong.server.game.action.standard.StandardActionType.CHI;
+import static com.mahjong.server.game.action.standard.StandardActionType.DRAW_BOTTOM;
 import static com.mahjong.server.game.action.standard.StandardActionType.PENG;
 import static com.mahjong.server.game.action.standard.StandardActionType.WIN;
 import static com.mahjong.server.game.action.standard.StandardActionType.ZIPAI;
@@ -14,7 +15,6 @@ import static com.mahjong.server.game.object.TileGroupType.XUAN_FENG_GANG_DNXB_G
 import static com.mahjong.server.game.object.TileGroupType.XUAN_FENG_GANG_ZFB_GROUP;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -222,7 +222,7 @@ public class HandlerHelper {
 		cpgActionType.doAction(roomContext.getGameContext(), discardPlayLocation, action);
 		if (tileGroupType == TileGroupType.BUGANG_GROUP) {
 			DrawBottomActionType drawBottomActionType = new DrawBottomActionType();
-			drawBottomActionType.doAction(roomContext.getGameContext(), discardPlayLocation, new Action(BUGANG));
+			drawBottomActionType.doAction(roomContext.getGameContext(), discardPlayLocation, new Action(DRAW_BOTTOM));
 			doDrawTileResp(roomContext, discardPlayLocation);
 		}
 		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空当前的动作
@@ -260,7 +260,7 @@ public class HandlerHelper {
 		ziPaiActionType.doAction(roomContext.getGameContext(), discardPlayLocation, action);
 		if (tileGroupTypeCode != TileGroupType.XUAN_FENG_GANG_ZFB_GROUP.getCode()) {
 			DrawBottomActionType drawBottomActionType = new DrawBottomActionType();
-			drawBottomActionType.doAction(roomContext.getGameContext(), discardPlayLocation, new Action(BUGANG));
+			drawBottomActionType.doAction(roomContext.getGameContext(), discardPlayLocation, new Action(DRAW_BOTTOM));
 			doDrawTileResp(roomContext, discardPlayLocation);
 		}
 		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空当前的动作
