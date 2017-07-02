@@ -412,8 +412,6 @@ public class HandlerHelper {
 			
 			roomContex.setRoomStatus(RoomStatus.PLAYING);
 			
-			roomContex.getRemaiRound().decrementAndGet();
-			
 			for (Entry<PlayerLocation, PlayerInfo> entry : roomContex.getGameContext().getTable().getPlayerInfos().entrySet()) {
 				
 				ProtocolModel dealTileProtocolModel = new ProtocolModel();

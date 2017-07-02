@@ -80,7 +80,7 @@ public class BeginNextRoundHandler extends SimpleChannelInboundHandler<ProtocolM
 							enterRoomProtocolModel.setCommandId(EventEnum.BEGIN_NEXT_NOTICE_RESP.getValue());
 							EnterRoomRespModel newEnterRoomRespModel = new EnterRoomRespModel(weixinId, true, "玩家准备", roomContex);
 							enterRoomProtocolModel.setBody(JSON.toJSONString(newEnterRoomRespModel,SerializerFeature.DisableCircularReferenceDetect));
-							HandlerHelper.noticeMsg2Players(roomContex, null, enterRoomProtocolModel);
+							HandlerHelper.noticeMsg2Players(roomContex, weixinId, enterRoomProtocolModel);
 								
 						    logger.error("玩家准备：weixinId="+weixinId+"，数据："+JSONObject.toJSONString(protocolModel));
 								
