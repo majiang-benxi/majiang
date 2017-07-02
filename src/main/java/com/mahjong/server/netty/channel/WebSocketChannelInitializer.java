@@ -11,7 +11,8 @@ import com.mahjong.server.netty.handler.EnterRoomHandler;
 import com.mahjong.server.netty.handler.HeartBeatHandler;
 import com.mahjong.server.netty.handler.HistoryRecordHandler;
 import com.mahjong.server.netty.handler.KillRoomHandler;
-import com.mahjong.server.netty.handler.MahjongLogicHandler;
+import com.mahjong.server.netty.handler.DiscardLogicHandler;
+import com.mahjong.server.netty.handler.DrawLogicHandler;
 import com.mahjong.server.netty.handler.SendMessageHandler;
 import com.mahjong.server.netty.handler.UpdateHandler;
 
@@ -33,7 +34,9 @@ public class WebSocketChannelInitializer extends ChannelInitializer<NioSocketCha
 	@Autowired
 	private AuthHandler authHandler;
 	@Autowired
-	private MahjongLogicHandler mahjongLogicHandler;
+	private DiscardLogicHandler discardLogicHandler;
+	@Autowired 
+	private DrawLogicHandler drawLogicHandler;
 	@Autowired
 	private CreateRoomHandler createRoomHandler;
 	@Autowired
@@ -65,7 +68,8 @@ public class WebSocketChannelInitializer extends ChannelInitializer<NioSocketCha
 		pipeline.addLast(webSocketProtocolCodec);
 		pipeline.addLast(authHandler);
 		pipeline.addLast(heartBeatHandler);
-		pipeline.addLast(mahjongLogicHandler);
+		pipeline.addLast(discardLogicHandler);
+		pipeline.addLast(drawLogicHandler);
 		pipeline.addLast(createRoomHandler);
 		pipeline.addLast(enterRoomHandler);
 		pipeline.addLast(killRoomHandler);

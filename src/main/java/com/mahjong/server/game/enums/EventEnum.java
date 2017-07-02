@@ -62,7 +62,7 @@ public enum EventEnum {
 	/**
 	 * 询问玩家是否吃碰杠胡
 	 */
-	ASK_CHOICE_RESP(23),
+	DISCARD_ASK_CHOICE_RESP(23),
 	/**
 	 * 非法动作响应信息
 	 */
@@ -94,7 +94,15 @@ public enum EventEnum {
 	/**
 	 * 开始下一局
 	 */
-	BEGIN_NEXT_NOTICE_RESP(31)
+	BEGIN_NEXT_NOTICE_RESP(31),
+	/**
+	 * 摸牌之后客户端的响应。【摸牌之后客户端可能杠胡等动作，客户端响应调用此命令】
+	 */
+	DRAW_CHOOSE_CLIENT_RESP(32),
+	/**
+	 * 询问玩家是否吃碰杠胡
+	 */
+	DRAW_ASK_CHOICE_RESP(33),
 	;
 	
 	private int value;

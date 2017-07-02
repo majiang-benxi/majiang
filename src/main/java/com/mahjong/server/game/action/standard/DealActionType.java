@@ -72,18 +72,17 @@ public class DealActionType implements ActionType {
 		context.getTable().setFanhui(table.drawBottom(1).getPai()[0]);// 系统翻出一张会牌
 	    context.getTable().getRemainderTileNum().addAndGet(-54);
 	   // test------------begin---
-	/*	PlayerInfo playerInfo=	context.getTable().getPlayerByLocation(zhuangLocation);
+		PlayerInfo playerInfo=	context.getTable().getPlayerByLocation(zhuangLocation);
 
-	    playerInfo.setAliveTiles(new Tile(new byte[]{0x13,0x13,0x15,0x08}));
+	    playerInfo.setAliveTiles(new Tile(new byte[]{0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37}));
 		List<TileGroup> tileGroups=new ArrayList<TileGroup>();
 		tileGroups.add(new TileGroup(TileGroupType.CHI_GROUP, new Tile(new byte[]{0x01, 0x02, 0x03})));
 		tileGroups.add(new TileGroup(TileGroupType.PENG_GROUP, new Tile(new byte[]{0x28,0x28,0x28})));
-		tileGroups.add(new TileGroup(TileGroupType.PENG_GROUP, new Tile(new byte[]{0x37,0x37,0x37})));
 
 		playerInfo.setTileGroups(tileGroups);
 		context.getTable().getPlayerByLocation(zhuangLocation)._getSortAliveTiles()
 		.addTile(zhuangFirstTile).sort();
-		context.getTable().setFanhui((byte)0x12);*/
+		context.getTable().setFanhui((byte)0x12);
 		
 	    //test--------------end----
 		context.getTable().printAllPlayTiles();

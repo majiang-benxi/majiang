@@ -38,7 +38,7 @@ public class ScoreHelper {
 		//飘胡判断
 		boolean isPiao=winInfo.getHuType().getBaseWinType().isPiaoHU(winInfo);
 		if(isPiao){
-			baseScore*=2;
+			baseScore*=4;
 			typeScore.add(GetScoreType.piaohu);
 		}
 		//穷胡判断
@@ -99,7 +99,7 @@ public class ScoreHelper {
 		int baseScore=getBaseScore(winInfo, ruleInfo, isZhuang,typeScore);
 		if (winInfo.isZiMo()) {//这个需要在所有base项目统计完毕之后计算。表示其他向其他3个玩家收分。
 			typeScore.add(GetScoreType.zimo);
-			baseScore *= 3;
+			baseScore *= 6;
 		}
 		return getTotalScore(baseScore,winInfo,ruleInfo,true,typeScore);
 	}

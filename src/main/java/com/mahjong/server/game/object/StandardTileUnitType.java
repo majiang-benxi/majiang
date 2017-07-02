@@ -78,7 +78,7 @@ public enum StandardTileUnitType implements TileUnitType {
 				list.add((int) pai);
 			}
 			Collections.sort(list);
-			if (list.get(0) == 35 && list.get(1) == 36 && list.get(2) == 37) {
+			if (list.get(0) == 53 && list.get(1) == 54 && list.get(2) == 55) {
 				return true;
 			}
 			return false;
@@ -91,10 +91,10 @@ public enum StandardTileUnitType implements TileUnitType {
 			byte[] pais = tile.getPai();
 			List<Integer> list = new ArrayList<Integer>();
 			for (byte pai : pais) {
-				list.add((int) pai);
+ 				list.add((int) pai);
 			}
 			Collections.sort(list);
-			if (list.get(0) == 31 && list.get(1) == 32 && list.get(2) == 33 && list.get(2) == 34) {
+			if (list.get(0) == 49 && list.get(1) == 50 && list.get(2) == 51 && list.get(3) == 52) {
 				return true;
 			}
 			return false;

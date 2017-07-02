@@ -45,7 +45,7 @@ public class ZiPaiActionType extends AbstractActionType {
 
 	@Override
 	public boolean canDo(GameContext context, PlayerLocation location) {
-		if (context.getLastAction().equals(DEAL)) {
+		if (context.getLastAction().getType().matchBy(DEAL)) {
 			PlayerInfo playerInfo = context.getTable().getPlayerByLocation(location);
 			if(playerInfo!=null){
 				Tile aliveTile = playerInfo._getSortAliveTiles();

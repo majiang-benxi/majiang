@@ -12,6 +12,7 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 
+import com.mahjong.server.game.object.GetScoreType;
 import com.mahjong.server.game.object.PlayerTiles;
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.Tile.HuaSe;
@@ -21,6 +22,7 @@ import com.mahjong.server.game.object.TileUnitInfo;
 import com.mahjong.server.game.object.WinInfo;
 import com.mahjong.server.game.rule.FangKa;
 import com.mahjong.server.game.rule.RuleInfo;
+import com.mahjong.server.game.rule.ScoreHelper;
 
 public class NormalWinType implements WinType {
 	protected List<TileUnitInfo> tileUnitInfos = new ArrayList<TileUnitInfo>();// 选取当前玩法分数最高的作为返回值
@@ -229,14 +231,19 @@ public class NormalWinType implements WinType {
  		int[] qianduanPai=tile.getQianduanPai();
 		PlayerTiles playerTiles=new PlayerTiles();
 		playerTiles.setAliveTiles(tile);
-		WinInfo winInfo= WinInfo.fromPlayerTiles(playerTiles,(byte)0x12,false);
+		WinInfo winInfo= WinInfo.fromPlayerTiles(playerTiles,(byte)0x12,true);
 		RuleInfo ruleInfo = new RuleInfo();
 		ruleInfo.setPlayRules(RuleInfo.parseRuleFromBitString("01111"));
 		ruleInfo.setFangKa(FangKa.ONE_SIXTEEN);
 		NormalWinType winType = new NormalWinType();
+		winInfo.setHuType(com.mahjong.server.game.rule.win.StandardHuType.NORMAL_HU);
+
 		// QingYiSeWinType winType = new QingYiSeWinType();
 		// QiDuiWinType winType = new QiDuiWinType();
 		System.out.println(winType.canWin(winInfo, ruleInfo));
+		//System.out.println(ScoreHelper.getPaoerScore(winInfo, ruleInfo, true, new ArrayList<GetScoreType>()));
+ 		System.out.println(ScoreHelper.getWinerScore(winInfo, ruleInfo, true, new ArrayList<GetScoreType>()));
+		System.out.println(ScoreHelper.getXianScore(winInfo, ruleInfo, false, new ArrayList<GetScoreType>()));
 
 	}
 }

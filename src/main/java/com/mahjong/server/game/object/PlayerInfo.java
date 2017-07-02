@@ -3,6 +3,7 @@ package com.mahjong.server.game.object;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.vo.ScoreRecordVO;
@@ -64,6 +65,14 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
     private Integer zhuangTimes = 0;
     
     private Integer dianpaotimes = 0;
+	@JSONField(serialize=false)
+	private DrawTileContext drawTileContext=new DrawTileContext(userLocation);//旋风杠跟每个玩家是否第一次摸牌有关
+	public DrawTileContext getDrawTileContext() {
+		return drawTileContext;
+	}
+	public void setDrawTileContext(DrawTileContext drawTileContext) {
+		this.drawTileContext = drawTileContext;
+	}
     /**
      * 清空玩家的牌，回到初始状态。
      */
@@ -78,6 +87,7 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
     	lastTileGroupAction=0;
     	isHu = false;
     	curScore = 1000;
+    	drawTileContext=new DrawTileContext(userLocation);
     }
 	
 	public Tile getLastWinTile() {

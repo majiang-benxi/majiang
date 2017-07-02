@@ -1,5 +1,6 @@
 package com.mahjong.server.netty.handler;
 
+import static com.mahjong.server.game.action.standard.StandardActionType.ANGANG;
 import static com.mahjong.server.game.action.standard.StandardActionType.BUGANG;
 import static com.mahjong.server.game.action.standard.StandardActionType.CHI;
 import static com.mahjong.server.game.action.standard.StandardActionType.PENG;
@@ -13,15 +14,14 @@ import static com.mahjong.server.game.object.TileGroupType.XUAN_FENG_GANG_DNXB_G
 import static com.mahjong.server.game.object.TileGroupType.XUAN_FENG_GANG_ZFB_GROUP;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.context.request.NativeWebRequest;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -30,10 +30,10 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.mahjong.server.entity.RoomRecord;
 import com.mahjong.server.entity.UserInfo;
-import com.mahjong.server.entity.UserRoomRecord;
 import com.mahjong.server.exception.IllegalActionException;
 import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.ActionAndLocation;
+import com.mahjong.server.game.action.standard.AngangActionType;
 import com.mahjong.server.game.action.standard.CpgActionType;
 import com.mahjong.server.game.action.standard.DealActionType;
 import com.mahjong.server.game.action.standard.DrawActionType;
@@ -47,8 +47,7 @@ import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.enums.PlayerLocation.Relation;
 import com.mahjong.server.game.enums.RoomStatus;
 import com.mahjong.server.game.object.DisCardActionAndLocation;
-import com.mahjong.server.game.object.DiscardContext;
-import com.mahjong.server.game.object.GameResult;
+import com.mahjong.server.game.object.DrawTileContext;
 import com.mahjong.server.game.object.GetScoreType;
 import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.Tile;
@@ -62,7 +61,6 @@ import com.mahjong.server.netty.model.EnterRoomRespModel;
 import com.mahjong.server.netty.model.ProtocolModel;
 import com.mahjong.server.netty.session.ClientSession;
 import com.mahjong.server.service.DBService;
-import com.mahjong.server.vo.ScoreRecordVO;
 
 import io.netty.channel.ChannelHandlerContext;
 
@@ -168,7 +166,7 @@ public class HandlerHelper {
 		for (PlayerLocation playerLocation : multiMap.keySet()) {
 			AskChoiceRespModel askChoiceRespModel = new AskChoiceRespModel(
 					new ArrayList<Action>(multiMap.get(playerLocation)));
-			canDoProtocolModel.setCommandId(EventEnum.ASK_CHOICE_RESP.getValue());
+			canDoProtocolModel.setCommandId(EventEnum.DISCARD_ASK_CHOICE_RESP.getValue());
 			canDoProtocolModel.setBody(JSON.toJSONString(askChoiceRespModel,SerializerFeature.DisableCircularReferenceDetect));
 			String weixinMarkId = roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation)
 					.getUserInfo().getWeixinMark();
@@ -214,6 +212,7 @@ public class HandlerHelper {
 				drawTileProtocolModel.setBody(JSON.toJSONString(drawCardRespModel,SerializerFeature.DisableCircularReferenceDetect));
 				HandlerHelper.noticeMsg2Player(roomContext, entry.getValue(), drawTileProtocolModel);
 			}
+			doDrawTileResp(roomContext,playerLocation);
 		}
 	}
 
@@ -224,6 +223,7 @@ public class HandlerHelper {
 		if (tileGroupType == TileGroupType.BUGANG_GROUP) {
 			DrawBottomActionType drawBottomActionType = new DrawBottomActionType();
 			drawBottomActionType.doAction(roomContext.getGameContext(), discardPlayLocation, new Action(BUGANG));
+			doDrawTileResp(roomContext, discardPlayLocation);
 		}
 		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空当前的动作
 		roomContext.getGameContext().getTable().getPlayerByLocation(discardPlayLocation).setLastTileGroupAction(tileGroupType.getCode());//把当前的动作告诉所有玩家
@@ -237,17 +237,34 @@ public class HandlerHelper {
 		}
 		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空动作
 	}
-
-	public static void xfgProcess2Players(RoomContext roomContext, TileGroupType xuanFengGangGroup, Action action,
+	
+	public static void anGangProcess2Players(RoomContext roomContext,PlayerLocation playLocation,Tile tile) throws IllegalActionException{
+		AngangActionType angangActionType=new AngangActionType(TileGroupType.ANGANG_GROUP);
+		angangActionType.doAction(roomContext.getGameContext(), playLocation, new Action(ANGANG,tile));
+		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空当前的动作
+		roomContext.getGameContext().getTable().getPlayerByLocation(playLocation).setLastTileGroupAction(TileGroupType.ANGANG_GROUP.getCode());//把当前的动作告诉所有玩家
+		for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext().getTable().getPlayerInfos()
+				.entrySet()) {
+		ProtocolModel anGangProtocolModel = new ProtocolModel();
+		DiscardRespModel discardRespModel = new DiscardRespModel(roomContext, playLocation);
+		anGangProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
+		anGangProtocolModel.setBody(JSON.toJSONString(discardRespModel,SerializerFeature.DisableCircularReferenceDetect));
+		HandlerHelper.noticeMsg2Player(roomContext, entry.getValue(), anGangProtocolModel);
+		}
+		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空动作
+	}
+	
+	public static void xfgProcess2Players(RoomContext roomContext, int tileGroupTypeCode, Action action,
 			PlayerLocation discardPlayLocation) throws IllegalActionException {
 		ZiPaiActionType ziPaiActionType = new ZiPaiActionType();
 		ziPaiActionType.doAction(roomContext.getGameContext(), discardPlayLocation, action);
-		if (xuanFengGangGroup != TileGroupType.XUAN_FENG_GANG_ZFB_GROUP) {
+		if (tileGroupTypeCode != TileGroupType.XUAN_FENG_GANG_ZFB_GROUP.getCode()) {
 			DrawBottomActionType drawBottomActionType = new DrawBottomActionType();
 			drawBottomActionType.doAction(roomContext.getGameContext(), discardPlayLocation, new Action(BUGANG));
+			doDrawTileResp(roomContext, discardPlayLocation);
 		}
 		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空当前的动作
-		roomContext.getGameContext().getTable().getPlayerByLocation(discardPlayLocation).setLastTileGroupAction(xuanFengGangGroup.getCode());//把当前的动作告诉所有玩家
+		roomContext.getGameContext().getTable().getPlayerByLocation(discardPlayLocation).setLastTileGroupAction(tileGroupTypeCode);//把当前的动作告诉所有玩家
 		for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext().getTable().getPlayerInfos()
 				.entrySet()) {
 		ProtocolModel xfgProtocolModel = new ProtocolModel();
@@ -341,10 +358,10 @@ public class HandlerHelper {
 					disCardActionAndLocation.getActionAndLocation().getLocation());
 			
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.XUAN_FENG_GANG_ZFB_GROUP.getCode()) {
-			HandlerHelper.xfgProcess2Players(roomContext, XUAN_FENG_GANG_ZFB_GROUP, new Action(ZIPAI, tile),
+			HandlerHelper.xfgProcess2Players(roomContext, XUAN_FENG_GANG_ZFB_GROUP.getCode(), new Action(ZIPAI, tile),
 					disCardActionAndLocation.getActionAndLocation().getLocation());
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.XUAN_FENG_GANG_DNXB_GROUP.getCode()) {
-			HandlerHelper.xfgProcess2Players(roomContext, XUAN_FENG_GANG_DNXB_GROUP, new Action(ZIPAI, tile),
+			HandlerHelper.xfgProcess2Players(roomContext, XUAN_FENG_GANG_DNXB_GROUP.getCode(), new Action(ZIPAI, tile),
 					disCardActionAndLocation.getActionAndLocation().getLocation());
 		} else if (disCardActionAndLocation.getTileGroupType() == TileGroupType.HU_GROUP.getCode()) {
 			HandlerHelper.huProcess2Players(roomContext, HU_GROUP,  new Action(WIN, disCardActionAndLocation.getActionAndLocation().getAction().getTile()),disCardActionAndLocation.getActionAndLocation().getLocation());
@@ -427,17 +444,51 @@ public class HandlerHelper {
 				logger.error("hashDealTile返回数据："+JSONObject.toJSONString(dealTileProtocolModel));
 			}
 			roomContex.getGameContext().getTable().printAllPlayTiles();
+			PlayerLocation zhuangLocation=roomContex.getGameContext().getZhuangLocation();
+			doDrawTileResp(roomContex, zhuangLocation);
+		}
+	}
 
-			WinActionType winActionType = new WinActionType();
-			boolean winFirst = winActionType.isLegalAction(roomContex.getGameContext(),	roomContex.getGameContext().getZhuangLocation(), new Action(WIN));			
-			
-			if (winFirst) {
-				List<DisCardActionAndLocation> needPassOrDoAction=new ArrayList<DisCardActionAndLocation>();
-				PlayerLocation zhuangLocation=roomContex.getGameContext().getZhuangLocation();
-				needPassOrDoAction.add(new DisCardActionAndLocation(new ActionAndLocation( new Action(WIN), zhuangLocation),  HU_GROUP.getCode()));
-				roomContex.getGameContext().setDiscardContext(new DiscardContext(needPassOrDoAction,  new AtomicInteger(1),zhuangLocation));
-				HandlerHelper.askChoice2Player(roomContex, needPassOrDoAction);
-			}			
+	public static void doDrawTileResp(RoomContext roomContext,PlayerLocation playerLocation){
+		roomContext.getGameContext().getTable().printAllPlayTiles();
+		List<Action> canDoActions=new ArrayList<Action>();
+		WinActionType winActionType = new WinActionType();
+		//胡判断
+		boolean canwin = winActionType.isLegalAction(roomContext.getGameContext(),playerLocation, new Action(WIN));			
+		if (canwin) {
+			canDoActions.add(new Action(WIN));
+		}
+		boolean canZiPai=false;
+		DrawTileContext drawTileContext =	roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation).getDrawTileContext();
+		boolean isFirstDrawTile=drawTileContext!=null&&drawTileContext.isFirstDrawTile();
+		//开局第一把旋风杠判断【选了规则才会判断】
+		if(roomContext.getGameContext().getGameStrategy().getRuleInfo().getPlayRules().contains(PlayRule.XUAN_FENG_GANG)){
+			if(isFirstDrawTile){
+			ZiPaiActionType ziPaiActionType = new ZiPaiActionType();
+		    canZiPai = ziPaiActionType.canDo(roomContext.getGameContext(),playerLocation);
+			if (canZiPai) {
+				canDoActions.add(new Action(ZIPAI,roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation).getLastDrawedTile()));
+			}
+		 }
+		}else{
+			AngangActionType angangActionType=new AngangActionType(TileGroupType.ANGANG_GROUP);
+			boolean candoAngang=angangActionType.canDo(roomContext.getGameContext(), playerLocation);
+			if(candoAngang){
+				canDoActions.add(new Action(ANGANG,roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation).getLastDrawedTile()));
+			}
+		}
+		if(!canDoActions.isEmpty()){
+			roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation).setDrawTileContext(new DrawTileContext(canDoActions, canwin, canZiPai, playerLocation, !isFirstDrawTile));
+			ProtocolModel canDoProtocolModel = new ProtocolModel();
+			AskChoiceRespModel askChoiceRespModel = new AskChoiceRespModel(
+					new ArrayList<Action>(canDoActions));
+			canDoProtocolModel.setCommandId(EventEnum.DRAW_ASK_CHOICE_RESP.getValue());
+			canDoProtocolModel.setBody(JSON.toJSONString(askChoiceRespModel,SerializerFeature.DisableCircularReferenceDetect));
+			String weixinMarkId = roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation)
+					.getUserInfo().getWeixinMark();
+			ChannelHandlerContext ctx = ClientSession.sessionMap.get(weixinMarkId);
+			ctx.writeAndFlush(canDoProtocolModel);
+			logger.info("返回数据：" + JSONObject.toJSONString(canDoProtocolModel));
 		}
 	}
 }

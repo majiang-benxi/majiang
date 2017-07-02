@@ -51,7 +51,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 
 @Sharable
 @Component
-public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolModel> {
+public class DiscardLogicHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 	
 	private static final Logger logger = LoggerFactory.getLogger(EnterRoomHandler.class);
 
@@ -110,7 +110,7 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 						}
 					} else {
 						HandlerHelper.processDiscardResp(roomContext, discardPlayLocation, discardReqModel);
-						dealHu( discardReqModel,  protocolModel, ctx);
+						HuProcessHelper.dealHu(dbService,discardReqModel,  protocolModel, ctx);
 					}
 					
 					if(roomContext.getGameContext().isHuangzhuang()){
@@ -281,253 +281,12 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 					illegalProtocolModel.setBody(null);
 					ctx.writeAndFlush(illegalProtocolModel);
 					
-					logger.error("主逻辑返回数据："+JSONObject.toJSONString(illegalProtocolModel));
+					logger.error("DiscardLogicHandler主逻辑返回数据："+JSONObject.toJSONString(illegalProtocolModel));
 				}
 			}
 
 		} else {
 			ctx.fireChannelRead(protocolModel);
 		}
-	}
-	
-	
-	
-	private void dealHu(DiscardReqModel discardReqModel, ProtocolModel protocolModel,ChannelHandlerContext ctx){
-		
-		if(discardReqModel.getTileGroupType()==TileGroupType.HU_GROUP.getCode()){
-			
-			String weixinId = discardReqModel.getWeiXinId();
-			RoomContext playingRoom = HouseContext.weixinIdToRoom.get(weixinId);
-			UserInfo userInfo = HouseContext.weixinIdToUserInfo.get(weixinId);
-			
-			if (userInfo != null && ctx!=null) {
-			
-				GameResult gameResult = playingRoom.getGameContext().getGameResult();
-				
-				PlayerInfo winPlayerInfo = null; 
-				
-				for(Entry<PlayerLocation, PlayerInfo> playerInfoEnt : gameResult.getPlayerInfos().entrySet()){
-					
-					PlayerInfo playerInfo = playerInfoEnt.getValue();
-					
-					playerInfo.setTotalscore(playerInfo.getTotalscore()+(playerInfo.getCurScore()-1000));
-					
-					UserRoomRecord winuserRoomRec = dbService.selectUserRoomRecordInfoByID(playerInfo.getUserRoomRecordInfoID());
-					
-					if(playerInfo.getUserInfo().getWeixinMark().equals(weixinId)){
-						
-						winPlayerInfo = playerInfo;
-						updateUserRoomRecordInfo(winuserRoomRec,1,1,null);
-						
-						playerInfo.setHuTimes(winuserRoomRec.getHuTimes()+1);
-						
-					}else{
-						if(playerInfo.getGatherScoreTypes().contains(GetScoreType.dianpao)){
-							
-							updateUserRoomRecordInfo(winuserRoomRec,0,0,-1);
-							playerInfo.setDianpaotimes(playerInfo.getDianpaotimes()+1);
-							
-						}
-					}
-					
-					ScoreRecordVO scoreRecordVO = new ScoreRecordVO();
-					scoreRecordVO.setRoundScore(playerInfo.getCurScore()-1000);
-					
-					String  getScoreTypes = HandlerHelper.getScoreTypesStr(playerInfo.getGatherScoreTypes());
-					scoreRecordVO.setWinActionTypes(getScoreTypes);
-					
-					UserActionScore userActionScore = new UserActionScore();
-					userActionScore.setActionScore(playerInfo.getCurScore()-1000);
-					userActionScore.setWinActionTypes(getScoreTypes);
-					userActionScore.setRoomRecordId(playingRoom.getRoomRecordID());
-					userActionScore.setCreateTime(new Date());
-					userActionScore.setRoundNum(playingRoom.getRoomNum());
-					userActionScore.setUserId(playerInfo.getUserInfo().getId());
-					
-					dbService.insertUserActionScoreInfo(userActionScore);
-					
-					playerInfo.setCurScoreRecord(scoreRecordVO);
-					
-					
-				}
-				
-				//赢牌不是庄，剩余局数减一
-				if(gameResult.getZhuangLocation().getCode()!=winPlayerInfo.getUserLocation()){
-					playingRoom.getRemaiRound().decrementAndGet();
-				}
-				
-				if(playingRoom.getRemaiRound().get()==0){
-					
-					RoomContext roomContex = HouseContext.weixinIdToRoom.get(weixinId);
-					
-					HouseContext.rommList.remove(roomContex.getRoomNum());
-					
-					HouseContext.playRoomNum.decrementAndGet();
-					HouseContext.playUserNum.addAndGet(-4);
-					
-					for(Entry<PlayerLocation, PlayerInfo>  ent : roomContex.getGameContext().getTable().getPlayerInfos().entrySet()){
-						
-						PlayerInfo playerInfo = ent.getValue();
-						HouseContext.weixinIdToRoom.remove(playerInfo.getUserInfo().getWeixinMark());
-						
-						UserRoomRecord userRoomRecord = new UserRoomRecord();
-						
-						if(playerInfo.getUserLocation().intValue() == PlayerLocation.NORTH.getCode()){
-							userRoomRecord.setUserDirection((byte) 4);
-							
-						}else if(playerInfo.getUserLocation().intValue() == PlayerLocation.WEST.getCode()){
-							userRoomRecord.setUserDirection((byte) 3);
-							
-						}else if(playerInfo.getUserLocation().intValue() == PlayerLocation.SOUTH.getCode()){
-							userRoomRecord.setUserDirection((byte) 2);
-							
-						}
-						
-						Date now = new Date();
-						
-						InetSocketAddress socketAddr = (InetSocketAddress) ctx.channel().remoteAddress();
-						
-						userRoomRecord.setHuTimes(0);
-						userRoomRecord.setLoseTimes(0);
-						userRoomRecord.setOperateCause("游戏结束，离开");
-						userRoomRecord.setOperateType((byte) 2);
-						userRoomRecord.setOperateTime(now);
-						
-						userRoomRecord.setRoomNum(roomContex.getRoomNum());
-						
-						userRoomRecord.setRoomRecordId(roomContex.getRoomRecordID());
-						
-						userRoomRecord.setUserId(playerInfo.getUserInfo().getId());
-						userRoomRecord.setUserIp(socketAddr.getAddress().getHostAddress());
-						userRoomRecord.setWinTimes(0);
-						
-						Integer userRoomRecordId = dbService.insertUserRoomRecordInfo(userRoomRecord);
-						
-					}
-					
-					RoomRecord roomRecord = new RoomRecord();
-					roomRecord.setId(roomContex.getRoomRecordID());
-					roomRecord.setRoomState((byte) 4);
-					roomRecord.setEndTime(new Date());
-					boolean flg = dbService.updateRoomRecordInfoByPrimaryKey(roomRecord);
-					
-					
-					
-					for (PlayerInfo entry : roomContex.getGameContext().getTable().getPlayerInfos().values()) {
-						UserInfo user = entry.getUserInfo();
-						if (user != null) {
-							
-							if(entry.getUserLocation() == winPlayerInfo.getUserLocation().intValue()){
-								entry.setLastTileGroupAction(TileGroupType.HU_GROUP.getCode());//把当前的动作告诉所有玩家
-							}
-							
-							ProtocolModel winProtocolModel = new ProtocolModel();
-							DiscardRespModel discardRespModel = new DiscardRespModel(playingRoom, PlayerLocation.fromCode(entry.getUserLocation()), true);
-							winProtocolModel.setCommandId(EventEnum.WIN_LAST_TIME_RESP.getValue());
-							winProtocolModel.setBody(JSON.toJSONString(discardRespModel,SerializerFeature.DisableCircularReferenceDetect));
-							
-							String weixinIde = user.getWeixinMark();
-							ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinIde);
-							userCtx.writeAndFlush(winProtocolModel);
-							logger.error("返回数据：weixinId="+weixinId+",数据："+JSONObject.toJSONString(winProtocolModel));
-							
-						}
-					}
-					
-					
-					
-				}else{
-					
-					RoomContext roomContex = HouseContext.weixinIdToRoom.get(weixinId);
-					
-					for (PlayerInfo eplayerInfo : roomContex.getGameContext().getTable().getPlayerInfos().values()) {
-						
-						if (eplayerInfo == null) {
-							continue;
-						}
-						
-						UserInfo user = eplayerInfo.getUserInfo();
-						if (user != null) {
-							
-							ProtocolModel winProtocolModel = new ProtocolModel();
-							DiscardRespModel discardRespModel = new DiscardRespModel(playingRoom, PlayerLocation.fromCode(eplayerInfo.getUserLocation()),true);
-							winProtocolModel.setCommandId(EventEnum.WIN_ONE_TIME_RESP.getValue());
-							winProtocolModel.setBody(JSON.toJSONString(discardRespModel,SerializerFeature.DisableCircularReferenceDetect));
-							
-							String weixinIde = user.getWeixinMark();
-							ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinIde);
-							userCtx.writeAndFlush(winProtocolModel);
-							logger.error("返回数据：weixinId="+weixinId+",数据："+JSONObject.toJSONString(winProtocolModel));
-							
-						}
-					}
-					
-					GameContext gameContext = roomContex.getGameContext();
-					
-					gameContext.setDiscardContext(null);
-					gameContext.setGameResult(null);
-					gameContext.setHuangzhuang(false);
-					gameContext.setLocalDoneActions(new ArrayList<ActionAndLocation>());
-					
-					gameContext.setZhuangLocation(PlayerLocation.fromCode(winPlayerInfo.getUserLocation()));
-					
-					//玩家坐庄次数加一
-					winPlayerInfo.setZhuangTimes(winPlayerInfo.getZhuangTimes()+1);
-					
-					MahjongTable table = new MahjongTable();
-					table.init();
-					
-					MahjongTable mahjongTable = gameContext.getTable();
-					
-					for (PlayerInfo eplayerInfo : mahjongTable.getPlayerInfos().values()) {
-						
-						if (eplayerInfo == null) {
-							continue;
-						}
-						if(winPlayerInfo.getUserInfo().getWeixinMark().endsWith(eplayerInfo.getUserInfo().getWeixinMark())){
-							eplayerInfo.setZhuang(true);
-						}else{
-							eplayerInfo.setZhuang(false);
-						}
-						
-					}
-					
-					table.setPlayerInfos(mahjongTable.getPlayerInfos());
-					
-					gameContext.setTable(table);
-					
-					roomContex.setAgreeNextRoundNum(new AtomicInteger(0));
-					
-				}
-										
-					
-			}
-		}
-	}
-	
-	private boolean updateUserRoomRecordInfo(UserRoomRecord winuserRoomRec, Integer huNum ,Integer winNum ,Integer loseNum){
-		
-		UserRoomRecord winuserRoomRecForUpdate = new UserRoomRecord();
-		winuserRoomRecForUpdate.setId(winuserRoomRec.getId());
-		
-		if(huNum != null && huNum!=0){
-			
-			int temp = winuserRoomRec.getHuTimes()==null?0:winuserRoomRec.getHuTimes();
-			
-			winuserRoomRecForUpdate.setHuTimes(temp+huNum);
-		}
-		
-		if(winNum != null && winNum!=0){
-			int temp = winuserRoomRec.getWinTimes()==null?0:winuserRoomRec.getWinTimes();
-			winuserRoomRecForUpdate.setWinTimes(temp+winNum);
-		}
-		
-		if(loseNum != null && loseNum!=0){
-			int temp = winuserRoomRec.getLoseTimes()==null?0:winuserRoomRec.getLoseTimes();
-			winuserRoomRecForUpdate.setLoseTimes(temp+loseNum);
-		}
-		
-		dbService.updateUserRoomRecordInfoPrimaryKey(winuserRoomRecForUpdate);
-		return true;
-	}
+	}	
 }
