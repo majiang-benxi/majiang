@@ -121,8 +121,6 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 						
 						if (userInfo != null && ctx!=null) {
 						
-							CurrentRecordRespModel currentRecordRespModel = new CurrentRecordRespModel();
-							
 							GameResult gameResult = playingRoom.getGameContext().getGameResult();
 							
 							for(Entry<PlayerLocation, PlayerInfo> playerInfoEnt : gameResult.getPlayerInfos().entrySet()){

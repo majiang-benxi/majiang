@@ -115,8 +115,8 @@
     </if>
   </delete>
   <insert id="insertSelective" parameterType="com.mahjong.server.entity.UpdateInfo" >
-  <selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
-		SELECT LAST_INSERT_ID()
+  <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+		SELECT LAST_INSERT_ID() as id
 	</selectKey>
     insert into update_info
     <trim prefix="(" suffix=")" suffixOverrides="," >

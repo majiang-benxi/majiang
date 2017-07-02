@@ -132,8 +132,8 @@
   </delete>
 
   <insert id="insertSelective" parameterType="com.mahjong.server.entity.RoomCartChange" >
-  <selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
-		SELECT LAST_INSERT_ID()
+  <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+		SELECT LAST_INSERT_ID() as id
 	</selectKey>
     insert into room_cart_change
     <trim prefix="(" suffix=")" suffixOverrides="," >

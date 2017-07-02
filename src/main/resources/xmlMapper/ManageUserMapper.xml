@@ -136,8 +136,8 @@
   </delete>
   
   <insert id="insertSelective" parameterType="com.mahjong.server.entity.ManageUser" >
-  <selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
-		SELECT LAST_INSERT_ID()
+  <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+		SELECT LAST_INSERT_ID() as id
 	</selectKey>
     insert into manage_user
     <trim prefix="(" suffix=")" suffixOverrides="," >
