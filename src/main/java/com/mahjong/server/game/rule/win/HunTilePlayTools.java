@@ -5,6 +5,7 @@ import static com.mahjong.server.game.object.StandardTileUnitType.KEZI;
 import static com.mahjong.server.game.object.StandardTileUnitType.SHUNZI;
 
 import com.mahjong.server.game.object.Tile;
+import com.mahjong.server.game.object.TileGroupType;
 import com.mahjong.server.game.object.TileUnitInfo;
 
 public class HunTilePlayTools {
@@ -132,13 +133,16 @@ public class HunTilePlayTools {
 
 					}
 					if (b1 + 1 == b2 && b2 + 1 == b3) {
-						ck.tileUnitInfos.add((new TileUnitInfo(SHUNZI, new Tile(new byte[] { b1, b2, b3 }))));
-						ck.uncheckedTile.removeAll(new Tile(new byte[] { b1, b2, b3 }));
-						res = hu_check(ck, hasHunNum);// 继续递归
-						if (!res) {
-							ck.uncheckedTile.addTile(new Tile(new byte[] { b1, b2, b3 })).sort();
-						} else {
-							return true;
+						Tile tile = new Tile(new byte[] { b1, b2, b3 });
+						if (SHUNZI.isLegalTile(tile)) {
+							ck.tileUnitInfos.add((new TileUnitInfo(SHUNZI, tile)));
+							ck.uncheckedTile.removeAll(new Tile(new byte[] { b1, b2, b3 }));
+							res = hu_check(ck, hasHunNum);// 继续递归
+							if (!res) {
+								ck.uncheckedTile.addTile(new Tile(new byte[] { b1, b2, b3 })).sort();
+							} else {
+								return true;
+							}
 						}
 					}
 				}
