@@ -1,6 +1,9 @@
 package com.mahjong.server.game.rule.win;
 
 import com.mahjong.server.game.object.Tile;
+import com.mahjong.server.game.object.WinInfo;
+import com.mahjong.server.game.rule.PlayRule;
+import com.mahjong.server.game.rule.RuleInfo;
 
 public class QingYiSeWinType extends NormalWinType {
 	@Override
@@ -18,5 +21,11 @@ public class QingYiSeWinType extends NormalWinType {
 		} // 只有一种花色
 		return (hasWan && !hasBing && !hasTiao) || (!hasWan && hasBing && !hasTiao) || (!hasWan && !hasBing && hasTiao);
 	}
-
+	@Override
+	public boolean canWin(WinInfo winInfo, RuleInfo ruleInfo) {
+		if(!ruleInfo.getPlayRules().contains(PlayRule.QING_YI_SE)){
+			return false;
+		}
+		return super.canWin(winInfo, ruleInfo);
+	}
 }
