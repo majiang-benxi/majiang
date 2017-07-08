@@ -20,8 +20,5 @@ public class DrawCardRespModel extends RoomRespModel {
 		this.roomState = roomContext.getRoomStatus().getCode();
 	}
 
-	public DrawCardRespModel() {
-		super();
-	}
 
 }
