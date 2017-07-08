@@ -159,6 +159,9 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 						enterRoomRespModel = new EnterRoomRespModel(weixinId, true, "重新加入房间", roomContex);
 						logger.info("重新加入房间,weixinId="+weixinId);
 						
+						playerInfo = roomContex.getGameContext().getTable().getPlayerInfosByWeixinId(weixinId);
+						
+						
 					}
 				}
 				protocolModel.setCommandId(EventEnum.ROOM_ENTER_RESP.getValue());
