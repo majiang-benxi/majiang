@@ -75,7 +75,7 @@ public class ZiPaiActionType extends AbstractActionType {
 				playerInfo.setDiscardAuth(false);
 			} else {
 				playerInfo.getTileGroups().add(new TileGroup(XUAN_FENG_GANG_DNXB_GROUP, tile));
-				playerInfo.setDiscardAuth(true);			
+				playerInfo.setDiscardAuth(false);			
 			}
 			context.getLocalDoneActions().add(new ActionAndLocation(new Action(ZIPAI, tile), location));
 		}

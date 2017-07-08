@@ -495,6 +495,8 @@ public class HandlerHelper {
 			ChannelHandlerContext ctx = ClientSession.sessionMap.get(weixinMarkId);
 			ctx.writeAndFlush(canDoProtocolModel);
 			logger.info("返回数据：" + JSONObject.toJSONString(canDoProtocolModel));
+		}else{
+			roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation).setDiscardAuth(true);
 		}
 	}
 }
