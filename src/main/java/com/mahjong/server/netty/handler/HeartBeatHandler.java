@@ -54,14 +54,17 @@ public class HeartBeatHandler extends SimpleChannelInboundHandler<ProtocolModel>
 					HouseContext.weixinIdToUserInfo.put(weixinId, userInfo);
 					
 					RoomContext roomContext = HouseContext.weixinIdToRoom.get(weixinId);
+					if(roomContext!=null){
 					
-					PlayerInfo playerInfo = roomContext.getGameContext().getTable().getPlayerInfosByWeixinId(weixinId);
-					if(!CollectionUtils.isEmpty(playerInfo.getLastProtocolModel())){
-						for(ProtocolModel protocolModel1 : playerInfo.getLastProtocolModel()){
-							ctx.writeAndFlush(protocolModel1);
+						PlayerInfo playerInfo = roomContext.getGameContext().getTable().getPlayerInfosByWeixinId(weixinId);
+						if(!CollectionUtils.isEmpty(playerInfo.getLastProtocolModel())){
+							for(ProtocolModel protocolModel1 : playerInfo.getLastProtocolModel()){
+								ctx.writeAndFlush(protocolModel1);
+							}
 						}
+						playerInfo.setLastProtocolModel(new ArrayList<ProtocolModel>());
+						
 					}
-					playerInfo.setLastProtocolModel(new ArrayList<ProtocolModel>());
 				}
 				
 				

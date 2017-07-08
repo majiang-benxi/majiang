@@ -1,6 +1,5 @@
 package com.mahjong.server.netty.handler;
 
-import static com.mahjong.server.game.action.standard.StandardActionType.ANGANG;
 import static com.mahjong.server.game.action.standard.StandardActionType.WIN;
 import static com.mahjong.server.game.action.standard.StandardActionType.ZIPAI;
 import static com.mahjong.server.game.object.TileGroupType.HU_GROUP;
@@ -17,14 +16,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.mahjong.server.exception.IllegalActionException;
 import com.mahjong.server.game.action.Action;
-import com.mahjong.server.game.action.standard.AngangActionType;
 import com.mahjong.server.game.context.HouseContext;
 import com.mahjong.server.game.context.RoomContext;
 import com.mahjong.server.game.enums.EventEnum;
 import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.object.DrawTileContext;
 import com.mahjong.server.game.object.PlayerInfo;
-import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.TileGroupType;
 import com.mahjong.server.netty.model.DiscardReqModel;
 import com.mahjong.server.netty.model.ProtocolModel;
