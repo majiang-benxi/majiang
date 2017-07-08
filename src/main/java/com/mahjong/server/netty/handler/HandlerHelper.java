@@ -78,9 +78,9 @@ public class HandlerHelper {
 	public static void noticeMsg2Players(RoomContext roomContex, String ignoreWinXinId, ProtocolModel protocolModel) {
 		for (PlayerInfo entry : roomContex.getGameContext().getTable().getPlayerInfos().values()) {
 			
-			if(protocolModel.getCommandId()==EventEnum.BEGIN_NEXT_NOTICE_RESP.getValue() && !entry.isAgreeNextRound()){
+/*			if(protocolModel.getCommandId()==EventEnum.BEGIN_NEXT_NOTICE_RESP.getValue() && !entry.isAgreeNextRound()){
 				continue;
-			}
+			}*/
 			
 			UserInfo user = entry.getUserInfo();
 			if (user != null) {
