@@ -480,7 +480,7 @@ public class HandlerHelper {
 			}
 		}
 		if(!canDoActions.isEmpty()){
-			roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation).setDrawTileContext(new DrawTileContext(canDoActions, canwin, canZiPai, playerLocation, !isFirstDrawTile));
+			roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation).setDrawTileContext(new DrawTileContext(canDoActions, canwin, canZiPai, playerLocation, isFirstDrawTile));
 			ProtocolModel canDoProtocolModel = new ProtocolModel();
 			AskChoiceRespModel askChoiceRespModel = new AskChoiceRespModel(
 					new ArrayList<Action>(canDoActions));
