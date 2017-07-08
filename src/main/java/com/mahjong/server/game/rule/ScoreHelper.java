@@ -110,7 +110,7 @@ public class ScoreHelper {
 		
 		int rest =  getTotalScore(baseScore,winInfo,ruleInfo,false,typeScore);
 		
-		typeScore = new ArrayList<>();
+		typeScore = new ArrayList<GetScoreType>();
 		typeScore.add(GetScoreType.dianpao);
 		
 		return rest;
@@ -120,7 +120,7 @@ public class ScoreHelper {
 	public static int getXianScore(WinInfo winInfo, RuleInfo ruleInfo, boolean isZhuang,List<GetScoreType> typeScore) {
 		int baseScore=getBaseScore(winInfo, ruleInfo, isZhuang,new ArrayList<GetScoreType>())*(-1);
 		int rest = getTotalScore(baseScore,winInfo,ruleInfo,false,typeScore);
-		typeScore = new ArrayList<>();
+		typeScore = new ArrayList<GetScoreType>();
 		return rest;
 		
 	}
