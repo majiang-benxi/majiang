@@ -111,7 +111,7 @@ public class HunTilePlayTools {
 			// 第一张和另外两张构成一个组合
 			for (int i = 1; i <  ck.uncheckedTile.getPai().length; i++) {
 				byte b2 = ck.uncheckedTile.getPai()[i];
-				if (b2 - b1 > 1) {// 13444 134不可能连一起
+				if (b2 - b1 > 2) {// 13444 134不可能连一起
 					b1 = b2;
 					continue;
 				}
@@ -132,7 +132,7 @@ public class HunTilePlayTools {
 						}
 
 					}
-					if (b1 + 1 == b2 && b2 + 1 == b3) {
+					if ((b1 + 1 == b2||b1 + 2 == b2) && b2 + 1 == b3) {
 						Tile tile = new Tile(new byte[] { b1, b2, b3 });
 						if (SHUNZI.isLegalTile(tile)) {
 							ck.tileUnitInfos.add((new TileUnitInfo(SHUNZI, tile)));
@@ -153,7 +153,7 @@ public class HunTilePlayTools {
 
 			for (int i = 1; i < ck.uncheckedTile.getPai().length; i++) {
 				byte b2 = ck.uncheckedTile.getPai()[i];
-				if (b2 - b1 > 1) {// 13444 134不可能连一起
+				if (b2 - b1 > 2) {// 13444 134不可能连一起
 					b1 = b2;
 					continue;
 				}
@@ -183,7 +183,7 @@ public class HunTilePlayTools {
 						}
 					}
 				}
-				if (b1 + 1 == b2 && hasHunNum > 0) {
+				if ((b1 + 1 == b2||b1+2==b2) && hasHunNum > 0) {
 					ck.tileUnitInfos.add((new TileUnitInfo(SHUNZI, new Tile(new byte[] { b1, b2, Tile.HUIPAI }))));
 					ck.uncheckedTile.removeAll(new Tile(new byte[] { b1, b2 }));
 					ck.huiUsedNum++;
