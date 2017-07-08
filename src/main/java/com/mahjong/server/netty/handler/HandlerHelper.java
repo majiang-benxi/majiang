@@ -262,7 +262,6 @@ public class HandlerHelper {
 		if (tileGroupTypeCode != TileGroupType.XUAN_FENG_GANG_ZFB_GROUP.getCode()) {
 			DrawBottomActionType drawBottomActionType = new DrawBottomActionType();
 			drawBottomActionType.doAction(roomContext.getGameContext(), discardPlayLocation, new Action(DRAW_BOTTOM));
-			doDrawTileResp(roomContext, discardPlayLocation);
 		}
 		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空当前的动作
 		roomContext.getGameContext().getTable().getPlayerByLocation(discardPlayLocation).setLastTileGroupAction(tileGroupTypeCode);//把当前的动作告诉所有玩家
