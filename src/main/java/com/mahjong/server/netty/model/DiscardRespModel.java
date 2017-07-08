@@ -25,7 +25,7 @@ public class DiscardRespModel  extends RoomRespModel{
 
 	public DiscardRespModel(RoomContext roomContext, PlayerLocation playerLocation,boolean isWinView) {
 		super(roomContext, playerLocation,isWinView);
-
+		this.roomState = roomContext.getRoomStatus().getCode();
 	}
 
 

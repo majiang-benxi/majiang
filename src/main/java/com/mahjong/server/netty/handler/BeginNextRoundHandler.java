@@ -20,9 +20,7 @@ import com.mahjong.server.game.enums.RoomStatus;
 import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.netty.model.EnterRoomReqModel;
 import com.mahjong.server.netty.model.EnterRoomRespModel;
-import com.mahjong.server.netty.model.KillRoomNoticeRespModel;
 import com.mahjong.server.netty.model.ProtocolModel;
-import com.mahjong.server.netty.session.ClientSession;
 import com.mahjong.server.service.DBService;
 
 import io.netty.channel.ChannelHandler.Sharable;
