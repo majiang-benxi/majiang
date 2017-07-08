@@ -33,6 +33,7 @@ public class DrawBottomActionType extends DrawActionType {
 		return context.getTable().getTileWallSize() > 14;
 	}
 
+	//摸牌不清空上次打出的牌
 	@Override
 	protected void doLegalAction(GameContext context, PlayerLocation location, Tile tile) {
 		Tile drawBottomTile = context.getTable().drawBottom(1);
@@ -42,7 +43,6 @@ public class DrawBottomActionType extends DrawActionType {
 			playerInfo.setDiscardAuth(true);
 			playerInfo._getSortAliveTiles().addTile(drawBottomTile);
 			playerInfo.setLastDrawedTile(drawBottomTile);
-			context.getTable().resetPlayersLastDrawTile(location);
 			context.getLocalDoneActions().add(new ActionAndLocation(new Action(DRAW_BOTTOM, drawBottomTile), location));
 			context.getTable().printAllPlayTiles();
 		}

@@ -8,10 +8,8 @@ import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.ActionAndLocation;
 import com.mahjong.server.game.context.GameContext;
 import com.mahjong.server.game.enums.PlayerLocation;
-import com.mahjong.server.game.enums.PlayerLocation.Relation;
 import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.Tile;
-import com.mahjong.server.game.object.TileGroupType;
 
 /**
  * 动作类型“摸牌”。
