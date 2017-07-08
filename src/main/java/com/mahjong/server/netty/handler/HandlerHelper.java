@@ -257,7 +257,8 @@ public class HandlerHelper {
 		HandlerHelper.noticeMsg2Player(roomContext, entry.getValue(), anGangProtocolModel);
 		}
 		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空动作
-	    doDrawTileResp(roomContext, playLocation);
+		roomContext.getGameContext().getTable().getPlayerByLocation(playLocation).setDiscardAuth(true);
+		doDrawTileResp(roomContext, playLocation);
 	}
 	
 	public static void xfgProcess2Players(RoomContext roomContext, int tileGroupTypeCode, Action action,
@@ -278,6 +279,7 @@ public class HandlerHelper {
 		xfgProtocolModel.setBody(JSON.toJSONString(discardRespModel,SerializerFeature.DisableCircularReferenceDetect));
 		HandlerHelper.noticeMsg2Player(roomContext, entry.getValue(), xfgProtocolModel);
 		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空动作
+		roomContext.getGameContext().getTable().getPlayerByLocation(discardPlayLocation).setDiscardAuth(false);
 		doDrawTileResp(roomContext, discardPlayLocation);
 		}
 	}

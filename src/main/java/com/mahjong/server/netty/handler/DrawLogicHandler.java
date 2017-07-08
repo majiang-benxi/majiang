@@ -24,6 +24,7 @@ import com.mahjong.server.game.enums.EventEnum;
 import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.object.DrawTileContext;
 import com.mahjong.server.game.object.PlayerInfo;
+import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.TileGroupType;
 import com.mahjong.server.netty.model.DiscardReqModel;
 import com.mahjong.server.netty.model.ProtocolModel;
@@ -71,7 +72,7 @@ public class DrawLogicHandler  extends SimpleChannelInboundHandler<ProtocolModel
 						throw new IllegalActionException(roomContext.getGameContext(),playLocation,null);
 					}
 					if(discardReqModel.getTileGroupType()==TileGroupType.HU_GROUP.getCode()){
-						HandlerHelper.huProcess2Players(roomContext, HU_GROUP,  new Action(WIN, null),playLocation);//自摸胡
+						HandlerHelper.huProcess2Players(roomContext, HU_GROUP,  new Action(WIN, roomContext.getGameContext().getTable().getPlayerByLocation(playLocation).getLastDrawedTile()),playLocation);//自摸胡
 						HuProcessHelper.dealHu(dbService,discardReqModel,  protocolModel, ctx);
 					}else{
 						if(discardReqModel.getTileGroupType()==TileGroupType.XUAN_FENG_GANG_DNXB_GROUP.getCode()||discardReqModel.getTileGroupType()==TileGroupType.XUAN_FENG_GANG_ZFB_GROUP.getCode()){
