@@ -150,6 +150,11 @@ public class GameResult implements Serializable {
 		}
 		
 		
+		for ( Entry<PlayerLocation, PlayerInfo> entry : playerInfos.entrySet()) {
+			List<GetScoreType> typeScore = entry.getValue().getGatherScoreTypes();
+			int gangscore = ScoreHelper.getTileGroupScore(entry.getValue().getTileGroups(), ruleInfo, typeScore);
+			entry.getValue().setCurScore(entry.getValue().getCurScore() + gangscore);
+		}
 	}
 
 }
