@@ -6,12 +6,16 @@ import java.util.Map.Entry;
 
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.WinInfo;
+import com.mahjong.server.game.rule.PlayRule;
 import com.mahjong.server.game.rule.RuleInfo;
 
 public class ZhaQiangHuWinType extends NormalWinType {
 
 	@Override
 	public boolean canWin(WinInfo winInfo, RuleInfo ruleInfo) {
+		if(ruleInfo.getPlayRules().contains(PlayRule.CHUAN_TONG)){
+			return false;
+		}
 		Map<Byte, Integer> tempMap = new HashMap<Byte, Integer>();
 		for (byte value : winInfo.getAliveTile().getPai()) {
 			if (tempMap.containsKey(value)) {
