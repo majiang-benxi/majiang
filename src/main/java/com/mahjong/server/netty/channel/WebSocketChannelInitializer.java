@@ -1,5 +1,7 @@
 package com.mahjong.server.netty.channel;
 
+import java.util.concurrent.TimeUnit;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +26,7 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
+import io.netty.handler.timeout.IdleStateHandler;
 
 @Sharable
 @Component
@@ -77,6 +80,8 @@ public class WebSocketChannelInitializer extends ChannelInitializer<NioSocketCha
 		pipeline.addLast(sendMessageHandler);
 		pipeline.addLast(updateHandler);
 		pipeline.addLast(historyRecordHandler);
+		
+		
 		// pipeline.addLast(new ReadTimeoutHandler(10));// 控制读取数据的时候的超时，10秒超时
 		// pipeline.addLast(new WriteTimeoutHandler(10));// 控制数据输出的时候的超时，10秒超时
 	}

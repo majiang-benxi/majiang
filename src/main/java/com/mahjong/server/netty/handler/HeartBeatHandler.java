@@ -15,9 +15,12 @@ import com.mahjong.server.netty.model.RequestBaseMode;
 import com.mahjong.server.netty.session.ClientSession;
 import com.mahjong.server.service.DBService;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
 
 /**
  * 登陆认证
@@ -55,6 +58,29 @@ public class HeartBeatHandler extends SimpleChannelInboundHandler<ProtocolModel>
 		ctx.fireChannelRead(protocolModel);// 此处要加这个不然后续handler无法处理
 		
 	}
+	
+	@Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+		
+		if (evt instanceof IdleStateEvent) {
+	        IdleStateEvent e = (IdleStateEvent) evt;
+	        if (e.state() == IdleState.READER_IDLE) {
+	            ctx.close();
+	            System.out.println("READER_IDLE 读超时");
+	        } else if (e.state() == IdleState.WRITER_IDLE) {
+	            ByteBuf buff = ctx.alloc().buffer();
+	            buff.writeBytes("mayi test".getBytes());
+	            ctx.writeAndFlush(buff);
+	            System.out.println("WRITER_IDLE 写超时");
+	        }
+	        else {
+	            System.out.println("其他超时");
+	        }
+	    }
+		
+        ctx.fireUserEventTriggered(evt);
+    }
+	
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {

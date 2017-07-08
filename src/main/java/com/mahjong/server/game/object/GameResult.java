@@ -112,7 +112,6 @@ public class GameResult implements Serializable {
 				//赢家分数是其他几家之和
 				winscore += score;
 				
-				
 				if(dianpaobaosanjia){//点炮宝三家，点炮者分数是三家之和
 					dianpaoscore += score;
 				}else{
@@ -133,6 +132,11 @@ public class GameResult implements Serializable {
 		
 		for ( Entry<PlayerLocation, PlayerInfo> entry : playerInfos.entrySet()) {
 			
+			if(entry.getKey()!=paoerLocation && entry.getKey()!=winnerLocation && dianpaobaosanjia){
+				entry.getValue().setCurScore(1000);
+				continue;
+			}
+			
 			//赢家分数是其他几家之和的正数
 			if(entry.getKey()==winnerLocation){
 				entry.getValue().setCurScore(entry.getValue().getCurScore() - winscore);
@@ -140,7 +144,7 @@ public class GameResult implements Serializable {
 			
 			//点炮者分数计算
 			if(entry.getKey()==paoerLocation){
-				entry.getValue().setCurScore(entry.getValue().getCurScore() - dianpaoscore);
+				entry.getValue().setCurScore(entry.getValue().getCurScore() + dianpaoscore);
 			}
 			
 		}

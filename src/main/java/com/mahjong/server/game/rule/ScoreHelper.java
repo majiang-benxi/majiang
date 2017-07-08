@@ -66,7 +66,7 @@ public class ScoreHelper {
 		return tileScore;
 	}
 
-	private static int getTileGroupScore(List<TileGroup> tileGroups, RuleInfo ruleInfo,List<GetScoreType>  typeScore) {
+	public static int getTileGroupScore(List<TileGroup> tileGroups, RuleInfo ruleInfo,List<GetScoreType>  typeScore) {
 		int result = 0;
 		for (TileGroup tileGroup : tileGroups) {
 			if (ruleInfo.getPlayRules().contains(PlayRule.GANG)) {
@@ -89,9 +89,8 @@ public class ScoreHelper {
 		return result;
 	}
 	private static int getTotalScore(int baseScore, WinInfo winInfo, RuleInfo ruleInfo,boolean isWinner,List<GetScoreType>  typeScore) {
-		int tileGroupScore = getTileGroupScore(winInfo.getTileGroups(), ruleInfo,typeScore);
 		int specialTileScore=getSpecialTileScore(winInfo,isWinner,typeScore);
-		int totalScore = baseScore+specialTileScore+tileGroupScore;
+		int totalScore = baseScore+specialTileScore;
 		return totalScore;
 	}
 		
