@@ -36,16 +36,21 @@ public class ScoreHelper {
 			typeScore.add(GetScoreType.qingyise_qidui);
 		}
 		//飘胡判断
-		boolean isPiao=winInfo.getHuType().getBaseWinType().isPiaoHU(winInfo);
-		if(isPiao){
-			baseScore*=4;
-			typeScore.add(GetScoreType.piaohu);
+		if(ruleInfo.getPlayRules().contains(PlayRule.PIAO_HU)){
+			boolean isPiao=winInfo.getHuType().getBaseWinType().isPiaoHU(winInfo);
+			if(isPiao){
+				baseScore*=4;
+				typeScore.add(GetScoreType.piaohu);
+			}
 		}
-		//穷胡判断
-		boolean maybeQiong = winInfo.getHuType().getBaseWinType().maybeQiongHu(winInfo);
-		if (maybeQiong) {
-			baseScore *= 4;
-			typeScore.add(GetScoreType.qionghu);
+		
+		if(ruleInfo.getPlayRules().contains(PlayRule.QIONGHU)){
+			//穷胡判断
+			boolean maybeQiong = winInfo.getHuType().getBaseWinType().maybeQiongHu(winInfo);
+			if (maybeQiong) {
+				baseScore *= 4;
+				typeScore.add(GetScoreType.qionghu);
+			}
 		}
 		return baseScore;
 	}
