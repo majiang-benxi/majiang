@@ -32,7 +32,7 @@ public class QiDuiWinType extends NormalWinType {
 		} else {
 			int aloneAliveTileSize = winInfo.getAliveTile().getPai().length - duiZi * 2;
 			int huiNum = winInfo.getHuiTile().getPai().length;
-			if (huiNum > 0 && aloneAliveTileSize == huiNum) {
+			if (huiNum > 0 && aloneAliveTileSize == huiNum&&winInfo.getTileGroups().isEmpty()) {
 				return true;
 			} else {
 				return false;
