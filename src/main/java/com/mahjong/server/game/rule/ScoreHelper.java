@@ -103,16 +103,25 @@ public class ScoreHelper {
 		return getTotalScore(baseScore,winInfo,ruleInfo,true,typeScore);
 	}
 	public static int getPaoerScore(WinInfo winInfo, RuleInfo ruleInfo, boolean isZhuang,List<GetScoreType> typeScore) {
-		typeScore.add(GetScoreType.dianpao);
 		int baseScore=getBaseScore(winInfo, ruleInfo, isZhuang,new ArrayList<GetScoreType>())*(-1);
 		if(isZhuang){
 			baseScore*=2;
 		}
-		return getTotalScore(baseScore,winInfo,ruleInfo,false,typeScore);
+		
+		int rest =  getTotalScore(baseScore,winInfo,ruleInfo,false,typeScore);
+		
+		typeScore = new ArrayList<>();
+		typeScore.add(GetScoreType.dianpao);
+		
+		return rest;
+		
 	}
 
 	public static int getXianScore(WinInfo winInfo, RuleInfo ruleInfo, boolean isZhuang,List<GetScoreType> typeScore) {
 		int baseScore=getBaseScore(winInfo, ruleInfo, isZhuang,new ArrayList<GetScoreType>())*(-1);
-		return getTotalScore(baseScore,winInfo,ruleInfo,false,typeScore);
+		int rest = getTotalScore(baseScore,winInfo,ruleInfo,false,typeScore);
+		typeScore = new ArrayList<>();
+		return rest;
+		
 	}
 }
