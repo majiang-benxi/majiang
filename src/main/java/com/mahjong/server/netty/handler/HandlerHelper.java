@@ -98,7 +98,7 @@ public class HandlerHelper {
 					
 					try {
 						feature.get(Constants.writeMsgTimeOut, TimeUnit.MILLISECONDS);
-					} catch (InterruptedException | ExecutionException | TimeoutException e) {
+					} catch (Exception e) {
 						entry.getLastProtocolModel().add(protocolModel);
 						e.printStackTrace();
 					}
@@ -115,7 +115,7 @@ public class HandlerHelper {
 			
 			try {
 				feature.get(Constants.writeMsgTimeOut, TimeUnit.MILLISECONDS);
-			} catch (InterruptedException | ExecutionException | TimeoutException e) {
+			} catch (Exception e) {
 				playerInfo.getLastProtocolModel().add(protocolModel);
 				e.printStackTrace();
 			}
@@ -133,7 +133,7 @@ public class HandlerHelper {
 			
 			try {
 				feature.get(Constants.writeMsgTimeOut, TimeUnit.MILLISECONDS);
-			} catch (InterruptedException | ExecutionException | TimeoutException e) {
+			} catch (Exception e) {
 				playerInfo.getLastProtocolModel().add(protocolModel);
 				e.printStackTrace();
 			}
