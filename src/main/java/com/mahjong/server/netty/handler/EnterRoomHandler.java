@@ -163,7 +163,8 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 				}
 				protocolModel.setCommandId(EventEnum.ROOM_ENTER_RESP.getValue());
 				protocolModel.setBody(JSON.toJSONString(enterRoomRespModel,SerializerFeature.DisableCircularReferenceDetect));
-				ctx.writeAndFlush(protocolModel);
+				
+				HandlerHelper.noticeMsg2Player(ctx, playerInfo, protocolModel);
 				
 				logger.error("进入房间返回数据："+JSONObject.toJSONString(protocolModel));
 				

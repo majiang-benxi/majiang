@@ -128,7 +128,8 @@ public class KillRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> 
 							killRoomRespModel.setMsg("退出成功！");
 							protocolModel.setCommandId(EventEnum.KILL_ROOM_RESP.getValue());
 							protocolModel.setBody(JSON.toJSONString(killRoomRespModel,SerializerFeature.DisableCircularReferenceDetect));
-							userCtx.writeAndFlush(protocolModel);
+							
+							HandlerHelper.noticeMsg2Player(userCtx, playerInfo, protocolModel);
 							
 							return ;
 							
@@ -155,7 +156,8 @@ public class KillRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> 
 							newProtocolModel.setBody(JSON.toJSONString(killRoomNoticeRespModel,SerializerFeature.DisableCircularReferenceDetect));
 							
 							ChannelHandlerContext userCtx = ClientSession.sessionMap.get(playerIn.getUserInfo().getWeixinMark());
-							userCtx.writeAndFlush(newProtocolModel);
+							
+							HandlerHelper.noticeMsg2Player(userCtx, playerIn, newProtocolModel);
 							
 							logger.error("解散房间返回数据：weixinId="+playerIn.getUserInfo().getWeixinMark()+"，数据："+JSONObject.toJSONString(protocolModel));
 							
@@ -196,7 +198,8 @@ public class KillRoomHandler extends SimpleChannelInboundHandler<ProtocolModel> 
 									PlayerInfo playerIn = ent.getValue();
 									if(playerIn!=null && playerIn.getUserInfo()!=null){
 										ChannelHandlerContext userCtx = ClientSession.sessionMap.get(playerIn.getUserInfo().getWeixinMark());
-										userCtx.writeAndFlush(protocolModel);
+										
+										HandlerHelper.noticeMsg2Player(userCtx, playerIn, protocolModel);
 										
 										logger.error("解散房间返回数据："+JSONObject.toJSONString(protocolModel));
 									}

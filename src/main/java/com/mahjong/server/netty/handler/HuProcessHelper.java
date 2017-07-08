@@ -178,7 +178,9 @@ public class HuProcessHelper {
 
 							String weixinIde = user.getWeixinMark();
 							ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinIde);
-							userCtx.writeAndFlush(winProtocolModel);
+							
+							HandlerHelper.noticeMsg2Player(userCtx, entry, winProtocolModel);
+							
 							logger.error(
 									"返回数据：weixinId=" + weixinId + ",数据：" + JSONObject.toJSONString(winProtocolModel));
 
@@ -207,7 +209,9 @@ public class HuProcessHelper {
 
 							String weixinIde = user.getWeixinMark();
 							ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinIde);
-							userCtx.writeAndFlush(winProtocolModel);
+							
+							HandlerHelper.noticeMsg2Player(userCtx, eplayerInfo, winProtocolModel);
+							
 							logger.error(
 									"返回数据：weixinId=" + weixinId + ",数据：" + JSONObject.toJSONString(winProtocolModel));
 

@@ -1,7 +1,9 @@
 package com.mahjong.server.netty.handler;
 
+import java.util.ArrayList;
 import java.util.Date;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +11,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.game.context.HouseContext;
+import com.mahjong.server.game.context.RoomContext;
 import com.mahjong.server.game.enums.EventEnum;
+import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.netty.model.ProtocolModel;
 import com.mahjong.server.netty.model.RequestBaseMode;
 import com.mahjong.server.netty.session.ClientSession;
@@ -48,6 +52,16 @@ public class HeartBeatHandler extends SimpleChannelInboundHandler<ProtocolModel>
 				if(HouseContext.weixinIdToUserInfo.containsKey(weixinId)){
 					UserInfo userInfo = dbService.selectUserInfoByWeiXinMark(weixinId);
 					HouseContext.weixinIdToUserInfo.put(weixinId, userInfo);
+					
+					RoomContext roomContext = HouseContext.weixinIdToRoom.get(weixinId);
+					
+					PlayerInfo playerInfo = roomContext.getGameContext().getTable().getPlayerInfosByWeixinId(weixinId);
+					if(!CollectionUtils.isEmpty(playerInfo.getLastProtocolModel())){
+						for(ProtocolModel protocolModel1 : playerInfo.getLastProtocolModel()){
+							ctx.writeAndFlush(protocolModel1);
+						}
+					}
+					playerInfo.setLastProtocolModel(new ArrayList<ProtocolModel>());
 				}
 				
 				
@@ -58,28 +72,6 @@ public class HeartBeatHandler extends SimpleChannelInboundHandler<ProtocolModel>
 		ctx.fireChannelRead(protocolModel);// 此处要加这个不然后续handler无法处理
 		
 	}
-	
-	@Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-		
-		if (evt instanceof IdleStateEvent) {
-	        IdleStateEvent e = (IdleStateEvent) evt;
-	        if (e.state() == IdleState.READER_IDLE) {
-	            ctx.close();
-	            System.out.println("READER_IDLE 读超时");
-	        } else if (e.state() == IdleState.WRITER_IDLE) {
-	            ByteBuf buff = ctx.alloc().buffer();
-	            buff.writeBytes("mayi test".getBytes());
-	            ctx.writeAndFlush(buff);
-	            System.out.println("WRITER_IDLE 写超时");
-	        }
-	        else {
-	            System.out.println("其他超时");
-	        }
-	    }
-		
-        ctx.fireUserEventTriggered(evt);
-    }
 	
 
 	@Override

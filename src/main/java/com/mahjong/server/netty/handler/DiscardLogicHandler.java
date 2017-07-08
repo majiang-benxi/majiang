@@ -71,11 +71,13 @@ public class DiscardLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 				ctx = ClientSession.sessionMap.get(weixinId);
 				RoomContext roomContext = HouseContext.weixinIdToRoom.get(weixinId);
 				PlayerLocation discardPlayLocation = null;
+				PlayerInfo discardPlayer = null;
 				
 				for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext().getTable().getPlayerInfos()
 						.entrySet()) {
 					if (weixinId.equals(entry.getValue().getUserInfo().getWeixinMark())) {
 						discardPlayLocation = entry.getKey();
+						discardPlayer = entry.getValue();
 						break;
 					}
 				}
@@ -225,7 +227,9 @@ public class DiscardLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 										
 										String weixinIde = user.getWeixinMark();
 										ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinIde);
-										userCtx.writeAndFlush(winProtocolModel);
+										
+										HandlerHelper.noticeMsg2Player(userCtx, eplayerInfo, winProtocolModel);
+										
 										logger.error("返回数据：weixinId="+weixinId+",数据："+JSONObject.toJSONString(winProtocolModel));
 										
 									}
@@ -247,7 +251,7 @@ public class DiscardLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 										
 										String weixinIde = user.getWeixinMark();
 										ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinIde);
-										userCtx.writeAndFlush(winProtocolModel);
+										HandlerHelper.noticeMsg2Player(userCtx, entry, winProtocolModel);
 										logger.error("返回数据：weixinId="+weixinId+",数据："+JSONObject.toJSONString(winProtocolModel));
 										
 									}
@@ -279,7 +283,8 @@ public class DiscardLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 					ProtocolModel illegalProtocolModel = new ProtocolModel();
 					illegalProtocolModel.setCommandId(EventEnum.ILLEGAL_ACTION_RESP.getValue());
 					illegalProtocolModel.setBody(null);
-					ctx.writeAndFlush(illegalProtocolModel);
+					
+					HandlerHelper.noticeMsg2Player(ctx, discardPlayer, illegalProtocolModel);
 					
 					logger.error("DiscardLogicHandler主逻辑返回数据："+JSONObject.toJSONString(illegalProtocolModel));
 				}

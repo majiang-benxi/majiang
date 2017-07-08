@@ -56,11 +56,13 @@ public class DrawLogicHandler  extends SimpleChannelInboundHandler<ProtocolModel
 				ctx = ClientSession.sessionMap.get(weixinId);
 				RoomContext roomContext = HouseContext.weixinIdToRoom.get(weixinId);
 				PlayerLocation playLocation = null;
+				PlayerInfo drawPlayerInfo = null;
 				
 				for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext().getTable().getPlayerInfos()
 						.entrySet()) {
 					if (weixinId.equals(entry.getValue().getUserInfo().getWeixinMark())) {
 						playLocation = entry.getKey();
+						drawPlayerInfo = entry.getValue();
 						break;
 					}
 				}
@@ -93,7 +95,8 @@ public class DrawLogicHandler  extends SimpleChannelInboundHandler<ProtocolModel
 					ProtocolModel illegalProtocolModel = new ProtocolModel();
 					illegalProtocolModel.setCommandId(EventEnum.ILLEGAL_ACTION_RESP.getValue());
 					illegalProtocolModel.setBody(null);
-					ctx.writeAndFlush(illegalProtocolModel);
+					
+					HandlerHelper.noticeMsg2Player(ctx, drawPlayerInfo, illegalProtocolModel);
 					
 					logger.error("DrawLogicHandler主逻辑返回数据："+JSONObject.toJSONString(illegalProtocolModel));
 				}

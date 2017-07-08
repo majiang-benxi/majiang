@@ -18,6 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -28,6 +31,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import com.mahjong.server.constant.Constants;
 import com.mahjong.server.entity.RoomRecord;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.exception.IllegalActionException;
@@ -62,6 +66,7 @@ import com.mahjong.server.netty.model.ProtocolModel;
 import com.mahjong.server.netty.session.ClientSession;
 import com.mahjong.server.service.DBService;
 
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 
 public class HandlerHelper {
@@ -89,10 +94,32 @@ public class HandlerHelper {
 				} else {
 					String weixinId = user.getWeixinMark();
 					ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinId);
-					userCtx.writeAndFlush(protocolModel);
+					ChannelFuture  feature = userCtx.writeAndFlush(protocolModel);
+					
+					try {
+						feature.get(Constants.writeMsgTimeOut, TimeUnit.MILLISECONDS);
+					} catch (InterruptedException | ExecutionException | TimeoutException e) {
+						entry.getLastProtocolModel().add(protocolModel);
+						e.printStackTrace();
+					}
 					logger.error("返回数据：weixinId=" + weixinId + ",数据：" + JSONObject.toJSONString(protocolModel));
 				}
 			}
+		}
+	}
+	
+	public static void noticeMsg2Player(ChannelHandlerContext userCtx, PlayerInfo playerInfo, ProtocolModel protocolModel) {
+		UserInfo user = playerInfo.getUserInfo();
+		if (user != null && userCtx != null) {
+			ChannelFuture feature = userCtx.writeAndFlush(protocolModel);
+			
+			try {
+				feature.get(Constants.writeMsgTimeOut, TimeUnit.MILLISECONDS);
+			} catch (InterruptedException | ExecutionException | TimeoutException e) {
+				playerInfo.getLastProtocolModel().add(protocolModel);
+				e.printStackTrace();
+			}
+			logger.error("返回数据：weixinId=" + user.getWeixinMark() + ",数据：" + JSONObject.toJSONString(protocolModel));
 		}
 	}
 
@@ -101,7 +128,17 @@ public class HandlerHelper {
 		if (user != null) {
 			String weixinId = user.getWeixinMark();
 			ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinId);
-			userCtx.writeAndFlush(protocolModel);
+			
+			ChannelFuture  feature = userCtx.writeAndFlush(protocolModel);
+			
+			try {
+				feature.get(Constants.writeMsgTimeOut, TimeUnit.MILLISECONDS);
+			} catch (InterruptedException | ExecutionException | TimeoutException e) {
+				playerInfo.getLastProtocolModel().add(protocolModel);
+				e.printStackTrace();
+			}
+			logger.error("返回数据：weixinId=" + user.getWeixinMark() + ",数据：" + JSONObject.toJSONString(protocolModel));
+
 		}
 	}
 
@@ -176,7 +213,9 @@ public class HandlerHelper {
 			String weixinMarkId = roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation)
 					.getUserInfo().getWeixinMark();
 			ChannelHandlerContext ctx = ClientSession.sessionMap.get(weixinMarkId);
-			ctx.writeAndFlush(canDoProtocolModel);
+			
+			HandlerHelper.noticeMsg2Player(ctx, roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation), canDoProtocolModel);
+			
 			logger.info("返回数据：" + JSONObject.toJSONString(canDoProtocolModel));
 		}
 	}
@@ -448,7 +487,8 @@ public class HandlerHelper {
 				
 				ChannelHandlerContext userCtx = ClientSession.sessionMap.get(playWinXinId);
 				
-				userCtx.writeAndFlush(dealTileProtocolModel);
+				HandlerHelper.noticeMsg2Player(userCtx, entry.getValue(), dealTileProtocolModel);
+				
 				logger.error("hashDealTile返回数据："+JSONObject.toJSONString(dealTileProtocolModel));
 			}
 			roomContex.getGameContext().getTable().printAllPlayTiles();
@@ -486,6 +526,7 @@ public class HandlerHelper {
 			}
 		}
 		if(!canDoActions.isEmpty()){
+			roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation).setDiscardAuth(false);
 			roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation).setDrawTileContext(new DrawTileContext(canDoActions, canwin, canZiPai, playerLocation, isFirstDrawTile));
 			ProtocolModel canDoProtocolModel = new ProtocolModel();
 			AskChoiceRespModel askChoiceRespModel = new AskChoiceRespModel(
@@ -495,7 +536,9 @@ public class HandlerHelper {
 			String weixinMarkId = roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation)
 					.getUserInfo().getWeixinMark();
 			ChannelHandlerContext ctx = ClientSession.sessionMap.get(weixinMarkId);
-			ctx.writeAndFlush(canDoProtocolModel);
+			
+			HandlerHelper.noticeMsg2Player(ctx, roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation), canDoProtocolModel);
+			
 			logger.info("返回数据：" + JSONObject.toJSONString(canDoProtocolModel));
 		}else{
 			roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation).setDiscardAuth(true);

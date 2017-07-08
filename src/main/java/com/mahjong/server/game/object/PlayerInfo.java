@@ -6,6 +6,7 @@ import java.util.List;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.game.enums.PlayerLocation;
+import com.mahjong.server.netty.model.ProtocolModel;
 import com.mahjong.server.vo.ScoreRecordVO;
 
 /**
@@ -22,7 +23,7 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	
 	private PlayerLocation userLocation;
 	
-	
+	private List<ProtocolModel> lastProtocolModel = new ArrayList<ProtocolModel>();
 	
 	/**
 	 * 用户每局分数信息
@@ -313,5 +314,12 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	public void setAgreeNextRound(boolean agreeNextRound) {
 		this.agreeNextRound = agreeNextRound;
 	}
+	public List<ProtocolModel> getLastProtocolModel() {
+		return lastProtocolModel;
+	}
+	public void setLastProtocolModel(List<ProtocolModel> lastProtocolModel) {
+		this.lastProtocolModel = lastProtocolModel;
+	}
+	
 	
 }
