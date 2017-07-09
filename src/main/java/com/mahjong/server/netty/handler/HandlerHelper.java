@@ -319,8 +319,8 @@ public class HandlerHelper {
 		HandlerHelper.noticeMsg2Player(roomContext, entry.getValue(), xfgProtocolModel);
 		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空动作
 		roomContext.getGameContext().getTable().getPlayerByLocation(discardPlayLocation).setDiscardAuth(false);
-		doDrawTileResp(roomContext, discardPlayLocation);
 		}
+		doDrawTileResp(roomContext, discardPlayLocation);
 	}
 	public static void huProcess2Players(RoomContext roomContext, TileGroupType huGroup, Action action,
 			PlayerLocation discardPlayLocation) throws IllegalActionException {
