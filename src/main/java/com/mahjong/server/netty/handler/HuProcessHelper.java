@@ -246,7 +246,7 @@ public class HuProcessHelper {
 						} else {
 							eplayerInfo.setZhuang(false);
 						}
-
+						eplayerInfo.getDrawTileContext().init();
 					}
 
 					table.setPlayerInfos(mahjongTable.getPlayerInfos());
