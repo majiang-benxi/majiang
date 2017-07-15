@@ -38,6 +38,7 @@ import com.mahjong.server.exception.IllegalActionException;
 import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.ActionAndLocation;
 import com.mahjong.server.game.action.standard.AngangActionType;
+import com.mahjong.server.game.action.standard.BugangActionType;
 import com.mahjong.server.game.action.standard.CpgActionType;
 import com.mahjong.server.game.action.standard.DealActionType;
 import com.mahjong.server.game.action.standard.DrawActionType;
@@ -171,9 +172,9 @@ public class HandlerHelper {
 			if (playerLocation == discardPlayLocation) {
 				continue;
 			}
-			CpgActionType cpgActionType = new CpgActionType(BUGANG_GROUP, null);
-			boolean canGang = cpgActionType.canDo(roomContext.getGameContext(), playerLocation);
-			if (canGang) {
+			BugangActionType bgActionType = new BugangActionType(BUGANG_GROUP,tile);
+			boolean canBuGang = bgActionType.canDo(roomContext.getGameContext(), playerLocation);
+			if (canBuGang) {
 				disCardActionAndLocation.add(new DisCardActionAndLocation(
 						new ActionAndLocation(new Action(BUGANG, tile), playerLocation), BUGANG_GROUP.getCode()));
 			}
@@ -510,20 +511,27 @@ public class HandlerHelper {
 		boolean canZiPai=false;
 		DrawTileContext drawTileContext =	roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation).getDrawTileContext();
 		boolean isFirstDrawTile=drawTileContext!=null&&drawTileContext.isFirstDrawTile();
+		Tile lastDrawTile=roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation).getLastDrawedTile();
 		//开局第一把旋风杠判断【选了规则才会判断】
 		if(roomContext.getGameContext().getGameStrategy().getRuleInfo().getPlayRules().contains(PlayRule.XUAN_FENG_GANG)){
 			if(isFirstDrawTile){
 			ZiPaiActionType ziPaiActionType = new ZiPaiActionType();
 		    canZiPai = ziPaiActionType.canDo(roomContext.getGameContext(),playerLocation);
 			if (canZiPai) {
-				canDoActions.add(new Action(ZIPAI,roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation).getLastDrawedTile()));
+				canDoActions.add(new Action(ZIPAI,lastDrawTile));
 			}
 		 }
 		}else{
 			AngangActionType angangActionType=new AngangActionType(TileGroupType.ANGANG_GROUP);
 			boolean candoAngang=angangActionType.canDo(roomContext.getGameContext(), playerLocation);
 			if(candoAngang){
-				canDoActions.add(new Action(ANGANG,roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation).getLastDrawedTile()));
+				canDoActions.add(new Action(ANGANG,lastDrawTile));
+			}
+			
+			BugangActionType bgActionType = new BugangActionType(BUGANG_GROUP,lastDrawTile);
+			boolean canBuGang = bgActionType.canDo(roomContext.getGameContext(), playerLocation);
+			if (canBuGang) {
+				canDoActions.add(new Action(BUGANG,lastDrawTile));
 			}
 		}
 		return new DrawTileContext(canDoActions, canwin, canZiPai, playerLocation, isFirstDrawTile);

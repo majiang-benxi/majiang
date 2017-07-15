@@ -22,7 +22,7 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
 	private Integer userRoomRecordInfoID;
 	
 	private PlayerLocation userLocation;
-	
+	@JSONField(serialize=false)
 	private List<ProtocolModel> lastProtocolModel = new ArrayList<ProtocolModel>();
 	
 	/**

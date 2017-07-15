@@ -1,5 +1,6 @@
 package com.mahjong.server.netty.handler;
 
+import static com.mahjong.server.game.action.standard.StandardActionType.BUGANG;
 import static com.mahjong.server.game.action.standard.StandardActionType.WIN;
 import static com.mahjong.server.game.action.standard.StandardActionType.ZIPAI;
 import static com.mahjong.server.game.object.TileGroupType.HU_GROUP;
@@ -80,6 +81,9 @@ public class DrawLogicHandler  extends SimpleChannelInboundHandler<ProtocolModel
 							}
 						}else if(discardReqModel.getTileGroupType()==TileGroupType.ANGANG_GROUP.getCode()){
 							HandlerHelper.anGangProcess2Players(roomContext, playLocation, discardReqModel.getTile());
+						}else if(discardReqModel.getTileGroupType()==TileGroupType.BUGANG_GROUP.getCode()){
+							HandlerHelper.cpgProcess2Players(roomContext, TileGroupType.BUGANG_GROUP, new Action(BUGANG,discardReqModel.getTile()),
+									playLocation);
 						}else if(discardReqModel.getTileGroupType()==TileGroupType.PASS_GROUP.getCode()){
 							drawTileContext.resetForNextUse(playLocation);
 							//do nothing ,waiting palyer discard tile

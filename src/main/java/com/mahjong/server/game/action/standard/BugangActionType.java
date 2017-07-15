@@ -15,9 +15,10 @@ import com.mahjong.server.game.object.TileGroupType;
  * @author warter
  */
 public class BugangActionType extends CpgActionType {
-
-	public BugangActionType(TileGroupType groupType) {
+	private Tile buGangRangeTile;
+	public BugangActionType(TileGroupType groupType,Tile buGangRangeTile) {
 		super(groupType);
+		this.buGangRangeTile=buGangRangeTile;
 	}
 
 	@Override
@@ -28,7 +29,11 @@ public class BugangActionType extends CpgActionType {
 	protected boolean checkAliveTileSizeCondition(int size) {
 		return size % 3 == 2;// 活牌数量至少有对将
 	}
-
+	
+	@Override
+	protected Tile getActionTilesRange(PlayerInfo playerInfo ) {	
+		return buGangRangeTile;
+	}
 	@Override
 	protected int getActionTilesSize() {
 		return 1;
