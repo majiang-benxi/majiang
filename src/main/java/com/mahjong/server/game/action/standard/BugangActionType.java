@@ -10,6 +10,7 @@ import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.TileGroup;
 import com.mahjong.server.game.object.TileGroupType;
+import com.mahjong.server.game.rule.PlayRule;
 /**
  * 动作类型“补杠”。
  * @author warter
@@ -42,7 +43,7 @@ public class BugangActionType extends CpgActionType {
 	@Override
 	protected boolean isLegalActionWithPreconition(GameContext context,PlayerLocation location,
 			Tile tile) {
-		return findLegalPengGroup( context.getTable().getPlayerByLocation(location), tile) != null;
+		return context.getGameStrategy().getRuleInfo().getPlayRules().contains(PlayRule.GANG)&&findLegalPengGroup( context.getTable().getPlayerByLocation(location), tile) != null;
 	}
 
 	@Override

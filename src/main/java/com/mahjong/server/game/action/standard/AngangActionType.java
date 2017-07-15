@@ -11,6 +11,7 @@ import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.TileGroup;
 import com.mahjong.server.game.object.TileGroupType;
+import com.mahjong.server.game.rule.PlayRule;
 /**
  * 动作类型“暗杠”。
  * 
@@ -38,7 +39,7 @@ public class AngangActionType extends CpgActionType  {
 
 	@Override
 	protected boolean isLegalActionWithPreconition(GameContext context,PlayerLocation location,Tile tiles) {
-		return ANGANG_GROUP.isLegalTile(tiles);
+		return  context.getGameStrategy().getRuleInfo().getPlayRules().contains(PlayRule.GANG)&&ANGANG_GROUP.isLegalTile(tiles);
 	}
 
 	@Override
