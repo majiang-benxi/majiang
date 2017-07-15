@@ -368,7 +368,7 @@ public class HandlerHelper {
 				}
 			}
 		} else {
-			HandlerHelper.drawTile2Player(roomContext, discardPlayLocation.getLocationOf(Relation.NEXT));
+			HandlerHelper.drawTile2Player(roomContext, roomContext.getGameContext().getDiscardContext().getDiscardPlayLocation().getLocationOf(Relation.NEXT));
 		}
 
 	}
