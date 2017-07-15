@@ -22,6 +22,7 @@ import com.mahjong.server.game.object.TileGroupType;
 import com.mahjong.server.game.object.TileUnitInfo;
 import com.mahjong.server.game.object.WinInfo;
 import com.mahjong.server.game.rule.FangKa;
+import com.mahjong.server.game.rule.PlayRule;
 import com.mahjong.server.game.rule.RuleInfo;
 import com.mahjong.server.game.rule.ScoreHelper;
 
@@ -43,7 +44,7 @@ public class NormalWinType implements WinType {
 			return false;
 		}
 		// 将牌check
-		List<Byte> jiangPai = Tile.getJANGPai(winInfo.getAliveTile());
+		List<Byte> jiangPai = Tile.getJANGPai(winInfo.getAliveTile(),ruleInfo.getPlayRules().contains(PlayRule.CHUAN_TONG));
 		int huiNum = winInfo.getHuiTile().getPai().length;
 		// 没有将牌【只有有会牌就算有将牌】直接胡不了
 
