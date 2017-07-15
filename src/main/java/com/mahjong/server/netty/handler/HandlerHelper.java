@@ -310,7 +310,9 @@ public class HandlerHelper {
 		}
 		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空当前的动作
 		roomContext.getGameContext().getTable().getPlayerByLocation(discardPlayLocation).setLastTileGroupAction(tileGroupTypeCode);//把当前的动作告诉所有玩家
-		for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext().getTable().getPlayerInfos()
+		boolean hasRespCheck=drawTileHasRespCheck(roomContext,discardPlayLocation);
+ 		roomContext.getGameContext().getTable().getPlayerByLocation(discardPlayLocation).setDiscardAuth(hasRespCheck);
+ 		for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext().getTable().getPlayerInfos()
 				.entrySet()) {
 		ProtocolModel xfgProtocolModel = new ProtocolModel();
 		DiscardRespModel discardRespModel = new DiscardRespModel(roomContext, entry.getKey());
@@ -496,8 +498,7 @@ public class HandlerHelper {
 			doDrawTileResp(roomContex, zhuangLocation);
 		}
 	}
-
-	public static void doDrawTileResp(RoomContext roomContext,PlayerLocation playerLocation){
+	private static DrawTileContext refreshDrawTileContext(RoomContext roomContext,PlayerLocation playerLocation){
 		roomContext.getGameContext().getTable().printAllPlayTiles();
 		List<Action> canDoActions=new ArrayList<Action>();
 		WinActionType winActionType = new WinActionType();
@@ -525,9 +526,22 @@ public class HandlerHelper {
 				canDoActions.add(new Action(ANGANG,roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation).getLastDrawedTile()));
 			}
 		}
+		return new DrawTileContext(canDoActions, canwin, canZiPai, playerLocation, isFirstDrawTile);
+	}
+	public static boolean drawTileHasRespCheck(RoomContext roomContext,PlayerLocation playerLocation){
+		DrawTileContext drawTileContext=refreshDrawTileContext(roomContext,playerLocation);
+		List<Action> canDoActions=drawTileContext.getCanDoActions();
+		if(!canDoActions.isEmpty()){
+			return false;
+		}
+		return true;
+	}
+	public static void doDrawTileResp(RoomContext roomContext,PlayerLocation playerLocation){
+		DrawTileContext drawTileContext=refreshDrawTileContext(roomContext,playerLocation);
+		List<Action> canDoActions=drawTileContext.getCanDoActions();
 		if(!canDoActions.isEmpty()){
 			roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation).setDiscardAuth(false);
-			roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation).setDrawTileContext(new DrawTileContext(canDoActions, canwin, canZiPai, playerLocation, isFirstDrawTile));
+			roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation).setDrawTileContext(drawTileContext);
 			ProtocolModel canDoProtocolModel = new ProtocolModel();
 			AskChoiceRespModel askChoiceRespModel = new AskChoiceRespModel(
 					new ArrayList<Action>(canDoActions));
