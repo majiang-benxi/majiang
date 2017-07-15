@@ -462,6 +462,8 @@ public interface DBService {
 	public UserRoomRecord selectUserRoomRecordInfoByID(Integer userRoomRecordInfoID);
 
 	public void updateUserRoomRecordInfoPrimaryKey(UserRoomRecord winuserRoomRecForUpdate);
+
+	MessageInfo selectMessageInfoById(Integer mesId);
 	
 
 }

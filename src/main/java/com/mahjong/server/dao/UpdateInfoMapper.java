@@ -14,8 +14,6 @@ public interface UpdateInfoMapper {
 
     int deleteByPrimaryKey(Integer id);
 
-    int insert(UpdateInfo record);
-
     int insertSelective(UpdateInfo record);
 
     List<UpdateInfo> selectByExample(UpdateInfoExample example);

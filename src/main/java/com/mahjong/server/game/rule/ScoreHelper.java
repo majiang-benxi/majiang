@@ -36,16 +36,21 @@ public class ScoreHelper {
 			typeScore.add(GetScoreType.qingyise_qidui);
 		}
 		//飘胡判断
-		boolean isPiao=winInfo.getHuType().getBaseWinType().isPiaoHU(winInfo);
-		if(isPiao){
-			baseScore*=2;
-			typeScore.add(GetScoreType.piaohu);
+		if(ruleInfo.getPlayRules().contains(PlayRule.PIAO_HU)){
+			boolean isPiao=winInfo.getHuType().getBaseWinType().isPiaoHU(winInfo);
+			if(isPiao){
+				baseScore*=4;
+				typeScore.add(GetScoreType.piaohu);
+			}
 		}
-		//穷胡判断
-		boolean maybeQiong = winInfo.getHuType().getBaseWinType().maybeQiongHu(winInfo);
-		if (maybeQiong) {
-			baseScore *= 4;
-			typeScore.add(GetScoreType.qionghu);
+		
+		if(ruleInfo.getPlayRules().contains(PlayRule.QIONGHU)){
+			//穷胡判断
+			boolean maybeQiong = winInfo.getHuType().getBaseWinType().maybeQiongHu(winInfo);
+			if (maybeQiong) {
+				baseScore *= 4;
+				typeScore.add(GetScoreType.qionghu);
+			}
 		}
 		return baseScore;
 	}
@@ -66,7 +71,7 @@ public class ScoreHelper {
 		return tileScore;
 	}
 
-	private static int getTileGroupScore(List<TileGroup> tileGroups, RuleInfo ruleInfo,List<GetScoreType>  typeScore) {
+	public static int getTileGroupScore(List<TileGroup> tileGroups, RuleInfo ruleInfo,List<GetScoreType>  typeScore) {
 		int result = 0;
 		for (TileGroup tileGroup : tileGroups) {
 			if (ruleInfo.getPlayRules().contains(PlayRule.GANG)) {
@@ -89,9 +94,8 @@ public class ScoreHelper {
 		return result;
 	}
 	private static int getTotalScore(int baseScore, WinInfo winInfo, RuleInfo ruleInfo,boolean isWinner,List<GetScoreType>  typeScore) {
-		int tileGroupScore = getTileGroupScore(winInfo.getTileGroups(), ruleInfo,typeScore);
 		int specialTileScore=getSpecialTileScore(winInfo,isWinner,typeScore);
-		int totalScore = baseScore+specialTileScore+tileGroupScore;
+		int totalScore = baseScore+specialTileScore;
 		return totalScore;
 	}
 		
@@ -99,21 +103,30 @@ public class ScoreHelper {
 		int baseScore=getBaseScore(winInfo, ruleInfo, isZhuang,typeScore);
 		if (winInfo.isZiMo()) {//这个需要在所有base项目统计完毕之后计算。表示其他向其他3个玩家收分。
 			typeScore.add(GetScoreType.zimo);
-			baseScore *= 3;
+			baseScore *= 6;
 		}
 		return getTotalScore(baseScore,winInfo,ruleInfo,true,typeScore);
 	}
 	public static int getPaoerScore(WinInfo winInfo, RuleInfo ruleInfo, boolean isZhuang,List<GetScoreType> typeScore) {
-		typeScore.add(GetScoreType.dianpao);
 		int baseScore=getBaseScore(winInfo, ruleInfo, isZhuang,new ArrayList<GetScoreType>())*(-1);
 		if(isZhuang){
 			baseScore*=2;
 		}
-		return getTotalScore(baseScore,winInfo,ruleInfo,false,typeScore);
+		
+		int rest =  getTotalScore(baseScore,winInfo,ruleInfo,false,typeScore);
+		
+		typeScore = new ArrayList<GetScoreType>();
+		typeScore.add(GetScoreType.dianpao);
+		
+		return rest;
+		
 	}
 
 	public static int getXianScore(WinInfo winInfo, RuleInfo ruleInfo, boolean isZhuang,List<GetScoreType> typeScore) {
 		int baseScore=getBaseScore(winInfo, ruleInfo, isZhuang,new ArrayList<GetScoreType>())*(-1);
-		return getTotalScore(baseScore,winInfo,ruleInfo,false,typeScore);
+		int rest = getTotalScore(baseScore,winInfo,ruleInfo,false,typeScore);
+		typeScore = new ArrayList<GetScoreType>();
+		return rest;
+		
 	}
 }

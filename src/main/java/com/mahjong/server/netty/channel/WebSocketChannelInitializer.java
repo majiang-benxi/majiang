@@ -1,18 +1,21 @@
 package com.mahjong.server.netty.channel;
 
+import java.util.concurrent.TimeUnit;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mahjong.server.netty.codec.WebSocketProtocolCodec;
 import com.mahjong.server.netty.handler.AuthHandler;
+import com.mahjong.server.netty.handler.BeginNextRoundHandler;
 import com.mahjong.server.netty.handler.CreateRoomHandler;
 import com.mahjong.server.netty.handler.EnterRoomHandler;
 import com.mahjong.server.netty.handler.HeartBeatHandler;
 import com.mahjong.server.netty.handler.HistoryRecordHandler;
 import com.mahjong.server.netty.handler.KillRoomHandler;
-import com.mahjong.server.netty.handler.MahjongLogicHandler;
+import com.mahjong.server.netty.handler.DiscardLogicHandler;
+import com.mahjong.server.netty.handler.DrawLogicHandler;
 import com.mahjong.server.netty.handler.SendMessageHandler;
-import com.mahjong.server.netty.handler.ToWinHandler;
 import com.mahjong.server.netty.handler.UpdateHandler;
 
 import io.netty.channel.ChannelHandler.Sharable;
@@ -23,6 +26,7 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
+import io.netty.handler.timeout.IdleStateHandler;
 
 @Sharable
 @Component
@@ -33,7 +37,9 @@ public class WebSocketChannelInitializer extends ChannelInitializer<NioSocketCha
 	@Autowired
 	private AuthHandler authHandler;
 	@Autowired
-	private MahjongLogicHandler mahjongLogicHandler;
+	private DiscardLogicHandler discardLogicHandler;
+	@Autowired 
+	private DrawLogicHandler drawLogicHandler;
 	@Autowired
 	private CreateRoomHandler createRoomHandler;
 	@Autowired
@@ -44,8 +50,8 @@ public class WebSocketChannelInitializer extends ChannelInitializer<NioSocketCha
 	private HistoryRecordHandler historyRecordHandler;
 	@Autowired
 	private SendMessageHandler sendMessageHandler;
-	@Autowired
-	private ToWinHandler toWinHandler;
+	@Autowired 
+	private BeginNextRoundHandler beginNextRoundHandler;
 	@Autowired
 	private UpdateHandler updateHandler;
 	@Autowired
@@ -65,14 +71,17 @@ public class WebSocketChannelInitializer extends ChannelInitializer<NioSocketCha
 		pipeline.addLast(webSocketProtocolCodec);
 		pipeline.addLast(authHandler);
 		pipeline.addLast(heartBeatHandler);
-		pipeline.addLast(mahjongLogicHandler);
+		pipeline.addLast(discardLogicHandler);
+		pipeline.addLast(drawLogicHandler);
 		pipeline.addLast(createRoomHandler);
 		pipeline.addLast(enterRoomHandler);
 		pipeline.addLast(killRoomHandler);
+		pipeline.addLast(beginNextRoundHandler);
 		pipeline.addLast(sendMessageHandler);
-		pipeline.addLast(toWinHandler);
 		pipeline.addLast(updateHandler);
 		pipeline.addLast(historyRecordHandler);
+		
+		
 		// pipeline.addLast(new ReadTimeoutHandler(10));// 控制读取数据的时候的超时，10秒超时
 		// pipeline.addLast(new WriteTimeoutHandler(10));// 控制数据输出的时候的超时，10秒超时
 	}

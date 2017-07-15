@@ -8,7 +8,6 @@ import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.ActionAndLocation;
 import com.mahjong.server.game.context.GameContext;
 import com.mahjong.server.game.enums.PlayerLocation;
-import com.mahjong.server.game.enums.PlayerLocation.Relation;
 import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.Tile;
 
@@ -18,7 +17,7 @@ import com.mahjong.server.game.object.Tile;
  * @author warter
   */
 public class DrawActionType extends AbstractActionType {
-
+	
 	@Override
 	public boolean canPass(GameContext context, PlayerLocation location) {
 		return false;

@@ -5,12 +5,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.mahjong.server.game.object.WinInfo;
+import com.mahjong.server.game.rule.PlayRule;
 import com.mahjong.server.game.rule.RuleInfo;
 
 public class QiDuiWinType extends NormalWinType {
 
 	@Override
 	public boolean canWin(WinInfo winInfo, RuleInfo ruleInfo) {
+		if(!ruleInfo.getPlayRules().contains(PlayRule.QI_XIAO_DUI)){
+			return false;
+		}
 		int duiZi = 0;
 		// tempMap存放牌值的张数<牌值,张数>
 		Map<Byte, Integer> tempMap = new HashMap<Byte, Integer>();
@@ -32,7 +36,7 @@ public class QiDuiWinType extends NormalWinType {
 		} else {
 			int aloneAliveTileSize = winInfo.getAliveTile().getPai().length - duiZi * 2;
 			int huiNum = winInfo.getHuiTile().getPai().length;
-			if (huiNum > 0 && aloneAliveTileSize == huiNum) {
+			if (huiNum > 0 && aloneAliveTileSize == huiNum&&winInfo.getTileGroups().isEmpty()) {
 				return true;
 			} else {
 				return false;

@@ -81,6 +81,7 @@ public class MajiangPlayView {
 			} else {
 				if(!currentWinView){
 					playerInfo = playerInfo._getOtherPlayerInfoView();
+					reSortIfContainsHuiPai(playerInfo);
 				} 
 				result.add(playerInfo);
 			}
@@ -138,6 +139,10 @@ public class MajiangPlayView {
 
 	public void setHui2(int hui2) {
 		this.hui2 = hui2;
+	}
+
+	public void setCurrentWinView(boolean currentWinView) {
+		this.currentWinView = currentWinView;
 	}
 
 	public static void main(String[] args) {

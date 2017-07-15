@@ -18,11 +18,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.mahjong.server.entity.ManageUser;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.mahjong.server.entity.MessageInfo;
+import com.mahjong.server.game.enums.EventEnum;
+import com.mahjong.server.netty.model.NoticeRespModel;
+import com.mahjong.server.netty.model.ProtocolModel;
+import com.mahjong.server.netty.session.ClientSession;
 import com.mahjong.server.service.DBService;
 import com.mahjong.server.util.DateUtil;
-import com.mahjong.server.util.MD5Util;
+
+import io.netty.channel.ChannelHandlerContext;
 
 @Controller
 @RequestMapping(value = "message")
@@ -145,6 +151,31 @@ public class MessageController {
 					messg.setState(mesgstatenum);
 					
 					dbService.updateMessageInfoById(messg);
+					MessageInfo messageInfo = dbService.selectMessageInfoById(Integer.parseInt(uid));
+					
+					
+					ProtocolModel protocolModel = new ProtocolModel();
+					
+					NoticeRespModel noticeRespModel = new NoticeRespModel();
+					noticeRespModel.setMesID(Integer.parseInt(uid));
+					noticeRespModel.setIntervalTime(messageInfo.getIntervalTime());
+					noticeRespModel.setMesPosition(messageInfo.getMesPosition());
+					noticeRespModel.setMessageContent(messageInfo.getMessageContent());
+					noticeRespModel.setMesTitle(messageInfo.getMesTitle());
+					noticeRespModel.setMesType(messageInfo.getMesType());
+					noticeRespModel.setMesState(messageInfo.getState().intValue());
+					
+					Map<String, ChannelHandlerContext> sessionMap = ClientSession.sessionMap;
+					for(ChannelHandlerContext ctx : sessionMap.values()){
+						
+						protocolModel.setCommandId(EventEnum.NOTICE_CHANGE_RESP.getValue());
+						protocolModel.setBody(JSON.toJSONString(noticeRespModel,SerializerFeature.DisableCircularReferenceDetect));
+						
+						ctx.writeAndFlush(protocolModel);
+						
+					}
+					
+					
 				}
 			}
 		}
@@ -182,7 +213,28 @@ public class MessageController {
 		messg.setIntervalTime(Integer.parseInt(messageinterval));
 		messg.setCreateTime(new Date());
 		
-		dbService.inserMessageInfo(messg);
+		Integer msgID = dbService.inserMessageInfo(messg);
+		
+		ProtocolModel protocolModel = new ProtocolModel();
+		
+		NoticeRespModel noticeRespModel = new NoticeRespModel();
+		noticeRespModel.setMesID(msgID);
+		noticeRespModel.setIntervalTime(messg.getIntervalTime());
+		noticeRespModel.setMesPosition(messg.getMesPosition());
+		noticeRespModel.setMessageContent(messageContent);
+		noticeRespModel.setMesTitle(messg.getMesTitle());
+		noticeRespModel.setMesType(messg.getMesType());
+		noticeRespModel.setMesState(0);
+		
+		Map<String, ChannelHandlerContext> sessionMap = ClientSession.sessionMap;
+		for(ChannelHandlerContext ctx : sessionMap.values()){
+			
+			protocolModel.setCommandId(EventEnum.NOTICE_RESP.getValue());
+			protocolModel.setBody(JSON.toJSONString(noticeRespModel,SerializerFeature.DisableCircularReferenceDetect));
+			
+			ctx.writeAndFlush(protocolModel);
+			
+		}
 		
 		return "success";
 		

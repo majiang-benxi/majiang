@@ -10,6 +10,7 @@ import com.mahjong.server.netty.channel.WebSocketChannelInitializer;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -39,6 +40,7 @@ public class WebSocketServer {
 
 			// 创建ServerBootstrap对象，它是Netty用于启动NIO服务端的辅助启动类， 目的是降低服务端的开发复杂度
 			ServerBootstrap bootstrap = new ServerBootstrap();
+			bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS,1000);
 			bootstrap.group(bossGroup, workGroup);
 			bootstrap.channel(NioServerSocketChannel.class);
 			// 处理业务

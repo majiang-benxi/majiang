@@ -3,6 +3,8 @@ package com.mahjong.server.game.action.standard;
 import static com.mahjong.server.game.enums.PlayerLocation.Relation.PREVIOUS;
 import static com.mahjong.server.game.object.TileGroupType.CHI_GROUP;
 import static com.mahjong.server.game.object.TileGroupType.PENG_GROUP;
+import static com.mahjong.server.game.object.TileGroupType.BUGANG_GROUP;
+import static com.mahjong.server.game.object.TileGroupType.ANGANG_GROUP;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -36,11 +38,11 @@ public enum StandardActionType implements ActionType {
 	/**
 	 * 补杠
 	 */
-	BUGANG(new BugangActionType()),
+	BUGANG(new BugangActionType(BUGANG_GROUP)),
 	/**
 	 * 暗杠
 	 */
-	ANGANG(new AngangActionType()),
+	ANGANG(new AngangActionType(ANGANG_GROUP)),
 	/**
 	 * 字牌
 	 */

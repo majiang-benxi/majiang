@@ -50,6 +50,7 @@ public enum EventEnum {
 	SEND_MESG_REQ(18),
 	/** 一次发消息响应 */
 	SEND_MESG_RESP(19),
+	
 	/** 就绪之后的发牌响应 */
 	DEAL_TILE_RESP(20),
 	/** 赢牌响应,暂时没用了**/
@@ -61,7 +62,7 @@ public enum EventEnum {
 	/**
 	 * 询问玩家是否吃碰杠胡
 	 */
-	ASK_CHOICE_RESP(23),
+	DISCARD_ASK_CHOICE_RESP(23),
 	/**
 	 * 非法动作响应信息
 	 */
@@ -83,7 +84,26 @@ public enum EventEnum {
 	/**
 	 * 开始下一局
 	 */
-	BEGIN_NEXT_REQ(28);
+	BEGIN_NEXT_REQ(28),
+	
+	/** 房间或者大厅通知消息 */
+	NOTICE_RESP(29),
+	
+	/** 房间或者大厅通知消息改变 */
+	NOTICE_CHANGE_RESP(30),
+	/**
+	 * 开始下一局
+	 */
+	BEGIN_NEXT_NOTICE_RESP(31),
+	/**
+	 * 摸牌之后客户端的响应。【摸牌之后客户端可能杠胡等动作，客户端响应调用此命令】
+	 */
+	DRAW_CHOOSE_CLIENT_RESP(32),
+	/**
+	 * 询问玩家是否吃碰杠胡
+	 */
+	DRAW_ASK_CHOICE_RESP(33),
+	;
 	
 	private int value;
 

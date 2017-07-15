@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.mahjong.server.entity.RoomRecord;
 import com.mahjong.server.entity.UserActionScore;
 import com.mahjong.server.entity.UserInfo;
@@ -32,6 +33,7 @@ import com.mahjong.server.game.enums.PlayerLocation.Relation;
 import com.mahjong.server.game.object.DisCardActionAndLocation;
 import com.mahjong.server.game.object.DiscardContext;
 import com.mahjong.server.game.object.GameResult;
+import com.mahjong.server.game.object.GetScoreType;
 import com.mahjong.server.game.object.MahjongTable;
 import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.TileGroupType;
@@ -49,7 +51,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 
 @Sharable
 @Component
-public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolModel> {
+public class DiscardLogicHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 	
 	private static final Logger logger = LoggerFactory.getLogger(EnterRoomHandler.class);
 
@@ -69,11 +71,13 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 				ctx = ClientSession.sessionMap.get(weixinId);
 				RoomContext roomContext = HouseContext.weixinIdToRoom.get(weixinId);
 				PlayerLocation discardPlayLocation = null;
+				PlayerInfo discardPlayer = null;
 				
 				for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext().getTable().getPlayerInfos()
 						.entrySet()) {
 					if (weixinId.equals(entry.getValue().getUserInfo().getWeixinMark())) {
 						discardPlayLocation = entry.getKey();
+						discardPlayer = entry.getValue();
 						break;
 					}
 				}
@@ -90,7 +94,7 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 								.entrySet()) {
 							ProtocolModel discardProtocolModel = new ProtocolModel();
 							DiscardRespModel discardRespModel = new DiscardRespModel(roomContext,entry.getKey(),false);
-							discardProtocolModel.setBody(JSON.toJSONString(discardRespModel));
+							discardProtocolModel.setBody(JSON.toJSONString(discardRespModel,SerializerFeature.DisableCircularReferenceDetect));
 							discardProtocolModel.setCommandId(EventEnum.DISCARD_ONE_CARD_RESP.getValue());
 							HandlerHelper.noticeMsg2Player(roomContext,entry.getValue(),discardProtocolModel);
 						}
@@ -108,6 +112,7 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 						}
 					} else {
 						HandlerHelper.processDiscardResp(roomContext, discardPlayLocation, discardReqModel);
+						HuProcessHelper.dealHu(dbService,discardReqModel,  protocolModel, ctx);
 					}
 					
 					if(roomContext.getGameContext().isHuangzhuang()){
@@ -118,20 +123,18 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 						
 						if (userInfo != null && ctx!=null) {
 						
-							CurrentRecordRespModel currentRecordRespModel = new CurrentRecordRespModel();
-							
-							List<ScoreRecordVO> playScordRecords = new ArrayList<ScoreRecordVO>();
-							
 							GameResult gameResult = playingRoom.getGameContext().getGameResult();
 							
 							for(Entry<PlayerLocation, PlayerInfo> playerInfoEnt : gameResult.getPlayerInfos().entrySet()){
 								
 								PlayerInfo playerInfo = playerInfoEnt.getValue();
 								
+								playerInfo.setTotalscore(playerInfo.getTotalscore()+(playerInfo.getCurScore()-1000));
+								
 								String  getScoreTypes = HandlerHelper.getScoreTypesStr(playerInfo.getGatherScoreTypes());
 								
 								UserActionScore userActionScore = new UserActionScore();
-								userActionScore.setActionScore(playerInfo.getCurScore());
+								userActionScore.setActionScore(playerInfo.getCurScore()-1000);
 								userActionScore.setWinActionTypes(getScoreTypes);
 								userActionScore.setRoomRecordId(playingRoom.getRoomRecordID());
 								userActionScore.setCreateTime(new Date());
@@ -141,15 +144,13 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 								dbService.insertUserActionScoreInfo(userActionScore);
 								
 								ScoreRecordVO scoreRecordVO = new ScoreRecordVO();
-								scoreRecordVO.setNickName(playerInfo.getUserInfo().getNickName());
-								scoreRecordVO.setTotalScore(playerInfo.getCurScore());
+								scoreRecordVO.setRoundScore(playerInfo.getCurScore()-1000);
 								scoreRecordVO.setWinActionTypes(getScoreTypes);
 								
-								playScordRecords.add(scoreRecordVO);
+								playerInfo.setCurScoreRecord(scoreRecordVO);
 								
 							}
 							
-							currentRecordRespModel.setPlayScordRecords(playScordRecords);
 							
 							//黄庄算一局
 							playingRoom.getRemaiRound().decrementAndGet();
@@ -209,9 +210,53 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 								roomRecord.setEndTime(new Date());
 								boolean flg = dbService.updateRoomRecordInfoByPrimaryKey(roomRecord);
 								
+								
+								for (PlayerInfo eplayerInfo : roomContex.getGameContext().getTable().getPlayerInfos().values()) {
+									
+									if (eplayerInfo == null) {
+										continue;
+									}
+									
+									UserInfo user = eplayerInfo.getUserInfo();
+									if (user != null) {
+										
+										ProtocolModel winProtocolModel = new ProtocolModel();
+										DiscardRespModel discardRespModel = new DiscardRespModel(playingRoom, PlayerLocation.fromCode(eplayerInfo.getUserLocation()),true);
+										winProtocolModel.setCommandId(EventEnum.HUANG_ZHUANG.getValue());
+										winProtocolModel.setBody(JSON.toJSONString(discardRespModel,SerializerFeature.DisableCircularReferenceDetect));
+										
+										String weixinIde = user.getWeixinMark();
+										ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinIde);
+										
+										HandlerHelper.noticeMsg2Player(userCtx, eplayerInfo, winProtocolModel);
+										
+										logger.error("返回数据：weixinId="+weixinId+",数据："+JSONObject.toJSONString(winProtocolModel));
+										
+									}
+								}
+								
+								
 							}else{
 								
 								RoomContext roomContex = HouseContext.weixinIdToRoom.get(weixinId);
+								
+								for (PlayerInfo entry : roomContex.getGameContext().getTable().getPlayerInfos().values()) {
+									UserInfo user = entry.getUserInfo();
+									if (user != null) {
+										
+										ProtocolModel winProtocolModel = new ProtocolModel();
+										DiscardRespModel discardRespModel = new DiscardRespModel(playingRoom, PlayerLocation.fromCode(entry.getUserLocation()),true);
+										winProtocolModel.setCommandId(EventEnum.WIN_LAST_TIME_RESP.getValue());
+										winProtocolModel.setBody(JSON.toJSONString(discardRespModel,SerializerFeature.DisableCircularReferenceDetect));
+										
+										String weixinIde = user.getWeixinMark();
+										ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinIde);
+										HandlerHelper.noticeMsg2Player(userCtx, entry, winProtocolModel);
+										logger.error("返回数据：weixinId="+weixinId+",数据："+JSONObject.toJSONString(winProtocolModel));
+										
+									}
+								}
+								
 								GameContext gameContext = roomContex.getGameContext();
 								
 								gameContext.setDiscardContext(null);
@@ -223,6 +268,7 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 								table.init();
 								
 								MahjongTable mahjongTable = gameContext.getTable();
+								
 								table.setPlayerInfos(mahjongTable.getPlayerInfos());
 								
 								gameContext.setTable(table);
@@ -237,14 +283,15 @@ public class MahjongLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 					ProtocolModel illegalProtocolModel = new ProtocolModel();
 					illegalProtocolModel.setCommandId(EventEnum.ILLEGAL_ACTION_RESP.getValue());
 					illegalProtocolModel.setBody(null);
-					ctx.writeAndFlush(illegalProtocolModel);
 					
-					logger.error("主逻辑返回数据："+JSONObject.toJSONString(illegalProtocolModel));
+					HandlerHelper.noticeMsg2Player(ctx, discardPlayer, illegalProtocolModel);
+					
+					logger.error("DiscardLogicHandler主逻辑返回数据："+JSONObject.toJSONString(illegalProtocolModel));
 				}
 			}
 
 		} else {
 			ctx.fireChannelRead(protocolModel);
 		}
-	}
+	}	
 }

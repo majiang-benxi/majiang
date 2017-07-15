@@ -1,6 +1,6 @@
 package com.mahjong.server.game.action.standard;
 
-import static com.mahjong.server.game.action.standard.StandardActionType.DEAL;
+import static com.mahjong.server.game.action.standard.StandardActionType.*;
 import static com.mahjong.server.game.action.standard.StandardActionType.ZIPAI;
 import static com.mahjong.server.game.object.TileGroupType.XUAN_FENG_GANG_DNXB_GROUP;
 import static com.mahjong.server.game.object.TileGroupType.XUAN_FENG_GANG_ZFB_GROUP;
@@ -45,7 +45,7 @@ public class ZiPaiActionType extends AbstractActionType {
 
 	@Override
 	public boolean canDo(GameContext context, PlayerLocation location) {
-		if (context.getLastAction().equals(DEAL)) {
+		if (context.getLastAction().getType().matchBy(DEAL)||context.getLastAction().getType().matchBy(DRAW_BOTTOM)||context.getLastAction().getType().matchBy(ZIPAI)) {
 			PlayerInfo playerInfo = context.getTable().getPlayerByLocation(location);
 			if(playerInfo!=null){
 				Tile aliveTile = playerInfo._getSortAliveTiles();
@@ -75,7 +75,7 @@ public class ZiPaiActionType extends AbstractActionType {
 				playerInfo.setDiscardAuth(false);
 			} else {
 				playerInfo.getTileGroups().add(new TileGroup(XUAN_FENG_GANG_DNXB_GROUP, tile));
-				playerInfo.setDiscardAuth(true);			
+				playerInfo.setDiscardAuth(false);			
 			}
 			context.getLocalDoneActions().add(new ActionAndLocation(new Action(ZIPAI, tile), location));
 		}

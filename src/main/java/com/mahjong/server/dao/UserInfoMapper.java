@@ -14,8 +14,6 @@ public interface UserInfoMapper {
 
     int deleteByPrimaryKey(Integer id);
 
-    int insert(UserInfo record);
-
     int insertSelective(UserInfo record);
 
     List<UserInfo> selectByExample(UserInfoExample example);

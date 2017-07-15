@@ -155,24 +155,10 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.mahjong.server.entity.UserInfo" >
-     	<selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
-		SELECT LAST_INSERT_ID()
-	</selectKey>
-    insert into user_info (id, nick_name, weixin_mark, 
-      sex, head_imgurl, create_time, 
-      room_cart_num, room_cart_num_used, score_num, 
-      last_login_ip, last_login_time, login_times, 
-      curr_room, state)
-    values (#{id,jdbcType=INTEGER}, #{nickName,jdbcType=VARCHAR}, #{weixinMark,jdbcType=VARCHAR}, 
-      #{sex,jdbcType=TINYINT}, #{headImgurl,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{roomCartNum,jdbcType=INTEGER}, #{roomCartNumUsed,jdbcType=INTEGER}, #{scoreNum,jdbcType=INTEGER}, 
-      #{lastLoginIp,jdbcType=VARCHAR}, #{lastLoginTime,jdbcType=TIMESTAMP}, #{loginTimes,jdbcType=INTEGER}, 
-      #{currRoom,jdbcType=INTEGER}, #{state,jdbcType=TINYINT})
-  </insert>
+  
   <insert id="insertSelective" parameterType="com.mahjong.server.entity.UserInfo" >
-  <selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
-		SELECT LAST_INSERT_ID()
+  <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+		SELECT LAST_INSERT_ID() as id
 	</selectKey>
     insert into user_info
     <trim prefix="(" suffix=")" suffixOverrides="," >

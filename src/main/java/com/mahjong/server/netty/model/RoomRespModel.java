@@ -52,7 +52,7 @@ public class RoomRespModel extends MajiangPlayView {
 			this.setRuleStrategy(gameContext.getGameStrategy().getRuleInfo().getMysqlRule());
 			List<PlayerInfo> players = new ArrayList<PlayerInfo>();
 			for (Entry<PlayerLocation, PlayerInfo> entry : gameContext.getTable().getPlayerInfos().entrySet()) {
-				if (weixinId.equals(entry.getValue().getUserInfo().getWeixinMark())) {
+				if (entry != null && entry.getValue()!=null && entry.getValue().getUserInfo()!=null && weixinId.equals(entry.getValue().getUserInfo().getWeixinMark())) {
 					this.setCurUserLocation(entry.getValue().getUserLocation());
 					break;
 				}
@@ -64,6 +64,7 @@ public class RoomRespModel extends MajiangPlayView {
 				this.setHui1(tile.getPai()[0]);
 				this.setHui2(tile.getPai()[1]);
 			}
+			this.setRemaiRound(roomContex.getRemaiRound().get());
 			this.setRemainderTileNum(roomContex.getGameContext().getTable().getRemainderTileNum().get());
 		}
 		

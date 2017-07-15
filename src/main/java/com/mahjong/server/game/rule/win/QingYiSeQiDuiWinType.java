@@ -2,6 +2,7 @@ package com.mahjong.server.game.rule.win;
 
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.WinInfo;
+import com.mahjong.server.game.rule.PlayRule;
 import com.mahjong.server.game.rule.RuleInfo;
 
 public class QingYiSeQiDuiWinType extends QiDuiWinType {
@@ -22,6 +23,9 @@ public class QingYiSeQiDuiWinType extends QiDuiWinType {
 	}
 	@Override
 	public boolean canWin(WinInfo winInfo, RuleInfo ruleInfo) {
+		if(!ruleInfo.getPlayRules().contains(PlayRule.QING_YI_SE)){
+			return false;
+		}
 		boolean huaSe = huaSeCheck(winInfo.getWinTile());
 		if (!huaSe) {
 			return false;

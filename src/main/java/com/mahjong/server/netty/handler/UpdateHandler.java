@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.mahjong.server.entity.UpdateInfo;
 import com.mahjong.server.game.enums.EventEnum;
 import com.mahjong.server.netty.model.DownLoadReqModel;
@@ -51,7 +52,7 @@ public class UpdateHandler extends SimpleChannelInboundHandler<ProtocolModel> {
 				if(updateInfo!=null){
 					DownLoadRespModel downLoadRespModel = new DownLoadRespModel();
 					downLoadRespModel.setUrl(updateInfo.getDownUrl());
-					protocolModel.setBody(JSON.toJSONString(downLoadRespModel));
+					protocolModel.setBody(JSON.toJSONString(downLoadRespModel,SerializerFeature.DisableCircularReferenceDetect));
 				}
 				protocolModel.setCommandId(EventEnum.UPDATE_RESP.getValue());
 				ctx.writeAndFlush(protocolModel);

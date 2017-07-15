@@ -147,24 +147,9 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.mahjong.server.entity.UserRoomRecord" >
- 	<selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
-		SELECT LAST_INSERT_ID()
-	</selectKey>
-    insert into user_room_record (id, room_record_id, room_num, 
-      user_id, user_direction, operate_time, 
-      operate_type, user_ip, operate_cause, 
-      win_times, lose_times, hu_times
-      )
-    values (#{id,jdbcType=INTEGER}, #{roomRecordId,jdbcType=INTEGER}, #{roomNum,jdbcType=INTEGER}, 
-      #{userId,jdbcType=INTEGER}, #{userDirection,jdbcType=TINYINT}, #{operateTime,jdbcType=TIMESTAMP}, 
-      #{operateType,jdbcType=TINYINT}, #{userIp,jdbcType=VARCHAR}, #{operateCause,jdbcType=TINYINT}, 
-      #{winTimes,jdbcType=INTEGER}, #{loseTimes,jdbcType=INTEGER}, #{huTimes,jdbcType=INTEGER}
-      )
-  </insert>
   <insert id="insertSelective" parameterType="com.mahjong.server.entity.UserRoomRecord" >
-   	<selectKey resultType="java.lang.Integer" keyProperty="ID" order="AFTER">
-		SELECT LAST_INSERT_ID()
+   	<selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+		SELECT LAST_INSERT_ID() as id
 	</selectKey>
     insert into user_room_record
     <trim prefix="(" suffix=")" suffixOverrides="," >

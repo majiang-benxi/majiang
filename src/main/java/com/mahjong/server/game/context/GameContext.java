@@ -11,6 +11,7 @@ import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.ActionAndLocation;
 import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.object.DiscardContext;
+import com.mahjong.server.game.object.DrawTileContext;
 import com.mahjong.server.game.object.GameResult;
 import com.mahjong.server.game.object.MahjongTable;
 import com.mahjong.server.game.object.PlayerInfo;
@@ -32,6 +33,7 @@ public class GameContext {
 	/*记录用户每一步出牌信息*/
 	private List<ActionAndLocation> localDoneActions = new ArrayList<ActionAndLocation>();
 	private GameResult gameResult;
+	@JSONField(serialize=false)
 	private DiscardContext discardContext;
 	@JSONField(serialize=false)
 	private final int huangZhuangtTileNum=14;
@@ -166,5 +168,4 @@ public class GameContext {
 	public void setHuangzhuang(boolean isHuangzhuang) {
 		this.isHuangzhuang = isHuangzhuang;
 	}
-
 }

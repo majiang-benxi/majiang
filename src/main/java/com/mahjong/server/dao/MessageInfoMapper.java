@@ -14,8 +14,6 @@ public interface MessageInfoMapper {
 
     int deleteByPrimaryKey(Integer id);
 
-    int insert(MessageInfo record);
-
     int insertSelective(MessageInfo record);
 
     List<MessageInfo> selectByExample(MessageInfoExample example);

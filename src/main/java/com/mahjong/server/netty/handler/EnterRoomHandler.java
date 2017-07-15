@@ -1,11 +1,7 @@
 package com.mahjong.server.netty.handler;
 
-import static com.mahjong.server.game.action.standard.StandardActionType.WIN;
-
 import java.net.InetSocketAddress;
 import java.util.Date;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,13 +11,10 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.mahjong.server.entity.RoomRecord;
 import com.mahjong.server.entity.UserInfo;
 import com.mahjong.server.entity.UserRoomRecord;
-import com.mahjong.server.exception.IllegalActionException;
-import com.mahjong.server.game.action.Action;
-import com.mahjong.server.game.action.standard.DealActionType;
-import com.mahjong.server.game.action.standard.WinActionType;
 import com.mahjong.server.game.context.HouseContext;
 import com.mahjong.server.game.context.RoomContext;
 import com.mahjong.server.game.enums.EventEnum;
@@ -31,7 +24,6 @@ import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.netty.model.EnterRoomReqModel;
 import com.mahjong.server.netty.model.EnterRoomRespModel;
 import com.mahjong.server.netty.model.ProtocolModel;
-import com.mahjong.server.netty.session.ClientSession;
 import com.mahjong.server.service.DBService;
 
 import io.netty.channel.ChannelHandler.Sharable;
@@ -144,7 +136,7 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 									ProtocolModel enterRoomProtocolModel = new ProtocolModel();
 									enterRoomProtocolModel.setCommandId(EventEnum.NEW_ENTER_RESP.getValue());
 									EnterRoomRespModel newEnterRoomRespModel = new EnterRoomRespModel(weixinId, true, "新人加入", roomContex);
-									enterRoomProtocolModel.setBody(JSON.toJSONString(newEnterRoomRespModel));
+									enterRoomProtocolModel.setBody(JSON.toJSONString(newEnterRoomRespModel,SerializerFeature.DisableCircularReferenceDetect));
 									HandlerHelper.noticeMsg2Players(roomContex, weixinId, enterRoomProtocolModel);
 									
 									flag = true;
@@ -167,72 +159,20 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 						enterRoomRespModel = new EnterRoomRespModel(weixinId, true, "重新加入房间", roomContex);
 						logger.info("重新加入房间,weixinId="+weixinId);
 						
+						playerInfo = roomContex.getGameContext().getTable().getPlayerInfosByWeixinId(weixinId);
+						
+						
 					}
 				}
 				protocolModel.setCommandId(EventEnum.ROOM_ENTER_RESP.getValue());
-				protocolModel.setBody(JSON.toJSONString(enterRoomRespModel));
-				ctx.writeAndFlush(protocolModel);
+				protocolModel.setBody(JSON.toJSONString(enterRoomRespModel,SerializerFeature.DisableCircularReferenceDetect));
+				
+				HandlerHelper.noticeMsg2Player(ctx, playerInfo, protocolModel);
 				
 				logger.error("进入房间返回数据："+JSONObject.toJSONString(protocolModel));
 				
 				if(flag){
-					boolean hashDealTile = dealTile2AllPlayersCheck(roomContex);
-					if (hashDealTile) {// 通知所有玩家已经发牌
-						
-						roomRecord.setRoomState((byte) 2);
-						
-						boolean flg = dbService.updateRoomRecordInfoByPrimaryKey(roomRecord);
-						
-						logger.error("更新房间信息，flg="+flg+",roomRecord="+JSONObject.toJSONString(roomRecord));
-						
-						HouseContext.playRoomNum.incrementAndGet();
-						HouseContext.waitRoomNum.decrementAndGet();
-						
-						HouseContext.playUserNum.addAndGet(4);
-						HouseContext.waitUserNum.addAndGet(-4);
-						
-						roomContex.getRemaiRound().decrementAndGet();
-						
-						roomContex.setRoomStatus(RoomStatus.PLAYING);
-						
-						for (Entry<PlayerLocation, PlayerInfo> entry : roomContex.getGameContext().getTable().getPlayerInfos().entrySet()) {
-							
-							ProtocolModel dealTileProtocolModel = new ProtocolModel();
-							dealTileProtocolModel.setCommandId(EventEnum.DEAL_TILE_RESP.getValue());
-							
-							String playWinXinId = entry.getValue().getUserInfo().getWeixinMark();
-							EnterRoomRespModel dealTileRoomRespModel = new EnterRoomRespModel(playWinXinId,	true, "发牌", roomContex, entry.getKey());// 创建每个方位的牌响应信息
-							dealTileProtocolModel.setBody(JSON.toJSONString(dealTileRoomRespModel));
-							
-							ChannelHandlerContext userCtx = ClientSession.sessionMap.get(playWinXinId);
-							
-							userCtx.writeAndFlush(dealTileProtocolModel);
-							logger.error("hashDealTile返回数据："+JSONObject.toJSONString(dealTileProtocolModel));
-						}
-						roomContex.getGameContext().getTable().printAllPlayTiles();
-
-						WinActionType winActionType = new WinActionType();
-						boolean winFirst = winActionType.isLegalAction(roomContex.getGameContext(),	roomContex.getGameContext().getZhuangLocation(), new Action(WIN));
-						
-						if (winFirst) {
-							
-							PlayerInfo zhuangWinPlayerInfo = roomContex.getGameContext().getTable().getPlayerByLocation(roomContex.getGameContext().getZhuangLocation());
-							
-							updateUserRoomRecordInfo(zhuangWinPlayerInfo.getUserRoomRecordInfoID(),1,1,null);
-							
-							winActionType.doAction(roomContex.getGameContext(),	roomContex.getGameContext().getZhuangLocation(), new Action(WIN));
-							ProtocolModel winProtocolModel = new ProtocolModel();
-							winProtocolModel.setCommandId(EventEnum.WIN_ONE_TIME_RESP.getValue());
-							roomContex.setRoomStatus(RoomStatus.PLAYING);
-							EnterRoomRespModel winTileRoomRespModel = new EnterRoomRespModel(null, true, "庄家天胡", roomContex);
-							winProtocolModel.setBody(JSON.toJSONString(winTileRoomRespModel));
-							
-							HandlerHelper.noticeMsg2Players(roomContex, null, winProtocolModel);
-							
-						}
-						
-					}
-					
+					HandlerHelper.dealTile2AllPlayers(roomContex,dbService);		
 				}
 			}
 				
@@ -241,27 +181,7 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 		}
 	}
 
-	private boolean dealTile2AllPlayersCheck(RoomContext roomContex) {
-		Map<PlayerLocation, PlayerInfo> playerInfos = roomContex.getGameContext().getTable().getPlayerInfos();
-		boolean fourUserNumReady = true;
-		for (PlayerInfo playerInfo : playerInfos.values()) {
-			if (playerInfo.getUserInfo() == null) {
-				fourUserNumReady = false;
-				return false;
-			}
-		}
-		if (fourUserNumReady) {
-			roomContex.getGameContext().getTable().readyForGame();
-			DealActionType dealActionType = new DealActionType();
-			try {
-				dealActionType.doAction(roomContex.getGameContext(), PlayerLocation.EAST, null);
-			} catch (IllegalActionException e) {
-				e.printStackTrace();
-			}
-			return true;
-		}
-		return false;
-	}
+	
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
@@ -275,15 +195,20 @@ public class EnterRoomHandler extends SimpleChannelInboundHandler<ProtocolModel>
 		winuserRoomRecForUpdate.setId(userRoomRecordId);
 		
 		if(huNum != null && huNum>0){
-			winuserRoomRecForUpdate.setHuTimes(winuserRoomRec.getHuTimes()+huNum);
+			
+			int temp = winuserRoomRec.getHuTimes()==null?0:winuserRoomRec.getHuTimes();
+			
+			winuserRoomRecForUpdate.setHuTimes(temp+huNum);
 		}
 		
 		if(winNum != null && winNum>0){
-			winuserRoomRecForUpdate.setWinTimes(winuserRoomRec.getWinTimes()+winNum);
+			int temp = winuserRoomRec.getWinTimes()==null?0:winuserRoomRec.getWinTimes();
+			winuserRoomRecForUpdate.setWinTimes(temp+winNum);
 		}
 		
 		if(loseNum != null && loseNum>0){
-			winuserRoomRecForUpdate.setLoseTimes(winuserRoomRec.getLoseTimes()+loseNum);
+			int temp = winuserRoomRec.getLoseTimes()==null?0:winuserRoomRec.getLoseTimes();
+			winuserRoomRecForUpdate.setLoseTimes(temp+loseNum);
 		}
 		
 		dbService.updateUserRoomRecordInfoPrimaryKey(winuserRoomRecForUpdate);
