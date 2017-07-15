@@ -506,7 +506,7 @@ public class HandlerHelper {
 		//胡判断
 		boolean canwin = winActionType.isLegalAction(roomContext.getGameContext(),playerLocation, new Action(WIN));			
 		if (canwin) {
-			canDoActions.add(new Action(WIN));
+			canDoActions.add(new Action(WIN,new Tile()));
 		}
 		boolean canZiPai=false;
 		DrawTileContext drawTileContext =	roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation).getDrawTileContext();
