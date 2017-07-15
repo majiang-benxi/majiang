@@ -172,9 +172,9 @@ public class HandlerHelper {
 			if (playerLocation == discardPlayLocation) {
 				continue;
 			}
-			BugangActionType bgActionType = new BugangActionType(BUGANG_GROUP,tile);
-			boolean canBuGang = bgActionType.canDo(roomContext.getGameContext(), playerLocation);
-			if (canBuGang) {
+			CpgActionType cpgActionType = new CpgActionType(BUGANG_GROUP, null);
+			boolean canGang = cpgActionType.canDo(roomContext.getGameContext(), playerLocation);
+			if (canGang) {
 				disCardActionAndLocation.add(new DisCardActionAndLocation(
 						new ActionAndLocation(new Action(BUGANG, tile), playerLocation), BUGANG_GROUP.getCode()));
 			}
@@ -527,7 +527,6 @@ public class HandlerHelper {
 			if(candoAngang){
 				canDoActions.add(new Action(ANGANG,lastDrawTile));
 			}
-			
 			BugangActionType bgActionType = new BugangActionType(BUGANG_GROUP,lastDrawTile);
 			boolean canBuGang = bgActionType.canDo(roomContext.getGameContext(), playerLocation);
 			if (canBuGang) {
