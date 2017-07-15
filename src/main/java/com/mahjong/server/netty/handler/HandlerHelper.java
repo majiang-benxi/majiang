@@ -451,7 +451,7 @@ public class HandlerHelper {
 			roomContex.getGameContext().getTable().readyForGame();
 			DealActionType dealActionType = new DealActionType();
 			try {
-				dealActionType.doAction(roomContex.getGameContext(), PlayerLocation.EAST, null);
+				dealActionType.doAction(roomContex.getGameContext(), roomContex.getGameContext().getZhuangLocation(), null);
 			} catch (IllegalActionException e) {
 				e.printStackTrace();
 			}
