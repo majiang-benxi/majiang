@@ -194,11 +194,6 @@ public class ScoreHelper {
 				}
 			 }
 			
-			 zhuangNeedGiveScore = zhuangNeedGiveScore==0?0:(zhuangNeedGiveScore+huiscore+qiangScore);
-			 xianNeedGiveScore = xianNeedGiveScore==0?0:(xianNeedGiveScore+huiscore+qiangScore);
-			 paoNeedGiveScore = paoNeedGiveScore==0?0:(paoNeedGiveScore+huiscore+qiangScore);
-					
-			 
 			 int ratio = winInfo.getHuType().getScoreFan();
 			 
 			//飘胡判断
@@ -221,6 +216,9 @@ public class ScoreHelper {
 			 xianNeedGiveScore *= ratio;
 			 paoNeedGiveScore *= ratio;
 			 
+			 zhuangNeedGiveScore = zhuangNeedGiveScore==0?0:(zhuangNeedGiveScore+huiscore+qiangScore);
+			 xianNeedGiveScore = xianNeedGiveScore==0?0:(xianNeedGiveScore+huiscore+qiangScore);
+			 paoNeedGiveScore = paoNeedGiveScore==0?0:(paoNeedGiveScore+huiscore+qiangScore);
 			 
 			 int winScore = 0;
 			 PlayerInfo winPlayerInfo = null;
