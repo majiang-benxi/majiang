@@ -103,7 +103,7 @@ public class HandlerHelper {
 						entry.getLastProtocolModel().add(protocolModel);
 						e.printStackTrace();
 					}
-					logger.error("返回数据：weixinId=" + weixinId + ",数据：" + JSONObject.toJSONString(protocolModel));
+					logger.info("返回数据：weixinId=" + weixinId + ",数据：" + JSONObject.toJSONString(protocolModel));
 				}
 			}
 		}
@@ -120,7 +120,7 @@ public class HandlerHelper {
 				playerInfo.getLastProtocolModel().add(protocolModel);
 				e.printStackTrace();
 			}
-			logger.error("返回数据：weixinId=" + user.getWeixinMark() + ",数据：" + JSONObject.toJSONString(protocolModel));
+			logger.info("返回数据：weixinId=" + user.getWeixinMark() + ",数据：" + JSONObject.toJSONString(protocolModel));
 		}
 	}
 
@@ -138,7 +138,7 @@ public class HandlerHelper {
 				playerInfo.getLastProtocolModel().add(protocolModel);
 				e.printStackTrace();
 			}
-			logger.error("返回数据：weixinId=" + user.getWeixinMark() + ",数据：" + JSONObject.toJSONString(protocolModel));
+			logger.info("返回数据：weixinId=" + user.getWeixinMark() + ",数据：" + JSONObject.toJSONString(protocolModel));
 
 		}
 	}
@@ -469,7 +469,7 @@ public class HandlerHelper {
 			
 			boolean flg = dbService.updateRoomRecordInfoByPrimaryKey(roomRecord);
 			
-			logger.error("更新房间信息，flg="+flg+",roomRecord="+JSONObject.toJSONString(roomRecord));
+			logger.info("更新房间信息，flg="+flg+",roomRecord="+JSONObject.toJSONString(roomRecord));
 			
 			HouseContext.playRoomNum.incrementAndGet();
 			HouseContext.waitRoomNum.decrementAndGet();
@@ -492,7 +492,7 @@ public class HandlerHelper {
 				
 				HandlerHelper.noticeMsg2Player(userCtx, entry.getValue(), dealTileProtocolModel);
 				
-				logger.error("hashDealTile返回数据："+JSONObject.toJSONString(dealTileProtocolModel));
+				logger.info("hashDealTile返回数据："+JSONObject.toJSONString(dealTileProtocolModel));
 			}
 			roomContex.getGameContext().getTable().printAllPlayTiles();
 			PlayerLocation zhuangLocation=roomContex.getGameContext().getZhuangLocation();
