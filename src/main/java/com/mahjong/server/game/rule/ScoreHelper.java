@@ -288,6 +288,8 @@ public class ScoreHelper {
 
 				winScore = dianpaoScore;
 				dianpaoPlayerInfo.setCurScore(dianpaoPlayerInfo.getCurScore() - dianpaoScore);
+				
+				logger.info("computeUserScore***********dianpaoScore"+dianpaoScore);
 
 			} else {
 				for (Entry<PlayerLocation, PlayerInfo> entry : playerInfos.entrySet()) {
@@ -319,6 +321,8 @@ public class ScoreHelper {
 						winScore += xianNeedGiveScore;
 						eachPlayer.setCurScore(eachPlayer.getCurScore() - xianNeedGiveScore);
 					}
+					
+					logger.info("computeUserScore***********"+eachPlayer.getUserLocation()+":"+eachPlayer.getCurScore());
 
 				}
 			}
@@ -376,6 +380,9 @@ public class ScoreHelper {
 				PlayerLocation eachLocation = entry.getKey();
 				PlayerInfo eachPlayer = entry.getValue();
 				Integer score = locationAndScore.get(eachLocation);
+				
+				logger.info("computeUserScore***********"+eachLocation.name()+":"+score);
+				
 				eachPlayer.setCurScore(eachPlayer.getCurScore() + score);
 			}
 			
