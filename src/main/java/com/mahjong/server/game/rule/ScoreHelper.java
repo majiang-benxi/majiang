@@ -9,6 +9,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.JSON;
 import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.object.GetScoreType;
 import com.mahjong.server.game.object.PlayerInfo;
@@ -94,8 +95,16 @@ public class ScoreHelper {
 	public static void getWinerScore(WinInfo wininfo, List<TileGroup> tileGroups, RuleInfo ruleInfo, boolean isZhuang,
 			List<GetScoreType> typeScore) {
 		getBaseScore(wininfo, ruleInfo, isZhuang, typeScore);
+		
+		logger.info("getWinerScore::"+JSON.toJSONString(typeScore));
+		
 		getTotalScore(wininfo, ruleInfo, true, typeScore);
+		
+		logger.info("getWinerScore::"+JSON.toJSONString(typeScore));
+		
 		getTileGroupScore(tileGroups, ruleInfo, typeScore);
+		
+		logger.info("getWinerScore::"+JSON.toJSONString(typeScore));
 	}
 
 	public static void getPaoerScore(List<TileGroup> tileGroups, RuleInfo ruleInfo, boolean isZhuang,
@@ -117,6 +126,9 @@ public class ScoreHelper {
 				+ paoerLocation + ":" + isZimo);
 
 		Set<Byte> huiset = Tile.tile2Set(winInfo.getHuiTile());
+		
+		logger.info("getWinerScore::"+JSON.toJSONString(huiset));
+		
 		boolean dianpaobaosanjia = ruleInfo.getPlayRules().contains(PlayRule.PAO_PAY_THREE);
 
 		logger.info("computeUserScore***********" + dianpaobaosanjia);
@@ -193,6 +205,10 @@ public class ScoreHelper {
 			}
 
 			logger.info("computeUserScore***********" + ratio);
+			
+			if(ratio==0){
+				ratio = 1;
+			}
 
 			zhuangNeedGiveScore *= ratio;
 			xianNeedGiveScore *= ratio;
