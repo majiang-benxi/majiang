@@ -89,6 +89,9 @@ public class GameResult implements Serializable {
 			if(entry.getKey()==winnerLocation){
 				//用来获取的分项
 				ScoreHelper.getWinerScore(winInfo, entry.getValue().getTileGroups(), ruleInfo, isZhuang,typeScore);
+				if(winInfo !=null && (isZimo || paoerLocation==null)){
+					typeScore.add(GetScoreType.zimo);
+				}
 				
 			}else if(entry.getKey()==paoerLocation){
 				

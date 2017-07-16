@@ -123,7 +123,7 @@ public class ScoreHelper {
 			boolean isZimo) {
 
 		logger.info("computeUserScore**********" + zhuangLocation.name() + ":" + winnerLocation.name() + ":"
-				+ paoerLocation + ":" + isZimo);
+				+ paoerLocation + ":" + isZimo+":"+JSON.toJSONString(winInfo));
 
 		Set<Byte> huiset = Tile.tile2Set(winInfo.getHuiTile());
 		
