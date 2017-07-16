@@ -213,7 +213,7 @@ public class ScoreHelper {
 			
 			logger.info("computeUserScore***********"+zhuangNeedGiveScore+":"+paoNeedGiveScore+":"+xianNeedGiveScore);
 
-			int ratio = winInfo.getHuType().getScoreFan();
+			int ratio = winInfo.getHuType().getScoreFan()==1?0:winInfo.getHuType().getScoreFan();
 
 			// 飘胡判断
 			if (ruleInfo.getPlayRules().contains(PlayRule.PIAO_HU)) {
