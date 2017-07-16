@@ -211,7 +211,7 @@ public class ScoreHelper {
 			int winScore = 0;
 			PlayerInfo winPlayerInfo = null;
 
-			if (dianpaobaosanjia) {
+			if (dianpaobaosanjia && paoerLocation!=null) {
 
 				int dianpaoScore = 0;
 				PlayerInfo dianpaoPlayerInfo = null;
