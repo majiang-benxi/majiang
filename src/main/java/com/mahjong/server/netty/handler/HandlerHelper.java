@@ -362,7 +362,7 @@ public class HandlerHelper {
 
 			if (roomContext.getGameContext().getDiscardContext().getRemainVoter().get() == 0) {// 此时所有玩家都表决了，但是可能玩家表决的不是自己优先级最高的操作【最高的操作已经被清理了】。
 				if (needPassOrDoActions!=null&&needPassOrDoActions.size() != 0) {
-					doDiscardResp(roomContext, needPassOrDoActions.get(0).getActionAndLocation().getAction().getTile());
+					doDiscardResp(roomContext,discardReqModel.getTile().getPai().length!=0?discardReqModel.getTile(): needPassOrDoActions.get(0).getActionAndLocation().getAction().getTile());
 				}else{
 					HandlerHelper.drawTile2Player(roomContext, roomContext.getGameContext().getDiscardContext().getDiscardPlayLocation().getLocationOf(Relation.NEXT));
 				}
