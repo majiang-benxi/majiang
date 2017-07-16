@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.object.GetScoreType;
 import com.mahjong.server.game.object.PlayerInfo;
@@ -15,8 +18,11 @@ import com.mahjong.server.game.object.TileGroup;
 import com.mahjong.server.game.object.TileGroupType;
 import com.mahjong.server.game.object.WinInfo;
 import com.mahjong.server.game.rule.win.StandardHuType;
+import com.mahjong.server.netty.handler.HandlerHelper;
 
 public class ScoreHelper {
+	
+	private static final Logger logger = LoggerFactory.getLogger(ScoreHelper.class);
 
 	private static int getBaseScore(WinInfo winInfo, RuleInfo ruleInfo, boolean isZhuang,
 			List<GetScoreType> typeScore) {
@@ -145,9 +151,13 @@ public class ScoreHelper {
 	public static void computeUserScore(Map<PlayerLocation, PlayerInfo> playerInfos, PlayerLocation zhuangLocation,
 			PlayerLocation winnerLocation, PlayerLocation paoerLocation, RuleInfo ruleInfo, WinInfo winInfo,
 			boolean isZimo) {
+		
+		logger.info("computeUserScore**********"+zhuangLocation.name()+":"+winnerLocation.name()+":"+paoerLocation+":"+isZimo);
 
 		Set<Byte> huiset = Tile.tile2Set(winInfo.getHuiTile());
 		boolean dianpaobaosanjia = ruleInfo.getPlayRules().contains(PlayRule.PAO_PAY_THREE);
+		
+		logger.info("computeUserScore***********"+dianpaobaosanjia);
 
 		int huiscore = 0;
 		int qiangScore = 0;
@@ -172,6 +182,9 @@ public class ScoreHelper {
 					}
 				}
 			}
+			
+			
+			logger.info("computeUserScore***********"+huiscore+":"+qiangScore);
 
 			// 赢家是庄
 			if (winnerLocation.getCode() == zhuangLocation.getCode()) {
@@ -196,6 +209,9 @@ public class ScoreHelper {
 					}
 				}
 			}
+			
+			
+			logger.info("computeUserScore***********"+zhuangNeedGiveScore+":"+paoNeedGiveScore+":"+xianNeedGiveScore);
 
 			int ratio = winInfo.getHuType().getScoreFan();
 
@@ -214,14 +230,22 @@ public class ScoreHelper {
 					ratio += 4;
 				}
 			}
+			
+			logger.info("computeUserScore***********"+ratio);
+			
 
 			zhuangNeedGiveScore *= ratio;
 			xianNeedGiveScore *= ratio;
 			paoNeedGiveScore *= ratio;
+			
+			logger.info("computeUserScore***********"+zhuangNeedGiveScore+":"+paoNeedGiveScore+":"+xianNeedGiveScore);
 
 			zhuangNeedGiveScore = zhuangNeedGiveScore == 0 ? 0 : (zhuangNeedGiveScore + huiscore + qiangScore);
 			xianNeedGiveScore = xianNeedGiveScore == 0 ? 0 : (xianNeedGiveScore + huiscore + qiangScore);
 			paoNeedGiveScore = paoNeedGiveScore == 0 ? 0 : (paoNeedGiveScore + huiscore + qiangScore);
+			
+			logger.info("computeUserScore***********"+zhuangNeedGiveScore+":"+paoNeedGiveScore+":"+xianNeedGiveScore);
+			
 
 			int winScore = 0;
 			PlayerInfo winPlayerInfo = null;
@@ -246,6 +270,7 @@ public class ScoreHelper {
 
 					if (zhuangLocation.getCode() == eachLocation.getCode()) {
 						dianpaoScore += zhuangNeedGiveScore;
+						hasCompute = true;
 					}
 
 					if (paoerLocation.getCode() == eachLocation.getCode()) {
@@ -333,7 +358,7 @@ public class ScoreHelper {
 						PlayerLocation scorelocation = locationAndScoreEntry.getKey();
 						Integer score = locationAndScoreEntry.getValue();
 						if (eachLocation.getCode() == scorelocation.getCode()) {
-							score += eachgangscore;
+							score += eachgangscore*3;
 						} else {
 							score -= eachgangscore;
 						}
