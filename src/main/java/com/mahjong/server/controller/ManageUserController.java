@@ -54,6 +54,9 @@ public class ManageUserController {
 		
 		if(manageUser != null &&manageUser.getState()!=0 && MD5Util.checkPassword(passwd, manageUser.getUpasswd())){
 			modelAndView.addObject("manageUser", manageUser);
+			
+			request.setAttribute("manageUserlevel", manageUser.getUserLevel());
+			
 			modelAndView.setViewName("index");
 			Cookie uidCookie = new Cookie("manageuid",ManageUserSessionUtil.createManegeSession(manageUser));
 			uidCookie.setMaxAge(3600);

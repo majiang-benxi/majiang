@@ -92,7 +92,8 @@ public class HuProcessHelper {
 					userActionScore.setWinActionTypes(getScoreTypes);
 					userActionScore.setRoomRecordId(playingRoom.getRoomRecordID());
 					userActionScore.setCreateTime(new Date());
-					userActionScore.setRoundNum(playingRoom.getRoomNum());
+					int totalroundNum = playingRoom.getGameContext().getGameStrategy().getRuleInfo().getFangKa().getCode()==1?16:32;
+					userActionScore.setRoundNum(totalroundNum-playingRoom.getRemaiRound().get());
 					userActionScore.setUserId(playerInfo.getUserInfo().getId());
 
 					dbService.insertUserActionScoreInfo(userActionScore);
