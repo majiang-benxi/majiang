@@ -60,7 +60,7 @@ public class ScoreHelper {
 	private static void getSpecialTileScore(WinInfo winInfo, boolean isWinner, List<GetScoreType> typeScore) {
 		// 穷和会判断
 		Set<Byte> set = Tile.tile2Set(winInfo.getHuiTile());
-		for (byte pai : winInfo.getWinTile().getPai()) {
+		for (byte pai : winInfo.getOrgWinTile().getPai()) {
 			if (set.contains(pai)) {// 每个会牌加一分，不论胡不胡牌 结算都加分
 				typeScore.add(GetScoreType.huipai);
 			}
@@ -144,7 +144,7 @@ public class ScoreHelper {
 		if (winnerLocation != null) {
 
 			// 计算会拍、抢拍
-			for (byte pai : winInfo.getWinTile().getPai()) {
+			for (byte pai : winInfo.getOrgWinTile().getPai()) {
 				if (huiset.contains(pai)) {// 会牌：每一张会牌加1分，不胡不算。
 					huiscore += 1;
 				}

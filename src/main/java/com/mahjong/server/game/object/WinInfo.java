@@ -11,6 +11,7 @@ public class WinInfo extends PlayerInfo {
 	private Tile huiTile;// 存储所有的会牌
 	private byte fanhui;// 翻出来的这个会牌
 	private HuType huType;
+	private Tile orgWinTile;
 
 	/**
 	 * 
@@ -28,6 +29,7 @@ public class WinInfo extends PlayerInfo {
 		for (TileGroup tileGroup : playerTiles.getTileGroups()) {
 			allWinTile = Tile.addTile(allWinTile, tileGroup.getTile());
 		}
+		winInfo.orgWinTile = allWinTile.clone();
 		winInfo.huiTile = Tile.getOwnHuiPai(allWinTile, fanhui);
 		allWinTile.removeAll(winInfo.huiTile);// 剔除会牌
 		winInfo.winTile = allWinTile;
@@ -56,6 +58,14 @@ public class WinInfo extends PlayerInfo {
 		return aliveTile;
 	}
 
+
+	public Tile getOrgWinTile() {
+		return orgWinTile;
+	}
+
+	public void setOrgWinTile(Tile orgWinTile) {
+		this.orgWinTile = orgWinTile;
+	}
 
 	public List<TileGroup> getDropTileGroups() {
 		return dropTileGroups;
