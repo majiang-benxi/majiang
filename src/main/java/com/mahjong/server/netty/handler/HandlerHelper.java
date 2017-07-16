@@ -110,17 +110,23 @@ public class HandlerHelper {
 	}
 	
 	public static void noticeMsg2Player(ChannelHandlerContext userCtx, PlayerInfo playerInfo, ProtocolModel protocolModel) {
-		UserInfo user = playerInfo.getUserInfo();
-		if (user != null && userCtx != null) {
-			ChannelFuture feature = userCtx.writeAndFlush(protocolModel);
-			
-			try {
-				feature.get(Constants.writeMsgTimeOut, TimeUnit.MILLISECONDS);
-			} catch (Exception e) {
-				playerInfo.getLastProtocolModel().add(protocolModel);
-				e.printStackTrace();
+		
+		if(playerInfo!=null){
+		
+			UserInfo user = playerInfo.getUserInfo();
+			if (user != null && userCtx != null) {
+				ChannelFuture feature = userCtx.writeAndFlush(protocolModel);
+				
+				try {
+					feature.get(Constants.writeMsgTimeOut, TimeUnit.MILLISECONDS);
+				} catch (Exception e) {
+					playerInfo.getLastProtocolModel().add(protocolModel);
+					e.printStackTrace();
+				}
+				logger.info("返回数据：weixinId=" + user.getWeixinMark() + ",数据：" + JSONObject.toJSONString(protocolModel));
 			}
-			logger.info("返回数据：weixinId=" + user.getWeixinMark() + ",数据：" + JSONObject.toJSONString(protocolModel));
+		}else{
+			userCtx.writeAndFlush(protocolModel);
 		}
 	}
 
