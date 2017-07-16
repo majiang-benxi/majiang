@@ -19,10 +19,11 @@ import com.mahjong.server.game.object.WinInfo;
 import com.mahjong.server.game.rule.win.StandardHuType;
 
 public class ScoreHelper {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(ScoreHelper.class);
 
-	private static void getBaseScore(WinInfo winInfo, RuleInfo ruleInfo, boolean isZhuang, List<GetScoreType> typeScore) {
+	private static void getBaseScore(WinInfo winInfo, RuleInfo ruleInfo, boolean isZhuang,
+			List<GetScoreType> typeScore) {
 		// 胡牌类型基本分
 
 		if (winInfo.getHuType().equals(StandardHuType.NORMAL_HU)) {
@@ -85,12 +86,12 @@ public class ScoreHelper {
 		}
 	}
 
-	private static void getTotalScore(WinInfo wininfo ,RuleInfo ruleInfo, boolean isWinner,
+	private static void getTotalScore(WinInfo wininfo, RuleInfo ruleInfo, boolean isWinner,
 			List<GetScoreType> typeScore) {
 		getSpecialTileScore(wininfo, isWinner, typeScore);
 	}
 
-	public static void getWinerScore(WinInfo wininfo ,List<TileGroup> tileGroups, RuleInfo ruleInfo, boolean isZhuang,
+	public static void getWinerScore(WinInfo wininfo, List<TileGroup> tileGroups, RuleInfo ruleInfo, boolean isZhuang,
 			List<GetScoreType> typeScore) {
 		getBaseScore(wininfo, ruleInfo, isZhuang, typeScore);
 		getTotalScore(wininfo, ruleInfo, true, typeScore);
@@ -103,20 +104,22 @@ public class ScoreHelper {
 		typeScore.add(GetScoreType.dianpao);
 	}
 
-	public static void getXianScore(List<TileGroup> tileGroups, RuleInfo ruleInfo, boolean isZhuang, List<GetScoreType> typeScore) {
+	public static void getXianScore(List<TileGroup> tileGroups, RuleInfo ruleInfo, boolean isZhuang,
+			List<GetScoreType> typeScore) {
 		getTileGroupScore(tileGroups, ruleInfo, typeScore);
 	}
 
 	public static void computeUserScore(Map<PlayerLocation, PlayerInfo> playerInfos, PlayerLocation zhuangLocation,
 			PlayerLocation winnerLocation, PlayerLocation paoerLocation, RuleInfo ruleInfo, WinInfo winInfo,
 			boolean isZimo) {
-		
-		logger.info("computeUserScore**********"+zhuangLocation.name()+":"+winnerLocation.name()+":"+paoerLocation+":"+isZimo);
+
+		logger.info("computeUserScore**********" + zhuangLocation.name() + ":" + winnerLocation.name() + ":"
+				+ paoerLocation + ":" + isZimo);
 
 		Set<Byte> huiset = Tile.tile2Set(winInfo.getHuiTile());
 		boolean dianpaobaosanjia = ruleInfo.getPlayRules().contains(PlayRule.PAO_PAY_THREE);
-		
-		logger.info("computeUserScore***********"+dianpaobaosanjia);
+
+		logger.info("computeUserScore***********" + dianpaobaosanjia);
 
 		int huiscore = 0;
 		int qiangScore = 0;
@@ -141,20 +144,19 @@ public class ScoreHelper {
 					}
 				}
 			}
-			
-			
-			logger.info("computeUserScore***********"+huiscore+":"+qiangScore);
+
+			logger.info("computeUserScore***********" + huiscore + ":" + qiangScore);
 
 			// 赢家是庄
 			if (winnerLocation.getCode() == zhuangLocation.getCode()) {
-				if (paoerLocation==null || isZimo) {// 庄家自摸：每家4分。
+				if (paoerLocation == null || isZimo) {// 庄家自摸：每家4分。
 					xianNeedGiveScore = 4;
 				} else {// 闲家给庄家点炮：点炮者输4分，其余两门各输2分。
 					xianNeedGiveScore = 2;
 					paoNeedGiveScore = 4;
 				}
 			} else {
-				if (paoerLocation==null || isZimo) {// 闲家自摸：庄家输4分，其余两门各输2分。
+				if (paoerLocation == null || isZimo) {// 闲家自摸：庄家输4分，其余两门各输2分。
 					zhuangNeedGiveScore = 4;
 					xianNeedGiveScore = 2;
 				} else {
@@ -168,11 +170,11 @@ public class ScoreHelper {
 					}
 				}
 			}
-			
-			
-			logger.info("computeUserScore***********"+zhuangNeedGiveScore+":"+paoNeedGiveScore+":"+xianNeedGiveScore);
 
-			int ratio = winInfo.getHuType().getScoreFan()==1?0:winInfo.getHuType().getScoreFan();
+			logger.info("computeUserScore***********" + zhuangNeedGiveScore + ":" + paoNeedGiveScore + ":"
+					+ xianNeedGiveScore);
+
+			int ratio = winInfo.getHuType().getScoreFan() == 1 ? 0 : winInfo.getHuType().getScoreFan();
 
 			// 飘胡判断
 			if (ruleInfo.getPlayRules().contains(PlayRule.PIAO_HU)) {
@@ -189,22 +191,22 @@ public class ScoreHelper {
 					ratio += 4;
 				}
 			}
-			
-			logger.info("computeUserScore***********"+ratio);
-			
+
+			logger.info("computeUserScore***********" + ratio);
 
 			zhuangNeedGiveScore *= ratio;
 			xianNeedGiveScore *= ratio;
 			paoNeedGiveScore *= ratio;
-			
-			logger.info("computeUserScore***********"+zhuangNeedGiveScore+":"+paoNeedGiveScore+":"+xianNeedGiveScore);
+
+			logger.info("computeUserScore***********" + zhuangNeedGiveScore + ":" + paoNeedGiveScore + ":"
+					+ xianNeedGiveScore);
 
 			zhuangNeedGiveScore = zhuangNeedGiveScore == 0 ? 0 : (zhuangNeedGiveScore + huiscore + qiangScore);
 			xianNeedGiveScore = xianNeedGiveScore == 0 ? 0 : (xianNeedGiveScore + huiscore + qiangScore);
 			paoNeedGiveScore = paoNeedGiveScore == 0 ? 0 : (paoNeedGiveScore + huiscore + qiangScore);
-			
-			logger.info("computeUserScore***********"+zhuangNeedGiveScore+":"+paoNeedGiveScore+":"+xianNeedGiveScore);
-			
+
+			logger.info("computeUserScore***********" + zhuangNeedGiveScore + ":" + paoNeedGiveScore + ":"
+					+ xianNeedGiveScore);
 
 			int winScore = 0;
 			PlayerInfo winPlayerInfo = null;
@@ -223,7 +225,7 @@ public class ScoreHelper {
 					}
 					boolean hasCompute = false;
 
-					if (paoerLocation!=null && paoerLocation.getCode() == eachLocation.getCode()) {
+					if (paoerLocation != null && paoerLocation.getCode() == eachLocation.getCode()) {
 						dianpaoPlayerInfo = eachPlayer;
 					}
 
@@ -232,7 +234,7 @@ public class ScoreHelper {
 						hasCompute = true;
 					}
 
-					if (paoerLocation!=null && paoerLocation.getCode() == eachLocation.getCode()) {
+					if (paoerLocation != null && paoerLocation.getCode() == eachLocation.getCode()) {
 						if (zhuangLocation.getCode() == eachLocation.getCode()) {
 
 						} else {
@@ -247,8 +249,8 @@ public class ScoreHelper {
 
 				winScore = dianpaoScore;
 				dianpaoPlayerInfo.setCurScore(dianpaoPlayerInfo.getCurScore() - dianpaoScore);
-				
-				logger.info("computeUserScore***********dianpaoScore"+dianpaoScore);
+
+				logger.info("computeUserScore***********dianpaoScore" + dianpaoScore);
 
 			} else {
 				for (Entry<PlayerLocation, PlayerInfo> entry : playerInfos.entrySet()) {
@@ -267,7 +269,7 @@ public class ScoreHelper {
 						hasCompute = true;
 						winScore += zhuangNeedGiveScore;
 					}
-					if (paoerLocation!=null && paoerLocation.getCode() == eachLocation.getCode()) {
+					if (paoerLocation != null && paoerLocation.getCode() == eachLocation.getCode()) {
 						if (zhuangLocation.getCode() == eachLocation.getCode()) {
 
 						} else {
@@ -280,73 +282,73 @@ public class ScoreHelper {
 						winScore += xianNeedGiveScore;
 						eachPlayer.setCurScore(eachPlayer.getCurScore() - xianNeedGiveScore);
 					}
-					
-					logger.info("computeUserScore***********"+eachPlayer.getUserLocation()+":"+eachPlayer.getCurScore());
+
+					logger.info("computeUserScore***********" + eachPlayer.getUserLocation() + ":"
+							+ eachPlayer.getCurScore());
 
 				}
 			}
 
 			winPlayerInfo.setCurScore(winPlayerInfo.getCurScore() + winScore);
 
-			Map<PlayerLocation, Integer> locationAndScore = new HashMap<PlayerLocation, Integer>();
-			locationAndScore.put(PlayerLocation.EAST, 0);
-			locationAndScore.put(PlayerLocation.SOUTH, 0);
-			locationAndScore.put(PlayerLocation.WEST, 0);
-			locationAndScore.put(PlayerLocation.NORTH, 0);
-			Map<PlayerLocation, Integer> tempLocationAndScore = new HashMap<PlayerLocation, Integer>();
+		}
 
-			for (Entry<PlayerLocation, PlayerInfo> entry : playerInfos.entrySet()) {
-				PlayerLocation eachLocation = entry.getKey();
-				PlayerInfo eachPlayer = entry.getValue();
+		Map<PlayerLocation, Integer> locationAndScore = new HashMap<PlayerLocation, Integer>();
+		locationAndScore.put(PlayerLocation.EAST, 0);
+		locationAndScore.put(PlayerLocation.SOUTH, 0);
+		locationAndScore.put(PlayerLocation.WEST, 0);
+		locationAndScore.put(PlayerLocation.NORTH, 0);
+		Map<PlayerLocation, Integer> tempLocationAndScore = new HashMap<PlayerLocation, Integer>();
 
-				List<TileGroup> tileGroups = eachPlayer.getTileGroups();
+		for (Entry<PlayerLocation, PlayerInfo> entry : playerInfos.entrySet()) {
+			PlayerLocation eachLocation = entry.getKey();
+			PlayerInfo eachPlayer = entry.getValue();
 
-				for (TileGroup tileGroup : tileGroups) {
+			List<TileGroup> tileGroups = eachPlayer.getTileGroups();
 
-					int eachgangscore = 0;
+			for (TileGroup tileGroup : tileGroups) {
 
-					if (ruleInfo.getPlayRules().contains(PlayRule.GANG)) {
-						if (tileGroup.getType() == TileGroupType.ANGANG_GROUP) {
-							eachgangscore = 4;// 暗杠：每家4分 不论胡不胡结算都加分
-						} else if (tileGroup.getType() == TileGroupType.BUGANG_GROUP) {
-							eachgangscore = 2;// 明杠：每家2分 不论胡不胡结算都加分
-						} else if (tileGroup.getType() == TileGroupType.XUAN_FENG_GANG_DNXB_GROUP) {
-							eachgangscore = 4;// 旋风杠：东南西北每家4分 中发白每家2分。不论胡不胡牌
-						} else if (tileGroup.getType() == TileGroupType.XUAN_FENG_GANG_ZFB_GROUP) {
-							eachgangscore = 2;// 旋风杠：东南西北每家4分 中发白每家2分。不论胡不胡牌
-						}
+				int eachgangscore = 0;
+
+				if (ruleInfo.getPlayRules().contains(PlayRule.GANG)) {
+					if (tileGroup.getType() == TileGroupType.ANGANG_GROUP) {
+						eachgangscore = 4;// 暗杠：每家4分 不论胡不胡结算都加分
+					} else if (tileGroup.getType() == TileGroupType.BUGANG_GROUP) {
+						eachgangscore = 2;// 明杠：每家2分 不论胡不胡结算都加分
+					} else if (tileGroup.getType() == TileGroupType.XUAN_FENG_GANG_DNXB_GROUP) {
+						eachgangscore = 4;// 旋风杠：东南西北每家4分 中发白每家2分。不论胡不胡牌
+					} else if (tileGroup.getType() == TileGroupType.XUAN_FENG_GANG_ZFB_GROUP) {
+						eachgangscore = 2;// 旋风杠：东南西北每家4分 中发白每家2分。不论胡不胡牌
 					}
+				}
 
-					for (Entry<PlayerLocation, Integer> locationAndScoreEntry : locationAndScore.entrySet()) {
-						PlayerLocation scorelocation = locationAndScoreEntry.getKey();
-						Integer score = locationAndScoreEntry.getValue();
-						if (eachLocation.getCode() == scorelocation.getCode()) {
-							score += eachgangscore*3;
-						} else {
-							score -= eachgangscore;
-						}
-						tempLocationAndScore.put(scorelocation, score);
-
+				for (Entry<PlayerLocation, Integer> locationAndScoreEntry : locationAndScore.entrySet()) {
+					PlayerLocation scorelocation = locationAndScoreEntry.getKey();
+					Integer score = locationAndScoreEntry.getValue();
+					if (eachLocation.getCode() == scorelocation.getCode()) {
+						score += eachgangscore * 3;
+					} else {
+						score -= eachgangscore;
 					}
-					
-					locationAndScore = tempLocationAndScore;
+					tempLocationAndScore.put(scorelocation, score);
 
 				}
-			}
-			
-			
-			for (Entry<PlayerLocation, PlayerInfo> entry : playerInfos.entrySet()) {
-				PlayerLocation eachLocation = entry.getKey();
-				PlayerInfo eachPlayer = entry.getValue();
-				Integer score = locationAndScore.get(eachLocation);
-				
-				logger.info("computeUserScore***********"+eachLocation.name()+":"+score);
-				
-				eachPlayer.setCurScore(eachPlayer.getCurScore() + score);
-			}
-			
 
+				locationAndScore = tempLocationAndScore;
+
+			}
 		}
+
+		for (Entry<PlayerLocation, PlayerInfo> entry : playerInfos.entrySet()) {
+			PlayerLocation eachLocation = entry.getKey();
+			PlayerInfo eachPlayer = entry.getValue();
+			Integer score = locationAndScore.get(eachLocation);
+
+			logger.info("computeUserScore***********" + eachLocation.name() + ":" + score);
+
+			eachPlayer.setCurScore(eachPlayer.getCurScore() + score);
+		}
+
 	}
 
 }
