@@ -131,21 +131,23 @@ public class HandlerHelper {
 	}
 
 	public static void noticeMsg2Player(RoomContext roomContex, PlayerInfo playerInfo, ProtocolModel protocolModel) {
-		UserInfo user = playerInfo.getUserInfo();
-		if (user != null) {
-			String weixinId = user.getWeixinMark();
-			ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinId);
-			
-			ChannelFuture  feature = userCtx.writeAndFlush(protocolModel);
-			
-			try {
-				feature.get(Constants.writeMsgTimeOut, TimeUnit.MILLISECONDS);
-			} catch (Exception e) {
-				playerInfo.getLastProtocolModel().add(protocolModel);
-				e.printStackTrace();
+		if(playerInfo!=null){
+			UserInfo user = playerInfo.getUserInfo();
+			if (user != null) {
+				String weixinId = user.getWeixinMark();
+				ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinId);
+				
+				ChannelFuture  feature = userCtx.writeAndFlush(protocolModel);
+				
+				try {
+					feature.get(Constants.writeMsgTimeOut, TimeUnit.MILLISECONDS);
+				} catch (Exception e) {
+					playerInfo.getLastProtocolModel().add(protocolModel);
+					e.printStackTrace();
+				}
+				logger.info("返回数据：weixinId=" + user.getWeixinMark() + ",数据：" + JSONObject.toJSONString(protocolModel));
+	
 			}
-			logger.info("返回数据：weixinId=" + user.getWeixinMark() + ",数据：" + JSONObject.toJSONString(protocolModel));
-
 		}
 	}
 
