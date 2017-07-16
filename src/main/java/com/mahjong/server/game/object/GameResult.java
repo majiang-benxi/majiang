@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.mahjong.server.game.enums.PlayerLocation;
-import com.mahjong.server.game.rule.PlayRule;
 import com.mahjong.server.game.rule.RuleInfo;
 import com.mahjong.server.game.rule.ScoreHelper;
 
@@ -82,85 +81,28 @@ public class GameResult implements Serializable {
 
 	public void caclulateScore(boolean isZimo) {
 		
-		boolean dianpaobaosanjia = ruleInfo.getPlayRules().contains(PlayRule.PAO_PAY_THREE);
-		
-		int winscore = 0;
-		int dianpaoscore = 0;
-		
 		for ( Entry<PlayerLocation, PlayerInfo> entry : playerInfos.entrySet()) {
 			boolean isZhuang=entry.getKey().getCode()==zhuangLocation.getCode();
 			
 			List<GetScoreType> typeScore = new ArrayList<GetScoreType>();
 			
-			int score = 0;
 			if(entry.getKey()==winnerLocation){
-				
 				//用来获取的分项
-				ScoreHelper.getWinerScore(winInfo, ruleInfo, isZhuang,typeScore);
+				ScoreHelper.getWinerScore(winInfo, entry.getValue().getTileGroups(), ruleInfo, isZhuang,typeScore);
 				
 			}else if(entry.getKey()==paoerLocation){
 				
-				score = ScoreHelper.getPaoerScore(winInfo, ruleInfo, isZhuang,typeScore);
-				
+				ScoreHelper.getPaoerScore(entry.getValue().getTileGroups(), ruleInfo, isZhuang,typeScore);
 			} else {
-				score = ScoreHelper.getXianScore(winInfo, ruleInfo, isZhuang,typeScore);
-			}
-			
-			
-		/*	if(entry.getKey() != winnerLocation){
 				
-				//赢家分数是其他几家之和
-				winscore += score;
-				
-				if(dianpaobaosanjia){//点炮宝三家，点炮者分数是三家之和
-					dianpaoscore += score;
-				}else{
-					//不是点炮宝三家，点炮者分数是自己的
-					if(entry.getKey()==paoerLocation){
-						dianpaoscore += score;
-					}
-				}
+				ScoreHelper.getXianScore(entry.getValue().getTileGroups(), ruleInfo, isZhuang,typeScore);
 			}
-			
-			//赢家分数，核电跑分数后续计算
-			if(entry.getKey()!=paoerLocation && entry.getKey()!=winnerLocation){
-				entry.getValue().setCurScore(entry.getValue().getCurScore() + score);
-			}*/
 			
 			entry.getValue().setGatherScoreTypes(typeScore);
 		}
 		
 		
 		ScoreHelper.computeUserScore(playerInfos, zhuangLocation, winnerLocation, paoerLocation, ruleInfo, winInfo, isZimo);
-		
-	/*	for ( Entry<PlayerLocation, PlayerInfo> entry : playerInfos.entrySet()) {
-			
-			if(entry.getKey()!=paoerLocation && entry.getKey()!=winnerLocation && dianpaobaosanjia){
-				entry.getValue().setCurScore(1000);
-				continue;
-			}
-			
-			//赢家分数是其他几家之和的正数
-			if(entry.getKey()==winnerLocation){
-				entry.getValue().setCurScore(entry.getValue().getCurScore() - winscore);
-			}
-			
-			//点炮者分数计算
-			if(entry.getKey()==paoerLocation){
-				entry.getValue().setCurScore(entry.getValue().getCurScore() + dianpaoscore);
-			}
-			
-		}*/
-		
-		
-		
-		
-		
-/*		for ( Entry<PlayerLocation, PlayerInfo> entry : playerInfos.entrySet()) {
-			List<GetScoreType> typeScore = entry.getValue().getGatherScoreTypes();
-			int gangscore = ScoreHelper.getTileGroupScore(entry.getValue().getTileGroups(), ruleInfo, typeScore);
-			entry.getValue().setCurScore(entry.getValue().getCurScore() + gangscore);
-		}*/
 	}
 
 }

@@ -1,11 +1,10 @@
 package com.mahjong.server.game.rule;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,21 +17,13 @@ import com.mahjong.server.game.object.TileGroup;
 import com.mahjong.server.game.object.TileGroupType;
 import com.mahjong.server.game.object.WinInfo;
 import com.mahjong.server.game.rule.win.StandardHuType;
-import com.mahjong.server.netty.handler.HandlerHelper;
 
 public class ScoreHelper {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ScoreHelper.class);
 
-	private static int getBaseScore(WinInfo winInfo, RuleInfo ruleInfo, boolean isZhuang,
-			List<GetScoreType> typeScore) {
-		int baseScore = 1;// basescore 底分为1分，庄家底分2分
-		if (isZhuang) {
-			baseScore = 2;
-		}
+	private static void getBaseScore(WinInfo winInfo, RuleInfo ruleInfo, boolean isZhuang, List<GetScoreType> typeScore) {
 		// 胡牌类型基本分
-		int huTypeFanScore = winInfo.getHuType().getScoreFan();
-		baseScore *= huTypeFanScore;
 
 		if (winInfo.getHuType().equals(StandardHuType.NORMAL_HU)) {
 			typeScore.add(GetScoreType.nor_hu);
@@ -51,7 +42,6 @@ public class ScoreHelper {
 		if (ruleInfo.getPlayRules().contains(PlayRule.PIAO_HU)) {
 			boolean isPiao = winInfo.getHuType().getBaseWinType().isPiaoHU(winInfo);
 			if (isPiao) {
-				baseScore *= 4;
 				typeScore.add(GetScoreType.piaohu);
 			}
 		}
@@ -60,92 +50,61 @@ public class ScoreHelper {
 			// 穷胡判断
 			boolean maybeQiong = winInfo.getHuType().getBaseWinType().maybeQiongHu(winInfo);
 			if (maybeQiong) {
-				baseScore *= 4;
 				typeScore.add(GetScoreType.qionghu);
 			}
 		}
-		return baseScore;
 	}
 
-	private static int getSpecialTileScore(WinInfo winInfo, boolean isWinner, List<GetScoreType> typeScore) {
-		int tileScore = 0;
+	private static void getSpecialTileScore(WinInfo winInfo, boolean isWinner, List<GetScoreType> typeScore) {
 		// 穷和会判断
 		Set<Byte> set = Tile.tile2Set(winInfo.getHuiTile());
 		for (byte pai : winInfo.getWinTile().getPai()) {
 			if (set.contains(pai)) {// 每个会牌加一分，不论胡不胡牌 结算都加分
-				tileScore += 1;
 				typeScore.add(GetScoreType.huipai);
 			}
-			if (pai == Tile.QIANG && isWinner) {// 每个枪牌加一分，不胡不算
-				tileScore += 1;
+			if (pai == Tile.QIANG) {// 每个枪牌加一分，不胡不算
 				typeScore.add(GetScoreType.qiangpai);
 			}
 		}
-		return tileScore;
 	}
 
-	public static int getTileGroupScore(List<TileGroup> tileGroups, RuleInfo ruleInfo, List<GetScoreType> typeScore) {
-		int result = 0;
+	public static void getTileGroupScore(List<TileGroup> tileGroups, RuleInfo ruleInfo, List<GetScoreType> typeScore) {
 		for (TileGroup tileGroup : tileGroups) {
 			if (ruleInfo.getPlayRules().contains(PlayRule.GANG)) {
 				if (tileGroup.getType() == TileGroupType.ANGANG_GROUP) {
-					result += 12;// 暗杠：每家4分 不论胡不胡结算都加分
 					typeScore.add(GetScoreType.angang);
 				} else if (tileGroup.getType() == TileGroupType.BUGANG_GROUP) {
-					result += 6;// 明杠：每家2分 不论胡不胡结算都加分
 					typeScore.add(GetScoreType.bugang);
 				} else if (tileGroup.getType() == TileGroupType.XUAN_FENG_GANG_DNXB_GROUP) {
-					result += 12;// 旋风杠：东南西北每家4分 中发白每家2分。不论胡不胡牌 结算都加分。
 					typeScore.add(GetScoreType.xuanfenggang);
 				} else if (tileGroup.getType() == TileGroupType.XUAN_FENG_GANG_ZFB_GROUP) {
-					result += 6;// 旋风杠：东南西北每家4分 中发白每家2分。不论胡不胡牌 结算都加分。
 					typeScore.add(GetScoreType.xuanfenggang);
 				}
 			}
 
 		}
-		return result;
 	}
 
-	private static int getTotalScore(int baseScore, WinInfo winInfo, RuleInfo ruleInfo, boolean isWinner,
+	private static void getTotalScore(WinInfo wininfo ,RuleInfo ruleInfo, boolean isWinner,
 			List<GetScoreType> typeScore) {
-		int specialTileScore = getSpecialTileScore(winInfo, isWinner, typeScore);
-		int totalScore = baseScore + specialTileScore;
-		return totalScore;
+		getSpecialTileScore(wininfo, isWinner, typeScore);
 	}
 
-	public static int getWinerScore(WinInfo winInfo, RuleInfo ruleInfo, boolean isZhuang,
+	public static void getWinerScore(WinInfo wininfo ,List<TileGroup> tileGroups, RuleInfo ruleInfo, boolean isZhuang,
 			List<GetScoreType> typeScore) {
-		int baseScore = getBaseScore(winInfo, ruleInfo, isZhuang, typeScore);
-		if (winInfo.isZiMo()) {// 这个需要在所有base项目统计完毕之后计算。表示其他向其他3个玩家收分。
-			typeScore.add(GetScoreType.zimo);
-			baseScore *= 6;
-		}
-		return getTotalScore(baseScore, winInfo, ruleInfo, true, typeScore);
+		getBaseScore(wininfo, ruleInfo, isZhuang, typeScore);
+		getTotalScore(wininfo, ruleInfo, true, typeScore);
+		getTileGroupScore(tileGroups, ruleInfo, typeScore);
 	}
 
-	public static int getPaoerScore(WinInfo winInfo, RuleInfo ruleInfo, boolean isZhuang,
+	public static void getPaoerScore(List<TileGroup> tileGroups, RuleInfo ruleInfo, boolean isZhuang,
 			List<GetScoreType> typeScore) {
-		int baseScore = getBaseScore(winInfo, ruleInfo, isZhuang, new ArrayList<GetScoreType>()) * (-1);
-		if (isZhuang) {
-			baseScore *= 2;
-		}
-
-		int rest = getTotalScore(baseScore, winInfo, ruleInfo, false, typeScore);
-
-		typeScore = new ArrayList<GetScoreType>();
+		getTileGroupScore(tileGroups, ruleInfo, typeScore);
 		typeScore.add(GetScoreType.dianpao);
-
-		return rest;
-
 	}
 
-	public static int getXianScore(WinInfo winInfo, RuleInfo ruleInfo, boolean isZhuang, List<GetScoreType> typeScore) {
-		int baseScore = getBaseScore(winInfo, ruleInfo, isZhuang, new ArrayList<GetScoreType>()) * (-1);
-		int rest = getTotalScore(baseScore, winInfo, ruleInfo, false, typeScore);
-		typeScore = new ArrayList<GetScoreType>();
-		return rest;
-
+	public static void getXianScore(List<TileGroup> tileGroups, RuleInfo ruleInfo, boolean isZhuang, List<GetScoreType> typeScore) {
+		getTileGroupScore(tileGroups, ruleInfo, typeScore);
 	}
 
 	public static void computeUserScore(Map<PlayerLocation, PlayerInfo> playerInfos, PlayerLocation zhuangLocation,
