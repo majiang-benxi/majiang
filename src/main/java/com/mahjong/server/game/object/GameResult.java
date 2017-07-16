@@ -80,7 +80,7 @@ public class GameResult implements Serializable {
 		return zhuangLocation;
 	}
 
-	public void caclulateScore() {
+	public void caclulateScore(boolean isZimo) {
 		
 		boolean dianpaobaosanjia = ruleInfo.getPlayRules().contains(PlayRule.PAO_PAY_THREE);
 		
@@ -107,7 +107,7 @@ public class GameResult implements Serializable {
 			}
 			
 			
-			if(entry.getKey() != winnerLocation){
+		/*	if(entry.getKey() != winnerLocation){
 				
 				//赢家分数是其他几家之和
 				winscore += score;
@@ -125,12 +125,15 @@ public class GameResult implements Serializable {
 			//赢家分数，核电跑分数后续计算
 			if(entry.getKey()!=paoerLocation && entry.getKey()!=winnerLocation){
 				entry.getValue().setCurScore(entry.getValue().getCurScore() + score);
-			}
+			}*/
 			
 			entry.getValue().setGatherScoreTypes(typeScore);
 		}
 		
-		for ( Entry<PlayerLocation, PlayerInfo> entry : playerInfos.entrySet()) {
+		
+		ScoreHelper.computeUserScore(playerInfos, zhuangLocation, winnerLocation, paoerLocation, ruleInfo, winInfo, isZimo);
+		
+	/*	for ( Entry<PlayerLocation, PlayerInfo> entry : playerInfos.entrySet()) {
 			
 			if(entry.getKey()!=paoerLocation && entry.getKey()!=winnerLocation && dianpaobaosanjia){
 				entry.getValue().setCurScore(1000);
@@ -147,7 +150,10 @@ public class GameResult implements Serializable {
 				entry.getValue().setCurScore(entry.getValue().getCurScore() + dianpaoscore);
 			}
 			
-		}
+		}*/
+		
+		
+		
 		
 		
 /*		for ( Entry<PlayerLocation, PlayerInfo> entry : playerInfos.entrySet()) {

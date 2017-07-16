@@ -1,10 +1,15 @@
 package com.mahjong.server.game.rule;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
+import com.mahjong.server.game.enums.PlayerLocation;
 import com.mahjong.server.game.object.GetScoreType;
+import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.TileGroup;
 import com.mahjong.server.game.object.TileGroupType;
@@ -129,4 +134,170 @@ public class ScoreHelper {
 		return rest;
 		
 	}
+	
+	
+	
+	public static void computeUserScore(Map<PlayerLocation, PlayerInfo> playerInfos,
+			PlayerLocation zhuangLocation,PlayerLocation winnerLocation,PlayerLocation paoerLocation,
+			RuleInfo ruleInfo,WinInfo winInfo,boolean isZimo) {
+		
+		Set<Byte> huiset = Tile.tile2Set(winInfo.getHuiTile());
+		boolean dianpaobaosanjia = ruleInfo.getPlayRules().contains(PlayRule.PAO_PAY_THREE);
+		
+		int huiscore = 0;
+		int qiangScore = 0;
+		
+		int zhuangNeedGiveScore = 0;
+		int xianNeedGiveScore = 0;
+		
+		int paoNeedGiveScore = 0;
+		
+		
+		if(winnerLocation!=null){
+		
+				
+			 //计算会拍、抢拍
+			for (byte pai : winInfo.getWinTile().getPai()) {
+				if (huiset.contains(pai)) {// 会牌：每一张会牌加1分，不胡不算。
+					huiscore += 1;
+				}
+				if (pai == Tile.QIANG) {
+					if(huiset.contains(pai)){//如枪牌为会时。胡牌时一个枪加2分，不胡不算。
+						qiangScore += 2;
+					}else{//枪牌：胡牌时手中每个枪加一分，不胡不算。
+						qiangScore += 1;
+					}
+				}
+			 }
+				
+			 //赢家是庄
+			if(winnerLocation.getCode() == zhuangLocation.getCode()){
+				if(isZimo){//庄家自摸：每家4分。
+					xianNeedGiveScore = 4;
+				}else{//闲家给庄家点炮：点炮者输4分，其余两门各输2分。
+					xianNeedGiveScore = 2;
+					paoNeedGiveScore = 4;
+				}
+			 }else{
+				if(isZimo){//闲家自摸：庄家输4分，其余两门各输2分。
+					zhuangNeedGiveScore = 4;
+					xianNeedGiveScore = 2;
+				}else{
+					if(paoerLocation.getCode() == zhuangLocation.getCode()){//庄家给闲家点炮：庄家输4分，其余两门各输1分
+						zhuangNeedGiveScore = 4;
+						xianNeedGiveScore = 1;
+					}else{//闲家给闲家点炮：庄家输2分，点炮家输2分，剩一家输1分
+						zhuangNeedGiveScore = 2;
+						paoNeedGiveScore = 2;
+						xianNeedGiveScore = 1;
+					}
+				}
+			 }
+			
+			 zhuangNeedGiveScore = zhuangNeedGiveScore==0?0:(zhuangNeedGiveScore+huiscore+qiangScore);
+			 xianNeedGiveScore = xianNeedGiveScore==0?0:(xianNeedGiveScore+huiscore+qiangScore);
+			 paoNeedGiveScore = paoNeedGiveScore==0?0:(paoNeedGiveScore+huiscore+qiangScore);
+					
+			 
+			 int ratio = winInfo.getHuType().getScoreFan();
+			 
+			//飘胡判断
+			 if(ruleInfo.getPlayRules().contains(PlayRule.PIAO_HU)){
+				boolean isPiao=winInfo.getHuType().getBaseWinType().isPiaoHU(winInfo);
+				if(isPiao){
+					ratio += 4;
+				}
+			 }
+				
+			 if(ruleInfo.getPlayRules().contains(PlayRule.QIONGHU)){
+				//穷胡判断
+				boolean maybeQiong = winInfo.getHuType().getBaseWinType().maybeQiongHu(winInfo);
+				if (maybeQiong) {
+					ratio += 4;
+				}
+			 }
+			 
+			 zhuangNeedGiveScore *= ratio;
+			 xianNeedGiveScore *= ratio;
+			 paoNeedGiveScore *= ratio;
+			 
+			 
+			 int winScore = 0;
+			 PlayerInfo winPlayerInfo = null;
+			 
+			 if(dianpaobaosanjia){
+				 
+				 int dianpaoScore = 0;
+				 PlayerInfo dianpaoPlayerInfo = null;
+				 
+				 for ( Entry<PlayerLocation, PlayerInfo> entry : playerInfos.entrySet()) {
+						PlayerLocation eachLocation = entry.getKey();
+						PlayerInfo eachPlayer = entry.getValue();
+						if(winnerLocation.getCode() == eachLocation.getCode()){
+							continue;
+						}
+						boolean hasCompute = false;
+						
+						if(paoerLocation.getCode() == eachLocation.getCode()){
+							dianpaoPlayerInfo = eachPlayer;
+						}
+						
+						if(zhuangLocation.getCode() == eachLocation.getCode()){
+							dianpaoScore += zhuangNeedGiveScore;
+						}
+						
+						if(paoerLocation.getCode() == eachLocation.getCode()){
+							if(zhuangLocation.getCode() == eachLocation.getCode()){
+								
+							}else{
+								dianpaoScore += paoNeedGiveScore;
+							}
+							hasCompute = true;
+						}
+						if(!hasCompute){
+							dianpaoScore += xianNeedGiveScore;
+						}
+				 }
+				 
+				 winScore = dianpaoScore;
+				 dianpaoPlayerInfo.setCurScore(dianpaoPlayerInfo.getCurScore()-dianpaoScore);
+				 
+			 }else{
+				 for ( Entry<PlayerLocation, PlayerInfo> entry : playerInfos.entrySet()) {
+						PlayerLocation eachLocation = entry.getKey();
+						PlayerInfo eachPlayer = entry.getValue();
+						
+						if(winnerLocation.getCode() == eachLocation.getCode()){
+							continue;
+						}
+						
+						boolean hasCompute = false;
+						
+						if(zhuangLocation.getCode() == eachLocation.getCode()){
+							eachPlayer.setCurScore(eachPlayer.getCurScore()-zhuangNeedGiveScore);
+							hasCompute = true;
+							winScore += zhuangNeedGiveScore;
+						}
+						if(paoerLocation.getCode() == eachLocation.getCode()){
+							if(zhuangLocation.getCode() == eachLocation.getCode()){
+								
+							}else{
+								eachPlayer.setCurScore(eachPlayer.getCurScore()-paoNeedGiveScore);
+								winScore += paoNeedGiveScore;
+							}
+							hasCompute = true;
+						}
+						if(!hasCompute){
+							winScore += xianNeedGiveScore;
+							eachPlayer.setCurScore(eachPlayer.getCurScore()-xianNeedGiveScore);
+						}
+						
+				 }
+			 }
+			 
+			 winPlayerInfo.setCurScore(winPlayerInfo.getCurScore()+winScore);
+			 
+		}
+	}
+	
 }

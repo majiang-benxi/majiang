@@ -83,7 +83,7 @@ public class WinActionType extends AbstractActionType {
 				if (!ziMo) {
 					result.setPaoerLocation(context.getLastActionLocation());
 				}
-				result.caclulateScore();// 计算分数
+				result.caclulateScore(ziMo);// 计算分数
 				context.setGameResult(result);
 			}
 		}
