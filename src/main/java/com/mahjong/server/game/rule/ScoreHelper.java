@@ -147,14 +147,14 @@ public class ScoreHelper {
 
 			// 赢家是庄
 			if (winnerLocation.getCode() == zhuangLocation.getCode()) {
-				if (isZimo) {// 庄家自摸：每家4分。
+				if (paoerLocation==null || isZimo) {// 庄家自摸：每家4分。
 					xianNeedGiveScore = 4;
 				} else {// 闲家给庄家点炮：点炮者输4分，其余两门各输2分。
 					xianNeedGiveScore = 2;
 					paoNeedGiveScore = 4;
 				}
 			} else {
-				if (isZimo) {// 闲家自摸：庄家输4分，其余两门各输2分。
+				if (paoerLocation==null || isZimo) {// 闲家自摸：庄家输4分，其余两门各输2分。
 					zhuangNeedGiveScore = 4;
 					xianNeedGiveScore = 2;
 				} else {
@@ -223,7 +223,7 @@ public class ScoreHelper {
 					}
 					boolean hasCompute = false;
 
-					if (paoerLocation.getCode() == eachLocation.getCode()) {
+					if (paoerLocation!=null && paoerLocation.getCode() == eachLocation.getCode()) {
 						dianpaoPlayerInfo = eachPlayer;
 					}
 
@@ -232,7 +232,7 @@ public class ScoreHelper {
 						hasCompute = true;
 					}
 
-					if (paoerLocation.getCode() == eachLocation.getCode()) {
+					if (paoerLocation!=null && paoerLocation.getCode() == eachLocation.getCode()) {
 						if (zhuangLocation.getCode() == eachLocation.getCode()) {
 
 						} else {
@@ -267,7 +267,7 @@ public class ScoreHelper {
 						hasCompute = true;
 						winScore += zhuangNeedGiveScore;
 					}
-					if (paoerLocation.getCode() == eachLocation.getCode()) {
+					if (paoerLocation!=null && paoerLocation.getCode() == eachLocation.getCode()) {
 						if (zhuangLocation.getCode() == eachLocation.getCode()) {
 
 						} else {
