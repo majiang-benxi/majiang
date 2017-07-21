@@ -93,9 +93,12 @@ public class Tile {
 		return allPai;
 	}
 
-	public static Set<Byte> getNotUsedJiangPai() {
-		byte[] notUsedJiangPai = new byte[] { 0x02, 0x05, 0x08, 0x12, 0x15, 0x18, 0x22, 0x25, 0x28 };
+	public static Set<Byte> getNotUsedJiangPai(Boolean isChuanTongRule) {
 		Set<Byte> set = new HashSet<Byte>();
+		if(!isChuanTongRule){
+			return set;
+		}
+		byte[] notUsedJiangPai = new byte[] { 0x02, 0x08, 0x12, 0x18, 0x22, 0x28 };
 		for (Byte notUsedJiang : notUsedJiangPai) {
 			set.add(notUsedJiang);
 		}
@@ -216,7 +219,7 @@ public class Tile {
 		return true;
 	}
 
-	public static List<Byte> getJANGPai(Tile tile) {
+	public static List<Byte> getJANGPai(Tile tile,boolean isChuanTongRule) {
 		List<Byte> jiangPAI = new ArrayList<Byte>();
 		// tempMap存放牌值的张数<牌值,张数>
 		Map<Byte, Integer> tempMap = new HashMap<Byte, Integer>();
@@ -229,7 +232,7 @@ public class Tile {
 		}
 		// 将可能成为将牌的牌值存放到jiangPAI中
 		for (Entry<Byte, Integer> e : tempMap.entrySet()) {
-			if (e.getValue() >= 2 && !getNotUsedJiangPai().contains(e.getKey())) {
+			if (e.getValue() >= 2 && !getNotUsedJiangPai(isChuanTongRule).contains(e.getKey())) {
 				jiangPAI.add(e.getKey());
 			}
 		}

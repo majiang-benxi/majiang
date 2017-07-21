@@ -46,6 +46,12 @@ public class DrawTileContext {
 		this.playerLocation = playerLocation;
 		this.isFirstDrawTile=false;
 	}
+	public void init(){
+		this.canDoActions=new ArrayList<Action>();
+		this.canwin = false;
+		this.canxfg = false;
+		this.isFirstDrawTile=true;
+	}
 	public PlayerLocation getPlayerLocation() {
 		return playerLocation;
 	}

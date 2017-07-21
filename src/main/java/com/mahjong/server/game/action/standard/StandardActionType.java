@@ -38,7 +38,7 @@ public enum StandardActionType implements ActionType {
 	/**
 	 * 补杠
 	 */
-	BUGANG(new BugangActionType(BUGANG_GROUP)),
+	BUGANG(new BugangActionType(BUGANG_GROUP,null)),
 	/**
 	 * 暗杠
 	 */

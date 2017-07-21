@@ -86,6 +86,7 @@ public class BeginNextRoundHandler extends SimpleChannelInboundHandler<ProtocolM
 						roomContex.getAgreeNextRoundNum().incrementAndGet();
 					} else {
 						logger.info("房间信息有误,weixinId="+weixinId);
+						return ;
 					}
 				}
 				

@@ -1,6 +1,6 @@
 package com.mahjong.server.game.action.standard;
 
-import static com.mahjong.server.game.action.standard.StandardActionType.ANGANG;
+import static com.mahjong.server.game.action.standard.StandardActionType.*;
 import static com.mahjong.server.game.action.standard.StandardActionType.DRAW_BOTTOM;
 import static com.mahjong.server.game.action.standard.StandardActionType.ZIPAI;
 
@@ -22,7 +22,7 @@ public class DrawBottomActionType extends DrawActionType {
 	protected boolean checkLastActionCondition(ActionAndLocation al, PlayerLocation playerLocation) {
 		// 必须是自己杠之后
 		if (playerLocation == al.getLocation()
-				&& (ANGANG.matchBy(al.getActionType())||ZIPAI.matchBy(al.getActionType()))) {
+				&& (ANGANG.matchBy(al.getActionType())||ZIPAI.matchBy(al.getActionType())||BUGANG.matchBy(al.getActionType()))) {
 			return true;
 		}
 		return false;

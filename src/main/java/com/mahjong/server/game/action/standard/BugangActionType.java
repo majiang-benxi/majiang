@@ -10,14 +10,16 @@ import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.TileGroup;
 import com.mahjong.server.game.object.TileGroupType;
+import com.mahjong.server.game.rule.PlayRule;
 /**
  * 动作类型“补杠”。
  * @author warter
  */
 public class BugangActionType extends CpgActionType {
-
-	public BugangActionType(TileGroupType groupType) {
+	private Tile buGangRangeTile;
+	public BugangActionType(TileGroupType groupType,Tile buGangRangeTile) {
 		super(groupType);
+		this.buGangRangeTile=buGangRangeTile;
 	}
 
 	@Override
@@ -28,7 +30,11 @@ public class BugangActionType extends CpgActionType {
 	protected boolean checkAliveTileSizeCondition(int size) {
 		return size % 3 == 2;// 活牌数量至少有对将
 	}
-
+	
+	@Override
+	protected Tile getActionTilesRange(PlayerInfo playerInfo ) {	
+		return buGangRangeTile;
+	}
 	@Override
 	protected int getActionTilesSize() {
 		return 1;
@@ -37,7 +43,7 @@ public class BugangActionType extends CpgActionType {
 	@Override
 	protected boolean isLegalActionWithPreconition(GameContext context,PlayerLocation location,
 			Tile tile) {
-		return findLegalPengGroup( context.getTable().getPlayerByLocation(location), tile) != null;
+		return context.getGameStrategy().getRuleInfo().getPlayRules().contains(PlayRule.GANG)&&findLegalPengGroup( context.getTable().getPlayerByLocation(location), tile) != null;
 	}
 
 	@Override

@@ -81,8 +81,8 @@ public class MajiangPlayView {
 			} else {
 				if(!currentWinView){
 					playerInfo = playerInfo._getOtherPlayerInfoView();
-					reSortIfContainsHuiPai(playerInfo);
 				} 
+				reSortIfContainsHuiPai(playerInfo);
 				result.add(playerInfo);
 			}
 		}

@@ -54,7 +54,8 @@ public class MyBatisSQLInterceptor implements Interceptor {
 		if (time > 1) {
 			String sql = getSql(configuration, boundSql, sqlId);
 			logger.info("执行SQL：" + sql + "，执行时间：" + time + "MS");
-			logger.info("执行SQL返回数据：" +JSON.toJSONString(returnValue));
+			String ss = JSON.toJSONString(returnValue);
+			logger.info("执行SQL返回数据：" +(ss.length()>500?ss.substring(0,500):ss));
 		}
 		return returnValue;
 	}

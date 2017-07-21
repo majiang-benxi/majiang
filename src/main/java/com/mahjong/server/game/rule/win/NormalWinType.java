@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.web.context.request.NativeWebRequest;
 
 import com.mahjong.server.game.object.GetScoreType;
 import com.mahjong.server.game.object.PlayerTiles;
@@ -21,6 +22,7 @@ import com.mahjong.server.game.object.TileGroupType;
 import com.mahjong.server.game.object.TileUnitInfo;
 import com.mahjong.server.game.object.WinInfo;
 import com.mahjong.server.game.rule.FangKa;
+import com.mahjong.server.game.rule.PlayRule;
 import com.mahjong.server.game.rule.RuleInfo;
 import com.mahjong.server.game.rule.ScoreHelper;
 
@@ -42,7 +44,7 @@ public class NormalWinType implements WinType {
 			return false;
 		}
 		// 将牌check
-		List<Byte> jiangPai = Tile.getJANGPai(winInfo.getAliveTile());
+		List<Byte> jiangPai = Tile.getJANGPai(winInfo.getAliveTile(),ruleInfo.getPlayRules().contains(PlayRule.CHUAN_TONG));
 		int huiNum = winInfo.getHuiTile().getPai().length;
 		// 没有将牌【只有有会牌就算有将牌】直接胡不了
 
@@ -183,15 +185,15 @@ public class NormalWinType implements WinType {
 	}
 
 	public boolean maybeQiongHu(WinInfo winInfo) {
-		Set<Byte> set = Tile.tile2Set(winInfo.getHuiTile());
 		boolean qiongHu = true;
 		for (byte pai : winInfo.getWinTile().getPai()) {
-			if (set.contains(pai)) {// 会牌
-				qiongHu = false;
-			}
 			if (pai == Tile.QIANG) {// 枪牌
 				qiongHu = false;
 			}
+		}
+		Tile huiTile=winInfo.getHuiTile();
+		if( huiTile!= null&&huiTile.getPai().length>0){
+			qiongHu=false;
 		}
 		return qiongHu;
 	}
@@ -203,7 +205,7 @@ public class NormalWinType implements WinType {
 		pais = new byte[] { 0x01, 0x15, 0x14, 0x12, 0x12, 0x12, 0x21, 0x22, 0x23, 0x29, 0x29 };// 2张会牌true
 		pais = new byte[] { 0x14, 0x15, 0x14, 0x12, 0x12, 0x12, 0x21, 0x22, 0x23, 0x29, 0x29 };// 3张会牌,缺花色false
 		pais = new byte[] { 0x14, 0x15, 0x14, 0x12, 0x12, 0x12, 0x21, 0x01, 0x23, 0x29, 0x29 };// 3张会牌
-		pais = new byte[] { 0x21, 0x22, 0x23, 0x22, 0x23, 0x14, 0x21, 0x22, 0x23, 0x29, 0x29 };// 清一色true
+		pais = new byte[] { 0x21, 0x22, 0x23, 0x22, 0x23, 0x24, 0x21, 0x22, 0x23, 0x29, 0x29 };// 清一色true
 		// pais = new byte[] { 0x21, 0x15, 0x23, 0x22, 0x23, 0x24, 0x27, 0x27,
 		// 0x27, 0x27, 0x28, 0x29, 0x14, 0x29 };// 清一色true
 		// pais = new byte[] { 0x01, 0x02, 0x03, 0x02, 0x03, 0x04, 0x05, 0x06,
@@ -216,12 +218,12 @@ public class NormalWinType implements WinType {
 		// 0x07, 0x08, 0x08, 0x08, 0x06, 0x06 }; // 清一色穷true
 		// pais = new byte[] { 0x11, 0x11, 0x36, 0x36, 0x21, 0x21, 0x15, 0x31,
 		// 0x32, 0x15, 0x16, 0x16, 0x37, 0x37 };// 七小对true
-		pais = new byte[] { 0x11, 0x11, 0x36, 0x36, 0x21, 0x21, 0x31, 0x31, 0x32, 0x32, 0x16, 0x16, 0x37, 0x37 };// 七小对穷true
+		//pais = new byte[] { 0x11, 0x11, 0x36, 0x36, 0x21, 0x21, 0x31, 0x31, 0x32, 0x32, 0x16, 0x16, 0x37, 0x37 };// 七小对穷true
 		//pais = new byte[] { 0x11, 0x15, 0x11, 0x02, 0x02, 0x02, 0x28, 0x28, 0x28, 0x14, 0x17, 0x17, 0x16, 0x15 };// 飘true
 		//pais = new byte[] { 0x11, 0x11, 0x11, 0x02, 0x02, 0x02, 0x28, 0x28, 0x28, 0x17, 0x17, 0x17, 0x16, 0x16 };// 飘穷true
 		//pais = new byte[] { 0x27, 0x27, 0x14, 0x32, 0x33, 0x15, 0x12, 0x13, 0x14, 0x12, 0x13, 0x14, 0x36, 0x36 };// 普通胡带会带枪false
-		//pais = new byte[] { 0x01, 0x01, 0x01, 0x17, 0x17, 0x17, 0x28, 0x28, 0x28, 0x12, 0x13, 0x14, 0x05, 0x05 };// 穷胡true
- 		pais=new byte[]{0x28,0x28,0x28,0x37,0x37,0x37,0x01, 0x02, 0x03,0x13,0x13,0x15,0x28,0x12};
+		//pais = new byte[] { 0x01, 0x03, 0x05, 0x21, 0x22, 0x23, 0x36, 0x37 };// 穷胡true
+ 		//pais=new byte[]{0x04, 0x04, 0x13,0x16,0x16,0x35,0x35,0x17};
  		
 		//int[] qianduanPai=new int[]{1, 3 ,7 ,20 ,21,25 ,33, 35, 38 ,39 ,51, 52, 53, 53};
  		//qianduanPai=new int[]{5, 5, 8 ,9 ,19, 23, 25 ,25 ,25, 33 ,37, 40, 50,52};
@@ -231,19 +233,24 @@ public class NormalWinType implements WinType {
  		int[] qianduanPai=tile.getQianduanPai();
 		PlayerTiles playerTiles=new PlayerTiles();
 		playerTiles.setAliveTiles(tile);
-		WinInfo winInfo= WinInfo.fromPlayerTiles(playerTiles,(byte)0x12,true);
+//		List<TileGroup>tileGroups=new ArrayList<TileGroup>();
+//		tileGroups.add(new TileGroup(TileGroupType.PENG_GROUP, new Tile(new byte[]{0x24, 0x24, 0x24})));
+//		tileGroups.add(new TileGroup(TileGroupType.PENG_GROUP, new Tile(new byte[]{0x12, 0x12, 0x12})));
+//
+//		playerTiles.setTileGroups(tileGroups );
+		WinInfo winInfo= WinInfo.fromPlayerTiles(playerTiles,(byte)0x21,false);
 		RuleInfo ruleInfo = new RuleInfo();
 		ruleInfo.setPlayRules(RuleInfo.parseRuleFromBitString("01111"));
 		ruleInfo.setFangKa(FangKa.ONE_SIXTEEN);
-		NormalWinType winType = new NormalWinType();
-		winInfo.setHuType(com.mahjong.server.game.rule.win.StandardHuType.NORMAL_HU);
+		//NormalWinType winType = new NormalWinType();
+		//winInfo.setHuType(com.mahjong.server.game.rule.win.StandardHuType.NORMAL_HU);
 
-		// QingYiSeWinType winType = new QingYiSeWinType();
-		// QiDuiWinType winType = new QiDuiWinType();
+		QingYiSeWinType winType = new QingYiSeWinType();
+	//QiDuiWinType winType = new QiDuiWinType();
 		System.out.println(winType.canWin(winInfo, ruleInfo));
-		//System.out.println(ScoreHelper.getPaoerScore(winInfo, ruleInfo, true, new ArrayList<GetScoreType>()));
- 		System.out.println(ScoreHelper.getWinerScore(winInfo, ruleInfo, true, new ArrayList<GetScoreType>()));
-		System.out.println(ScoreHelper.getXianScore(winInfo, ruleInfo, false, new ArrayList<GetScoreType>()));
+		System.out.println(winType.maybeQiongHu(winInfo));
 
+		//System.out.println(ScoreHelper.getPaoerScore(winInfo, ruleInfo, true, new ArrayList<GetScoreType>()));
+ 		
 	}
 }

@@ -23,6 +23,7 @@ import com.mahjong.server.game.context.HouseContext;
 import com.mahjong.server.game.context.RoomContext;
 import com.mahjong.server.game.enums.EventEnum;
 import com.mahjong.server.game.enums.PlayerLocation;
+import com.mahjong.server.game.enums.PlayerLocation.Relation;
 import com.mahjong.server.game.object.GameResult;
 import com.mahjong.server.game.object.GetScoreType;
 import com.mahjong.server.game.object.MahjongTable;
@@ -91,7 +92,8 @@ public class HuProcessHelper {
 					userActionScore.setWinActionTypes(getScoreTypes);
 					userActionScore.setRoomRecordId(playingRoom.getRoomRecordID());
 					userActionScore.setCreateTime(new Date());
-					userActionScore.setRoundNum(playingRoom.getRoomNum());
+					int totalroundNum = playingRoom.getGameContext().getGameStrategy().getRuleInfo().getFangKa().getCode()==1?16:32;
+					userActionScore.setRoundNum(totalroundNum-playingRoom.getRemaiRound().get());
 					userActionScore.setUserId(playerInfo.getUserInfo().getId());
 
 					dbService.insertUserActionScoreInfo(userActionScore);
@@ -224,8 +226,14 @@ public class HuProcessHelper {
 					gameContext.setGameResult(null);
 					gameContext.setHuangzhuang(false);
 					gameContext.setLocalDoneActions(new ArrayList<ActionAndLocation>());
+					
+					if(gameContext.getZhuangLocation().getCode() == winPlayerInfo.getUserLocation()){
+						
+					}else{
+						gameContext.setZhuangLocation(PlayerLocation.fromCode(winPlayerInfo.getUserLocation()).getLocationOf(Relation.PREVIOUS));
+					}
+					
 
-					gameContext.setZhuangLocation(PlayerLocation.fromCode(winPlayerInfo.getUserLocation()));
 
 					// 玩家坐庄次数加一
 					winPlayerInfo.setZhuangTimes(winPlayerInfo.getZhuangTimes() + 1);
@@ -246,7 +254,7 @@ public class HuProcessHelper {
 						} else {
 							eplayerInfo.setZhuang(false);
 						}
-
+						eplayerInfo.getDrawTileContext().init();
 					}
 
 					table.setPlayerInfos(mahjongTable.getPlayerInfos());

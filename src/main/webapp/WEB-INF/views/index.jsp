@@ -68,9 +68,14 @@
 	<input runat="server" id="divScrollValue" type="hidden" value="" />
 	<div class="menu_dropdown bk_2" style="margin-top: 5%;">
 	
+		<% Byte manageUserlevel = (Byte)request.getAttribute("manageUserlevel"); 
+			if(manageUserlevel==2){
+		%>
 		<dl id="menu-admin">
 			<dt><i class="Hui-iconfont">&#xe62d;</i> <a _href="/mvc/user/getAdminUser" id="menu-admin-manage" href="javascript:;">会员管理</a></dt>
 		</dl>
+		
+		<% }%>
 		
 		<dl id="menu-member">
 			<dt><i class="Hui-iconfont">&#xe60d;</i> 用户管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>

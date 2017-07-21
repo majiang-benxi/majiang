@@ -84,6 +84,10 @@ public class RoomController {
 					
 					//1：东，2：南：3：西，4：北',
 					for(UserRoomRecord userRoomRecord : userInfoList){
+						if(userRoomRecord.getUserDirection()==null){
+							continue;
+						}
+						
 						if(userRoomRecord.getUserDirection()==1&&roomRecordInfo.getEastUid()==null){
 							roomRecordInfo.setEastUid(userRoomRecord.getUserId());
 						}else if(userRoomRecord.getUserDirection()==2&&roomRecordInfo.getSouthUid()==null){

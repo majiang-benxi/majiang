@@ -38,6 +38,7 @@ import com.mahjong.server.exception.IllegalActionException;
 import com.mahjong.server.game.action.Action;
 import com.mahjong.server.game.action.ActionAndLocation;
 import com.mahjong.server.game.action.standard.AngangActionType;
+import com.mahjong.server.game.action.standard.BugangActionType;
 import com.mahjong.server.game.action.standard.CpgActionType;
 import com.mahjong.server.game.action.standard.DealActionType;
 import com.mahjong.server.game.action.standard.DrawActionType;
@@ -102,43 +103,51 @@ public class HandlerHelper {
 						entry.getLastProtocolModel().add(protocolModel);
 						e.printStackTrace();
 					}
-					logger.error("返回数据：weixinId=" + weixinId + ",数据：" + JSONObject.toJSONString(protocolModel));
+					logger.info("返回数据：weixinId=" + weixinId + ",数据：" + JSONObject.toJSONString(protocolModel));
 				}
 			}
 		}
 	}
 	
 	public static void noticeMsg2Player(ChannelHandlerContext userCtx, PlayerInfo playerInfo, ProtocolModel protocolModel) {
-		UserInfo user = playerInfo.getUserInfo();
-		if (user != null && userCtx != null) {
-			ChannelFuture feature = userCtx.writeAndFlush(protocolModel);
-			
-			try {
-				feature.get(Constants.writeMsgTimeOut, TimeUnit.MILLISECONDS);
-			} catch (Exception e) {
-				playerInfo.getLastProtocolModel().add(protocolModel);
-				e.printStackTrace();
+		
+		if(playerInfo!=null){
+		
+			UserInfo user = playerInfo.getUserInfo();
+			if (user != null && userCtx != null) {
+				ChannelFuture feature = userCtx.writeAndFlush(protocolModel);
+				
+				try {
+					feature.get(Constants.writeMsgTimeOut, TimeUnit.MILLISECONDS);
+				} catch (Exception e) {
+					playerInfo.getLastProtocolModel().add(protocolModel);
+					e.printStackTrace();
+				}
+				logger.info("返回数据：weixinId=" + user.getWeixinMark() + ",数据：" + JSONObject.toJSONString(protocolModel));
 			}
-			logger.error("返回数据：weixinId=" + user.getWeixinMark() + ",数据：" + JSONObject.toJSONString(protocolModel));
+		}else{
+			userCtx.writeAndFlush(protocolModel);
 		}
 	}
 
 	public static void noticeMsg2Player(RoomContext roomContex, PlayerInfo playerInfo, ProtocolModel protocolModel) {
-		UserInfo user = playerInfo.getUserInfo();
-		if (user != null) {
-			String weixinId = user.getWeixinMark();
-			ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinId);
-			
-			ChannelFuture  feature = userCtx.writeAndFlush(protocolModel);
-			
-			try {
-				feature.get(Constants.writeMsgTimeOut, TimeUnit.MILLISECONDS);
-			} catch (Exception e) {
-				playerInfo.getLastProtocolModel().add(protocolModel);
-				e.printStackTrace();
+		if(playerInfo!=null){
+			UserInfo user = playerInfo.getUserInfo();
+			if (user != null) {
+				String weixinId = user.getWeixinMark();
+				ChannelHandlerContext userCtx = ClientSession.sessionMap.get(weixinId);
+				
+				ChannelFuture  feature = userCtx.writeAndFlush(protocolModel);
+				
+				try {
+					feature.get(Constants.writeMsgTimeOut, TimeUnit.MILLISECONDS);
+				} catch (Exception e) {
+					playerInfo.getLastProtocolModel().add(protocolModel);
+					e.printStackTrace();
+				}
+				logger.info("返回数据：weixinId=" + user.getWeixinMark() + ",数据：" + JSONObject.toJSONString(protocolModel));
+	
 			}
-			logger.error("返回数据：weixinId=" + user.getWeixinMark() + ",数据：" + JSONObject.toJSONString(protocolModel));
-
 		}
 	}
 
@@ -310,7 +319,9 @@ public class HandlerHelper {
 		}
 		roomContext.getGameContext().getTable().resetPlayersLastTileGroupAction();//清空当前的动作
 		roomContext.getGameContext().getTable().getPlayerByLocation(discardPlayLocation).setLastTileGroupAction(tileGroupTypeCode);//把当前的动作告诉所有玩家
-		for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext().getTable().getPlayerInfos()
+		boolean hasRespCheck=drawTileHasRespCheck(roomContext,discardPlayLocation);
+ 		roomContext.getGameContext().getTable().getPlayerByLocation(discardPlayLocation).setDiscardAuth(hasRespCheck);
+ 		for (Entry<PlayerLocation, PlayerInfo> entry : roomContext.getGameContext().getTable().getPlayerInfos()
 				.entrySet()) {
 		ProtocolModel xfgProtocolModel = new ProtocolModel();
 		DiscardRespModel discardRespModel = new DiscardRespModel(roomContext, entry.getKey());
@@ -359,13 +370,13 @@ public class HandlerHelper {
 
 			if (roomContext.getGameContext().getDiscardContext().getRemainVoter().get() == 0) {// 此时所有玩家都表决了，但是可能玩家表决的不是自己优先级最高的操作【最高的操作已经被清理了】。
 				if (needPassOrDoActions!=null&&needPassOrDoActions.size() != 0) {
-					doDiscardResp(roomContext, discardReqModel.getTile());
+					doDiscardResp(roomContext,discardReqModel.getTile().getPai().length!=0?discardReqModel.getTile(): needPassOrDoActions.get(0).getActionAndLocation().getAction().getTile());
 				}else{
 					HandlerHelper.drawTile2Player(roomContext, roomContext.getGameContext().getDiscardContext().getDiscardPlayLocation().getLocationOf(Relation.NEXT));
 				}
 			}
 		} else {
-			HandlerHelper.drawTile2Player(roomContext, discardPlayLocation.getLocationOf(Relation.NEXT));
+			HandlerHelper.drawTile2Player(roomContext, roomContext.getGameContext().getDiscardContext().getDiscardPlayLocation().getLocationOf(Relation.NEXT));
 		}
 
 	}
@@ -448,7 +459,7 @@ public class HandlerHelper {
 			roomContex.getGameContext().getTable().readyForGame();
 			DealActionType dealActionType = new DealActionType();
 			try {
-				dealActionType.doAction(roomContex.getGameContext(), PlayerLocation.EAST, null);
+				dealActionType.doAction(roomContex.getGameContext(), roomContex.getGameContext().getZhuangLocation(), null);
 			} catch (IllegalActionException e) {
 				e.printStackTrace();
 			}
@@ -466,7 +477,7 @@ public class HandlerHelper {
 			
 			boolean flg = dbService.updateRoomRecordInfoByPrimaryKey(roomRecord);
 			
-			logger.error("更新房间信息，flg="+flg+",roomRecord="+JSONObject.toJSONString(roomRecord));
+			logger.info("更新房间信息，flg="+flg+",roomRecord="+JSONObject.toJSONString(roomRecord));
 			
 			HouseContext.playRoomNum.incrementAndGet();
 			HouseContext.waitRoomNum.decrementAndGet();
@@ -489,45 +500,63 @@ public class HandlerHelper {
 				
 				HandlerHelper.noticeMsg2Player(userCtx, entry.getValue(), dealTileProtocolModel);
 				
-				logger.error("hashDealTile返回数据："+JSONObject.toJSONString(dealTileProtocolModel));
+				logger.info("hashDealTile返回数据："+JSONObject.toJSONString(dealTileProtocolModel));
 			}
 			roomContex.getGameContext().getTable().printAllPlayTiles();
 			PlayerLocation zhuangLocation=roomContex.getGameContext().getZhuangLocation();
 			doDrawTileResp(roomContex, zhuangLocation);
 		}
 	}
-
-	public static void doDrawTileResp(RoomContext roomContext,PlayerLocation playerLocation){
+	private static DrawTileContext refreshDrawTileContext(RoomContext roomContext,PlayerLocation playerLocation){
 		roomContext.getGameContext().getTable().printAllPlayTiles();
 		List<Action> canDoActions=new ArrayList<Action>();
 		WinActionType winActionType = new WinActionType();
 		//胡判断
 		boolean canwin = winActionType.isLegalAction(roomContext.getGameContext(),playerLocation, new Action(WIN));			
 		if (canwin) {
-			canDoActions.add(new Action(WIN));
+			canDoActions.add(new Action(WIN,new Tile()));
 		}
 		boolean canZiPai=false;
 		DrawTileContext drawTileContext =	roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation).getDrawTileContext();
 		boolean isFirstDrawTile=drawTileContext!=null&&drawTileContext.isFirstDrawTile();
+		Tile lastDrawTile=roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation).getLastDrawedTile();
 		//开局第一把旋风杠判断【选了规则才会判断】
 		if(roomContext.getGameContext().getGameStrategy().getRuleInfo().getPlayRules().contains(PlayRule.XUAN_FENG_GANG)){
 			if(isFirstDrawTile){
 			ZiPaiActionType ziPaiActionType = new ZiPaiActionType();
 		    canZiPai = ziPaiActionType.canDo(roomContext.getGameContext(),playerLocation);
 			if (canZiPai) {
-				canDoActions.add(new Action(ZIPAI,roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation).getLastDrawedTile()));
+				canDoActions.add(new Action(ZIPAI,lastDrawTile));
 			}
 		 }
 		}else{
 			AngangActionType angangActionType=new AngangActionType(TileGroupType.ANGANG_GROUP);
 			boolean candoAngang=angangActionType.canDo(roomContext.getGameContext(), playerLocation);
 			if(candoAngang){
-				canDoActions.add(new Action(ANGANG,roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation).getLastDrawedTile()));
+				canDoActions.add(new Action(ANGANG,lastDrawTile));
+			}
+			BugangActionType bgActionType = new BugangActionType(BUGANG_GROUP,lastDrawTile);
+			boolean canBuGang = bgActionType.canDo(roomContext.getGameContext(), playerLocation);
+			if (canBuGang) {
+				canDoActions.add(new Action(BUGANG,lastDrawTile));
 			}
 		}
+		return new DrawTileContext(canDoActions, canwin, canZiPai, playerLocation, isFirstDrawTile);
+	}
+	public static boolean drawTileHasRespCheck(RoomContext roomContext,PlayerLocation playerLocation){
+		DrawTileContext drawTileContext=refreshDrawTileContext(roomContext,playerLocation);
+		List<Action> canDoActions=drawTileContext.getCanDoActions();
+		if(!canDoActions.isEmpty()){
+			return false;
+		}
+		return true;
+	}
+	public static void doDrawTileResp(RoomContext roomContext,PlayerLocation playerLocation){
+		DrawTileContext drawTileContext=refreshDrawTileContext(roomContext,playerLocation);
+		List<Action> canDoActions=drawTileContext.getCanDoActions();
 		if(!canDoActions.isEmpty()){
 			roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation).setDiscardAuth(false);
-			roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation).setDrawTileContext(new DrawTileContext(canDoActions, canwin, canZiPai, playerLocation, isFirstDrawTile));
+			roomContext.getGameContext().getTable().getPlayerByLocation(playerLocation).setDrawTileContext(drawTileContext);
 			ProtocolModel canDoProtocolModel = new ProtocolModel();
 			AskChoiceRespModel askChoiceRespModel = new AskChoiceRespModel(
 					new ArrayList<Action>(canDoActions));
