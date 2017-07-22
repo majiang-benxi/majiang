@@ -232,7 +232,7 @@ public class HuProcessHelper {
 					gameContext.setHuangzhuang(false);
 					gameContext.setLocalDoneActions(new ArrayList<ActionAndLocation>());
 					
-					if(gameContext.getZhuangLocation().getCode() == winPlayerInfo.getUserLocation()){
+					if(gameContext.getZhuangLocation().getCode() == winPlayerInfo.getUserLocation()||zhuangplayerInfo==null){
 						// 玩家坐庄次数加一
 						winPlayerInfo.setZhuangTimes(winPlayerInfo.getZhuangTimes() + 1);
 						
