@@ -95,7 +95,7 @@ public class NormalWinType implements WinType {
 				return false;
 			}
 		}else{
-			if ((totalDuizi - 1) + totalHunUsed == huiNum) {// 把会牌跟多余的将牌凑成一句话。
+			if ((totalDuizi - 1) + totalHunUsed <= huiNum) {// 把会牌跟多余的将牌凑成一句话。
 				// 19check，7对不检查，需要重载
 				if(!hasZFBJiang){
 					if (!check1or9(winInfo.getWinTile())) {
@@ -276,7 +276,8 @@ public class NormalWinType implements WinType {
 		//pais = new byte[] { 0x27, 0x27, 0x14, 0x32, 0x33, 0x15, 0x12, 0x13, 0x14, 0x12, 0x13, 0x14, 0x36, 0x36 };// 普通胡带会带枪false
 		//pais = new byte[] { 0x01, 0x03, 0x05, 0x21, 0x22, 0x23, 0x36, 0x37 };// 穷胡true
  		//pais=new byte[]{0x19, 0x19};
- 		
+		pais = new byte[] { 0x17,0x12,0x17,0x15,0x15 };
+
 		//int[] qianduanPai=new int[]{1, 3 ,7 ,20 ,21,25 ,33, 35, 38 ,39 ,51, 52, 53, 53};
  		//qianduanPai=new int[]{5, 5, 8 ,9 ,19, 23, 25 ,25 ,25, 33 ,37, 40, 50,52};
  		//Tile tile=new Tile();
@@ -285,13 +286,12 @@ public class NormalWinType implements WinType {
  		int[] qianduanPai=tile.getQianduanPai();
 		PlayerTiles playerTiles=new PlayerTiles();
 		playerTiles.setAliveTiles(tile);
-//		List<TileGroup>tileGroups=new ArrayList<TileGroup>();
-//		tileGroups.add(new TileGroup(TileGroupType.CHI_GROUP, new Tile(new byte[]{0x26, 0x27, 0x28})));
-//		tileGroups.add(new TileGroup(TileGroupType.XUAN_FENG_GANG_ZFB_GROUP, new Tile(new byte[]{0x35, 0x36, 0x37})));
-//		tileGroups.add(new TileGroup(TileGroupType.PENG_GROUP, new Tile(new byte[]{0x14, 0x14, 0x14})));
-//		tileGroups.add(new TileGroup(TileGroupType.CHI_GROUP, new Tile(new byte[]{0x01, 0x02, 0x03})));
-//
-//		playerTiles.setTileGroups(tileGroups );
+		List<TileGroup>tileGroups=new ArrayList<TileGroup>();
+		tileGroups.add(new TileGroup(TileGroupType.PENG_GROUP, new Tile(new byte[]{0x37, 0x37, 0x37})));
+ 		tileGroups.add(new TileGroup(TileGroupType.PENG_GROUP, new Tile(new byte[]{0x28, 0x28, 0x28})));
+		tileGroups.add(new TileGroup(TileGroupType.CHI_GROUP, new Tile(new byte[]{0x01, 0x02, 0x03})));
+
+		playerTiles.setTileGroups(tileGroups );
 		WinInfo winInfo= WinInfo.fromPlayerTiles(playerTiles,(byte)0x12,false);
 		RuleInfo ruleInfo = new RuleInfo();
 		ruleInfo.setPlayRules(RuleInfo.parseRuleFromBitString("01111"));
