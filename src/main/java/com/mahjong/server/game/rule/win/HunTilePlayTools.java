@@ -2,7 +2,7 @@ package com.mahjong.server.game.rule.win;
 
 import static com.mahjong.server.game.object.StandardTileUnitType.JIANG;
 import static com.mahjong.server.game.object.StandardTileUnitType.KEZI;
-import static com.mahjong.server.game.object.StandardTileUnitType.SHUNZI;
+import static com.mahjong.server.game.object.StandardTileUnitType.*;
 
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.TileGroupType;
@@ -151,7 +151,17 @@ public class HunTilePlayTools {
 							} else {
 								return true;
 							}
+						}else if(ZI_ZFB_PAI.isLegalTile(tile)){
+							ck.tileUnitInfos.add((new TileUnitInfo(ZI_ZFB_PAI, tile)));
+							ck.uncheckedTile.removeAll(new Tile(new byte[] { b1, b2, b3 }));
+							res = hu_check(ck, hasHunNum);// 继续递归
+							if (!res) {
+								ck.uncheckedTile.addTile(new Tile(new byte[] { b1, b2, b3 })).sort();
+							} else {
+								return true;
+							}
 						}
+						
 					}
 				}
 
