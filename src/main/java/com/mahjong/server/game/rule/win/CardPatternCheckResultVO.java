@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.mahjong.server.game.object.Tile;
 import com.mahjong.server.game.object.TileUnitInfo;
+import com.mahjong.server.game.rule.RuleInfo;
 
 public class CardPatternCheckResultVO {
 	public boolean canhu = false;
@@ -14,11 +15,12 @@ public class CardPatternCheckResultVO {
 	public int duiZiNum = 0;
 	public int shunZiNum = 0;
 	public int keZiNum = 0;
-
-	public CardPatternCheckResultVO(Tile uncheckedTile, List<TileUnitInfo> tileUnitInfos, int huiUsedNum) {
+	public RuleInfo ruleInfo;
+	public CardPatternCheckResultVO(Tile uncheckedTile, List<TileUnitInfo> tileUnitInfos, RuleInfo ruleInfo, int huiUsedNum) {
 		super();
 		this.uncheckedTile = uncheckedTile;
 		this.tileUnitInfos = tileUnitInfos;
+		this.ruleInfo=ruleInfo;
 		this.huiUsedNum = huiUsedNum;
 	}
 
@@ -32,6 +34,8 @@ public class CardPatternCheckResultVO {
 		resultVO.duiZiNum = duiZiNum;
 		resultVO.shunZiNum=shunZiNum;
 		resultVO.keZiNum=keZiNum;
+		resultVO.ruleInfo=ruleInfo;
+
 		resultVO.tileUnitInfos = new ArrayList<TileUnitInfo>();
 		for (TileUnitInfo tileUnitInfo : tileUnitInfos) {
 			resultVO.tileUnitInfos.add(tileUnitInfo.clone());

@@ -112,6 +112,27 @@ public class HunTilePlayTools {
 				}
 			}
 		} else {// 大于等于三张
+			
+			// 第一张和另外3张构成一个组合(旋风杠或者暗杠)
+			if(ck.uncheckedTile.getPai().length>3){
+				for (int i = 0; i <  ck.uncheckedTile.getPai().length-3; i++) {
+					byte b1 = ck.uncheckedTile.getPai()[i];
+					byte b2 = ck.uncheckedTile.getPai()[i+1];
+					byte b3 = ck.uncheckedTile.getPai()[i+2];
+					byte b4 = ck.uncheckedTile.getPai()[i+3];
+					Tile tile=new Tile(new byte[]{b1,b2,b3,b4});
+					if(TileGroupType.ANGANG_GROUP.isLegalTile(tile)){
+						ck.tileUnitInfos.add((new TileUnitInfo(GANGZI, tile)));
+						ck.uncheckedTile.removeAll(tile);
+						return hu_check(ck, hasHunNum - 4);// 继续递归
+					}else if(TileGroupType.XUAN_FENG_GANG_DNXB_GROUP.isLegalTile(tile)){
+						ck.tileUnitInfos.add((new TileUnitInfo(GANGZI, tile)));
+						ck.uncheckedTile.removeAll(tile);
+						return hu_check(ck, hasHunNum - 4);// 继续递归
+					}
+				}
+			}
+			
 			boolean res = false;
 			byte b1 = ck.uncheckedTile.getPai()[0];
 			// 第一张和另外两张构成一个组合

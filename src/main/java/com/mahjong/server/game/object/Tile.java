@@ -339,36 +339,11 @@ public class Tile {
 
 	}
 	public static void main(String[] args) {
-		Tile allTile = new Tile();
-		allTile.setPai(Tile.getOneBoxMahjong());
-		/**
-		 * byte[] pai = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
-		 * 0x08, 0x09 }; // 万（1-9） Tile tile = new Tile(); tile.setPai(pai);
-		 * System.out.println(allTile.containsAll(tile)); for (byte b :
-		 * allTile.getPai()) { System.out.print(b + " "); }
-		 * System.out.println(allTile.removeAll(tile)); for (byte b :
-		 * allTile.getPai()) { System.out.print(b + " "); }
-		 **/
-		/**
-		 * Tile tile = allTile.dealTile(5); for (byte b : allTile.getPai()) {
-		 * System.out.print(b + " "); } System.out.println("******"); for (byte
-		 * b : tile.getPai()) { System.out.print(b + " "); }
-		 **/
-		Tile tile = allTile.dealBottomTile(5);
-		for (byte b : allTile.getPai()) {
-			System.out.print(b + " ");
-		}
-		System.out.println("******");
-		for (byte b : tile.getPai()) {
-			System.out.print(b + " ");
-		}
-		String json = JSON.toJSONString(new Tile(getOneBoxMahjong()));
-		System.out.println(json);
+		PlayerInfo playerInfo =new PlayerInfo();
+		Tile allTile = new Tile(new byte[]{0x16,0x17,0x18,0x28,0x28,0x28,0x23,0x23,0x07,0x07,0x07,0x35, 0x36, 0x37});
+		allTile.sort();
+		playerInfo.setAliveTiles(allTile);
 
-		Tile tile2 = JSON.parseObject(json, new TypeReference<Tile>() {
-		});
-		for (Byte pai : tile2.getPai()) {
-			System.out.print(pai + " ");
-		}
+		System.out.println(playerInfo.getAliveTiles().containsAll(new Tile(new byte[] { 0x35, 0x36, 0x37 })));
 	}
 }
