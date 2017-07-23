@@ -8,7 +8,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -192,11 +191,18 @@ public class HuProcessHelper {
 				} else {
 
 					RoomContext roomContex = HouseContext.weixinIdToRoom.get(weixinId);
+					GameContext gameContext = roomContex.getGameContext();
+					
+					PlayerInfo zhuangplayerInfo = null;
 
 					for (PlayerInfo eplayerInfo : roomContex.getGameContext().getTable().getPlayerInfos().values()) {
 
 						if (eplayerInfo == null) {
 							continue;
+						}
+						
+						if(gameContext.getZhuangLocation().getCode() == eplayerInfo.getUserLocation()){
+							zhuangplayerInfo = eplayerInfo;
 						}
 
 						UserInfo user = eplayerInfo.getUserInfo();
@@ -220,23 +226,20 @@ public class HuProcessHelper {
 						}
 					}
 
-					GameContext gameContext = roomContex.getGameContext();
 
 					gameContext.setDiscardContext(null);
 					gameContext.setGameResult(null);
 					gameContext.setHuangzhuang(false);
 					gameContext.setLocalDoneActions(new ArrayList<ActionAndLocation>());
 					
-					if(gameContext.getZhuangLocation().getCode() == winPlayerInfo.getUserLocation()){
+					if(gameContext.getZhuangLocation().getCode() == winPlayerInfo.getUserLocation()||zhuangplayerInfo==null){
+						// 玩家坐庄次数加一
+						winPlayerInfo.setZhuangTimes(winPlayerInfo.getZhuangTimes() + 1);
 						
 					}else{
-						gameContext.setZhuangLocation(PlayerLocation.fromCode(winPlayerInfo.getUserLocation()).getLocationOf(Relation.PREVIOUS));
+						gameContext.setZhuangLocation(PlayerLocation.fromCode(zhuangplayerInfo.getUserLocation()).getLocationOf(Relation.PREVIOUS));
 					}
 					
-
-
-					// 玩家坐庄次数加一
-					winPlayerInfo.setZhuangTimes(winPlayerInfo.getZhuangTimes() + 1);
 
 					MahjongTable table = new MahjongTable();
 					table.init();
@@ -248,8 +251,7 @@ public class HuProcessHelper {
 						if (eplayerInfo == null) {
 							continue;
 						}
-						if (winPlayerInfo.getUserInfo().getWeixinMark()
-								.endsWith(eplayerInfo.getUserInfo().getWeixinMark())) {
+						if(gameContext.getZhuangLocation().getCode() == eplayerInfo.getUserLocation()){
 							eplayerInfo.setZhuang(true);
 						} else {
 							eplayerInfo.setZhuang(false);

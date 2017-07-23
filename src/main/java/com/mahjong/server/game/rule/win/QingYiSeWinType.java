@@ -28,4 +28,9 @@ public class QingYiSeWinType extends NormalWinType {
 		}
 		return super.canWin(winInfo, ruleInfo);
 	}
+
+	protected boolean checkShunZiAndKeZi(boolean hasshunZiAndkeZi) {
+		return true;
+	}
+
 }

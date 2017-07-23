@@ -87,7 +87,6 @@ public class PlayerInfo extends PlayerTiles implements Cloneable {
     	lastWinTile= new Tile();
     	lastTileGroupAction=0;
     	isHu = false;
-    	curScore = 1000;
     	drawTileContext=new DrawTileContext(userLocation);
     }
 	

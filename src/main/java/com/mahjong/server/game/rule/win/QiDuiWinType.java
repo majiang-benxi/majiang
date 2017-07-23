@@ -44,4 +44,9 @@ public class QiDuiWinType extends NormalWinType {
 		}
 	}
 
+	@Override
+	protected boolean checkShunZiAndKeZi(boolean hasshunZiAndkeZi) {
+		return true;
+	}
+
 }

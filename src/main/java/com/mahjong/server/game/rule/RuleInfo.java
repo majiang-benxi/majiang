@@ -7,6 +7,9 @@ import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
+import com.alibaba.fastjson.JSON;
+import com.mahjong.server.game.object.PlayerInfo;
+
 public class RuleInfo {
 	private Set<PlayRule> playRules;
 	private FangKa fangKa;
@@ -64,5 +67,13 @@ public class RuleInfo {
 			}
 		}
 		return set;
+	}
+	public static void main(String[] args) {
+		RuleInfo ruleInfo=new RuleInfo();
+		Set<PlayRule> playRules=new HashSet<PlayRule>() ;
+		playRules.add(PlayRule.GANG);
+		ruleInfo.setPlayRules(playRules);
+		System.out.println(ruleInfo.getMysqlRule());
+		System.out.println(JSON.toJSONString(RuleInfo.parseRuleFromBitString("111110110")));
 	}
 }

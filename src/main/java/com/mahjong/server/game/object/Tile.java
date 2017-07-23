@@ -137,6 +137,24 @@ public class Tile {
 		tile.setPai(ArrayUtils.addAll(tile1.getPai(), tile2.getPai()));
 		return tile;
 	}
+	/**
+	 * 判断是否相交
+	 * @param tile1
+	 * @return
+	 */
+	public  boolean intersect(Tile tile1) {
+		if(tile1==null){
+			return false;
+		}
+		Set<Byte>set= Tile.tile2Set(this);
+		for (Byte pai : tile1.getPai()) {
+			if(set.contains(pai)){
+				return true;
+			}
+		}
+		return false;
+
+	}
 
 	public void sort() {
 		if (this.getPai() != null) {

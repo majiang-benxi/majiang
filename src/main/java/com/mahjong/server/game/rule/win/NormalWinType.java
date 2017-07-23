@@ -20,12 +20,13 @@ import com.mahjong.server.game.object.Tile.HuaSe;
 import com.mahjong.server.game.object.TileGroup;
 import com.mahjong.server.game.object.TileGroupType;
 import com.mahjong.server.game.object.TileUnitInfo;
+import com.mahjong.server.game.object.TileUnitType;
 import com.mahjong.server.game.object.WinInfo;
 import com.mahjong.server.game.rule.FangKa;
 import com.mahjong.server.game.rule.PlayRule;
 import com.mahjong.server.game.rule.RuleInfo;
 import com.mahjong.server.game.rule.ScoreHelper;
-
+import static com.mahjong.server.game.object.StandardTileUnitType.JIANG;
 public class NormalWinType implements WinType {
 	protected List<TileUnitInfo> tileUnitInfos = new ArrayList<TileUnitInfo>();// 选取当前玩法分数最高的作为返回值
 
@@ -35,10 +36,6 @@ public class NormalWinType implements WinType {
 
 	@Override
 	public boolean canWin(WinInfo winInfo, RuleInfo ruleInfo) {
-		// 19check，7对不检查，需要重载
-		if (!check1or9(winInfo.getWinTile())) {
-			return false;
-		}
 		// 花色check。清一色检查规则特殊，需要重载
 		if (!huaSeCheck(winInfo.getWinTile())) {
 			return false;
@@ -80,19 +77,74 @@ public class NormalWinType implements WinType {
 		// 检测到这里表明至少用了癞子后每个花色都可以凑成对应的一句或者多句话。
 		int totalDuizi = wanRes.duiZiNum + tiaoRes.duiZiNum + bingRes.duiZiNum + ziRes.duiZiNum;
 		int totalHunUsed = wanRes.huiUsedNum + tiaoRes.huiUsedNum + bingRes.huiUsedNum + ziRes.huiUsedNum;
+		int totalShunZi=wanRes.shunZiNum+tiaoRes.shunZiNum+bingRes.shunZiNum+ziRes.shunZiNum+getTileGroupSize(winInfo.getTileGroups(), TileGroupType.CHI_GROUP);
+		int totalKeZi=wanRes.keZiNum+tiaoRes.keZiNum+bingRes.keZiNum+ziRes.keZiNum+getTileGroupSize(winInfo.getTileGroups(), TileGroupType.PENG_GROUP);
+		boolean hasZFBJiang=hashZFBJiang(wanRes.tileUnitInfos)||hashZFBJiang(tiaoRes.tileUnitInfos)||hashZFBJiang(bingRes.tileUnitInfos)||hashZFBJiang(ziRes.tileUnitInfos);
+		
 		if (totalDuizi == 0) {// 没有将的情况
 			if (totalHunUsed + 2 == huiNum) {// 还有两个会牌的话，可以胡牌
+				// 19check，7对不检查，需要重载
+				if (!check1or9(winInfo.getWinTile())) {
+							return false;
+				}
+				if(!checkShunZiAndKeZi(totalKeZi>0&&totalShunZi>0||huiNum>1)){
+					return false;
+				}
 				return true;
 			}else{
-			return false;
+				return false;
 			}
 		}else{
 			if ((totalDuizi - 1) + totalHunUsed == huiNum) {// 把会牌跟多余的将牌凑成一句话。
-				return true;
+				// 19check，7对不检查，需要重载
+				if(!hasZFBJiang){
+					if (!check1or9(winInfo.getWinTile())) {
+							return false;
+					}
+					if(!checkShunZiAndKeZi(totalKeZi>0&&totalShunZi>0||huiNum>1)){
+						return false;
+					}
+					return true;
+				}else{//中发白做将免19免碰。
+					if(checkShunZiAndKeZi(totalShunZi>0||huiNum>1)){
+						return true;
+					}
+				}
 			} else {
 				return false;
 			}
 		}
+		return false;
+	}
+
+
+
+	private int getTileGroupSize(List<TileGroup>tileGroups ,TileGroupType testTileGroupType){
+		int num=0;
+		for (TileGroup tileGroup : tileGroups) {
+			if(tileGroup.getType().equals(testTileGroupType)){
+				num++;
+			}
+		}
+		return num;
+	}
+	private boolean hashZFBJiang(List<TileUnitInfo> tileUnitInfos2) {
+		Tile tile=new Tile(new byte[]{ 0x35, 0x36, 0x37});
+		for (TileUnitInfo tileUnitInfo : tileUnitInfos2) {
+			if(tileUnitInfo.getTileUnitType()==JIANG){
+				if(tile.intersect(tileUnitInfo.getTile())){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+
+
+
+	protected boolean checkShunZiAndKeZi(boolean hasshunZiAndkeZi) {
+		return hasshunZiAndkeZi;
 	}
 
 
@@ -220,10 +272,10 @@ public class NormalWinType implements WinType {
 		// 0x32, 0x15, 0x16, 0x16, 0x37, 0x37 };// 七小对true
 		//pais = new byte[] { 0x11, 0x11, 0x36, 0x36, 0x21, 0x21, 0x31, 0x31, 0x32, 0x32, 0x16, 0x16, 0x37, 0x37 };// 七小对穷true
 		//pais = new byte[] { 0x11, 0x15, 0x11, 0x02, 0x02, 0x02, 0x28, 0x28, 0x28, 0x14, 0x17, 0x17, 0x16, 0x15 };// 飘true
-		//pais = new byte[] { 0x11, 0x11, 0x11, 0x02, 0x02, 0x02, 0x28, 0x28, 0x28, 0x17, 0x17, 0x17, 0x16, 0x16 };// 飘穷true
+		pais = new byte[] { 0x11, 0x12, 0x13, 0x02, 0x02, 0x02, 0x28, 0x28, 0x28, 0x17, 0x17, 0x17, 0x16, 0x16 };// 飘穷true
 		//pais = new byte[] { 0x27, 0x27, 0x14, 0x32, 0x33, 0x15, 0x12, 0x13, 0x14, 0x12, 0x13, 0x14, 0x36, 0x36 };// 普通胡带会带枪false
 		//pais = new byte[] { 0x01, 0x03, 0x05, 0x21, 0x22, 0x23, 0x36, 0x37 };// 穷胡true
- 		//pais=new byte[]{0x04, 0x04, 0x13,0x16,0x16,0x35,0x35,0x17};
+ 		//pais=new byte[]{0x19, 0x19};
  		
 		//int[] qianduanPai=new int[]{1, 3 ,7 ,20 ,21,25 ,33, 35, 38 ,39 ,51, 52, 53, 53};
  		//qianduanPai=new int[]{5, 5, 8 ,9 ,19, 23, 25 ,25 ,25, 33 ,37, 40, 50,52};
@@ -234,18 +286,20 @@ public class NormalWinType implements WinType {
 		PlayerTiles playerTiles=new PlayerTiles();
 		playerTiles.setAliveTiles(tile);
 //		List<TileGroup>tileGroups=new ArrayList<TileGroup>();
-//		tileGroups.add(new TileGroup(TileGroupType.PENG_GROUP, new Tile(new byte[]{0x24, 0x24, 0x24})));
-//		tileGroups.add(new TileGroup(TileGroupType.PENG_GROUP, new Tile(new byte[]{0x12, 0x12, 0x12})));
+//		tileGroups.add(new TileGroup(TileGroupType.CHI_GROUP, new Tile(new byte[]{0x26, 0x27, 0x28})));
+//		tileGroups.add(new TileGroup(TileGroupType.XUAN_FENG_GANG_ZFB_GROUP, new Tile(new byte[]{0x35, 0x36, 0x37})));
+//		tileGroups.add(new TileGroup(TileGroupType.PENG_GROUP, new Tile(new byte[]{0x14, 0x14, 0x14})));
+//		tileGroups.add(new TileGroup(TileGroupType.CHI_GROUP, new Tile(new byte[]{0x01, 0x02, 0x03})));
 //
 //		playerTiles.setTileGroups(tileGroups );
-		WinInfo winInfo= WinInfo.fromPlayerTiles(playerTiles,(byte)0x21,false);
+		WinInfo winInfo= WinInfo.fromPlayerTiles(playerTiles,(byte)0x12,false);
 		RuleInfo ruleInfo = new RuleInfo();
 		ruleInfo.setPlayRules(RuleInfo.parseRuleFromBitString("01111"));
 		ruleInfo.setFangKa(FangKa.ONE_SIXTEEN);
-		//NormalWinType winType = new NormalWinType();
-		//winInfo.setHuType(com.mahjong.server.game.rule.win.StandardHuType.NORMAL_HU);
+	    NormalWinType winType = new NormalWinType();
+		winInfo.setHuType(com.mahjong.server.game.rule.win.StandardHuType.NORMAL_HU);
 
-		QingYiSeWinType winType = new QingYiSeWinType();
+		//QingYiSeWinType winType = new QingYiSeWinType();
 	//QiDuiWinType winType = new QiDuiWinType();
 		System.out.println(winType.canWin(winInfo, ruleInfo));
 		System.out.println(winType.maybeQiongHu(winInfo));

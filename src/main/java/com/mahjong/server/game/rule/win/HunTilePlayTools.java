@@ -51,6 +51,8 @@ public class HunTilePlayTools {
 			if (hasHunNum >= 2) {
 				ck.tileUnitInfos.add((new TileUnitInfo(KEZI, new Tile(new byte[] { pai, Tile.HUIPAI, Tile.HUIPAI }))));
 				ck.huiUsedNum = ck.huiUsedNum + 2;
+				ck.keZiNum++;
+				ck.shunZiNum++;
 				return true;
 			} else {
 				return false;
@@ -74,6 +76,7 @@ public class HunTilePlayTools {
 									.add((new TileUnitInfo(SHUNZI, new Tile(new byte[] { b1, b2, Tile.HUIPAI }))));
 							ck.uncheckedTile.removeAll(new Tile(new byte[] { b1, b2 }));// 第一张作为对子
 							ck.huiUsedNum++;
+							ck.shunZiNum++;
 						} else {
 							ck.tileUnitInfos.add((new TileUnitInfo(JIANG, new Tile(new byte[] { b1, Tile.HUIPAI }))));
 							ck.uncheckedTile.removeAll(new Tile(new byte[] { b1 }));// 第一张作为对子
@@ -91,6 +94,7 @@ public class HunTilePlayTools {
 				if (Math.abs(b1 - b2) <= 2) {
 					ck.tileUnitInfos.add((new TileUnitInfo(SHUNZI, new Tile(new byte[] { b1, b2, Tile.HUIPAI }))));
 					ck.uncheckedTile.removeAll(new Tile(new byte[] { b1, b2 }));
+					ck.shunZiNum++;
 					return hu_check(ck, hasHunNum - 1);// 继续递归
 				} else {
 					if (hasHunNum < 4) {// 这个时候有2张散牌，混子数量需要大于等于4
@@ -101,6 +105,8 @@ public class HunTilePlayTools {
 						ck.tileUnitInfos
 								.add((new TileUnitInfo(SHUNZI, new Tile(new byte[] { b1, Tile.HUIPAI, Tile.HUIPAI }))));
 						ck.uncheckedTile.removeAll(new Tile(new byte[] { b1, b2 }));
+						ck.shunZiNum++;
+						ck.keZiNum++;
 						return hu_check(ck, hasHunNum - 4);// 继续递归
 					}
 				}
@@ -124,6 +130,7 @@ public class HunTilePlayTools {
 					if (b1 == b2 && b2 == b3) {
 						ck.tileUnitInfos.add((new TileUnitInfo(KEZI, new Tile(new byte[] { b1, b2, b3 }))));
 						ck.uncheckedTile.removeAll(new Tile(new byte[] { b1, b2, b3 }));
+						ck.keZiNum++;
 						res = hu_check(ck, hasHunNum);// 继续递归
 						if (!res) {
 							ck.uncheckedTile.addTile(new Tile(new byte[] { b1, b2, b3 })).sort();
@@ -137,6 +144,7 @@ public class HunTilePlayTools {
 						if (SHUNZI.isLegalTile(tile)) {
 							ck.tileUnitInfos.add((new TileUnitInfo(SHUNZI, tile)));
 							ck.uncheckedTile.removeAll(new Tile(new byte[] { b1, b2, b3 }));
+							ck.shunZiNum++;
 							res = hu_check(ck, hasHunNum);// 继续递归
 							if (!res) {
 								ck.uncheckedTile.addTile(new Tile(new byte[] { b1, b2, b3 })).sort();
@@ -163,7 +171,7 @@ public class HunTilePlayTools {
 						ck.tileUnitInfos.add((new TileUnitInfo(KEZI, new Tile(new byte[] { b1, b2, Tile.HUIPAI }))));
 						ck.uncheckedTile.removeAll(new Tile(new byte[] { b1, b2 }));
 						ck.huiUsedNum++;
-
+						ck.keZiNum++;
 						res = hu_check(ck, hasHunNum - 1);// 继续递归
 						if (!res) {
 							ck.uncheckedTile.addTile(new Tile(new byte[] { b1, b2 })).sort();
@@ -187,6 +195,7 @@ public class HunTilePlayTools {
 					ck.tileUnitInfos.add((new TileUnitInfo(SHUNZI, new Tile(new byte[] { b1, b2, Tile.HUIPAI }))));
 					ck.uncheckedTile.removeAll(new Tile(new byte[] { b1, b2 }));
 					ck.huiUsedNum++;
+					ck.shunZiNum++;
 					res = hu_check(ck, hasHunNum - 1);// 继续递归
 					if (!res) {
 						ck.uncheckedTile.addTile(new Tile(new byte[] { b1, b2 })).sort();
@@ -201,6 +210,8 @@ public class HunTilePlayTools {
 				ck.tileUnitInfos.add((new TileUnitInfo(KEZI, new Tile(new byte[] { b1, Tile.HUIPAI, Tile.HUIPAI }))));
 				ck.uncheckedTile.removeAll(new Tile(new byte[] { b1 }));
 				ck.huiUsedNum += 2;
+				ck.keZiNum++;
+				ck.shunZiNum++;
 				res = hu_check(ck, hasHunNum - 2);// 继续递归
 				if (!res) {
 					ck.uncheckedTile.addTile(new Tile(new byte[] { b1 })).sort();

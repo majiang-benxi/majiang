@@ -1,6 +1,6 @@
 package com.mahjong.server.game.action.standard;
 
-import static com.mahjong.server.game.action.standard.StandardActionType.CHI;
+import static com.mahjong.server.game.action.standard.StandardActionType.*;
 import static com.mahjong.server.game.action.standard.StandardActionType.DISCARD;
 
 import java.util.ArrayList;
@@ -131,7 +131,15 @@ public class CpgActionType extends AbstractActionType {
 			context.getTable().getPlayerByLocation(location.getLocationOf(location.getRelationOf(context.getLastActionLocation()))).getDiscardedTiles().removeAll(gotTile);//移除被操作者中打出的牌集合中当前打出来的牌
 			playerInfo.setDiscardAuth(true);
 			context.getTable().resetPlayersLastDrawTile(location);
-			context.getLocalDoneActions().add(new ActionAndLocation(new Action(CHI, tileGroupTile), location));// 存吃和碰这里没啥区别
+			if(groupType==TileGroupType.BUGANG_GROUP){
+				context.getLocalDoneActions().add(new ActionAndLocation(new Action(BUGANG, tileGroupTile), location));
+			}
+			else if(groupType==TileGroupType.PENG_GROUP){
+				context.getLocalDoneActions().add(new ActionAndLocation(new Action(PENG, tileGroupTile), location));
+			}
+			else if(groupType==TileGroupType.CHI_GROUP){
+				context.getLocalDoneActions().add(new ActionAndLocation(new Action(CHI, tileGroupTile), location));
+			}
 			context.getTable().printAllPlayTiles();
 		}
 

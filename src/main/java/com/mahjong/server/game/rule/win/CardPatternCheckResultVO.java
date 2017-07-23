@@ -12,6 +12,8 @@ public class CardPatternCheckResultVO {
 	public List<TileUnitInfo> tileUnitInfos;
 	public int huiUsedNum = 0;
 	public int duiZiNum = 0;
+	public int shunZiNum = 0;
+	public int keZiNum = 0;
 
 	public CardPatternCheckResultVO(Tile uncheckedTile, List<TileUnitInfo> tileUnitInfos, int huiUsedNum) {
 		super();
@@ -28,6 +30,8 @@ public class CardPatternCheckResultVO {
 		resultVO.uncheckedTile = uncheckedTile.clone();
 		resultVO.huiUsedNum = huiUsedNum;
 		resultVO.duiZiNum = duiZiNum;
+		resultVO.shunZiNum=shunZiNum;
+		resultVO.keZiNum=keZiNum;
 		resultVO.tileUnitInfos = new ArrayList<TileUnitInfo>();
 		for (TileUnitInfo tileUnitInfo : tileUnitInfos) {
 			resultVO.tileUnitInfos.add(tileUnitInfo.clone());
