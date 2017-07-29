@@ -22,7 +22,6 @@ import com.mahjong.server.game.context.HouseContext;
 import com.mahjong.server.game.context.RoomContext;
 import com.mahjong.server.game.enums.EventEnum;
 import com.mahjong.server.game.enums.PlayerLocation;
-import com.mahjong.server.game.enums.PlayerLocation.Relation;
 import com.mahjong.server.game.object.GameResult;
 import com.mahjong.server.game.object.GetScoreType;
 import com.mahjong.server.game.object.MahjongTable;
@@ -33,7 +32,7 @@ import com.mahjong.server.netty.model.DiscardRespModel;
 import com.mahjong.server.netty.model.ProtocolModel;
 import com.mahjong.server.netty.session.ClientSession;
 import com.mahjong.server.service.DBService;
-import com.mahjong.server.vo.ScoreRecordVO;
+import com.mahjong.server.util.ZhuangLocationUtil;
 
 import io.netty.channel.ChannelHandlerContext;
 
@@ -59,8 +58,6 @@ public class HuProcessHelper {
 
 					PlayerInfo playerInfo = playerInfoEnt.getValue();
 
-					playerInfo.setTotalscore(playerInfo.getTotalscore() + (playerInfo.getCurScore() - 1000));
-
 					UserRoomRecord winuserRoomRec = dbService
 							.selectUserRoomRecordInfoByID(playerInfo.getUserRoomRecordInfoID());
 
@@ -80,12 +77,7 @@ public class HuProcessHelper {
 						}
 					}
 
-					ScoreRecordVO scoreRecordVO = new ScoreRecordVO();
-					scoreRecordVO.setRoundScore(playerInfo.getCurScore() - 1000);
-
 					String getScoreTypes = HandlerHelper.getScoreTypesStr(playerInfo.getGatherScoreTypes());
-					scoreRecordVO.setWinActionTypes(getScoreTypes);
-
 					UserActionScore userActionScore = new UserActionScore();
 					userActionScore.setActionScore(playerInfo.getCurScore() - 1000);
 					userActionScore.setWinActionTypes(getScoreTypes);
@@ -96,8 +88,6 @@ public class HuProcessHelper {
 					userActionScore.setUserId(playerInfo.getUserInfo().getId());
 
 					dbService.insertUserActionScoreInfo(userActionScore);
-
-					playerInfo.setCurScoreRecord(scoreRecordVO);
 
 				}
 
@@ -232,14 +222,17 @@ public class HuProcessHelper {
 					gameContext.setHuangzhuang(false);
 					gameContext.setLocalDoneActions(new ArrayList<ActionAndLocation>());
 					
+					
+					logger.info("zhuang and wintimes :"+zhuangplayerInfo.getUserLocation()+":"+ winPlayerInfo.getUserLocation());
+					
 					if(gameContext.getZhuangLocation().getCode() == winPlayerInfo.getUserLocation()||zhuangplayerInfo==null){
 						// 玩家坐庄次数加一
 						winPlayerInfo.setZhuangTimes(winPlayerInfo.getZhuangTimes() + 1);
 						
 					}else{
-						gameContext.setZhuangLocation(PlayerLocation.fromCode(zhuangplayerInfo.getUserLocation()).getLocationOf(Relation.PREVIOUS));
+						gameContext.setZhuangLocation(ZhuangLocationUtil.getNextZhuangLocation(PlayerLocation.fromCode(zhuangplayerInfo.getUserLocation())));
 					}
-					
+					logger.info("zhuang and wintimes :"+gameContext.getZhuangLocation()+":"+ winPlayerInfo.getZhuangTimes());
 
 					MahjongTable table = new MahjongTable();
 					table.init();

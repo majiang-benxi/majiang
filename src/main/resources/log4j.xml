@@ -4,7 +4,7 @@
 
 	<appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%c %d{ISO8601}-- %p -- %m%n" />
+			<param name="ConversionPattern" value="%x-%c %d{ISO8601}-- %p -- %m%n" />
 		</layout>
 	</appender>
 
@@ -19,7 +19,7 @@
 		<param name="MaxFileSize" value="10240KB" />
 		<param name="MaxBackupIndex" value="100" />
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%c %d{ISO8601}-- %p -- %m%n" />
+			<param name="ConversionPattern" value="%x-%c %d{ISO8601}-- %p -- %m%n" />
 		</layout>
 		<filter class="org.apache.log4j.varia.LevelRangeFilter">
 			<param name="LevelMin" value="DEBUG" />
@@ -36,7 +36,7 @@
 		<param name="MaxFileSize" value="10240KB" />
 		<param name="MaxBackupIndex" value="100" />
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%c %d{ISO8601}-- %p -- %m%n" />
+			<param name="ConversionPattern" value="%x-%c %d{ISO8601}-- %p -- %m%n" />
 		</layout>
 		<filter class="org.apache.log4j.varia.LevelRangeFilter">
 			<param name="LevelMin" value="INFO" />
@@ -53,7 +53,7 @@
 		<param name="MaxFileSize" value="10240KB" />
 		<param name="MaxBackupIndex" value="100" />
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%c %d{ISO8601}-- %p -- %m%n" />
+			<param name="ConversionPattern" value="%x-%c %d{ISO8601}-- %p -- %m%n" />
 		</layout>
 		<filter class="org.apache.log4j.varia.LevelRangeFilter">
 			<param name="LevelMin" value="WARN" />
@@ -70,7 +70,7 @@
 		<param name="MaxFileSize" value="10240KB" />
 		<param name="MaxBackupIndex" value="100" />
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%c %d{ISO8601}-- %p -- %m%n" />
+			<param name="ConversionPattern" value="%x-%c %d{ISO8601}-- %p -- %m%n" />
 		</layout>
 		<filter class="org.apache.log4j.varia.LevelRangeFilter">
 			<param name="LevelMin" value="ERROR" />

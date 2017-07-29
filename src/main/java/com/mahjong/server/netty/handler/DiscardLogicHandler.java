@@ -33,17 +33,14 @@ import com.mahjong.server.game.enums.PlayerLocation.Relation;
 import com.mahjong.server.game.object.DisCardActionAndLocation;
 import com.mahjong.server.game.object.DiscardContext;
 import com.mahjong.server.game.object.GameResult;
-import com.mahjong.server.game.object.GetScoreType;
 import com.mahjong.server.game.object.MahjongTable;
 import com.mahjong.server.game.object.PlayerInfo;
 import com.mahjong.server.game.object.TileGroupType;
-import com.mahjong.server.netty.model.CurrentRecordRespModel;
 import com.mahjong.server.netty.model.DiscardReqModel;
 import com.mahjong.server.netty.model.DiscardRespModel;
 import com.mahjong.server.netty.model.ProtocolModel;
 import com.mahjong.server.netty.session.ClientSession;
 import com.mahjong.server.service.DBService;
-import com.mahjong.server.vo.ScoreRecordVO;
 
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -129,8 +126,6 @@ public class DiscardLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 								
 								PlayerInfo playerInfo = playerInfoEnt.getValue();
 								
-								playerInfo.setTotalscore(playerInfo.getTotalscore()+(playerInfo.getCurScore()-1000));
-								
 								String  getScoreTypes = HandlerHelper.getScoreTypesStr(playerInfo.getGatherScoreTypes());
 								
 								UserActionScore userActionScore = new UserActionScore();
@@ -145,12 +140,6 @@ public class DiscardLogicHandler extends SimpleChannelInboundHandler<ProtocolMod
 								userActionScore.setUserId(playerInfo.getUserInfo().getId());
 								
 								dbService.insertUserActionScoreInfo(userActionScore);
-								
-								ScoreRecordVO scoreRecordVO = new ScoreRecordVO();
-								scoreRecordVO.setRoundScore(playerInfo.getCurScore()-1000);
-								scoreRecordVO.setWinActionTypes(getScoreTypes);
-								
-								playerInfo.setCurScoreRecord(scoreRecordVO);
 								
 							}
 							

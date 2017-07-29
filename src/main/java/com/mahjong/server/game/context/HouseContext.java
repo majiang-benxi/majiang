@@ -74,7 +74,7 @@ public class HouseContext {
 	    roomContext.setRoomStatus(RoomStatus.WAIT_USERS);
 	    roomContext.setCreateTime(new Date());
 	    //TODO
-	    roomContext.setRemaiRound(new AtomicInteger(gameStrategy.getRuleInfo().getFangKa().getCode()==1?4:8));
+	    roomContext.setRemaiRound(new AtomicInteger(gameStrategy.getRuleInfo().getFangKa().getCode()==1?2:3));
 	   
 		return roomContext;
 

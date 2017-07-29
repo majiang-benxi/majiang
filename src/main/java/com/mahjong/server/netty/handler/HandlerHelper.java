@@ -18,9 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -348,6 +346,9 @@ public class HandlerHelper {
 
 	public static void processDiscardResp(RoomContext roomContext, PlayerLocation discardPlayLocation,
 			DiscardReqModel discardReqModel) throws IllegalActionException {
+		
+		if(roomContext.getGameContext().getDiscardContext()==null) return ;
+		
 		List<DisCardActionAndLocation> needPassOrDoActions = roomContext.getGameContext().getDiscardContext()
 				.getNeedPassOrDoAction();
 		if (!needPassOrDoActions.isEmpty()) {

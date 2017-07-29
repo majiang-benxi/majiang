@@ -1,7 +1,9 @@
 package com.mahjong.server.netty.codec;
 
 import java.util.List;
+import java.util.UUID;
 
+import org.apache.log4j.NDC;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
@@ -25,11 +27,15 @@ public class WebSocketProtocolCodec extends MessageToMessageCodec<TextWebSocketF
 		String msg = JSON.toJSONString(protocolModel,SerializerFeature.DisableCircularReferenceDetect);
 		System.out.println("encode=" + msg);
 		out.add(new TextWebSocketFrame(msg));
+		
+		NDC.pop();
+		NDC.remove();
 	}
 
 	@Override
 	protected void decode(ChannelHandlerContext channelHandlerContext, TextWebSocketFrame textWebSocketFrame,
 			List<Object> in) throws Exception {
+		
 		String text = textWebSocketFrame.text();
 		System.out.println("decode=" + text);
 		ProtocolModel protocolMsg = JSON.parseObject(text, new TypeReference<ProtocolModel>() {
@@ -37,6 +43,7 @@ public class WebSocketProtocolCodec extends MessageToMessageCodec<TextWebSocketF
 		if (protocolMsg != null) {
 			in.add(protocolMsg);
 		}
-		
+		String requestStr = "[" + UUID.randomUUID() + "] [" + protocolMsg.getCommandId() + "]";
+		NDC.push(requestStr);
 	}
 }

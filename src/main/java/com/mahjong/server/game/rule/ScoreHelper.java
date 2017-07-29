@@ -18,6 +18,8 @@ import com.mahjong.server.game.object.TileGroup;
 import com.mahjong.server.game.object.TileGroupType;
 import com.mahjong.server.game.object.WinInfo;
 import com.mahjong.server.game.rule.win.StandardHuType;
+import com.mahjong.server.netty.handler.HandlerHelper;
+import com.mahjong.server.vo.ScoreRecordVO;
 
 public class ScoreHelper {
 
@@ -140,6 +142,13 @@ public class ScoreHelper {
 		int xianNeedGiveScore = 0;
 
 		int paoNeedGiveScore = 0;
+		
+		Map<Integer,Integer> roundLocationAndScore = new HashMap<>();
+		
+		for(PlayerLocation local : PlayerLocation.values()){
+			roundLocationAndScore.put(local.getCode(), 0);
+		}
+		
 
 		if (winnerLocation != null) {
 
@@ -265,6 +274,7 @@ public class ScoreHelper {
 
 				winScore = dianpaoScore;
 				dianpaoPlayerInfo.setCurScore(dianpaoPlayerInfo.getCurScore() - dianpaoScore);
+				roundLocationAndScore.put(dianpaoPlayerInfo.getUserLocation(), roundLocationAndScore.get(dianpaoPlayerInfo.getUserLocation())-dianpaoScore);
 
 				logger.info("computeUserScore***********dianpaoScore" + dianpaoScore);
 
@@ -282,6 +292,8 @@ public class ScoreHelper {
 
 					if (zhuangLocation.getCode() == eachLocation.getCode()) {
 						eachPlayer.setCurScore(eachPlayer.getCurScore() - zhuangNeedGiveScore);
+						roundLocationAndScore.put(eachPlayer.getUserLocation(), roundLocationAndScore.get(eachPlayer.getUserLocation())-zhuangNeedGiveScore);
+						
 						hasCompute = true;
 						winScore += zhuangNeedGiveScore;
 					}
@@ -290,6 +302,7 @@ public class ScoreHelper {
 
 						} else {
 							eachPlayer.setCurScore(eachPlayer.getCurScore() - paoNeedGiveScore);
+							roundLocationAndScore.put(eachPlayer.getUserLocation(), roundLocationAndScore.get(eachPlayer.getUserLocation())-paoNeedGiveScore);
 							winScore += paoNeedGiveScore;
 						}
 						hasCompute = true;
@@ -297,6 +310,7 @@ public class ScoreHelper {
 					if (!hasCompute) {
 						winScore += xianNeedGiveScore;
 						eachPlayer.setCurScore(eachPlayer.getCurScore() - xianNeedGiveScore);
+						roundLocationAndScore.put(eachPlayer.getUserLocation(), roundLocationAndScore.get(eachPlayer.getUserLocation())-xianNeedGiveScore);
 					}
 
 					logger.info("computeUserScore***********" + eachPlayer.getUserLocation() + ":"
@@ -306,6 +320,7 @@ public class ScoreHelper {
 			}
 
 			winPlayerInfo.setCurScore(winPlayerInfo.getCurScore() + winScore);
+			roundLocationAndScore.put(winPlayerInfo.getUserLocation(), roundLocationAndScore.get(winPlayerInfo.getUserLocation()) + winScore);
 
 		}
 
@@ -360,7 +375,23 @@ public class ScoreHelper {
 			PlayerInfo eachPlayer = entry.getValue();
 			Integer score = locationAndScore.get(eachLocation);
 
-			logger.info("computeUserScore***********" + eachLocation.name() + ":" + score);
+			logger.info("computeUserScore***********" + eachLocation.name() + ":"+eachPlayer.getCurScore() +":" + score);
+			
+			roundLocationAndScore.put(eachPlayer.getUserLocation(), roundLocationAndScore.get(eachPlayer.getUserLocation()) + score);
+			
+			
+			ScoreRecordVO scoreRecordVO = new ScoreRecordVO();
+			scoreRecordVO.setRoundScore(roundLocationAndScore.get(eachPlayer.getUserLocation()));
+			
+			String getScoreTypes = HandlerHelper.getScoreTypesStr(eachPlayer.getGatherScoreTypes());
+			scoreRecordVO.setWinActionTypes(getScoreTypes);
+			eachPlayer.setCurScoreRecord(scoreRecordVO);
+			
+			logger.info("computeUserScore***********roundLocationAndScore" + eachLocation.name() + ":" + roundLocationAndScore.get(eachPlayer.getUserLocation())+":"+eachPlayer.getTotalscore());
+			
+			eachPlayer.setTotalscore(eachPlayer.getTotalscore()+roundLocationAndScore.get(eachPlayer.getUserLocation()));
+			
+			logger.info("computeUserScore***********getTotalscore" +eachPlayer.getTotalscore());
 
 			eachPlayer.setCurScore(eachPlayer.getCurScore() + score);
 		}
