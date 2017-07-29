@@ -143,7 +143,7 @@ public class ScoreHelper {
 
 		int paoNeedGiveScore = 0;
 		
-		Map<Integer,Integer> roundLocationAndScore = new HashMap<>();
+		Map<Integer,Integer> roundLocationAndScore = new HashMap<Integer,Integer> ();
 		
 		for(PlayerLocation local : PlayerLocation.values()){
 			roundLocationAndScore.put(local.getCode(), 0);
